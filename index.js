@@ -49,36 +49,43 @@ var button = {
         this.dom.todo.onclick = function () {
             toast.show()
             self.todoHandle()
+            toast.destroy()
         }
 
         this.dom.howtodo.onclick = function () {
             toast.show()
             self.howtodoHandle()
+            toast.destroy()
         }
 
         this.dom.needtodo.onclick = function () {
             toast.show()
             self.needtodoHandle()
+            toast.destroy()
         }
 
         this.dom.plan.onclick = function () {
             toast.show()
             self.planHandle()
+            toast.destroy()
         }
 
         this.dom.review.onclick = function () {
             toast.show()
             self.reviewHandle()
+            toast.destroy()
         }
 
         this.dom.addtodo.onclick = function () {
             toast.show()
             self.addtodoHandle()
+            toast.destroy()
         }
 
         this.dom.addother.onclick = function () {
             toast.show()
             self.addotherHandle()
+            toast.destroy()
         }
     },
 
@@ -86,7 +93,7 @@ var button = {
      * 我要做什么
      */
     todoHandle: function todoHandle() {
-        console.log('todo')
+        window.location.href = './views/todo/index.html'
     },
 
     /**
