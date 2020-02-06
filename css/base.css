@@ -1,4 +1,3 @@
-  
 body,
 ol,
 ul,
@@ -69,4 +68,18 @@ textarea {
 }
 textarea:focus {
   outline: none;
+}
+.noselect {
+  /* iOS Safari */
+  -webkit-touch-callout: none;
+  /* Chrome/Safari/Opera */
+  -webkit-user-select: none;
+  /* Konqueror */
+  -khtml-user-select: none;
+  /* Firefox */
+  -moz-user-select: none;
+  /* Internet Explorer/Edge */
+  -ms-user-select: none;
+  /* Non-prefixed version, currently not supported by any browser */
+  user-select: none;
 }
