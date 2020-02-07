@@ -21,19 +21,24 @@
         <div class="todo-title">标题</div>
         <div class="todo-specific">具体任务内容</div>
 
-        <div class="todo-details">任务的其他详细信息?</div>
+        <!-- 有推迟才显示 -->
+        <div class="todo-putoff">推迟开始</div>
+
+        <div class="todo-details-operation">任务的其他详细信息?</div>
         <!-- 点击展开 -->
-        <div class="todo-measure">衡量任务完成的标准?</div>
-        <div class="todo-measure">长时间跨度下这任务的意义?</div>
-        <div class="todo-measure">任务涉及到哪些方面?</div>
-        <div class="todo-measure">任务的本质是为了什么?</div>
-        <div class="todo-measure">是否需要确切完成时间?何时?</div>
+        <div class="todo-details">
+            <div class="todo-measure">衡量任务完成的标准?</div>
+            <div class="todo-span">长时间跨度下这任务的意义?</div>
+            <div class="todo-aspects">任务影响涉及到哪些方面?好处?</div>
+            <div class="todo-worth">任务的本质是为了什么?</div>
+            <div class="todo-time">是否需要确切完成时间?何时?</div>
+        </div>
 
         <!-- 如果有结论才显示 -->
-        <div class="todo-conclusion">已有哪些结论?记录?</div>
+        <div class="todo-conclusion-operation">已有哪些结论?记录?</div>
         <!-- 点击展开 -->
 
-        <div class="todo-conclusion">得出什么结论?记录什么?</div>
+        <div class="todo-record-add">得出什么结论?记录什么?</div>
 
         <div class="todo-operation flex-start-center">
             <div class="operation-item flex-rest flex-center">完成?</div>
@@ -48,6 +53,7 @@
     <div class="operation">
         <div class="operation-button">还有什么可以做?</div>
         <div class="operation-button">为什么要做这个?</div>
+        <div class="operation-button">新增任务?</div>
     </div>
 </body>
 
