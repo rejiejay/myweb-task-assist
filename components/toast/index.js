@@ -41,11 +41,15 @@ var Toast = {
             `;
         }
 
-        node.setAttribute('class', 'rejiejay-toast flex-center');
+        node.setAttribute('class', 'rejiejay-toast');
         node.setAttribute('id', 'rejiejay-toast');
         node.innerHTML = node_content;
         document.body.appendChild(node);
 
+        /**
+         * 条件: 有文字提示的情况下
+         * 作用: 可点击屏幕取消提示
+         */
         if (message) {
             document.getElementById('rejiejay-toast').onclick = function () {
                 self.destroy();
@@ -57,8 +61,9 @@ var Toast = {
      * 销毁
      */
     destroy: function destroy() {
-        if (document.getElementById('rejiejay-toast')) {
-            document.body.removeChild(document.getElementById('rejiejay-toast'));
+        var toast = document.getElementById('rejiejay-toast')
+        if (toast) {
+            document.body.removeChild(toast);
         }
     }
 }

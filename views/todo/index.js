@@ -11,6 +11,7 @@ var init = {
 
         components.init()
         edit.init()
+        del.init()
     },
 
     /**
@@ -18,14 +19,17 @@ var init = {
      */
     initDom: function initDom() {
         edit.dom = document.getElementById('edit-todo')
+        del.dom = document.getElementById('edit-delete')
     }
 }
 
 var components = {
     toast: null,
+    confirmPopUp: null,
 
     init: function init() {
         this.toast = Toast.init()
+        this.confirmPopUp = ConfirmPopUp.init()
     }
 }
 
@@ -37,6 +41,16 @@ var edit = {
             components.toast.show()
             window.location.href = './edit/index.html'
             components.toast.destroy()
+        }
+    }
+}
+
+var del = {
+    dom: null,
+
+    init: function init() {
+        this.dom.onclick = function () {
+            components.confirmPopUp()
         }
     }
 }
