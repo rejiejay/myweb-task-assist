@@ -1,12 +1,12 @@
 window.onload = function () {
-    init.go()
+    init.main()
 }
 
 /**
  * 初始化方法
  */
 var init = {
-    go: function go() {
+    main: function main() {
         this.initDom()
 
         components.init()

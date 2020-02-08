@@ -1,5 +1,5 @@
 window.onload = function () {
-    init.go()
+    init.main()
 }
 
 var CONST = {
@@ -24,7 +24,7 @@ var CONST = {
 var init = {
     redirect: CONST.REDIRECT.DEFAULTS.value,
 
-    go: function go() {
+    main: function main() {
         components.init()
         this.initDom()
         this.initRedirect()
