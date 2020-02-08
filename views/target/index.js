@@ -9,11 +9,13 @@ var CONST = {
     REDIRECT: {
         DEFAULTS: {
             value: null,
-            effect: 'defaults value'
+            effect: 'defaults value',
+            url: null
         },
         NEED_TODO: {
             value: 'need_todo',
-            effect: 'goto todo list'
+            effect: 'goto todo list',
+            url: './../todo/list/index.html'
         }
     },
 
@@ -58,9 +60,11 @@ var init = {
 
 var components = {
     loadPageVar: null,
+    constHandle: null,
 
     init: function init() {
         this.loadPageVar = LoadPageVar
+        this.constHandle = ConstHandle
     }
 }
 
@@ -90,5 +94,25 @@ var list = {
         }).join('')
 
         self.dom.innerHTML = node_content;
+        self.bindEvent()
+    },
+
+    bindEvent: function bindEvent() {
+        var self = this
+        var children_dom = this.dom.children
+
+        for (var index = 0; index < children_dom.length; index++) {
+            var element = children_dom[index];
+
+            element.onclick = function () {
+                var url = components.constHandle.findValueByValue({
+                    CONST: CONST.REDIRECT,
+                    supportKey: 'value',
+                    supportValue: init.redirect,
+                    targetKey: 'url'
+                })
+                window.location.href = url
+            }
+        }
     }
 }
