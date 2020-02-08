@@ -16,6 +16,8 @@
     <script type="text/javascript" charset="utf-8" src="./../../components/toast/index.js"></script>
     <link type="text/css" rel="stylesheet" href="./../../components/confirm-popup/index.css">
     <script type="text/javascript" charset="utf-8" src="./../../components/confirm-popup/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="./../../components/input-popup/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../components/input-popup/index.js"></script>
 
     <link type="text/css" rel="stylesheet" href="./index.css">
     <script type="text/javascript" charset="utf-8" src="./index.js"></script>
@@ -46,7 +48,7 @@
                 <div class="todo-time">是否必须完成?何时?</div>
             </div>
 
-            <div class="todo-record-add flex-center">得出什么结论?记录什么?</div>
+            <div class="todo-record-add flex-center" id="add-edit-record">得出什么结论?记录什么?</div>
 
             <div class="todo-operation flex-start-center">
                 <div class="operation-item flex-rest flex-center">完成?</div>
@@ -65,7 +67,7 @@
         <div class="dividing-line"></div>
         <div class="operation-button">为什么要做这个?</div>
         <div class="dividing-line"></div>
-        <div class="operation-button">新增任务?</div>
+        <div class="operation-button" id="add-todo">新增任务?</div>
     </div>
 </body>
 

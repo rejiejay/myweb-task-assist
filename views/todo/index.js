@@ -13,6 +13,8 @@ var init = {
         edit.init()
         del.init()
         putoff.init()
+        add.init()
+        record.init()
     },
 
     /**
@@ -22,16 +24,20 @@ var init = {
         edit.dom = document.getElementById('edit-todo')
         del.dom = document.getElementById('edit-delete')
         putoff.dom = document.getElementById('edit-putoff')
+        add.dom = document.getElementById('add-todo')
+        record.dom = document.getElementById('add-edit-record')
     }
 }
 
 var components = {
     toast: null,
     confirmPopUp: null,
+    inputPopUp: null,
 
     init: function init() {
         this.toast = Toast.init()
         this.confirmPopUp = ConfirmPopUp.init()
+        this.inputPopUp = InputPopUp.init()
     }
 }
 
@@ -100,5 +106,39 @@ var putoff = {
 
     handle: function handle(date) {
         console.log(date)
+    }
+}
+
+var add = {
+    dom: null,
+
+    init: function init() {
+        this.dom.onclick = function () {
+            components.toast.show()
+            window.location.href = './edit/index.html'
+            components.toast.destroy()
+        }
+    }
+}
+
+var record = {
+    dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.dom.onclick = function () {
+            var parameter = {
+                title: '得出什么结论?记录什么?',
+                handle: self.handle
+            }
+    
+            components.inputPopUp.show(parameter)
+        }
+    },
+
+    handle: function handle(input) {
+        console.log(input)
+        components.inputPopUp.hiden()
     }
 }
