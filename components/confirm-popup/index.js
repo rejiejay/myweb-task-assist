@@ -2,7 +2,10 @@ var ConfirmPopUp = {
     init: function init() {
         var self = this
 
-        return function instance(title, succeedHandle) {
+        return function instance({
+            title,
+            succeedHandle
+        }) {
             /**
              * 目标: 防止重复调用
              */

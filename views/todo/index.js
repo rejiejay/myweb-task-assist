@@ -49,8 +49,17 @@ var del = {
     dom: null,
 
     init: function init() {
+        var self = this
+
         this.dom.onclick = function () {
-            components.confirmPopUp()
+            var parameter = {
+                title: '你确认要删除吗?',
+                succeedHandle: self.handle
+            }
+            components.confirmPopUp(parameter)
         }
+    },
+
+    handle: function handle() {
     }
 }
