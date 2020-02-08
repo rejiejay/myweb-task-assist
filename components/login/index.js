@@ -1,12 +1,15 @@
 /**
  * 策略: 仅首页检查一次即可
  * 使用注意: 需前置引入组件依赖
+ * components/input-popup
+ * components/toast
  */
 var Login = {
     token: false,
+    inputPopUp: null,
 
     init: function init() {
-        var self = this
+        this.initComponents()
 
         this.tokenCheck()
         this.verifyAll()
@@ -16,6 +19,13 @@ var Login = {
          */
         // var instance = {}
         // return instance
+    },
+
+    /**
+     * 组件
+     */
+    initComponents: function initComponents() {
+        this.inputPopUp = InputPopUp.init()
     },
 
     /**
@@ -56,7 +66,22 @@ var Login = {
     /**
      * 作用: 弹出登录框
      */
-    showLogInput: function showLogInput() {},
+    showLogInput: function showLogInput() {
+        var self = this
+        
+        var handle = function handle(input) {
+            console.log(input)
+            // self.verifyPassword(input)
+        }
+
+        var parameter = {
+            title: '请输入登录密码?',
+            handle: handle,
+            mustInput: true
+        }
+
+        this.inputPopUp.show(parameter)
+    },
 
     /**
      * 服务器校验密码

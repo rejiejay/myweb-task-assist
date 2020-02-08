@@ -9,6 +9,8 @@ var init = {
     go: function go() {
         this.initDom()
 
+        components.init()
+
         button.init()
     },
 
@@ -29,6 +31,18 @@ var init = {
 }
 
 /**
+ * 组件
+ */
+var components = {
+    toast: null,
+
+    init: function init() {
+        Login.init()
+        this.toast = Toast.init()
+    }
+}
+
+/**
  * 按钮
  */
 var button = {
@@ -44,48 +58,47 @@ var button = {
 
     init: function init() {
         var self = this
-        var toast = Toast.init()
 
         this.dom.todo.onclick = function () {
-            toast.show()
+            components.toast.show()
             self.todoHandle()
-            toast.destroy()
+            components.toast.destroy()
         }
 
         this.dom.howtodo.onclick = function () {
-            toast.show()
+            components.toast.show()
             self.howtodoHandle()
-            toast.destroy()
+            components.toast.destroy()
         }
 
         this.dom.needtodo.onclick = function () {
-            toast.show()
+            components.toast.show()
             self.needtodoHandle()
-            toast.destroy()
+            components.toast.destroy()
         }
 
         this.dom.plan.onclick = function () {
-            toast.show()
+            components.toast.show()
             self.planHandle()
-            toast.destroy()
+            components.toast.destroy()
         }
 
         this.dom.review.onclick = function () {
-            toast.show()
+            components.toast.show()
             self.reviewHandle()
-            toast.destroy()
+            components.toast.destroy()
         }
 
         this.dom.addtodo.onclick = function () {
-            toast.show()
+            components.toast.show()
             self.addtodoHandle()
-            toast.destroy()
+            components.toast.destroy()
         }
 
         this.dom.addother.onclick = function () {
-            toast.show()
+            components.toast.show()
             self.addotherHandle()
-            toast.destroy()
+            components.toast.destroy()
         }
     },
 
