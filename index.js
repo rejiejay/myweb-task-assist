@@ -107,7 +107,7 @@ var button = {
      * 我要做什么
      */
     todoHandle: function todoHandle() {
-        window.location.href = './views/todo/index.html'
+        window.location.href = './views/todo/item/index.html'
     },
 
     /**

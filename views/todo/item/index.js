@@ -15,6 +15,7 @@ var init = {
         putoff.init()
         add.init()
         record.init()
+        list.init()
     },
 
     /**
@@ -26,6 +27,7 @@ var init = {
         putoff.dom = document.getElementById('edit-putoff')
         add.dom = document.getElementById('add-todo')
         record.dom = document.getElementById('add-edit-record')
+        list.dom = document.getElementById('other-todo')
     }
 }
 
@@ -132,7 +134,7 @@ var record = {
                 title: '得出什么结论?记录什么?',
                 handle: self.handle
             }
-    
+
             components.inputPopUp.show(parameter)
         }
     },
@@ -140,5 +142,19 @@ var record = {
     handle: function handle(input) {
         console.log(input)
         components.inputPopUp.hiden()
+    }
+}
+
+var list = {
+    dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.dom.onclick = function () {
+            components.toast.show()
+            window.location.href = './../list/index.html'
+            components.toast.destroy()
+        }
     }
 }
