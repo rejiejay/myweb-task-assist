@@ -1,11 +1,11 @@
 window.onload = function () {
-    init.main()
+    initialization.main()
 }
 
 /**
  * 初始化方法
  */
-var init = {
+var initialization = {
     main: function main() {
         this.initDom()
 

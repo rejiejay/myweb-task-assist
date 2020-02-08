@@ -7,15 +7,14 @@ window.onload = function () {
  */
 var initialization = {
     main: function main() {
-        this.initDom()
-
         components.init()
+        this.initDom()
     },
 
     /**
      * 节点 初始化
      */
-    initDom: function initDom() {}
+    initDom: function initDom() {},
 }
 
 var components = {

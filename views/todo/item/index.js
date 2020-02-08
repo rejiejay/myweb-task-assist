@@ -1,11 +1,11 @@
 window.onload = function () {
-    init.main()
+    initialization.main()
 }
 
 /**
  * 初始化方法
  */
-var init = {
+var initialization = {
     main: function main() {
         this.initDom()
 
@@ -16,6 +16,7 @@ var init = {
         add.init()
         record.init()
         list.init()
+        reason.init()
     },
 
     /**
@@ -28,6 +29,7 @@ var init = {
         add.dom = document.getElementById('add-todo')
         record.dom = document.getElementById('add-edit-record')
         list.dom = document.getElementById('other-todo')
+        reason.dom = document.getElementById('reason-todo')
     }
 }
 
@@ -157,4 +159,19 @@ var list = {
             components.toast.destroy()
         }
     }
+}
+
+var reason = {
+    dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.dom.onclick = function () {
+            components.toast.show()
+            window.location.href = './../../why/index.html'
+            components.toast.destroy()
+        }
+    }
+
 }

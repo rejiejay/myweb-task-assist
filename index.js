@@ -1,11 +1,11 @@
 window.onload = function () {
-    init.main()
+    initialization.main()
 }
 
 /**
  * 初始化方法
  */
-var init = {
+var initialization = {
     main: function main() {
         this.initDom()
 
@@ -114,7 +114,7 @@ var button = {
      * 不想做
      */
     howTodoHandle: function howTodoHandle() {
-        console.log('howTodo')
+        window.location.href = './views/target/index.html?redirect=how_todo'
     },
 
     /**

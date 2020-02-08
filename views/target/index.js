@@ -1,5 +1,5 @@
 window.onload = function () {
-    init.main()
+    initialization.main()
 }
 
 var CONST = {
@@ -10,12 +10,20 @@ var CONST = {
         DEFAULTS: {
             value: null,
             effect: 'defaults value',
+            title: '',
             url: null
         },
         NEED_TODO: {
             value: 'need_todo',
             effect: 'goto todo list',
+            title: '有哪些可以做?',
             url: './../todo/list/index.html'
+        },
+        HOW_TODO: {
+            value: 'how_todo',
+            effect: 'How to make myself want to work?',
+            title: '不想做下面这些事情怎么办?',
+            url: './../why/index.html'
         }
     },
 
@@ -32,7 +40,7 @@ var CONST = {
 /**
  * 初始化方法
  */
-var init = {
+var initialization = {
     redirect: CONST.REDIRECT.DEFAULTS.value,
 
     main: function main() {
@@ -41,6 +49,7 @@ var init = {
         this.initRedirect()
 
         list.init()
+        title.init()
     },
 
     /**
@@ -51,7 +60,7 @@ var init = {
     },
 
     /**
-     * 节点 初始化
+     * 重定向 初始化
      */
     initRedirect: function initRedirect() {
         this.redirect = components.loadPageVar('redirect')
@@ -65,6 +74,26 @@ var components = {
     init: function init() {
         this.loadPageVar = LoadPageVar
         this.constHandle = ConstHandle
+    }
+}
+
+var title = {
+    init: function init() {
+        var title = components.constHandle.findValueByValue({
+            CONST: CONST.REDIRECT,
+            supportKey: 'value',
+            supportValue: initialization.redirect,
+            targetKey: 'title'
+        })
+
+        if (!title) {
+            return false
+        }
+        
+        var node = document.createElement("div");
+        node.setAttribute('id', 'target-title');
+        node.innerHTML = title;
+        document.body.insertBefore(node, list.dom)
     }
 }
 
@@ -108,7 +137,7 @@ var list = {
                 var url = components.constHandle.findValueByValue({
                     CONST: CONST.REDIRECT,
                     supportKey: 'value',
-                    supportValue: init.redirect,
+                    supportValue: initialization.redirect,
                     targetKey: 'url'
                 })
                 window.location.href = url

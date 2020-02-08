@@ -7,8 +7,13 @@ body {
   color: #606266;
   background-color: #f1f1f1;
 }
-.list {
+#target-title {
+  font-size: 16px;
+  color: #303133;
   padding: 25px 15px 15px 15px;
+}
+.list {
+  padding: 0px 15px 15px 15px;
 }
 .list .list-item {
   padding: 7.5px 0px;
