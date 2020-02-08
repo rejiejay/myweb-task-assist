@@ -49,7 +49,7 @@ var edit = {
     init: function init() {
         this.dom.onclick = function () {
             components.toast.show()
-            window.location.href = './edit/index.html'
+            window.location.href = './../edit/index.html'
             components.toast.destroy()
         }
     }

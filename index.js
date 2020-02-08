@@ -121,7 +121,7 @@ var button = {
      * 有哪些可以做
      */
     needtodoHandle: function needtodoHandle() {
-        window.location.href = './views/target/index.html'
+        window.location.href = './views/target/index.html?redirect=needtodo'
     },
 
     /**
