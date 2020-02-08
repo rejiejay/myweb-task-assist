@@ -12,7 +12,7 @@ var CONST = {
             effect: 'defaults value'
         },
         NEED_TODO: {
-            value: 'needtodo',
+            value: 'need_todo',
             effect: 'goto todo list'
         }
     },

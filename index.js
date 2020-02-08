@@ -22,12 +22,12 @@ var init = {
     initDom: function initDom() {
         button.dom = {
             todo: document.getElementById('todo'),
-            howtodo: document.getElementById('howtodo'),
-            needtodo: document.getElementById('needtodo'),
+            howTodo: document.getElementById('how-todo'),
+            needTodo: document.getElementById('need-todo'),
             plan: document.getElementById('plan'),
             review: document.getElementById('review'),
-            addtodo: document.getElementById('addtodo'),
-            addother: document.getElementById('addother')
+            addTodo: document.getElementById('add-todo'),
+            addOther: document.getElementById('add-other')
         }
     }
 }
@@ -49,12 +49,12 @@ var components = {
 var button = {
     dom: {
         todo: null,
-        howtodo: null,
-        needtodo: null,
+        howTodo: null,
+        needTodo: null,
         plan: null,
         review: null,
-        addtodo: null,
-        addother: null
+        addTodo: null,
+        addOther: null
     },
 
     init: function init() {
@@ -66,15 +66,15 @@ var button = {
             components.toast.destroy()
         }
 
-        this.dom.howtodo.onclick = function () {
+        this.dom.howTodo.onclick = function () {
             components.toast.show()
-            self.howtodoHandle()
+            self.howTodoHandle()
             components.toast.destroy()
         }
 
-        this.dom.needtodo.onclick = function () {
+        this.dom.needTodo.onclick = function () {
             components.toast.show()
-            self.needtodoHandle()
+            self.needTodoHandle()
             components.toast.destroy()
         }
 
@@ -90,15 +90,15 @@ var button = {
             components.toast.destroy()
         }
 
-        this.dom.addtodo.onclick = function () {
+        this.dom.addTodo.onclick = function () {
             components.toast.show()
-            self.addtodoHandle()
+            self.addTodoHandle()
             components.toast.destroy()
         }
 
-        this.dom.addother.onclick = function () {
+        this.dom.addOther.onclick = function () {
             components.toast.show()
-            self.addotherHandle()
+            self.addOtherHandle()
             components.toast.destroy()
         }
     },
@@ -113,15 +113,15 @@ var button = {
     /**
      * 不想做
      */
-    howtodoHandle: function howtodoHandle() {
-        console.log('howtodo')
+    howTodoHandle: function howTodoHandle() {
+        console.log('howTodo')
     },
 
     /**
      * 有哪些可以做
      */
-    needtodoHandle: function needtodoHandle() {
-        window.location.href = './views/target/index.html?redirect=needtodo'
+    needTodoHandle: function needTodoHandle() {
+        window.location.href = './views/target/index.html?redirect=need_todo'
     },
 
     /**
@@ -141,14 +141,14 @@ var button = {
     /**
      * 创建新任务
      */
-    addtodoHandle: function addtodoHandle() {
-        console.log('addtodo')
+    addTodoHandle: function addTodoHandle() {
+        console.log('addTodo')
     },
 
     /**
      * 新的灵感
      */
-    addotherHandle: function addotherHandle() {
-        console.log('addother')
+    addOtherHandle: function addOtherHandle() {
+        console.log('addOther')
     },
 }
