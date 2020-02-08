@@ -12,6 +12,7 @@ var init = {
         components.init()
         edit.init()
         del.init()
+        putoff.init()
     },
 
     /**
@@ -20,6 +21,7 @@ var init = {
     initDom: function initDom() {
         edit.dom = document.getElementById('edit-todo')
         del.dom = document.getElementById('edit-delete')
+        putoff.dom = document.getElementById('edit-putoff')
     }
 }
 
@@ -60,6 +62,43 @@ var del = {
         }
     },
 
-    handle: function handle() {
+    handle: function handle() {}
+}
+
+var putoff = {
+    dom: null,
+    datepicker: null,
+
+    init: function init() {
+        var self = this
+        var nowYear = new Date().getFullYear()
+
+        this.datepicker = new Rolldate({
+            el: '#picka-date',
+            format: 'YYYY-MM-DD hh:mm',
+            beginYear: nowYear,
+            endYear: nowYear + 10,
+            lang: {
+                title: '推迟到什么时候?'
+            },
+            confirm: function confirm(date) {
+                var nowTime = new Date().getTime()
+                var pickerTime = new Date(date.replace(/\-/g, "\/")).getTime()
+
+                if (nowTime > pickerTime) {
+                    components.toast.show('不能小于当前的日期')
+                    return false;
+                }
+
+                self.handle(date)
+            }
+        })
+        this.dom.onclick = function () {
+            self.datepicker.show()
+        }
+    },
+
+    handle: function handle(date) {
+        console.log(date)
     }
 }

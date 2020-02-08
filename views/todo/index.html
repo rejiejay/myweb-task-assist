@@ -10,6 +10,8 @@
     <link type="text/css" rel="stylesheet" href="./../../css/base.css">
     <link type="text/css" rel="stylesheet" href="./../../css/flex.css">
 
+    <script type="text/javascript" charset="utf-8" src="./../../lib/picka-date/rolldate.min.js"></script>
+
     <link type="text/css" rel="stylesheet" href="./../../components/toast/index.css">
     <script type="text/javascript" charset="utf-8" src="./../../components/toast/index.js"></script>
     <link type="text/css" rel="stylesheet" href="./../../components/confirm-popup/index.css">
@@ -20,7 +22,6 @@
 </head>
 
 <body>
-
     <!-- 任务区域 -->
     <div class="todo">
         <div class="todo-container">
@@ -49,7 +50,8 @@
 
             <div class="todo-operation flex-start-center">
                 <div class="operation-item flex-rest flex-center">完成?</div>
-                <div class="operation-item flex-rest flex-center">推迟?</div>
+                <input readonly type="text" id="picka-date" placeholder="YYYY-MM-DD hh:mm" style="display: none;">
+                <div class="operation-item flex-rest flex-center" id="edit-putoff">推迟?</div>
                 <div class="operation-item flex-rest flex-center" id="edit-todo">编辑?</div>
                 <div class="operation-item flex-rest flex-center" id="edit-delete">删除?</div>
                 <div class="operation-item flex-rest flex-center">todo other?</div>
