@@ -10,6 +10,11 @@
     <link type="text/css" rel="stylesheet" href="./../../../css/base.css">
     <link type="text/css" rel="stylesheet" href="./../../../css/flex.css">
 
+    <script type="text/javascript" charset="utf-8" src="./../../../lib/picka-date/rolldate.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="./../../../components/toast/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../../components/toast/index.js"></script>
+
     <link type="text/css" rel="stylesheet" href="./index.css">
     <script type="text/javascript" charset="utf-8" src="./index.js"></script>
 </head>
@@ -19,42 +24,66 @@
     <div class="edit">
 
         <!-- 任务标题 -->
-        <div class="edit-title">简单描述/提问:</div>
-        <input type="text" />
+        <div class="edit-title edit-required">*简单描述/提问:</div>
+        <div class="edit-input flex-start-center">
+            <input type="text" placeholder="简单描述/提问" />
+        </div>
 
         <!-- 任务具体内容 -->
-        <div class="edit-title">任务具体内容是什么:</div>
-        <input type="text" />
+        <div class="edit-title edit-required">*任务具体内容是什么:</div>
+
+        <div class="edit-input flex-start-center">
+            <textarea rows="3" type="text" placeholder="任务具体内容是什么"></textarea>
+        </div>
 
         <div class="edit-title">衡量任务完成的标准?</div>
-        <input type="text" />
+        <div class="edit-input flex-start-center">
+            <input type="text" placeholder="衡量任务完成的标准" />
+        </div>
 
         <div class="edit-title">长时间跨度下这任务的意义?</div>
-        <input type="text" />
+        <div class="edit-input flex-start-center">
+            <input type="text" placeholder="长时间跨度下这任务的意义" />
+        </div>
 
         <div class="edit-title">任务影响涉及到哪些方面?好处?</div>
-        <input type="text" />
+        <div class="edit-input flex-start-center">
+            <input type="text" placeholder="任务影响涉及到哪些方面?好处?" />
+        </div>
 
         <div class="edit-title">任务的本质是为了什么?</div>
-        <input type="text" />
+        <div class="edit-input flex-start-center">
+            <input type="text" placeholder="任务的本质是为了什么" />
+        </div>
 
-        <div class="edit-title">是否需要确切完成时间?何时?</div>
-        <input type="text" />
+        <div class="edit-title">是否必须完成?何时?</div>
+        <div class="edit-input flex-start-center">
+            <input type="text" placeholder="是否必须完成" />
+        </div>
 
-        <div class="edit-title">是否需要推迟?</div>
-        <input type="text" />
+        <div class="edit-title">是否需要隐藏次任务?</div>
+        <div class="edit-input flex-start-center">
+            <input readonly type="text" id="picka-date" placeholder="推迟?">
+            <div class="picka-clear flex-center" id="picka-clear">显示</div>
+        </div>
 
         <div class="edit-title">得出什么结论?</div>
         <!-- 可以点击新增删除删除 -->
-        <input type="text" />
+        <div class="edit-input flex-start-center">
+            <textarea rows="3" type="text" placeholder="结论"></textarea>
+        </div>
 
     </div>
 
     <!-- 操作区域 -->
     <div class="operation">
-        <div class="operation-button">保存</div>
-        <div class="operation-button">done</div><!-- 条件判断 -->
-        <div class="operation-button">取消/删除</div><!-- 条件判断 -->
+        <div class="operation-container flex-start-center">
+            <div class="operation-button flex-center flex-rest">保存</div>
+            <div class="vertical-line"></div>
+            <div class="operation-button flex-center flex-rest">done</div><!-- 条件判断 -->
+            <div class="vertical-line"></div>
+            <div class="operation-button flex-center flex-rest">取消/删除</div><!-- 条件判断 -->
+        </div>
     </div>
 </body>
 

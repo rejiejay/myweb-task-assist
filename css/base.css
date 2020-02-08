@@ -64,7 +64,19 @@ input:-ms-input-placeholder {
   color: #303133;
 }
 textarea {
+  width: 95%;
+  height: 95%;
+  padding: 2.5%;
+  font-size: 14px;
   border: none;
+  background-color: transparent;
+}
+textarea::-webkit-input-placeholder,
+textarea::-moz-placeholder,
+textarea:-moz-placeholder,
+textarea:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #303133;
 }
 textarea:focus {
   outline: none;

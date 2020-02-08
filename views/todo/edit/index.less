@@ -12,3 +12,57 @@ body {
     color: @black2;
     background-color: #f1f1f1;
 }
+
+.edit {
+    padding: 15px 15px 75px 15px;
+
+    .edit-title {
+        color: @black1;
+        padding-bottom: 10px;
+    }
+
+    .edit-required {
+        color: #F23F40;
+    }
+
+    .edit-input {
+        padding-bottom: 15px;
+
+        input {
+            border: 1px solid #ddd;
+            height: 45px;
+        }
+
+        textarea {
+            border: 1px solid #ddd;
+        }
+
+        .picka-clear {
+            height: 47px;
+            font-size: 12px;
+            background-color: #dadada;
+            padding: 0px 15px;
+        }
+    }
+}
+
+.operation {
+    position: fixed;
+    width: 100%;
+    height: 51px;
+    left: 0px;
+    bottom: 0px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+
+    .operation-container {
+        width: 100%;
+        height: 50px;
+    }
+
+    .vertical-line {
+        height: 50px;
+        width: 1px;
+        background: #ddd;
+    }
+}

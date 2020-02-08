@@ -7,3 +7,47 @@ body {
   color: #606266;
   background-color: #f1f1f1;
 }
+.edit {
+  padding: 15px 15px 75px 15px;
+}
+.edit .edit-title {
+  color: #303133;
+  padding-bottom: 10px;
+}
+.edit .edit-required {
+  color: #F23F40;
+}
+.edit .edit-input {
+  padding-bottom: 15px;
+}
+.edit .edit-input input {
+  border: 1px solid #ddd;
+  height: 45px;
+}
+.edit .edit-input textarea {
+  border: 1px solid #ddd;
+}
+.edit .edit-input .picka-clear {
+  height: 47px;
+  font-size: 12px;
+  background-color: #dadada;
+  padding: 0px 15px;
+}
+.operation {
+  position: fixed;
+  width: 100%;
+  height: 51px;
+  left: 0px;
+  bottom: 0px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+}
+.operation .operation-container {
+  width: 100%;
+  height: 50px;
+}
+.operation .vertical-line {
+  height: 50px;
+  width: 1px;
+  background: #ddd;
+}

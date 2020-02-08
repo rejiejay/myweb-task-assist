@@ -10,7 +10,7 @@
   top: 0px;
   left: 0px;
   z-index: 99;
-  background-color: rgba(0, 0, 0, 0.86);
+  background-color: rgba(0, 0, 0, 0.38);
   display: -webkit-box;
   /* 老版本语法: Safari, iOS, Android browser, older WebKit browsers. */
   display: -moz-box;

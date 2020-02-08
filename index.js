@@ -11,6 +11,8 @@ var init = {
 
         components.init()
 
+        // Login.init()
+
         button.init()
     },
 
@@ -37,7 +39,6 @@ var components = {
     toast: null,
 
     init: function init() {
-        Login.init()
         this.toast = Toast.init()
     }
 }
