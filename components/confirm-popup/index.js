@@ -21,7 +21,7 @@ var ConfirmPopUp = {
     build: function build(title) {
         var node = document.createElement("div");
 
-        let node_content = `
+        var node_content = `
             <div id='ejiejay-confirm-popup-mask'></div>
             <div class='confirm-container'>
                 <div class='confirm-title'>${title || 'please confirm operation'}</div>

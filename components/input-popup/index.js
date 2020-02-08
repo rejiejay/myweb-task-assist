@@ -48,7 +48,7 @@ var InputPopUp = {
     build: function build(title, placeholder, mustInput) {
         var node = document.createElement("div");
 
-        let node_content = `
+        var node_content = `
             <div id='ejiejay-input-popup-mask'></div>
             <div class='input-container'>
                 <div class='input-title'>${title || 'please input'}</div>

@@ -25,7 +25,7 @@ var Toast = {
 
         var node = document.createElement("div");
 
-        let node_content = `
+        var node_content = `
             <div class='toast-content'>
                 <div class='toast-loader'>
                     <div class='loader--audioWave'></div>
