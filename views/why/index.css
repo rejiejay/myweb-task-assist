@@ -7,3 +7,18 @@ body {
   color: #606266;
   background-color: #f1f1f1;
 }
+.statistics {
+  padding: 25px 15px 15px 15px;
+}
+.statistics .statistics-title {
+  font-size: 12px;
+  font-weight: bold;
+  padding-bottom: 5px;
+}
+.statistics .statistics-description {
+  font-size: 16px;
+}
+.statistics .statistics-description span {
+  color: red;
+  padding: 0px 10px;
+}
