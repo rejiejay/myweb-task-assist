@@ -11,6 +11,7 @@ var initialization = {
         this.initDom()
 
         spiritual.init()
+        edit.init()
     },
 
     /**
@@ -18,6 +19,7 @@ var initialization = {
      */
     initDom: function initDom() {
         spiritual.dom = document.getElementById('spiritual')
+        edit.dom = document.getElementById('add-edit')
     },
 }
 
@@ -30,6 +32,15 @@ var spiritual = {
     init: function init() {
         this.dom.onclick = function () {
             window.location.href = './spiritual/index.html'
+        }
+    }
+}
+
+var edit = {
+    dom: null,
+    init: function init() {
+        this.dom.onclick = function () {
+            window.location.href = './edit/index.html'
         }
     }
 }
