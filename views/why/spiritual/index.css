@@ -1,0 +1,24 @@
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+  font-size: 14px;
+  color: #606266;
+  background-color: #f1f1f1;
+}
+.spiritual {
+  padding: 15px 15px 15px 15px;
+}
+.spiritual .spiritual-title {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.spiritual .spiritual-item {
+  padding-bottom: 15px;
+}
+.spiritual .spiritual-item .item-container {
+  padding: 15px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
