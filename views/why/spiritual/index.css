@@ -20,5 +20,20 @@ body {
 .spiritual .spiritual-item .item-container {
   padding: 15px;
   border: 1px solid #ddd;
+}
+.button {
+  border-top: 1px solid #ddd;
+  padding: 15px 15px 15px 15px;
+}
+.button .button-container {
+  padding-top: 15px;
+  width: 100%;
+}
+.button .button-container .button-item {
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
   background: #fff;
+  border: 1px solid #ddd;
 }

@@ -13,21 +13,42 @@ body {
     background-color: #f1f1f1;
 }
 
-.rejiejay {
-    padding: 15px;
-    margin: 0px;
+.process-task {
+    padding: 15px 15px 0px 15px;
+
+    .process-container {
+        background-color: #adc6ff;
+        color: #fff;
+
+        >div {
+            height: 45px;
+        }
+
+        .task-item {
+            border-right: 1px solid #ddd;
+        }
+
+        .task-del {
+            padding: 0px 10px;
+        }
+    }
 }
 
-.button-container {
-    padding-top: 15px;
-    width: 100%;
+.todo-assist-list {
+    padding: 15px;
+    margin: 0px;
 
-    .button {
+    .button-container {
+        padding-bottom: 15px;
         width: 100%;
-        height: 45px;
-        line-height: 45px;
-        text-align: center;
-        background: #fff;
-        border: 1px solid #ddd;
+
+        .button {
+            width: 100%;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            background: #fff;
+            border: 1px solid #ddd;
+        }
     }
 }

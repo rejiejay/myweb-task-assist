@@ -12,7 +12,8 @@ var initialization = {
         components.init()
 
         // Login.init()
-
+        
+        process.init()
         button.init()
     },
 
@@ -40,6 +41,15 @@ var components = {
 
     init: function init() {
         this.toast = Toast.init()
+    }
+}
+
+/**
+ * 正在执行的任务
+ * Mark: 暂时不需要实现, 优先级不高;
+ */
+var process = {
+    init: function init() {
     }
 }
 
