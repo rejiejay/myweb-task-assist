@@ -24,6 +24,12 @@ var CONST = {
             effect: 'How to make myself want to work?',
             title: '不想做下面这些事情怎么办?',
             url: './../why/index.html'
+        },
+        PLAN: {
+            value: 'plan',
+            effect: 'What is the plan and when will it be completed?',
+            title: '计划是什么?何时能完成?',
+            url: './../plan/index.html'
         }
     },
 

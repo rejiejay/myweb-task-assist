@@ -138,7 +138,7 @@ var button = {
      * 计划是什么;何时能完成
      */
     planHandle: function planHandle() {
-        console.log('plan')
+        window.location.href = './views/target/index.html?redirect=plan'
     },
 
     /**
