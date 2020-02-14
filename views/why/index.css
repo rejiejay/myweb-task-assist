@@ -31,3 +31,37 @@ body {
   border: 1px solid #ddd;
   background: #fff;
 }
+.reason {
+  padding: 0px 15px 15px 15px;
+}
+.reason .reason-title {
+  font-size: 12px;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+.reason .reason-item {
+  padding-bottom: 15px;
+}
+.reason .reason-item .item-container {
+  padding: 5px;
+  border: 1px solid #ddd;
+}
+.reason .reason-load {
+  padding: 7.5px 15px;
+  text-align: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.operational {
+  border-top: 1px solid #ddd;
+  padding: 15px;
+}
+.operational .operational-item {
+  padding-bottom: 15px;
+}
+.operational .operational-item .item-container {
+  padding: 15px;
+  text-align: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
