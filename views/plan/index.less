@@ -12,3 +12,66 @@ body {
     color: @black2;
     background-color: #f1f1f1;
 }
+
+.plan-title {
+    padding: 25px 15px 15px;
+    font-weight: bold;
+}
+
+.plan-content {
+    padding: 0px 15px 15px;
+
+    .content-container {
+        padding: 5px;
+        border: 1px solid #ddd;
+
+        .content-title {
+            color: @black1;
+            font-weight: bold;
+            font-size: 12px;
+            padding-bottom: 10px;
+        }
+    }
+}
+
+.plan-list {
+    padding: 0px 15px 15px;
+
+    .list-container {
+        border-top: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+    }
+
+    .plan-other {
+        height: 32px;
+        padding: 0px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+}
+
+.plan-more {
+    padding: 0px 15px 15px;
+
+    .more-container {
+        height: 45px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+    }
+
+}
+
+.plan-operating {
+    padding: 0px 15px 15px;
+    border-top: 1px solid #ddd;
+
+    > div {
+        padding-top: 15px;
+
+        >div {
+            height: 45px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+    }
+}

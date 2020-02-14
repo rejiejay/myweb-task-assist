@@ -7,3 +7,53 @@ body {
   color: #606266;
   background-color: #f1f1f1;
 }
+.plan-title {
+  padding: 25px 15px 15px;
+  font-weight: bold;
+}
+.plan-content {
+  padding: 0px 15px 15px;
+}
+.plan-content .content-container {
+  padding: 5px;
+  border: 1px solid #ddd;
+}
+.plan-content .content-container .content-title {
+  color: #303133;
+  font-weight: bold;
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+.plan-list {
+  padding: 0px 15px 15px;
+}
+.plan-list .list-container {
+  border-top: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+}
+.plan-list .plan-other {
+  height: 32px;
+  padding: 0px 15px;
+  border-bottom: 1px solid #ddd;
+}
+.plan-more {
+  padding: 0px 15px 15px;
+}
+.plan-more .more-container {
+  height: 45px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+.plan-operating {
+  padding: 0px 15px 15px;
+  border-top: 1px solid #ddd;
+}
+.plan-operating > div {
+  padding-top: 15px;
+}
+.plan-operating > div > div {
+  height: 45px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
