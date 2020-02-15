@@ -6,3 +6,6 @@
 # 原型
 
 [任务辅助跟进系统（墨刀）](https://free.modao.cc/app/7ea2223846d8dbc3b853a500f06e4e9bc3e02b5c)
+
+# 版本
+[第一版（纯UI）](https://github.com/rejiejay/myweb-task-assist/tree/b42dcbbaf00dd0c204b64934311d68e44d5a7bdf)
