@@ -152,13 +152,13 @@ var button = {
      * 创建新任务
      */
     addTodoHandle: function addTodoHandle() {
-        console.log('addTodo')
+        window.location.href = './views/target/index.html?redirect=addTodo'
     },
 
     /**
      * 新的灵感
      */
     addOtherHandle: function addOtherHandle() {
-        console.log('addOther')
+        window.location.href = './views/target/index.html?redirect=addOther'
     },
 }

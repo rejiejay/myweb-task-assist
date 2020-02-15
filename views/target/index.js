@@ -31,11 +31,23 @@ var CONST = {
             title: '计划是什么?何时能完成?',
             url: './../plan/index.html'
         },
-        PLAN: {
+        REVIEW: {
             value: 'review',
             effect: 'What can be reviewed?',
             title: '有哪些可以复习?',
             url: './../conclusion/index.html'
+        },
+        ADD_TODO: {
+            value: 'addTodo',
+            effect: 'What new tasks are created?',
+            title: '创建哪些新任务?',
+            url: './../todo/edit/index.html'
+        },
+        ADD_OTHER: {
+            value: 'addOther',
+            effect: 'What inspiration is added?',
+            title: '新增哪些灵感?',
+            url: './../add-redirect/index.html'
         }
     },
 
