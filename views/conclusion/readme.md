@@ -5,3 +5,9 @@
 功能: conclusion 是可以携带图片的;
 功能: 任务(todo-item)下的conclusion没有图片;
 功能: conclusion 可以跳回到 任务(todo-item);
+
+需要分类吗?
+- 其实已经算分好类了, 暂时不做这个需求
+
+需要排序吗?
+- 需要随机排序

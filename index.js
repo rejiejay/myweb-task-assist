@@ -145,7 +145,7 @@ var button = {
      * 有哪些可以复习
      */
     reviewHandle: function reviewHandle() {
-        console.log('review')
+        window.location.href = './views/target/index.html?redirect=review'
     },
 
     /**

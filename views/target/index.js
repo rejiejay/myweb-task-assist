@@ -30,6 +30,12 @@ var CONST = {
             effect: 'What is the plan and when will it be completed?',
             title: '计划是什么?何时能完成?',
             url: './../plan/index.html'
+        },
+        PLAN: {
+            value: 'review',
+            effect: 'What can be reviewed?',
+            title: '有哪些可以复习?',
+            url: './../conclusion/index.html'
         }
     },
 
