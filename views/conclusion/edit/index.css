@@ -1,0 +1,50 @@
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+  font-size: 14px;
+  color: #606266;
+  background-color: #f1f1f1;
+}
+.conclusion-input {
+  padding-bottom: 75px;
+}
+.conclusion-input .title-input {
+  padding: 0px 15px;
+  height: 45px;
+  border-bottom: 1px solid #ddd;
+}
+.conclusion-input .image-upload {
+  border-top: 1px solid #ddd;
+  padding: 15px;
+}
+.conclusion-input .image-upload .image-button {
+  height: 45px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+.conclusion-input .image-upload img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.operating {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  height: 45px;
+  width: 100%;
+  border-top: 1px solid #ddd;
+}
+.operating .operating-container {
+  height: 45px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+.operating .operating-container > div {
+  height: 45px;
+}
+.operating .operating-container .operating-yes {
+  border-right: 1px solid #ddd;
+}

@@ -26,6 +26,7 @@ var initialization = {
         this.initDom()
 
         sort.init()
+        edit.init()
     },
 
     /**
@@ -33,6 +34,7 @@ var initialization = {
      */
     initDom: function initDom() {
         sort.dom = document.getElementById('sort')
+        edit.dom = document.getElementById('conclusion-add')
     },
 }
 
@@ -86,4 +88,14 @@ var imageHandle = function imageHandle(imageUrl) {
         urls: [imageUrl],
         current: imageUrl
     })
+}
+
+var edit = {
+    dom: null,
+
+    init: function init() {
+        this.dom.onclick = function () {
+            window.location.href = './edit/index.html'
+        }
+    }
 }

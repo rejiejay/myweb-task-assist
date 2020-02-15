@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Task Conclusion Eidt</title>
+
+    <link type="text/css" rel="stylesheet" href="./../../../css/base.css">
+    <link type="text/css" rel="stylesheet" href="./../../../css/flex.css">
+
+    <link type="text/css" rel="stylesheet" href="./../../../components/confirm-popup/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../../components/confirm-popup/index.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="./index.css">
+    <script type="text/javascript" charset="utf-8" src="./index.js"></script>
+</head>
+
+<body>
+    <div class="conclusion-input">
+        <div class="title-input flex-center">
+            <input type="text" placeholder="请输入题目" />
+        </div>
+        <div class="content-input">
+            <textarea id="content-input" class="content-textarea fiex-rest" type="text" placeholder="请输入结论"></textarea>
+        </div>
+        
+        <input type="file" name="file" id="upload-image" style="display: none;" />
+        <div class="image-upload">
+            <div id="image-button" class="image-button flex-center">上传图片</div>
+            <div id="image-container">
+                <!-- <img id="image-content" src="image.jpg" alt="image"> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="operating">
+        <div class="operating-container flex-start">
+            <div class="operating-yes flex-rest flex-center">确认</div>
+            <div class="operating-no flex-rest flex-center">删除</div>
+        </div>
+    </div>
+</body>
+
+</html>
