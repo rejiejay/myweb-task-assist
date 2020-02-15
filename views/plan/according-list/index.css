@@ -1,0 +1,31 @@
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+  font-size: 14px;
+  color: #606266;
+  background-color: #f1f1f1;
+}
+.according {
+  padding: 15px;
+}
+.according .according-item {
+  padding-bottom: 15px;
+}
+.according .according-item .item-container {
+  padding: 15px;
+  border: 1px solid #ddd;
+}
+.operating {
+  border-top: 1px solid #ddd;
+  padding: 15px;
+}
+.operating .operating-button {
+  padding-bottom: 15px;
+}
+.operating .operating-button .button-container {
+  padding: 15px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
