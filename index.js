@@ -11,7 +11,7 @@ var initialization = {
 
         components.init()
 
-        // Login.init()
+        Login.init()
         
         process.init()
         button.init()

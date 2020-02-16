@@ -3,19 +3,22 @@
  * 使用注意: 需前置引入组件依赖
  * components/input-popup
  * components/toast
+ * components/fetch
  */
 var Login = {
     token: false,
+    fetch: null,
     inputPopUp: null,
+    toast: null,
 
     init: function init() {
         this.initComponents()
 
-        this.tokenCheck()
+        this.initToken()
         this.verifyAll()
 
         /**
-         * 暂时不需要承担控制反转需求
+         * 暂不需要
          */
         // var instance = {}
         // return instance
@@ -26,13 +29,15 @@ var Login = {
      */
     initComponents: function initComponents() {
         this.inputPopUp = InputPopUp.init()
+        this.toast = Toast.init()
+        this.fetch = Fetch.init()
     },
 
     /**
      * 作用: 校验是否有凭证
      * 目的: 用于登录校验
      */
-    tokenCheck: function tokenCheck() {
+    initToken: function initToken() {
         var token = localStorage.getItem('rejiejay-task-assist-token')
         if (token) {
             this.token = token
@@ -68,10 +73,21 @@ var Login = {
      */
     showLogInput: function showLogInput() {
         var self = this
-        
+
         var handle = function handle(input) {
-            console.log(input)
-            // self.verifyPassword(input)
+            self.fetch.get({
+                url: 'user/login',
+                query: {
+                    name: 'rejiejay',
+                    password: input
+                }
+            }).then(res => {
+                var token = res.data
+
+                localStorage.setItem('rejiejay-task-assist-token', token)
+                self.inputPopUp.hiden()
+                self.toast.show('登录成功！')
+            }, error => console.error(error))
         }
 
         var parameter = {
