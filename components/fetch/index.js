@@ -29,7 +29,9 @@ var Fetch = {
             get: function get(parameter) {
                 return self.get(parameter)
             },
-            post: function post() {}
+            post: function post(parameter) {
+                return self.post(parameter)
+            }
         }
 
         return instance
@@ -82,7 +84,41 @@ var Fetch = {
         this.toast.show()
         return new Promise((resolve, reject) => window.fetch(myUrl, {
             method: 'GET',
-            contentType: 'application/json; charset=utf-8'
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+            }
+        }).then(response => response.json(), error => ({
+            result: 233,
+            data: null,
+            message: error
+        })).then(response => self.responseHandle({
+            res: response,
+            resolve: resolve,
+            reject: reject
+        }), error => self.errorHandle(error, reject)).catch(error => self.errorHandle({
+            result: 344,
+            message: error
+        }, reject)))
+    },
+
+    post: function post({
+        url,
+        body,
+        hiddenError
+    }) {
+        var self = this
+
+        this.hiddenError = hiddenError ? true : false
+
+        var myUrl = this.config.origin + url
+
+        this.toast.show()
+        return new Promise((resolve, reject) => window.fetch(myUrl, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+            }
         }).then(response => response.json(), error => ({
             result: 233,
             data: null,
