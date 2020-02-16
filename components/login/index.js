@@ -7,6 +7,7 @@
  */
 var Login = {
     token: false,
+    password: null,
     fetch: null,
     inputPopUp: null,
     toast: null,
@@ -14,7 +15,7 @@ var Login = {
     init: function init() {
         this.initComponents()
 
-        this.initToken()
+        this.initAuthorization()
         this.verifyAll()
 
         /**
@@ -37,24 +38,20 @@ var Login = {
      * 作用: 校验是否有凭证
      * 目的: 用于登录校验
      */
-    initToken: function initToken() {
+    initAuthorization: function initAuthorization() {
         var token = localStorage.getItem('rejiejay-task-assist-token')
-        if (token) {
-            this.token = token
-        }
+        if (token) this.token = token
+
+        var password = localStorage.getItem('rejiejay-task-assist-password')
+        if (password) this.password = password
     },
 
     /**
      * 作用: 校验是否登录
      */
     verifyAll: function verifyAll() {
-        if (!this.token) {
-            return this.showLogInput()
-        }
+        if (!this.token || !this.password) return this.showLogInput()
 
-        /**
-         * 服务器校验凭证
-         */
         this.verifyToken()
     },
 
@@ -62,10 +59,19 @@ var Login = {
      * 服务器校验凭证
      */
     verifyToken: function verifyToken() {
+        var self = this
         var token = this.token
-        var fetch = false
 
-        return fetch
+        self.fetch.get({
+            url: 'user/verify',
+            query: {
+                verify: token
+            },
+            hiddenError: true
+        }).then(
+            res => {},
+            error => self.showLogInput()
+        )
     },
 
     /**
@@ -85,6 +91,7 @@ var Login = {
                 var token = res.data
 
                 localStorage.setItem('rejiejay-task-assist-token', token)
+                localStorage.setItem('rejiejay-task-assist-password', input)
                 self.inputPopUp.hiden()
                 self.toast.show('登录成功！')
             }, error => console.error(error))

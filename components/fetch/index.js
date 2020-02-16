@@ -15,6 +15,7 @@ var Fetch = {
         origin: '/'
     },
     toast: null,
+    hiddenError: false,
 
     init: function init() {
         var self = this
@@ -68,9 +69,12 @@ var Fetch = {
 
     get: function get({
         url,
-        query
+        query,
+        hiddenError
     }) {
         var self = this
+
+        this.hiddenError = hiddenError ? true : false
 
         var myUrl = this.config.origin + url
         myUrl += this.queryToUrl(query)
@@ -119,7 +123,9 @@ var Fetch = {
 
     errorHandle: function errorHandle(result, reject) {
         this.toast.destroy()
-        this.toast.show(result.message)
+
+        this.hiddenError ? '' : this.toast.show(result.message)
+
         reject(result)
     },
 }
