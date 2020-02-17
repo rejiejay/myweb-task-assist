@@ -235,7 +235,7 @@ var Fetch = {
         this.get({
             url: 'user/verify',
             query: {
-                verify: 'token'
+                verify: token
             }
         }).then(res => {
             /**
@@ -247,20 +247,28 @@ var Fetch = {
             localStorage.setItem('rejiejay-task-assist-token', token)
 
             self.requestCount++
-            var request = self[self.cacheRequestMethod]
-            request(self.cacheRequestParameter).then(res => {
-                resolve(res)
-            }, error => reject(error))
-
+            /**
+             * 存在并发的问题
+             */
+            window.setTimeout(function () {
+                self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
+                    resolve(res)
+                }, error => reject(error))
+            }, 200)
         }, error => {
             /**
-             * 含义: 校验凭证网络失败
+             * 含义: 校验凭证失败, 也许是网络问题
              */
-            reject({
-                result: 4532,
-                data: null,
-                message: `校验凭证失败, ${error}`
-            })
+            if (error.result === self.config.authFailed) {
+                // token错误, 进入过期流程
+                self.expiredAuthHandle(resolve, reject)
+            } else {
+                reject({
+                    result: 4532,
+                    data: null,
+                    message: `校验凭证失败, ${error}`
+                })
+            }
         })
     },
 
@@ -337,10 +345,15 @@ var Fetch = {
              */
             if (self.requestCount <= 1) {
                 self.requestCount++
-                var request = self[self.cacheRequestMethod]
-                request(self.cacheRequestParameter).then(res => {
-                    resolve(res)
-                }, error => reject(error))
+
+                /**
+                 * 存在并发的问题
+                 */
+                window.setTimeout(function () {
+                    self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
+                        resolve(res)
+                    }, error => reject(error))
+                }, 200)
 
             } else {
                 reject({

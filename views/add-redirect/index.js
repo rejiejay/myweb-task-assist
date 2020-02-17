@@ -21,7 +21,8 @@ var initialization = {
             conclusion: document.getElementById('conclusion'),
             reason: document.getElementById('reason'),
             plan: document.getElementById('plan'),
-            according: document.getElementById('according')
+            according: document.getElementById('according'),
+            target: document.getElementById('target')
         }
     },
 }
@@ -38,7 +39,8 @@ var button = {
         conclusion: null,
         reason: null,
         plan: null,
-        according: null
+        according: null,
+        target: null
     },
 
     init: function init() {
@@ -58,6 +60,10 @@ var button = {
 
         this.dom.according.onclick = function () {
             window.location.href = './../plan/according-edit/index.html'
+        }
+
+        this.dom.target.onclick = function () {
+            window.location.href = './../target/json-config/index.html'
         }
     }
 }
