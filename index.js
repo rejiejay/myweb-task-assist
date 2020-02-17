@@ -17,12 +17,19 @@ var CONST = {
  */
 var initialization = {
     main: function main() {
+        var self = this
         this.initDom()
 
         components.init()
 
-        Login.init()
+        Login.init().then(
+            () => self.asyncMain(),
+            () => self.asyncMain()
+        )
 
+    },
+
+    asyncMain: function asyncMain() {
         process.init()
         button.init()
     },

@@ -13,16 +13,14 @@ var Login = {
     toast: null,
 
     init: function init() {
-        this.initComponents()
+        var self = this
 
-        this.initAuthorization()
-        this.verifyAll()
+        return new Promise(function (resolve, reject) {
+            self.initComponents()
 
-        /**
-         * 暂不需要
-         */
-        // var instance = {}
-        // return instance
+            self.initAuthorization()
+            self.verifyAll(resolve, reject)
+        })
     },
 
     /**
@@ -49,16 +47,19 @@ var Login = {
     /**
      * 作用: 校验是否登录
      */
-    verifyAll: function verifyAll() {
-        if (!this.token || !this.password) return this.showLogInput()
+    verifyAll: function verifyAll(resolve, reject) {
+        if (!this.token || !this.password) {
+            reject()
+            return this.showLogInput()
+        }
 
-        this.verifyToken()
+        this.verifyToken(resolve, reject)
     },
 
     /**
      * 服务器校验凭证
      */
-    verifyToken: function verifyToken() {
+    verifyToken: function verifyToken(resolve, reject) {
         var self = this
         var token = this.token
 
@@ -70,10 +71,14 @@ var Login = {
             hiddenError: true
         }).then(
             res => {
+                resolve()
                 var token = res.data
                 localStorage.setItem('rejiejay-task-assist-token', token)
             },
-            error => self.showLogInput()
+            error => {
+                reject()
+                self.showLogInput()
+            }
         )
     },
 
