@@ -53,11 +53,13 @@ var initialization = {
 var components = {
     toast: null,
     fetch: null,
+    confirmPopUp: null,
     jsonHandle: null,
 
     init: function init() {
         this.toast = Toast.init()
         this.fetch = Fetch.init()
+        this.confirmPopUp = ConfirmPopUp.init()
         this.jsonHandle = JsonHandle
     }
 }
@@ -103,7 +105,15 @@ var process = {
         this.description_dom.innerHTML = this.value.name
 
         process.unlock_dom.onclick = function () {
-            self.unlock()
+            var handle = function handle() {
+                self.unlock()
+            }
+
+            var parameter = {
+                title: '你确认要解除锁定吗?',
+                succeedHandle: handle
+            }
+            components.confirmPopUp(parameter)
         }
     },
 
