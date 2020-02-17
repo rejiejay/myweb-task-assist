@@ -2,6 +2,16 @@ window.onload = function () {
     initialization.main()
 }
 
+var CONST = {
+    PROCESS: {
+        DEFAULTS: null,
+        DEMO: {
+            id: 'gwy',
+            name: '公务员'
+        }
+    }
+}
+
 /**
  * 初始化方法
  */
@@ -12,7 +22,7 @@ var initialization = {
         components.init()
 
         Login.init()
-        
+
         process.init()
         button.init()
     },
@@ -30,6 +40,10 @@ var initialization = {
             addTodo: document.getElementById('add-todo'),
             addOther: document.getElementById('add-other')
         }
+
+        process.container_dom = document.getElementById('process-task')
+        process.description_dom = document.getElementById('process-description')
+        process.unlock_dom = document.getElementById('process-unlock')
     }
 }
 
@@ -38,19 +52,74 @@ var initialization = {
  */
 var components = {
     toast: null,
+    fetch: null,
+    jsonHandle: null,
 
     init: function init() {
         this.toast = Toast.init()
+        this.fetch = Fetch.init()
+        this.jsonHandle = JsonHandle
     }
 }
 
 /**
  * 正在执行的任务
- * Mark: 暂时不需要实现, 优先级不高;
  */
 var process = {
+    value: CONST.PROCESS.DEFAULTS,
+    container_dom: null,
+    description_dom: null,
+    unlock_dom: null,
+
     init: function init() {
-    }
+        var self = this
+
+        components.fetch.get({
+            url: 'map/get',
+            query: {
+                key: 'process'
+            },
+            hiddenError: true
+        }).then(
+            res => {
+                var jsonString = res.data.value
+                var verify = components.jsonHandle.verifyJSONString({
+                    jsonString
+                })
+
+                if (verify.isCorrect) {
+                    self.value = verify.data
+                    self.render()
+                }
+            },
+            error => {}
+        )
+    },
+
+    render: function render() {
+        var self = this
+
+        this.container_dom.style.display = 'block'
+        this.description_dom.innerHTML = this.value.name
+
+        process.unlock_dom.onclick = function () {
+            self.unlock()
+        }
+    },
+
+    unlock: function unlock() {
+        var self = this
+        
+        components.fetch.get({
+            url: 'map/clear',
+            query: {
+                key: 'process'
+            },
+        }).then(
+            res => self.container_dom.style.display = 'none',
+            error => {}
+        )
+    },
 }
 
 /**

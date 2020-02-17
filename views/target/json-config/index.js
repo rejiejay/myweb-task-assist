@@ -58,11 +58,13 @@ var components = {
     fetch: null,
     toast: null,
     inputPopUp: null,
+    jsonHandle: null,
 
     init: function init() {
         this.fetch = Fetch.init()
         this.toast = Toast.init()
         this.inputPopUp = InputPopUp.init()
+        this.jsonHandle = JsonHandle
     }
 }
 
@@ -86,35 +88,10 @@ var input = {
 
     verify: function verify() {
         var data = this.dom.value
-        var result = {
-            isCorrect: true,
-            msg: '',
-            data: []
-        }
-
-        // 校验JSON格式是否正确
-        try {
-            var obj = JSON.parse(data)
-            if (obj && typeof obj === 'object') {
-
-                // 判断数组
-                if (obj instanceof Array) {
-                    result.data = obj
-                } else {
-                    result.isCorrect = false
-                    result.msg = 'JSON不是数组'
-                }
-
-            } else {
-                result.isCorrect = false
-                result.msg = 'JSON格式不正确'
-            }
-        } catch (e) {
-            result.isCorrect = false
-            result.msg = 'JSON格式不正确'
-        }
-
-        return result
+        return components.jsonHandle.verifyJSONString({
+            jsonString: data,
+            isArray: true
+        })
     },
 
     /**

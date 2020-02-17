@@ -1,8 +1,13 @@
 /**
  * 请求
+ * 
  * 使用注意: 需前置引入组件依赖
  * components/toast
  * components/input-popup
+ * 
+ * 参考:
+ * function get({ url, query, hiddenError })
+ * function post({ url, body, hiddenError })
  */
 var Fetch = {
     config: {

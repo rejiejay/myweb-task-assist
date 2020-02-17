@@ -69,7 +69,10 @@ var Login = {
             },
             hiddenError: true
         }).then(
-            res => {},
+            res => {
+                var token = res.data
+                localStorage.setItem('rejiejay-task-assist-token', token)
+            },
             error => self.showLogInput()
         )
     },
