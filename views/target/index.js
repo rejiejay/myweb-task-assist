@@ -74,6 +74,7 @@ var initialization = {
 
         list.init()
         title.init()
+        operat.init()
     },
 
     /**
@@ -81,6 +82,7 @@ var initialization = {
      */
     initDom: function initDom() {
         list.dom = document.getElementById('target-list')
+        operat.dom = document.getElementById('target-edit')
     },
 
     /**
@@ -113,7 +115,7 @@ var title = {
         if (!title) {
             return false
         }
-        
+
         var node = document.createElement("div");
         node.setAttribute('id', 'target-title');
         node.innerHTML = title;
@@ -166,6 +168,16 @@ var list = {
                 })
                 window.location.href = url
             }
+        }
+    }
+}
+
+var operat = {
+    dom: null,
+
+    init: function init() {
+        this.dom.onclick = function () {
+            window.location.href = './json-config/index.html'
         }
     }
 }
