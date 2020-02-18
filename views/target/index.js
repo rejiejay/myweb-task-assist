@@ -55,9 +55,8 @@ var CONST = {
      * 列表数据结构
      */
     LIST: [{
-        title: '大目标一'
-    }, {
-        title: '大目标二'
+        id: 'gwy',
+        name: '公务员'
     }]
 }
 
@@ -88,15 +87,18 @@ var initialization = {
 }
 
 var components = {
+    toast: null,
+    fetch: null,
     loadPageVar: null,
     constHandle: null,
-    fetch: null,
     jsonHandle: null,
 
     init: function init() {
+        this.toast = Toast.init()
+        this.fetch = Fetch.init()
+
         this.loadPageVar = LoadPageVar
         this.constHandle = ConstHandle
-        this.fetch = Fetch.init()
         this.jsonHandle = JsonHandle
     }
 }
@@ -117,7 +119,7 @@ var title = {
         var node = document.createElement("div");
         node.setAttribute('id', 'target-title');
         node.innerHTML = title;
-        document.body.insertBefore(node, list.dom)
+        document.body.insertBefore(node, list.dom);
     }
 }
 
@@ -133,7 +135,33 @@ var list = {
      * 获取数据
      */
     getTargetList: function getTargetList() {
-        this.render()
+        var self = this
+
+        components.fetch.get({
+            url: 'map/get',
+            query: {
+                key: 'target'
+            },
+            hiddenError: true
+        }).then(
+            res => {
+                var jsonString = res.data.value
+                var verify = components.jsonHandle.verifyJSONString({
+                    jsonString,
+                    isArray: true
+                })
+
+                if (verify.isCorrect) {
+                    self.data = verify.data
+                    self.render()
+                } else {
+                    components.toast.show('数据有误, 请编辑数据!');
+                }
+            },
+            error => {
+                components.toast.show('数据有误, 请编辑数据!');
+            }
+        )
     },
 
     render: function render() {
@@ -141,7 +169,7 @@ var list = {
         var node_content = this.data.map(function (val) {
             return `
                 <div class="list-item">
-                    <div class="list-item-container">${val.title}</div>
+                    <div class="list-item-container">${val.name}</div>
                 </div>
             `
         }).join('')
@@ -155,12 +183,34 @@ var list = {
         var children_dom = this.dom.children
 
         for (var index = 0; index < children_dom.length; index++) {
-            var element = children_dom[index];
+            (function (index) {
+                var element = children_dom[index];
+                var targetItem = self.data[index];
 
-            element.onclick = function () {
-                redirect.navigate()
-            }
+                element.onclick = function () {
+                    self.keepTarget(targetItem)
+                }
+            })(index)
         }
+    },
+
+    keepTarget: function keepTarget({
+        id,
+        name
+    }) {
+        components.fetch.post({
+            url: 'map/set',
+            body: {
+                key: 'process',
+                value: JSON.stringify({
+                    id,
+                    name
+                })
+            }
+        }).then(
+            res => redirect.navigate(id),
+            error => {}
+        )
     }
 }
 
@@ -186,14 +236,14 @@ var redirect = {
         this.initAutoNavigate()
     },
 
-    navigate: function navigate() {
+    navigate: function navigate(targetId) {
         var url = components.constHandle.findValueByValue({
             CONST: CONST.REDIRECT,
             supportKey: 'value',
             supportValue: redirect.data,
             targetKey: 'url'
         })
-        window.location.replace(url)
+        window.location.replace(`${url}?targetId=${targetId}`)
     },
 
     initAutoNavigate: function initAutoNavigate() {
@@ -213,8 +263,8 @@ var redirect = {
                 })
 
                 if (verify.isCorrect) {
-                    verify.data
-                    self.navigate()
+                    var targetId = verify.data.id
+                    self.navigate(targetId)
                 }
             },
             error => {}

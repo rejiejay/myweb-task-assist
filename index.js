@@ -126,7 +126,7 @@ var process = {
 
     unlock: function unlock() {
         var self = this
-        
+
         components.fetch.get({
             url: 'map/clear',
             query: {
@@ -203,7 +203,12 @@ var button = {
      * 我要做什么
      */
     todoHandle: function todoHandle() {
-        window.location.href = './views/todo/item/index.html'
+        /**
+         * 为什么直接跳转? - 获取所有todo的任务
+         * 何时候需要特定todo? - 未解锁
+         */
+        var target = process.value ? `?targetId=${process.value.id}` : ''
+        window.location.href = './views/todo/item/index.html' + target
     },
 
     /**

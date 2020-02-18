@@ -256,9 +256,12 @@ var Fetch = {
             localStorage.setItem('rejiejay-task-assist-token', token)
 
             self.requestCount++
-            self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
-                resolve(res)
-            }, error => reject(error))
+            // 并发
+            window.setTimeout(function () {
+                self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
+                    resolve(res)
+                }, error => reject(error))
+            }, 200)
         }, error => {
             /**
              * 含义: 校验凭证失败, 也许是网络问题
@@ -349,9 +352,12 @@ var Fetch = {
              */
             if (self.requestCount <= 1) {
                 self.requestCount++
-                self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
-                    resolve(res)
-                }, error => reject(error))
+                // 并发
+                window.setTimeout(function () {
+                    self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
+                        resolve(res)
+                    }, error => reject(error))
+                }, 200)
 
             } else {
                 reject({
