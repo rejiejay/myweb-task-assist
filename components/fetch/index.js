@@ -6,8 +6,8 @@
  * components/input-popup
  * 
  * 参考:
- * function get({ url, query, hiddenError })
- * function post({ url, body, hiddenError })
+ * function get({ url, query, hiddenError, notHandleResult })
+ * function post({ url, body, hiddenError, notHandleResult })
  */
 var Fetch = {
     config: {
@@ -24,8 +24,6 @@ var Fetch = {
     },
     toast: null,
     inputPopUp: null,
-    hiddenError: false,
-
     /**
      * 含义: 缓存请求参数
      * 作用: 用于未授权的二次请求
@@ -37,6 +35,9 @@ var Fetch = {
      * 作用: 防止无限次循环调用
      */
     requestCount: 1,
+
+    hiddenError: false,
+    notHandleResult: false,
 
     init: function init() {
         var self = this
@@ -100,11 +101,13 @@ var Fetch = {
     get: function get({
         url,
         query,
-        hiddenError
+        hiddenError,
+        notHandleResult
     }) {
         var self = this
 
         this.hiddenError = hiddenError ? true : false
+        this.notHandleResult = notHandleResult ? true : false
 
         var myUrl = this.config.origin + url
         myUrl += this.queryToUrl(query)
@@ -130,11 +133,13 @@ var Fetch = {
     post: function post({
         url,
         body,
-        hiddenError
+        hiddenError,
+        notHandleResult
     }) {
         var self = this
 
         this.hiddenError = hiddenError ? true : false
+        this.notHandleResult = notHandleResult ? true : false
 
         var myUrl = this.config.origin + url
 
@@ -180,12 +185,11 @@ var Fetch = {
             return reject(res)
         }
 
-        if (res.result === 1) {
-            this.toast.destroy()
-            resolve(res)
-        } else {
-            this.errorHandle(res, reject)
-        }
+        // 不判断 结果
+        this.toast.destroy()
+        if (this.notHandleResult) return resolve(res)
+
+        res.result === 1 ? resolve(res) : this.errorHandle(res, reject)
     },
 
     errorHandle: function errorHandle(result, reject) {
@@ -252,14 +256,9 @@ var Fetch = {
             localStorage.setItem('rejiejay-task-assist-token', token)
 
             self.requestCount++
-            /**
-             * 存在并发的问题
-             */
-            window.setTimeout(function () {
-                self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
-                    resolve(res)
-                }, error => reject(error))
-            }, 200)
+            self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
+                resolve(res)
+            }, error => reject(error))
         }, error => {
             /**
              * 含义: 校验凭证失败, 也许是网络问题
@@ -350,15 +349,9 @@ var Fetch = {
              */
             if (self.requestCount <= 1) {
                 self.requestCount++
-
-                /**
-                 * 存在并发的问题
-                 */
-                window.setTimeout(function () {
-                    self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
-                        resolve(res)
-                    }, error => reject(error))
-                }, 200)
+                self[self.cacheRequestMethod](self.cacheRequestParameter).then(res => {
+                    resolve(res)
+                }, error => reject(error))
 
             } else {
                 reject({

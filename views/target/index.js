@@ -70,7 +70,8 @@ var initialization = {
     main: function main() {
         components.init()
         this.initDom()
-        this.initRedirect()
+
+        redirect.init()
 
         list.init()
         title.init()
@@ -83,23 +84,20 @@ var initialization = {
     initDom: function initDom() {
         list.dom = document.getElementById('target-list')
         operat.dom = document.getElementById('target-edit')
-    },
-
-    /**
-     * 重定向 初始化
-     */
-    initRedirect: function initRedirect() {
-        this.redirect = components.loadPageVar('redirect')
     }
 }
 
 var components = {
     loadPageVar: null,
     constHandle: null,
+    fetch: null,
+    jsonHandle: null,
 
     init: function init() {
         this.loadPageVar = LoadPageVar
         this.constHandle = ConstHandle
+        this.fetch = Fetch.init()
+        this.jsonHandle = JsonHandle
     }
 }
 
@@ -108,7 +106,7 @@ var title = {
         var title = components.constHandle.findValueByValue({
             CONST: CONST.REDIRECT,
             supportKey: 'value',
-            supportValue: initialization.redirect,
+            supportValue: redirect.data,
             targetKey: 'title'
         })
 
@@ -160,13 +158,7 @@ var list = {
             var element = children_dom[index];
 
             element.onclick = function () {
-                var url = components.constHandle.findValueByValue({
-                    CONST: CONST.REDIRECT,
-                    supportKey: 'value',
-                    supportValue: initialization.redirect,
-                    targetKey: 'url'
-                })
-                window.location.href = url
+                redirect.navigate()
             }
         }
     }
@@ -179,5 +171,53 @@ var operat = {
         this.dom.onclick = function () {
             window.location.href = './json-config/index.html'
         }
+    }
+}
+
+/**
+ * 重定向
+ */
+var redirect = {
+    data: CONST.REDIRECT.DEFAULTS.value,
+
+    init: function init() {
+        this.data = components.loadPageVar('redirect')
+
+        this.initAutoNavigate()
+    },
+
+    navigate: function navigate() {
+        var url = components.constHandle.findValueByValue({
+            CONST: CONST.REDIRECT,
+            supportKey: 'value',
+            supportValue: redirect.data,
+            targetKey: 'url'
+        })
+        window.location.replace(url)
+    },
+
+    initAutoNavigate: function initAutoNavigate() {
+        var self = this
+
+        components.fetch.get({
+            url: 'map/get',
+            query: {
+                key: 'process'
+            },
+            hiddenError: true
+        }).then(
+            res => {
+                var jsonString = res.data.value
+                var verify = components.jsonHandle.verifyJSONString({
+                    jsonString
+                })
+
+                if (verify.isCorrect) {
+                    verify.data
+                    self.navigate()
+                }
+            },
+            error => {}
+        )
     }
 }
