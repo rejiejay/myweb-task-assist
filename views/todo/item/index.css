@@ -7,6 +7,27 @@ body {
   color: #606266;
   background-color: #f1f1f1;
 }
+.caching {
+  padding: 15px 15px 0px 15px;
+}
+.caching .caching-container {
+  color: #fff;
+}
+.caching .caching-container > div {
+  height: 45px;
+}
+.caching .caching-container .task-item {
+  border-right: 1px solid #ddd;
+}
+.caching .caching-container .task-operate {
+  padding: 0px 10px;
+}
+.caching #target-container {
+  background-color: #adc6ff;
+}
+.caching #doing-container {
+  background-color: #95de64;
+}
 .todo {
   padding: 15px;
 }
@@ -24,10 +45,12 @@ body {
   color: #303133;
   border-bottom: 1px solid #ddd;
 }
-.todo .todo-putoff {
+.todo .todo-putoff,
+.todo .todo-complete {
   height: 35px;
   border-bottom: 1px solid #fff;
-  background-color: #dedede;
+  color: #fff;
+  background-color: #ff4d4f;
 }
 .todo .todo-operation {
   height: 35px;

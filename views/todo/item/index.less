@@ -13,6 +13,34 @@ body {
     background-color: #f1f1f1;
 }
 
+.caching {
+    padding: 15px 15px 0px 15px;
+
+    .caching-container {
+        color: #fff;
+
+        >div {
+            height: 45px;
+        }
+
+        .task-item {
+            border-right: 1px solid #ddd;
+        }
+
+        .task-operate {
+            padding: 0px 10px;
+        }
+    }
+
+    #target-container {
+        background-color: #adc6ff;
+    }
+
+    #doing-container {
+        background-color: #95de64;
+    }
+}
+
 .todo {
     padding: 15px;
 
@@ -33,10 +61,12 @@ body {
         border-bottom: 1px solid #ddd;
     }
 
-    .todo-putoff {
+    .todo-putoff,
+    .todo-complete {
         height: 35px;
         border-bottom: 1px solid #fff;
-        background-color: #dedede;
+        color: #fff;
+        background-color: #ff4d4f;
     }
 
     .todo-operation {
