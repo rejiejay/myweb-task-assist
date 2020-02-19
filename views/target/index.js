@@ -92,6 +92,7 @@ var components = {
     loadPageVar: null,
     constHandle: null,
     jsonHandle: null,
+    serviceStorage: null,
 
     init: function init() {
         this.toast = Toast.init()
@@ -100,6 +101,7 @@ var components = {
         this.loadPageVar = LoadPageVar
         this.constHandle = ConstHandle
         this.jsonHandle = JsonHandle
+        this.serviceStorage = ServiceStorage.init()
     }
 }
 
@@ -198,14 +200,11 @@ var list = {
         id,
         name
     }) {
-        components.fetch.post({
-            url: 'map/set',
-            body: {
-                key: 'process',
-                value: JSON.stringify({
-                    id,
-                    name
-                })
+        components.serviceStorage.setItem({
+            key: 'process',
+            value: {
+                id,
+                name
             }
         }).then(
             res => redirect.navigate(id),
@@ -249,23 +248,13 @@ var redirect = {
     initAutoNavigate: function initAutoNavigate() {
         var self = this
 
-        components.fetch.get({
-            url: 'map/get',
-            query: {
-                key: 'process'
-            },
+        components.serviceStorage.getItem({
+            key: 'process',
             hiddenError: true
         }).then(
             res => {
-                var jsonString = res.data.value
-                var verify = components.jsonHandle.verifyJSONString({
-                    jsonString
-                })
-
-                if (verify.isCorrect) {
-                    var targetId = verify.data.id
-                    self.navigate(targetId)
-                }
+                var targetId = res.data.id
+                self.navigate(targetId)
             },
             error => {}
         )

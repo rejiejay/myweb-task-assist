@@ -62,12 +62,14 @@ var components = {
     fetch: null,
     confirmPopUp: null,
     jsonHandle: null,
+    serviceStorage: null,
 
     init: function init() {
         this.toast = Toast.init()
         this.fetch = Fetch.init()
         this.confirmPopUp = ConfirmPopUp.init()
         this.jsonHandle = JsonHandle
+        this.serviceStorage = ServiceStorage.init()
     }
 }
 
@@ -83,23 +85,13 @@ var process = {
     init: function init() {
         var self = this
 
-        components.fetch.get({
-            url: 'map/get',
-            query: {
-                key: 'process'
-            },
+        components.serviceStorage.getItem({
+            key: 'process',
             hiddenError: true
         }).then(
             res => {
-                var jsonString = res.data.value
-                var verify = components.jsonHandle.verifyJSONString({
-                    jsonString
-                })
-
-                if (verify.isCorrect) {
-                    self.value = verify.data
-                    self.render()
-                }
+                self.value = res
+                self.render()
             },
             error => {}
         )
@@ -127,11 +119,8 @@ var process = {
     unlock: function unlock() {
         var self = this
 
-        components.fetch.get({
-            url: 'map/clear',
-            query: {
-                key: 'process'
-            },
+        components.serviceStorage.clearItem({
+            key: 'process'
         }).then(
             res => self.container_dom.style.display = 'none',
             error => {}

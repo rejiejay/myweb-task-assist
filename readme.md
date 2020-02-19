@@ -13,3 +13,9 @@
 # 发布流程
 1. 修改请求 fetch 配置
 components\fetch\index.js:2
+
+# localStorage
+
+localStorage['rejiejay-task-assist-token']
+localStorage['rejiejay-task-assist-password']
+localStorage['task-conclusion-list-sort-type']

@@ -30,6 +30,11 @@
             <div class="task-item flex-rest flex-center">范围: 所有</div>
             <!-- <div class="task-operate flex-center">unlock</div> -->
         </div>
+
+        <!-- 
+            作用: 缓存正在执行的任务
+            定义: 2种状态; 1.正在执行此任务; 2.开始执行此任务?
+         -->
         <div class="caching-container flex-start flex-rest" id="doing-container">
             <div class="task-item flex-center flex-rest">执行此任务?</div>
             <!-- <div class="task-item flex-rest flex-center">任务</div> -->
@@ -73,6 +78,7 @@
                 <div class="operation-item flex-rest flex-center" id="edit-putoff">推迟?</div>
                 <div class="operation-item flex-rest flex-center" id="edit-todo">编辑?</div>
                 <div class="operation-item flex-rest flex-center" id="edit-delete">删除?</div>
+                <!-- 作用: 随机执行target范围内的任务 -->
                 <div class="operation-item flex-rest flex-center">todo other?</div>
             </div>
         </div>
@@ -80,6 +86,7 @@
 
     <!-- 操作区域 -->
     <div class="operation">
+        <!-- 定义: 2种状态; 1.存在target,跳转到todo-list 2. 不存在target,跳转到target -->
         <div class="operation-button" id="other-todo">还有什么可以做?</div>
         <div class="dividing-line"></div>
         <div class="operation-button" id="reason-todo">为什么要做这个?</div>
