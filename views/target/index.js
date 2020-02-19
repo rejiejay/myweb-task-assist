@@ -145,30 +145,15 @@ var list = {
     getTargetList: function getTargetList() {
         var self = this
 
-        components.fetch.get({
-            url: 'map/get',
-            query: {
-                key: 'target'
-            },
-            hiddenError: true
+        components.serviceStorage.getItem({
+            key: 'allTarget',
+            isArray: true
         }).then(
             res => {
-                var jsonString = res.data.value
-                var verify = components.jsonHandle.verifyJSONString({
-                    jsonString,
-                    isArray: true
-                })
-
-                if (verify.isCorrect) {
-                    self.data = verify.data
-                    self.render()
-                } else {
-                    components.toast.show('数据有误, 请编辑数据!');
-                }
+                self.data = res
+                self.render()
             },
-            error => {
-                components.toast.show('数据有误, 请编辑数据!');
-            }
+            error => {}
         )
     },
 
@@ -196,18 +181,18 @@ var list = {
                 var targetItem = self.data[index];
 
                 element.onclick = function () {
-                    self.keepTarget(targetItem)
+                    self.keepProcessTarget(targetItem)
                 }
             })(index)
         }
     },
 
-    keepTarget: function keepTarget({
+    keepProcessTarget: function keepProcessTarget({
         id,
         name
     }) {
         components.serviceStorage.setItem({
-            key: 'process',
+            key: 'processTarget',
             value: {
                 id,
                 name
@@ -255,7 +240,7 @@ var redirect = {
         var self = this
 
         components.serviceStorage.getItem({
-            key: 'process',
+            key: 'processTarget',
             hiddenError: true
         }).then(
             res => {

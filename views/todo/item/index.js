@@ -12,6 +12,26 @@ var CONST = {
             id: 'gwy',
             name: '公务员'
         }
+    },
+    TASK: {
+        DEFAULTS: {
+            id: null // 作用: 判空
+        },
+        DEMO: {
+            id: 1,
+            targetId: 'not-null',
+            title: 'not-null',
+            content: '',
+            conclusion: null,
+            measure: null,
+            span: null,
+            aspects: null,
+            worth: null,
+            estimate: null,
+            image: null,
+            putoffTimestamp: null,
+            completeTimestamp: null
+        }
     }
 }
 
@@ -24,12 +44,19 @@ var initialization = {
 
         this.initDom()
         components.init()
+
+        /**
+         * 为什么先加载缓存?
+         * - 数据的加载方式依赖缓存内容
+         */
         caching.init().then(() => {
             slef.stepTwo()
         })
-    },
 
-    stepTwo: function stepTwo() {
+        /**
+         * 为什么不先加载缓存再执行下面方法?
+         * - 因为以下方法不依赖数据的内容
+         */
         edit.init()
         del.init()
         putoff.init()
@@ -39,11 +66,16 @@ var initialization = {
         reason.init()
     },
 
+    stepTwo: function stepTwo() {
+        todo.init()
+    },
+
     /**
      * 节点 初始化
      */
     initDom: function initDom() {
         caching.target_dom = document.getElementById('caching-target')
+        caching.task_dom = document.getElementById('caching-task')
         edit.dom = document.getElementById('edit-todo')
         del.dom = document.getElementById('edit-delete')
         putoff.dom = document.getElementById('edit-putoff')
@@ -55,12 +87,14 @@ var initialization = {
 }
 
 var components = {
+    fetch: null,
     toast: null,
     confirmPopUp: null,
     inputPopUp: null,
     serviceStorage: null,
 
     init: function init() {
+        this.fetch = Fetch.init()
         this.toast = Toast.init()
         this.confirmPopUp = ConfirmPopUp.init()
         this.inputPopUp = InputPopUp.init()
@@ -74,11 +108,12 @@ var components = {
 var caching = {
     target: CONST.TARGET.DEFAULTS,
     target_dom: null,
+    task: CONST.TASK.DEFAULTS,
+    task_dom: null,
 
     init: function init() {
-        var self = this
-
         this.initTarget()
+        this.initDoing()
 
         return Promise.all([this.getTarget(), this.getDoing()])
     },
@@ -87,7 +122,7 @@ var caching = {
         var self = this
         return new Promise(function (resolve, reject) {
             components.serviceStorage.getItem({
-                key: 'process',
+                key: 'processTarget',
                 hiddenError: true
             }).then(
                 function (res) {
@@ -103,7 +138,7 @@ var caching = {
 
         var delTargetHandle = function delTargetHandle() {
             components.serviceStorage.clearItem({
-                key: 'process'
+                key: 'processTarget'
             }).then(
                 function res() {
                     self.renderTarget(CONST.TARGET.DEFAULTS)
@@ -150,15 +185,53 @@ var caching = {
     getDoing: function getDoing() {
         var self = this
         return new Promise(function (resolve, reject) {
-            resolve()
+            components.serviceStorage.getItem({
+                key: 'processTask',
+                hiddenError: true
+            }).then(
+                function (res) {
+                    self.task = res.data
+                    resolve()
+                },
+                error => resolve()
+            )
         })
     },
 
     initDoing: function initDoing() {
         var self = this
-        return new Promise(function (resolve, reject) {
-            resolve()
-        })
+
+        var executeTask = function executeTask() {
+            components.serviceStorage.setItem({
+                key: 'processTask',
+                value: todo.date
+            }).then(
+                res => {
+                    self.task = JSON.parse(JSON.stringify(todo.date))
+                    self.renderDoing()
+                    components.toast.show('执行成功')
+                },
+                error => {}
+            )
+        }
+
+        this.task_dom.onclick = function () {
+            if (!todo.date.id || self.task.id !== todo.date.id) {
+                var parameter = {
+                    title: '确定执行此任务?',
+                    succeedHandle: executeTask
+                }
+                components.confirmPopUp(parameter)
+            }
+        }
+    },
+
+    renderDoing: function renderDoing() {
+        if (this.task.id && todo.date.id && this.task.id === todo.date.id) {
+            this.task_dom.innerHTML = '正在执行中'
+        } else {
+            this.task_dom.innerHTML = '执行此任务?'
+        }
     }
 }
 
@@ -291,4 +364,34 @@ var reason = {
         }
     }
 
+}
+
+var todo = {
+    date: CONST.TASK.DEFAULTS,
+
+    init: function init() {
+        var self = this
+
+        var query = {}
+        if (caching.task.id) {
+            query.taskId = caching.task.id
+        } else if (caching.target.id) {
+            query.targetId = caching.target.id
+        }
+        components.fetch.get({
+            url: 'task/get/one',
+            query
+        }).then(
+            res => {
+                self.date = res.data
+                self.render()
+                caching.renderDoing()
+            },
+            error => {}
+        )
+    },
+
+    render: function render() {
+
+    }
 }

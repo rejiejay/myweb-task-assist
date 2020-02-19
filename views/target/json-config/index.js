@@ -42,13 +42,12 @@ var initialization = {
      * 服务器数据 初始化
      */
     initData: function initData() {
-        components.fetch.get({
-            url: 'map/get',
-            query: {
-                key: 'target'
-            },
+
+        components.serviceStorage.getItem({
+            key: 'allTarget',
+            hiddenError: true
         }).then(
-            res => input.set(res.data.value),
+            res => input.set(JSON.stringify(res)),
             error => input.set('[\n]')
         )
     },
@@ -59,12 +58,14 @@ var components = {
     toast: null,
     inputPopUp: null,
     jsonHandle: null,
+    serviceStorage: null,
 
     init: function init() {
         this.fetch = Fetch.init()
         this.toast = Toast.init()
         this.inputPopUp = InputPopUp.init()
         this.jsonHandle = JsonHandle
+        this.serviceStorage = ServiceStorage.init()
     }
 }
 
@@ -151,12 +152,9 @@ var submit = {
             return alert(verify.msg)
         }
 
-        components.fetch.post({
-            url: 'map/set',
-            body: {
-                key: 'target',
-                value: data
-            },
+        components.serviceStorage.setItem({
+            key: 'allTarget',
+            value: verify.data
         }).then(
             res => components.toast.show('update successful'),
             error => {}

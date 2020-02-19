@@ -3,10 +3,19 @@
 
 # 目前有哪些值?
 
-## process
+- allTarget  
+
+定义: 所有大目标
+格式: [{ id, name }]
+
+
+- processTarget  
+
 定义: 正在执行中的目标
 格式: { id, name }
 
-## task
+
+- processTask  
+
 定义: 正在执行中的任务
 格式: { id, ... }

@@ -10,6 +10,7 @@ var ServiceStorage = {
     components: {
         fetch: null,
         jsonHandle: null,
+        toast: null,
     },
 
     init: function init() {
@@ -20,10 +21,11 @@ var ServiceStorage = {
         var instance = {
             getItem: function getItem({
                 key,
-                hiddenError
+                hiddenError,
+                isArray
             }) {
                 return new Promise(function (resolve, reject) {
-                    self.getItem(key, hiddenError, resolve, reject)
+                    self.getItem(key, hiddenError, isArray, resolve, reject)
                 })
             },
             setItem: function setItem({
@@ -51,13 +53,14 @@ var ServiceStorage = {
     initComponents: function initComponents() {
         var components = {
             fetch: Fetch.init(),
-            jsonHandle: JsonHandle
+            jsonHandle: JsonHandle,
+            toast: Toast.init()
         }
 
         this.components = components
     },
 
-    getItem: function getItem(key, hiddenError, resolve, reject) {
+    getItem: function getItem(key, hiddenError, isArray, resolve, reject) {
         var self = this
 
         this.components.fetch.get({
@@ -70,12 +73,17 @@ var ServiceStorage = {
             res => {
                 var jsonString = res.data.value
                 var verify = self.components.jsonHandle.verifyJSONString({
-                    jsonString
+                    jsonString,
+                    isArray
                 })
 
                 if (verify.isCorrect) {
                     resolve(verify.data)
                 } else {
+                    if (!hiddenError) {
+                        self.components.toast.destroy()
+                        self.components.toast.show(verify.msg)
+                    }
                     reject(verify.msg)
                 }
             },

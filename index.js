@@ -59,13 +59,11 @@ var initialization = {
  */
 var components = {
     toast: null,
-    fetch: null,
     confirmPopUp: null,
     serviceStorage: null,
 
     init: function init() {
         this.toast = Toast.init()
-        this.fetch = Fetch.init()
         this.confirmPopUp = ConfirmPopUp.init()
         this.serviceStorage = ServiceStorage.init()
     }
@@ -84,7 +82,7 @@ var process = {
         var self = this
 
         components.serviceStorage.getItem({
-            key: 'process',
+            key: 'processTarget',
             hiddenError: true
         }).then(
             res => {
@@ -118,7 +116,7 @@ var process = {
         var self = this
 
         components.serviceStorage.clearItem({
-            key: 'process'
+            key: 'processTarget'
         }).then(
             res => self.container_dom.style.display = 'none',
             error => {}
