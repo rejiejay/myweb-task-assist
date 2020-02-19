@@ -232,11 +232,14 @@ var Fetch = {
         /**
          * 含义: 仅重复校验一次(校验凭证合法性)
          */
-        if (this.requestCount > 1) return reject({
-            result: 7593,
-            data: null,
-            message: '校验次数过多'
-        });
+        if (this.requestCount > 1) {
+            this.toast.destroy()
+            return reject({
+                result: 7593,
+                data: null,
+                message: '校验次数过多'
+            })
+        };
 
         /**
          * 含义: 校验凭证合法性

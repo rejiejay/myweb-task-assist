@@ -22,10 +22,10 @@ body {
 .caching .caching-container .task-operate {
   padding: 0px 10px;
 }
-.caching #target-container {
+.caching .target-container {
   background-color: #adc6ff;
 }
-.caching #doing-container {
+.caching .doing-container {
   background-color: #95de64;
 }
 .todo {

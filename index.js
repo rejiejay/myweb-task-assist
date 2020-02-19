@@ -61,14 +61,12 @@ var components = {
     toast: null,
     fetch: null,
     confirmPopUp: null,
-    jsonHandle: null,
     serviceStorage: null,
 
     init: function init() {
         this.toast = Toast.init()
         this.fetch = Fetch.init()
         this.confirmPopUp = ConfirmPopUp.init()
-        this.jsonHandle = JsonHandle
         this.serviceStorage = ServiceStorage.init()
     }
 }
@@ -192,12 +190,7 @@ var button = {
      * 我要做什么
      */
     todoHandle: function todoHandle() {
-        /**
-         * 为什么直接跳转? - 获取所有todo的任务
-         * 何时候需要特定todo? - 未解锁
-         */
-        var target = process.value ? `?targetId=${process.value.id}` : ''
-        window.location.href = './views/todo/item/index.html' + target
+        window.location.href = './views/todo/item/index.html'
     },
 
     /**

@@ -2,14 +2,34 @@ window.onload = function () {
     initialization.main()
 }
 
+var CONST = {
+    TARGET: {
+        DEFAULTS: {
+            id: '',
+            name: '所有'
+        },
+        DEMO: {
+            id: 'gwy',
+            name: '公务员'
+        }
+    }
+}
+
 /**
  * 初始化方法
  */
 var initialization = {
     main: function main() {
-        this.initDom()
+        var slef = this
 
+        this.initDom()
         components.init()
+        caching.init().then(() => {
+            slef.stepTwo()
+        })
+    },
+
+    stepTwo: function stepTwo() {
         edit.init()
         del.init()
         putoff.init()
@@ -23,6 +43,7 @@ var initialization = {
      * 节点 初始化
      */
     initDom: function initDom() {
+        caching.target_dom = document.getElementById('caching-target')
         edit.dom = document.getElementById('edit-todo')
         del.dom = document.getElementById('edit-delete')
         putoff.dom = document.getElementById('edit-putoff')
@@ -37,11 +58,107 @@ var components = {
     toast: null,
     confirmPopUp: null,
     inputPopUp: null,
+    serviceStorage: null,
 
     init: function init() {
         this.toast = Toast.init()
         this.confirmPopUp = ConfirmPopUp.init()
         this.inputPopUp = InputPopUp.init()
+        this.serviceStorage = ServiceStorage.init()
+    }
+}
+
+/**
+ * 缓存
+ */
+var caching = {
+    target: CONST.TARGET.DEFAULTS,
+    target_dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.initTarget()
+
+        return Promise.all([this.getTarget(), this.getDoing()])
+    },
+
+    getTarget: function getTarget() {
+        var self = this
+        return new Promise(function (resolve, reject) {
+            components.serviceStorage.getItem({
+                key: 'process',
+                hiddenError: true
+            }).then(
+                function (res) {
+                    self.renderTarget(res, resolve)
+                },
+                error => resolve()
+            )
+        })
+    },
+
+    initTarget: function initTarget() {
+        var self = this
+
+        var delTargetHandle = function delTargetHandle() {
+            components.serviceStorage.clearItem({
+                key: 'process'
+            }).then(
+                function res() {
+                    self.renderTarget(CONST.TARGET.DEFAULTS)
+                },
+                error => {}
+            )
+        }
+
+        var selectTargetHandle = function selectTargetHandle() {
+            window.location.href = './../../target/index.html?redirect=select_todo_target'
+        }
+
+        this.target_dom.onclick = function () {
+            if (self.target.id) {
+                var parameter = {
+                    title: `确认要解除锁定“${self.target.name}”?`,
+                    succeedHandle: delTargetHandle
+                }
+                components.confirmPopUp(parameter)
+            } else {
+                var parameter = {
+                    title: '你要选择目标范围?',
+                    succeedHandle: selectTargetHandle
+                }
+                components.confirmPopUp(parameter)
+            }
+        }
+    },
+
+    renderTarget: function renderTarget({
+        id,
+        name
+    }, resolve) {
+        this.target = {
+            id,
+            name
+        }
+
+        this.target_dom.innerHTML = `范围: ${name}`
+
+        resolve ? resolve() : null
+    },
+
+    getDoing: function getDoing() {
+        var self = this
+        return new Promise(function (resolve, reject) {
+            resolve()
+        })
+    },
+
+    initDoing: function initDoing() {
+        var self = this
+        return new Promise(function (resolve, reject) {
+            resolve()
+        })
     }
 }
 

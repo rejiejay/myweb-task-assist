@@ -48,7 +48,13 @@ var CONST = {
             effect: 'What inspiration is added?',
             title: '新增哪些灵感?',
             url: './../add-redirect/index.html'
-        }
+        },
+        NEED_TODO: {
+            value: 'select_todo_target',
+            effect: 'goto todo item',
+            title: '选择目标范围?',
+            url: './../todo/item/index.html'
+        },
     },
 
     /**
