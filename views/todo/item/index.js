@@ -15,7 +15,8 @@ var CONST = {
     },
     TASK: {
         DEFAULTS: {
-            id: null // 作用: 判空
+            id: null, // 作用: 判空
+            conclusion: null, // 作用: 判空
         },
         DEMO: {
             id: 1,
@@ -83,6 +84,22 @@ var initialization = {
         record.dom = document.getElementById('add-edit-record')
         list.dom = document.getElementById('other-todo')
         reason.dom = document.getElementById('reason-todo')
+
+        todo.dom = {
+            title: document.getElementById('todo-title'),
+            specific: document.getElementById('todo-specific'),
+            complete: document.getElementById('todo-complete'),
+            putoff: document.getElementById('todo-putoff'),
+            detailHandle: document.getElementById('details-handle'),
+            details: document.getElementById('todo-details'),
+            conclusionHandle: document.getElementById('conclusion-handle'),
+            conclusions: document.getElementById('todo-conclusions'),
+            measure: document.getElementById('todo-measure'),
+            span: document.getElementById('todo-span'),
+            aspects: document.getElementById('todo-aspects'),
+            worth: document.getElementById('todo-worth'),
+            estimate: document.getElementById('todo-time'),
+        }
     }
 }
 
@@ -92,6 +109,7 @@ var components = {
     confirmPopUp: null,
     inputPopUp: null,
     serviceStorage: null,
+    timeTransformers: null,
 
     init: function init() {
         this.fetch = Fetch.init()
@@ -99,6 +117,7 @@ var components = {
         this.confirmPopUp = ConfirmPopUp.init()
         this.inputPopUp = InputPopUp.init()
         this.serviceStorage = ServiceStorage.init()
+        this.timeTransformers = TimeTransformers
     }
 }
 
@@ -148,7 +167,7 @@ var caching = {
         }
 
         var selectTargetHandle = function selectTargetHandle() {
-            window.location.href = './../../target/index.html?redirect=select_todo_target'
+            window.location.href = './../../target/index.html?redirect=selectTodoTarget'
         }
 
         this.target_dom.onclick = function () {
@@ -368,6 +387,14 @@ var reason = {
 
 var todo = {
     date: CONST.TASK.DEFAULTS,
+    dom: {
+        title: null,
+        specific: null,
+        putoff: null,
+        complete: null,
+    },
+    isShowDetails: false,
+    isShowConclusions: false,
 
     init: function init() {
         var self = this
@@ -389,9 +416,83 @@ var todo = {
             },
             error => {}
         )
+
+        this.initDetails()
+        this.initConclusions()
     },
 
     render: function render() {
+        var {
+            title,
+            content,
+            completeTimestamp,
+            putoffTimestamp,
+            conclusion,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate,
+        } = this.date
 
+        this.dom.title.innerHTML = title
+        this.dom.specific.innerHTML = content
+
+        if (completeTimestamp) {
+            this.dom.complete.style = 'display: flex;'
+            this.dom.complete.innerHTML = `完成时间: ${components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+completeTimestamp))}`
+        } else if (putoffTimestamp) {
+            this.dom.putoff.style = 'display: flex;'
+            this.dom.putoff.innerHTML = `推迟: ${components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+putoffTimestamp))}`
+        }
+
+        this.dom.measure.innerHTML = measure ? `<span>衡量任务完成的标准?</span>- ${measure}` : '衡量任务完成的标准?'
+        this.dom.span.innerHTML = span ? `<span>长时间跨度下这任务的意义?</span>- ${span}` : '长时间跨度下这任务的意义?'
+        this.dom.aspects.innerHTML = aspects ? `<span>任务影响涉及到哪些方面?</span>- ${aspects}` : '任务影响涉及到哪些方面?'
+        this.dom.worth.innerHTML = worth ? `<span>任务的本质是为了什么?</span>- ${worth}` : '任务的本质是为了什么?'
+        this.dom.estimate.innerHTML = estimate ? `<span>是否必须完成?何时?</span>- ${estimate}` : '是否必须完成?何时?'
+        this.showDetail(false)
+
+        /**
+         * 需要解决换行问题
+         */
+        this.dom.conclusions.innerHTML = conclusion
+        this.showConclusions(false)
+    },
+
+    showDetail: function showDetail(isShow) {
+        if (isShow) {
+            this.isShowDetails = true
+            this.dom.details.style = 'display: block;'
+        } else {
+            this.isShowDetails = false
+            this.dom.details.style = 'display: none;'
+        }
+    },
+
+    initDetails: function initDetails() {
+        var self = this
+
+        this.dom.detailHandle.onclick = function () {
+            self.showDetail(!self.isShowDetails)
+        }
+    },
+
+    showConclusions: function showConclusions(isShow) {
+        if (this.date.conclusion && isShow) {
+            this.isShowConclusions = true
+            this.dom.conclusions.style = 'display: block;'
+        } else {
+            this.isShowConclusions = false
+            this.dom.conclusions.style = 'display: none;'
+        }
+    },
+
+    initConclusions: function initConclusions() {
+        var self = this
+
+        this.dom.conclusionHandle.onclick = function () {
+            self.showConclusions(!self.isShowConclusions)
+        }
     }
 }

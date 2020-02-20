@@ -195,14 +195,14 @@ var button = {
      * 不想做
      */
     howTodoHandle: function howTodoHandle() {
-        window.location.href = './views/target/index.html?redirect=how_todo'
+        window.location.href = './views/target/index.html?redirect=howTodo'
     },
 
     /**
      * 有哪些可以做
      */
     needTodoHandle: function needTodoHandle() {
-        window.location.href = './views/target/index.html?redirect=need_todo'
+        window.location.href = './views/target/index.html?redirect=needTodo'
     },
 
     /**

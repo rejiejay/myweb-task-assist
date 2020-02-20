@@ -68,6 +68,14 @@ body {
   padding: 7.5px 15px;
   border-bottom: 1px solid #ddd;
 }
+.todo .todo-details > div span {
+  display: block;
+  padding-bottom: 7.5px;
+}
+.todo .todo-conclusions {
+  padding: 7.5px 15px;
+  border-bottom: 1px solid #ddd;
+}
 .todo .todo-record-add {
   height: 35px;
   border-bottom: 1px solid #fff;

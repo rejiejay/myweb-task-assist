@@ -14,13 +14,13 @@ var CONST = {
             url: null
         },
         NEED_TODO: {
-            value: 'need_todo',
+            value: 'needTodo',
             effect: 'goto todo list',
             title: '有哪些可以做?',
             url: './../todo/list/index.html'
         },
         HOW_TODO: {
-            value: 'how_todo',
+            value: 'howTodo',
             effect: 'How to make myself want to work?',
             title: '不想做下面这些事情怎么办?',
             url: './../why/index.html'
@@ -49,12 +49,12 @@ var CONST = {
             title: '新增哪些灵感?',
             url: './../add-redirect/index.html'
         },
-        NEED_TODO: {
-            value: 'select_todo_target',
+        SELECT_TODO_TARGET: {
+            value: 'selectTodoTarget',
             effect: 'goto todo item',
             title: '选择目标范围?',
             url: './../todo/item/index.html'
-        },
+        }
     },
 
     /**
@@ -233,6 +233,7 @@ var redirect = {
             supportValue: redirect.data,
             targetKey: 'url'
         })
+
         window.location.replace(`${url}?targetId=${targetId}`)
     },
 
@@ -244,7 +245,7 @@ var redirect = {
             hiddenError: true
         }).then(
             res => {
-                var targetId = res.data.id
+                var targetId = res.id
                 self.navigate(targetId)
             },
             error => {}
