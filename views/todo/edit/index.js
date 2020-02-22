@@ -255,7 +255,8 @@ var form = {
         this.dom.aspects.value = aspects
         this.dom.worth.value = worth
         this.dom.estimate.value = estimate
-        if (putoffTimestamp) {
+        var nowTimestamp = new Date().getTime()
+        if (putoffTimestamp && putoffTimestamp > nowTimestamp) {
             putoff.initDate(putoffTimestamp)
             putoff.handle(components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+putoffTimestamp)))
         }

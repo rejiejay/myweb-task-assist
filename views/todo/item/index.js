@@ -365,7 +365,19 @@ var putoff = {
     },
 
     handle: function handle(data) {
-        console.log(data)
+        var self = this
+        var body = JSON.parse(JSON.stringify(todo.data))
+        body.putoffTimestamp = components.timeTransformers.YYYYmmDDhhMMToTimestamp(data)
+        components.fetch.post({
+            url: 'task/update',
+            body
+        }).then(
+            res => {
+                todo.data = res.data
+                todo.render()
+            },
+            error => {}
+        )
     }
 }
 
@@ -505,14 +517,18 @@ var todo = {
         this.dom.title.innerHTML = title
         this.dom.specific.innerHTML = content
 
+        var nowTimestamp = new Date().getTime()
         if (completeTimestamp) {
             this.dom.complete.style = 'display: flex;'
             this.dom.putoff.style = 'display: none;'
             this.dom.complete.innerHTML = `完成时间: ${components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+completeTimestamp))}`
-        } else if (putoffTimestamp) {
+        } else if (putoffTimestamp && putoffTimestamp > nowTimestamp) {
             this.dom.putoff.style = 'display: flex;'
             this.dom.complete.style = 'display: none;'
             this.dom.putoff.innerHTML = `推迟: ${components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+putoffTimestamp))}`
+        } else {
+            this.dom.putoff.style = 'display: none;'
+            this.dom.complete.style = 'display: none;'
         }
 
         this.dom.measure.innerHTML = measure ? `<span>衡量任务完成的标准?</span>- ${measure}` : '衡量任务完成的标准?'
