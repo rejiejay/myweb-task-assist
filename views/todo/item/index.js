@@ -211,7 +211,7 @@ var caching = {
                 hiddenError: true
             }).then(
                 function (res) {
-                    self.task = res.data
+                    self.task = res
                     resolve()
                 },
                 error => resolve()
@@ -329,9 +329,11 @@ var add = {
 
     init: function init() {
         this.dom.onclick = function () {
-            components.toast.show()
-            window.location.href = './../edit/index.html'
-            components.toast.destroy()
+            if (caching.target.id) {
+                window.location.href = './../edit/index.html'
+            } else {
+                window.location.href = './../../target/index.html?redirect=addTodo'
+            }
         }
     }
 }

@@ -12,8 +12,15 @@
 
     <script type="text/javascript" charset="utf-8" src="./../../../lib/picka-date/rolldate.min.js"></script>
 
+    <!-- fetch组合 -->
+    <script type="text/javascript" charset="utf-8" src="./../../../components/fetch/index.js"></script>
     <link type="text/css" rel="stylesheet" href="./../../../components/toast/index.css">
     <script type="text/javascript" charset="utf-8" src="./../../../components/toast/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="./../../../components/input-popup/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../../components/input-popup/index.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="./../../../utils/json-handle.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./../../../components/service-storage/index.js"></script>
 
     <link type="text/css" rel="stylesheet" href="./index.css">
     <script type="text/javascript" charset="utf-8" src="./index.js"></script>
@@ -26,39 +33,39 @@
         <!-- 任务标题 -->
         <div class="edit-title edit-required">*简单描述/提问:</div>
         <div class="edit-input flex-start-center">
-            <input type="text" placeholder="简单描述/提问" />
+            <input type="text" placeholder="简单描述/提问" id="edit-title" />
         </div>
 
         <!-- 任务具体内容 -->
         <div class="edit-title edit-required">*任务具体内容是什么:</div>
 
         <div class="edit-input flex-start-center">
-            <textarea rows="3" type="text" placeholder="任务具体内容是什么"></textarea>
+            <textarea rows="3" type="text" placeholder="任务具体内容是什么" id="edit-content"></textarea>
         </div>
 
         <div class="edit-title">衡量任务完成的标准?</div>
         <div class="edit-input flex-start-center">
-            <input type="text" placeholder="衡量任务完成的标准" />
+            <input type="text" placeholder="衡量任务完成的标准" id="edit-measure" />
         </div>
 
         <div class="edit-title">长时间跨度下这任务的意义?</div>
         <div class="edit-input flex-start-center">
-            <input type="text" placeholder="长时间跨度下这任务的意义" />
+            <input type="text" placeholder="长时间跨度下这任务的意义" id="edit-span" />
         </div>
 
         <div class="edit-title">任务影响涉及到哪些方面?好处?</div>
         <div class="edit-input flex-start-center">
-            <input type="text" placeholder="任务影响涉及到哪些方面?好处?" />
+            <input type="text" placeholder="任务影响涉及到哪些方面?好处?" id="edit-aspects" />
         </div>
 
         <div class="edit-title">任务的本质是为了什么?</div>
         <div class="edit-input flex-start-center">
-            <input type="text" placeholder="任务的本质是为了什么" />
+            <input type="text" placeholder="任务的本质是为了什么" id="edit-worth" />
         </div>
 
         <div class="edit-title">是否必须完成?何时?</div>
         <div class="edit-input flex-start-center">
-            <input type="text" placeholder="是否必须完成" />
+            <input type="text" placeholder="是否必须完成" id="edit-estimate" />
         </div>
 
         <div class="edit-title">是否需要隐藏次任务?</div>
@@ -70,7 +77,7 @@
         <div class="edit-title">得出什么结论?</div>
         <!-- 可以点击新增删除删除 -->
         <div class="edit-input flex-start-center">
-            <textarea rows="3" type="text" placeholder="结论"></textarea>
+            <textarea rows="3" type="text" placeholder="结论" id="edit-conclusion"></textarea>
         </div>
 
     </div>
@@ -78,7 +85,7 @@
     <!-- 操作区域 -->
     <div class="operation">
         <div class="operation-container flex-start-center">
-            <div class="operation-button flex-center flex-rest">保存</div>
+            <div class="operation-button flex-center flex-rest" id="edit-confirm">保存</div>
             <div class="vertical-line"></div>
             <div class="operation-button flex-center flex-rest">done</div><!-- 条件判断 -->
             <div class="vertical-line"></div>
