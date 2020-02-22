@@ -19,3 +19,4 @@ components\fetch\index.js:2
 localStorage['rejiejay-task-assist-token']
 localStorage['rejiejay-task-assist-password']
 localStorage['task-conclusion-list-sort-type']
+localStorage['task-todo-edit-id']

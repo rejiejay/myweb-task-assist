@@ -2,14 +2,46 @@ window.onload = function () {
     initialization.main()
 }
 
+var CONST = {
+    PAGE_STATUS: {
+        DEFAULTS: 'add',
+        ADD: 'add',
+        EDIT: 'edit',
+    },
+    TASK: {
+        DEFAULTS: {
+            id: null, // 作用: 判空
+            conclusion: null, // 作用: 判空
+        },
+        DEMO: {
+            id: 1,
+            targetId: 'not-null',
+            title: 'not-null',
+            content: '',
+            conclusion: null,
+            measure: null,
+            span: null,
+            aspects: null,
+            worth: null,
+            estimate: null,
+            image: null,
+            putoffTimestamp: null,
+            completeTimestamp: null
+        }
+    }
+}
+
 /**
  * 初始化方法
  */
 var initialization = {
+    status: CONST.PAGE_STATUS.DEFAULTS,
+
     main: function main() {
         var slef = this
 
         this.initDom()
+        this.initPageStatus()
 
         components.init()
 
@@ -18,6 +50,18 @@ var initialization = {
         }, error => {})
 
         putoff.init()
+    },
+
+    initPageStatus: function initPageStatus() {
+        var id = window.localStorage['task-todo-edit-id']
+
+        if (id) {
+            window.localStorage['task-todo-edit-id'] = ''
+            form.data.id = id
+            this.status = CONST.PAGE_STATUS.EDIT
+        } else {
+            this.status = CONST.PAGE_STATUS.ADD
+        }
     },
 
     stepTwo: function stepTwo() {
@@ -49,6 +93,7 @@ var components = {
     datepicker: null,
     fetch: null,
     serviceStorage: null,
+    timeTransformers: null,
 
     init: function init() {
         var self = this
@@ -56,6 +101,7 @@ var components = {
         this.toast = Toast.init()
         this.fetch = Fetch.init()
         this.serviceStorage = ServiceStorage.init()
+        this.timeTransformers = TimeTransformers
 
         var nowYear = new Date().getFullYear()
         this.datepicker = new Rolldate({
@@ -95,6 +141,10 @@ var putoff = {
         }
     },
 
+    initDate: function initDate(timestamp) {
+        this.picker_dom.value = components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+timestamp))
+    },
+
     handle: function handle(date) {
         this.value = date
     }
@@ -130,17 +180,9 @@ var form = {
         worth: null,
         estimate: null
     },
-    data: {
-        title: null,
-        content: null,
-        conclusion: null,
-        measure: null,
-        span: null,
-        aspects: null,
-        worth: null,
-        estimate: null
-    },
+    data: CONST.TASK.DEFAULTS,
     init: function init() {
+        this.initDate()
         this.initHandle()
     },
     initHandle: function initHandle() {
@@ -169,6 +211,52 @@ var form = {
         this.dom.estimate.oninput = function () {
             self.data.estimate = this.value
         }
+    },
+
+    initDate: function initDate() {
+        var self = this
+
+        if (initialization.status !== CONST.PAGE_STATUS.EDIT) return
+
+        components.fetch.get({
+            url: 'task/get/one',
+            query: {
+                taskId: this.data.id
+            }
+        }).then(
+            res => {
+                self.data = res.data
+                self.renderDom()
+            },
+            error => {}
+        )
+    },
+
+    renderDom: function renderDom() {
+        var {
+            title,
+            content,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate,
+            putoffTimestamp,
+            conclusion
+        } = this.data
+
+        this.dom.title.value = title
+        this.dom.content.value = content
+        this.dom.conclusion.value = conclusion
+        this.dom.measure.value = measure
+        this.dom.span.value = span
+        this.dom.aspects.value = aspects
+        this.dom.worth.value = worth
+        this.dom.estimate.value = estimate
+        if (putoffTimestamp) {
+            putoff.initDate(putoffTimestamp)
+            putoff.handle(components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+putoffTimestamp)))
+        }
     }
 }
 
@@ -179,11 +267,62 @@ var confirm = {
         var self = this
 
         this.dom.onclick = function () {
-            self.handle()
+            self.verify()
         }
     },
 
-    handle: function handle() {
+    verify: function verify() {
+        var {
+            title,
+            content
+        } = form.data
+
+        if (!title) return components.toast.show('标题不能为空');
+        if (!content) return components.toast.show('内容不能为空');
+
+        if (initialization.status === CONST.PAGE_STATUS.EDIT) {
+            this.editHandle()
+        } else {
+            this.addHandle()
+        }
+    },
+
+    editHandle: function editHandle() {
+        var self = this
+        var {
+            id,
+            title,
+            content,
+            conclusion,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate
+        } = form.data
+        var putoffTimestamp = putoff.value ? components.timeTransformers.YYYYmmDDhhMMToTimestamp(putoff.value) : null
+
+        components.fetch.post({
+            url: 'task/update',
+            body: {
+                id,
+                title,
+                content,
+                conclusion,
+                measure,
+                span,
+                aspects,
+                worth,
+                estimate,
+                putoffTimestamp
+            }
+        }).then(
+            res => self.executeTask(res.data),
+            error => {}
+        )
+    },
+
+    addHandle: function addHandle() {
         var self = this
         var {
             title,
@@ -195,21 +334,24 @@ var confirm = {
             worth,
             estimate
         } = form.data
-
-        if (!title) return components.toast.show('标题不能为空');
-        if (!content) return components.toast.show('内容不能为空');
+        var putoffTimestamp = putoff.value ? components.timeTransformers.YYYYmmDDhhMMToTimestamp(putoff.value) : null
 
         components.fetch.post({
             url: 'task/add',
             body: {
                 targetId: target.id,
-                ...form.data
+                title,
+                content,
+                conclusion,
+                measure,
+                span,
+                aspects,
+                worth,
+                estimate,
+                putoffTimestamp
             }
         }).then(
-            res => {
-                self.executeTask(res.data)
-                window.location.href = './../item/index.html'
-            },
+            res => self.executeTask(res.data),
             error => {}
         )
     },
@@ -219,9 +361,7 @@ var confirm = {
             key: 'processTask',
             value: task
         }).then(
-            res => {
-                window.location.href = './../item/index.html'
-            },
+            res => window.location.href = './../item/index.html',
             error => {}
         )
     }

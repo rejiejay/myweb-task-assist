@@ -225,10 +225,10 @@ var caching = {
         var executeTask = function executeTask() {
             components.serviceStorage.setItem({
                 key: 'processTask',
-                value: todo.date
+                value: todo.data
             }).then(
                 res => {
-                    self.task = JSON.parse(JSON.stringify(todo.date))
+                    self.task = JSON.parse(JSON.stringify(todo.data))
                     self.renderDoing()
                     components.toast.show('执行成功')
                 },
@@ -237,7 +237,7 @@ var caching = {
         }
 
         this.task_dom.onclick = function () {
-            if (!todo.date.id || self.task.id !== todo.date.id) {
+            if (!todo.data.id || self.task.id !== todo.data.id) {
                 var parameter = {
                     title: '确定执行此任务?',
                     succeedHandle: executeTask
@@ -248,7 +248,7 @@ var caching = {
     },
 
     renderDoing: function renderDoing() {
-        if (this.task.id && todo.date.id && this.task.id === todo.date.id) {
+        if (this.task.id && todo.data.id && this.task.id === todo.data.id) {
             this.task_dom.innerHTML = '正在执行中'
         } else {
             this.task_dom.innerHTML = '执行此任务?'
@@ -261,9 +261,15 @@ var edit = {
 
     init: function init() {
         this.dom.onclick = function () {
-            components.toast.show()
-            window.location.href = './../edit/index.html'
-            components.toast.destroy()
+            var id = todo.data.id
+            if (!id) return
+
+            window.localStorage.setItem('task-todo-edit-id', id)
+            if (caching.target.id) {
+                window.location.href = './../edit/index.html'
+            } else {
+                window.location.href = './../../target/index.html?redirect=addTodo'
+            }
         }
     }
 }
@@ -319,8 +325,8 @@ var putoff = {
         }
     },
 
-    handle: function handle(date) {
-        console.log(date)
+    handle: function handle(data) {
+        console.log(data)
     }
 }
 
@@ -329,6 +335,7 @@ var add = {
 
     init: function init() {
         this.dom.onclick = function () {
+            window.localStorage['task-todo-edit-id'] = ''
             if (caching.target.id) {
                 window.location.href = './../edit/index.html'
             } else {
@@ -403,7 +410,7 @@ var reason = {
 }
 
 var todo = {
-    date: CONST.TASK.DEFAULTS,
+    data: CONST.TASK.DEFAULTS,
     dom: {
         title: null,
         specific: null,
@@ -434,7 +441,7 @@ var todo = {
             query
         }).then(
             res => {
-                self.date = res.data
+                self.data = res.data
                 self.render()
                 caching.renderDoing()
             },
@@ -454,7 +461,7 @@ var todo = {
             aspects,
             worth,
             estimate,
-        } = this.date
+        } = this.data
 
         this.dom.title.innerHTML = title
         this.dom.specific.innerHTML = content
@@ -500,7 +507,7 @@ var todo = {
     },
 
     showConclusions: function showConclusions(isShow) {
-        if (this.date.conclusion && isShow) {
+        if (this.data.conclusion && isShow) {
             this.isShowConclusions = true
             this.dom.conclusions.style = 'display: block;'
         } else {
