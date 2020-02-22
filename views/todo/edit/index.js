@@ -50,6 +50,7 @@ var initialization = {
         }, error => {})
 
         putoff.init()
+        complete.init()
     },
 
     initPageStatus: function initPageStatus() {
@@ -75,6 +76,7 @@ var initialization = {
     initDom: function initDom() {
         putoff.clear_dom = document.getElementById('picka-clear')
         putoff.picker_dom = document.getElementById('picka-date')
+        complete.dom = document.getElementById('edit-complete')
         confirm.dom = document.getElementById('edit-confirm')
 
         form.dom.title = document.getElementById('edit-title')
@@ -362,6 +364,44 @@ var confirm = {
             value: task
         }).then(
             res => window.location.href = './../item/index.html',
+            error => {}
+        )
+    }
+}
+
+var complete = {
+    dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.dom.onclick = function () {
+            if (initialization.status !== CONST.PAGE_STATUS.EDIT) return components.toast.show('无法完成新增任务');
+
+            var {
+                completeTimestamp
+            } = form.data
+            if (completeTimestamp) return components.toast.show('任务已被完成');
+
+            var parameter = {
+                title: `确认要完成此任务??`,
+                succeedHandle: () => self.handle()
+            }
+            components.confirmPopUp(parameter)
+        }
+    },
+
+    handle: function handle() {
+        components.fetch.post({
+            url: 'task/complete',
+            body: {
+                id: form.data.id
+            }
+        }).then(
+            res => {
+                form.data = res.data
+                confirm.executeTask(res.data)
+            },
             error => {}
         )
     }

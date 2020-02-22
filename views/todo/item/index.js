@@ -60,6 +60,7 @@ var initialization = {
          */
         edit.init()
         del.init()
+        complete.init()
         putoff.init()
         add.init()
         other.init()
@@ -80,6 +81,7 @@ var initialization = {
         caching.task_dom = document.getElementById('caching-task')
         edit.dom = document.getElementById('edit-todo')
         del.dom = document.getElementById('edit-delete')
+        complete.dom = document.getElementById('edit-complete')
         putoff.dom = document.getElementById('edit-putoff')
         add.dom = document.getElementById('add-todo')
         other.dom = document.getElementById('todo-other')
@@ -292,6 +294,43 @@ var del = {
     handle: function handle() {}
 }
 
+var complete = {
+    dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.dom.onclick = function () {
+            var {
+                completeTimestamp
+            } = todo.data
+
+            if (completeTimestamp) return components.toast.show('任务已被完成');
+
+            var parameter = {
+                title: `确认要完成此任务??`,
+                succeedHandle: () => self.handle()
+            }
+            components.confirmPopUp(parameter)
+        }
+    },
+
+    handle: function handle() {
+        components.fetch.post({
+            url: 'task/complete',
+            body: {
+                id: todo.data.id
+            }
+        }).then(
+            res => {
+                todo.data = res.data
+                todo.render()
+            },
+            error => {}
+        )
+    }
+}
+
 var putoff = {
     dom: null,
     datepicker: null,
@@ -468,9 +507,11 @@ var todo = {
 
         if (completeTimestamp) {
             this.dom.complete.style = 'display: flex;'
+            this.dom.putoff.style = 'display: none;'
             this.dom.complete.innerHTML = `完成时间: ${components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+completeTimestamp))}`
         } else if (putoffTimestamp) {
             this.dom.putoff.style = 'display: flex;'
+            this.dom.complete.style = 'display: none;'
             this.dom.putoff.innerHTML = `推迟: ${components.timeTransformers.dateToYYYYmmDDhhMM(new Date(+putoffTimestamp))}`
         }
 
