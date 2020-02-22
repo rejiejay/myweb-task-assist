@@ -62,6 +62,7 @@ var initialization = {
         del.init()
         putoff.init()
         add.init()
+        other.init()
         record.init()
         list.init()
         reason.init()
@@ -81,6 +82,7 @@ var initialization = {
         del.dom = document.getElementById('edit-delete')
         putoff.dom = document.getElementById('edit-putoff')
         add.dom = document.getElementById('add-todo')
+        other.dom = document.getElementById('todo-other')
         record.dom = document.getElementById('add-edit-record')
         list.dom = document.getElementById('other-todo')
         reason.dom = document.getElementById('reason-todo')
@@ -334,6 +336,19 @@ var add = {
     }
 }
 
+var other = {
+    dom: null,
+
+    init: function init() {
+        this.dom.onclick = function () {
+            var cachingTarget = caching.target.id
+            todo.initData(cachingTarget ? {
+                targetId: cachingTarget
+            } : {})
+        }
+    }
+}
+
 var record = {
     dom: null,
 
@@ -397,14 +412,21 @@ var todo = {
     isShowConclusions: false,
 
     init: function init() {
-        var self = this
-
         var query = {}
         if (caching.task.id) {
             query.taskId = caching.task.id
         } else if (caching.target.id) {
             query.targetId = caching.target.id
         }
+        this.initData(query)
+
+        this.initDetails()
+        this.initConclusions()
+    },
+
+    initData: function initData(query) {
+        var self = this
+
         components.fetch.get({
             url: 'task/get/one',
             query
@@ -416,9 +438,6 @@ var todo = {
             },
             error => {}
         )
-
-        this.initDetails()
-        this.initConclusions()
     },
 
     render: function render() {
