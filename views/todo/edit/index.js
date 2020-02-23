@@ -51,6 +51,7 @@ var initialization = {
 
         putoff.init()
         complete.init()
+        del.init()
     },
 
     initPageStatus: function initPageStatus() {
@@ -78,6 +79,7 @@ var initialization = {
         putoff.picker_dom = document.getElementById('picka-date')
         complete.dom = document.getElementById('edit-complete')
         confirm.dom = document.getElementById('edit-confirm')
+        del.dom = document.getElementById('edit-delete')
 
         form.dom.title = document.getElementById('edit-title')
         form.dom.content = document.getElementById('edit-content')
@@ -96,6 +98,7 @@ var components = {
     fetch: null,
     serviceStorage: null,
     timeTransformers: null,
+    confirmPopUp: null,
 
     init: function init() {
         var self = this
@@ -104,6 +107,7 @@ var components = {
         this.fetch = Fetch.init()
         this.serviceStorage = ServiceStorage.init()
         this.timeTransformers = TimeTransformers
+        this.confirmPopUp = ConfirmPopUp.init()
 
         var nowYear = new Date().getFullYear()
         this.datepicker = new Rolldate({
@@ -405,5 +409,53 @@ var complete = {
             },
             error => {}
         )
+    }
+}
+
+var del = {
+    dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.dom.onclick = function () {
+            var isDel = false
+            var confirmMsg
+
+            if (initialization.status === CONST.PAGE_STATUS.EDIT) {
+                isDel = true
+                confirmMsg = '你确认要删除吗?'
+            } else {
+                confirmMsg = '是否取消新增任务?'
+            }
+            var parameter = {
+                title: confirmMsg,
+                succeedHandle: () => isDel ? self.deleteHandle() : self.cancelHandle()
+            }
+            components.confirmPopUp(parameter)
+        }
+    },
+
+    deleteHandle: function deleteHandle() {
+        var self = this
+
+        components.fetch.post({
+            url: 'task/delete',
+            body: {
+                id: form.data.id
+            }
+        }).then(
+            res => components.serviceStorage.clearItem({
+                key: 'processTask'
+            }).then(
+                res => self.cancelHandle(),
+                error => {}
+            ),
+            error => {}
+        )
+    },
+
+    cancelHandle: function cancelHandle() {
+        window.location.href = './../item/index.html'
     }
 }

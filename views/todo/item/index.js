@@ -291,7 +291,23 @@ var del = {
         }
     },
 
-    handle: function handle() {}
+    handle: function handle() {
+        components.fetch.post({
+            url: 'task/delete',
+            body: {
+                id: todo.data.id
+            }
+        }).then(
+            res => {
+                var query = {}
+                if(caching.target.id) {
+                    query.targetId = caching.target.id
+                }
+                todo.initData(query)
+            },
+            error => {}
+        )
+    }
 }
 
 var complete = {
@@ -438,8 +454,6 @@ var record = {
             },
             error => {}
         )
-
-
     }
 }
 
@@ -553,7 +567,7 @@ var todo = {
         /**
          * 需要解决换行问题
          */
-        this.dom.conclusions.innerHTML = conclusion.replace(/\n/g,"<br>")
+        this.dom.conclusions.innerHTML = conclusion ? conclusion.replace(/\n/g, "<br>") : ''
         this.showConclusions(false)
     },
 
