@@ -44,7 +44,6 @@ var initialization = {
 
         this.initPageStatus()
 
-        textarea.init()
         confirm.init()
 
         target.init().then(() => {
@@ -52,7 +51,9 @@ var initialization = {
         }, error => {})
     },
 
-    stepTwo: function stepTwo() {},
+    stepTwo: function stepTwo() {
+        textarea.init()
+    },
 
     initPageStatus: function initPageStatus() {
         var id = window.localStorage['task-why-edit-id']
@@ -119,7 +120,29 @@ var textarea = {
         this.dom.oninput = function () {
             self.data.content = this.value
         }
-    }
+
+        this.initDate()
+    },
+
+    initDate: function initDate() {
+        var self = this
+
+        if (initialization.status !== CONST.PAGE_STATUS.EDIT) return
+
+        components.fetch.get({
+            url: 'why/get/one',
+            query: {
+                id: this.data.id
+            }
+        }).then(
+            res => {
+                self.data = res.data
+                self.data.content = res.data.content
+                self.dom.value = res.data.content
+            },
+            error => {}
+        )
+    },
 }
 
 var confirm = {
@@ -145,7 +168,18 @@ var confirm = {
         }
     },
 
-    editHandle: function editHandle() {},
+    editHandle: function editHandle() {
+        components.fetch.post({
+            url: 'why/edit',
+            body: {
+                id: textarea.data.id,
+                content: textarea.data.content
+            }
+        }).then(
+            res => window.location.href = './../index.html',
+            error => {}
+        )
+    },
 
     addHandle: function addHandle() {
         components.fetch.post({
