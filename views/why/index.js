@@ -41,6 +41,12 @@ var CONST = {
             url: 'why/get/reasonable',
             dom: 'related_dom',
             des: '最大理由',
+        },
+        RANDOM: {
+            value: 'random',
+            url: 'why/get/random',
+            dom: 'random_dom',
+            des: '任何理由',
         }
     }
 }
@@ -81,6 +87,8 @@ var initialization = {
         reason.title_dom = document.getElementById('reason-title')
         reason.new_dom = document.getElementById('reason-new')
         reason.related_dom = document.getElementById('reason-related')
+        reason.random_dom = document.getElementById('reason-random')
+        reason.load_dom = document.getElementById('reason-load')
     },
 }
 
@@ -226,22 +234,33 @@ var statistics = {
 var reason = {
     title_dom: null,
     new_dom: null,
+    related_dom: null,
+    random_dom: null,
+    load_dom: null,
     data: {
         new: [ /** CONST.WHY.DEMO */ ],
-        related: [ /** CONST.WHY.DEMO */ ]
+        related: [ /** CONST.WHY.DEMO */ ],
+        random: [ /** CONST.WHY.DEMO */ ]
     },
 
     init: function init() {
+        var self = this
+
         this.renderTitle()
         this.getBy('new')
         this.getBy('related')
+        this.getBy('random', 2)
+
+        this.load_dom.onclick = function () {
+            self.getBy('random', 5)
+        }
     },
 
     renderTitle: function renderTitle() {
         this.title_dom.innerHTML = `为什么要“${process.target.name}”?`
     },
 
-    getBy: function getBy(type) {
+    getBy: function getBy(type, count) {
         var self = this
 
         var url = components.constHandle.findValueByValue({
@@ -251,11 +270,15 @@ var reason = {
             targetKey: 'url'
         })
 
+        var query = {
+            targetId: process.target.id
+        }
+
+        count ? query.count = count : null
+
         components.fetch.get({
             url,
-            query: {
-                targetId: process.target.id
-            }
+            query
         }).then(
             res => {
                 self.data[type] = res.data
