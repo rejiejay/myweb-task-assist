@@ -27,6 +27,21 @@ var CONST = {
             stickyTimestamp: null,
             sqlTimestamp: null
         }
+    },
+
+    REASON_TYPE: {
+        NEW: {
+            value: 'new',
+            url: 'why/get/three',
+            dom: 'new_dom',
+            des: '最新理由',
+        },
+        RELATED: {
+            value: 'related',
+            url: 'why/get/reasonable',
+            dom: 'related_dom',
+            des: '最大理由',
+        }
     }
 }
 
@@ -65,16 +80,19 @@ var initialization = {
 
         reason.title_dom = document.getElementById('reason-title')
         reason.new_dom = document.getElementById('reason-new')
+        reason.related_dom = document.getElementById('reason-related')
     },
 }
 
 var components = {
     toast: null,
     serviceStorage: null,
+    constHandle: null,
 
     init: function init() {
         this.fetch = Fetch.init()
         this.serviceStorage = ServiceStorage.init()
+        this.constHandle = ConstHandle
     }
 }
 
@@ -209,42 +227,65 @@ var reason = {
     title_dom: null,
     new_dom: null,
     data: {
-        new: [ /** CONST.WHY.DEMO */ ]
+        new: [ /** CONST.WHY.DEMO */ ],
+        related: [ /** CONST.WHY.DEMO */ ]
     },
 
     init: function init() {
         this.renderTitle()
-        this.getNew()
+        this.getBy('new')
+        this.getBy('related')
     },
 
     renderTitle: function renderTitle() {
         this.title_dom.innerHTML = `为什么要“${process.target.name}”?`
     },
 
-    getNew: function getNew() {
+    getBy: function getBy(type) {
         var self = this
 
+        var url = components.constHandle.findValueByValue({
+            CONST: CONST.REASON_TYPE,
+            supportKey: 'value',
+            supportValue: type,
+            targetKey: 'url'
+        })
+
         components.fetch.get({
-            url: 'why/get/three',
+            url,
             query: {
                 targetId: process.target.id
             }
         }).then(
             res => {
-                self.data.new = res.data
-                self.renderNew()
+                self.data[type] = res.data
+                self.renderBy(type)
             },
             error => {}
         )
     },
 
-    renderNew: function renderNew() {
+    renderBy: function renderBy(type) {
         var self = this
-        var list = this.data.new
+        var list = this.data[type]
 
-        if (list.length === 0) return this.new_dom.innerHTML = '理由为空'
+        var dom = components.constHandle.findValueByValue({
+            CONST: CONST.REASON_TYPE,
+            supportKey: 'value',
+            supportValue: type,
+            targetKey: 'dom'
+        })
 
-        this.new_dom.innerHTML = list.map(({
+        var des = components.constHandle.findValueByValue({
+            CONST: CONST.REASON_TYPE,
+            supportKey: 'value',
+            supportValue: type,
+            targetKey: 'des'
+        })
+
+        if (list.length === 0) return this[dom].innerHTML = `<div class="reason-item">${des}为空</div>`
+
+        this[dom].innerHTML = list.map(({
             id,
             targetId,
             content,
@@ -256,7 +297,7 @@ var reason = {
             </div>
         `).join('')
 
-        var children_dom = this.new_dom.children
+        var children_dom = this[dom].children
         for (var index = 0; index < children_dom.length; index++) {
             (function (index) {
                 var element = children_dom[index];
