@@ -97,7 +97,7 @@ var process = {
         var self = this
 
         this.container_dom.style.display = 'block'
-        this.description_dom.innerHTML = `run target: “${this.value.name}”`
+        this.description_dom.innerHTML = `范围: “${this.value.name}”`
 
         process.unlock_dom.onclick = function () {
             var handle = function handle() {

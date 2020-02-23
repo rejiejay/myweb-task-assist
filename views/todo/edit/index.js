@@ -26,7 +26,8 @@ var CONST = {
             estimate: null,
             image: null,
             putoffTimestamp: null,
-            completeTimestamp: null
+            completeTimestamp: null,
+            sqlTimestamp: null
         }
     }
 }
