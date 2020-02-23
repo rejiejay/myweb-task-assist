@@ -12,6 +12,21 @@ var CONST = {
             id: 'gwy',
             name: '公务员'
         }
+    },
+
+    WHY: {
+        DEFAULTS: {
+            id: null, // 作用: 判空
+            targetId: null, // 作用: 判空
+            content: null, // 作用: 判空
+        },
+        DEMO: {
+            id: 1,
+            targetId: 'not-null',
+            content: 'not-null',
+            stickyTimestamp: null,
+            sqlTimestamp: null
+        }
     }
 }
 
@@ -49,6 +64,7 @@ var initialization = {
         statistics.target_des_dom = document.getElementById('statistics-target')
 
         reason.title_dom = document.getElementById('reason-title')
+        reason.new_dom = document.getElementById('reason-new')
     },
 }
 
@@ -191,12 +207,76 @@ var statistics = {
 
 var reason = {
     title_dom: null,
+    new_dom: null,
+    data: {
+        new: [ /** CONST.WHY.DEMO */ ]
+    },
 
     init: function init() {
         this.renderTitle()
+        this.getNew()
     },
 
     renderTitle: function renderTitle() {
         this.title_dom.innerHTML = `为什么要“${process.target.name}”?`
+    },
+
+    getNew: function getNew() {
+        var self = this
+
+        components.fetch.get({
+            url: 'why/get/three',
+            query: {
+                targetId: process.target.id
+            }
+        }).then(
+            res => {
+                self.data.new = res.data
+                self.renderNew()
+            },
+            error => {}
+        )
+    },
+
+    renderNew: function renderNew() {
+        var self = this
+        var list = this.data.new
+
+        if (list.length === 0) return this.new_dom.innerHTML = '理由为空'
+
+        this.new_dom.innerHTML = list.map(({
+            id,
+            targetId,
+            content,
+            stickyTimestamp,
+            sqlTimestamp
+        }) => `
+            <div class="reason-item">
+                <div class="item-container">${content.replace(/\n/g, "<br>")}</div>
+            </div>
+        `).join('')
+
+        var children_dom = this.new_dom.children
+        for (var index = 0; index < children_dom.length; index++) {
+            (function (index) {
+                var element = children_dom[index];
+                var targetItem = list[index];
+
+                element.onclick = function () {
+                    self.editWhy(targetItem)
+                }
+            })(index)
+        }
+    },
+
+    editWhy: function editWhy({
+        id,
+        targetId,
+        content,
+        stickyTimestamp,
+        sqlTimestamp
+    }) {
+        window.localStorage.setItem('task-why-edit-id', id)
+        window.location.href = './edit/index.html'
     }
 }

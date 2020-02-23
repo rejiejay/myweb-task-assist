@@ -7,6 +7,21 @@ var CONST = {
         DEFAULTS: 'add',
         ADD: 'add',
         EDIT: 'edit',
+    },
+
+    WHY: {
+        DEFAULTS: {
+            id: null, // 作用: 判空
+            targetId: null, // 作用: 判空
+            content: null, // 作用: 判空
+        },
+        DEMO: {
+            id: 1,
+            targetId: 'not-null',
+            content: 'not-null',
+            stickyTimestamp: null,
+            sqlTimestamp: null
+        }
     }
 }
 
@@ -44,7 +59,7 @@ var initialization = {
 
         if (id) {
             window.localStorage['task-why-edit-id'] = ''
-            form.data.id = id
+            textarea.data.id = id
             this.status = CONST.PAGE_STATUS.EDIT
         } else {
             this.status = CONST.PAGE_STATUS.ADD
@@ -95,14 +110,14 @@ var target = {
 
 var textarea = {
     dom: null,
-    data: null,
+    data: CONST.WHY.DEFAULTS,
 
     init: function init() {
         var self = this
 
         this.dom.style.height = `${initialization.clientHeight - 46}px`
         this.dom.oninput = function () {
-            self.data = this.value
+            self.data.content = this.value
         }
     }
 }
@@ -119,7 +134,7 @@ var confirm = {
     },
 
     verify: function verify() {
-        var content = textarea.data
+        var content = textarea.data.content
 
         if (!content) return components.toast.show('内容不能为空');
 
@@ -137,7 +152,7 @@ var confirm = {
             url: 'why/add',
             body: {
                 targetId: target.id,
-                content: textarea.data
+                content: textarea.data.content
             }
         }).then(
             res => window.location.href = './../index.html',
