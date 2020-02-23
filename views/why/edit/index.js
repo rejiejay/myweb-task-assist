@@ -45,6 +45,7 @@ var initialization = {
         this.initPageStatus()
 
         confirm.init()
+        del.init()
 
         target.init().then(() => {
             slef.stepTwo()
@@ -73,6 +74,7 @@ var initialization = {
     initDom: function initDom() {
         textarea.dom = document.getElementById('reason-input')
         confirm.dom = document.getElementById('confirm')
+        del.dom = document.getElementById('delete')
     },
 }
 
@@ -192,5 +194,48 @@ var confirm = {
             res => window.location.href = './../index.html',
             error => {}
         )
+    }
+}
+
+var del = {
+    dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.dom.onclick = function () {
+            var isDel = false
+            var confirmMsg
+
+            if (initialization.status === CONST.PAGE_STATUS.EDIT) {
+                isDel = true
+                confirmMsg = '你确认要删除吗?'
+            } else {
+                confirmMsg = '是否取消新增理由?'
+            }
+            var parameter = {
+                title: confirmMsg,
+                succeedHandle: () => isDel ? self.deleteHandle() : self.cancelHandle()
+            }
+            components.confirmPopUp(parameter)
+        }
+    },
+
+    deleteHandle: function deleteHandle() {
+        var self = this
+
+        components.fetch.post({
+            url: 'why/delete',
+            body: {
+                id: textarea.data.id
+            }
+        }).then(
+            res => window.location.href = './../index.html',
+            error => {}
+        )
+    },
+
+    cancelHandle: function cancelHandle() {
+        window.location.href = './../index.html'
     }
 }
