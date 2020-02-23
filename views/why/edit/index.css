@@ -21,7 +21,9 @@ body {
   border-top: 1px solid #ddd;
   background-color: #fff;
 }
-.reason-eidt .reason-operating .operating-yes {
+.reason-eidt .reason-operating .operating-sticky-reason,
+.reason-eidt .reason-operating .operating-unpin-reason,
+.reason-eidt .reason-operating .operating-confirm {
   border-right: 1px solid #ddd;
 }
 .reason-eidt .reason-operating > div {

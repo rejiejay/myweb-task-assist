@@ -10,6 +10,16 @@
     <link type="text/css" rel="stylesheet" href="./../../css/base.css">
     <link type="text/css" rel="stylesheet" href="./../../css/flex.css">
 
+    <!-- fetch组合 -->
+    <script type="text/javascript" charset="utf-8" src="./../../components/fetch/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="./../../components/toast/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../components/toast/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="./../../components/input-popup/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../components/input-popup/index.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="./../../utils/json-handle.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./../../components/service-storage/index.js"></script>
+
     <link type="text/css" rel="stylesheet" href="./index.css">
     <script type="text/javascript" charset="utf-8" src="./index.js"></script>
 </head>
@@ -17,8 +27,8 @@
 <body>
     <!-- 统计 -->
     <div class="statistics">
-        <div class="statistics-title">任务统计</div>
-        <div class="statistics-description">这个月完成<span>0</span>个任务</div>
+        <div class="statistics-title" id="statistics-all">所有任务统计</div>
+        <div class="statistics-description" id="statistics-target">这个月完成<span>0</span>个任务</div>
     </div>
 
     <!-- spiritual check -->
@@ -28,7 +38,7 @@
 
     <!-- 理由 -->
     <div class="reason">
-        <div class="reason-title">为什么要"考公务员"?</div>
+        <div class="reason-title" id="reason-title">为什么要"任务"?</div>
         <div class="reason-new">
             <div class="reason-item">
                 <div class="item-container">最新理由一</div>
