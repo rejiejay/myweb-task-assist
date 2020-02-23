@@ -365,7 +365,6 @@ var putoff = {
     },
 
     handle: function handle(data) {
-        var self = this
         var body = JSON.parse(JSON.stringify(todo.data))
         body.putoffTimestamp = components.timeTransformers.YYYYmmDDhhMMToTimestamp(data)
         components.fetch.post({
@@ -426,8 +425,21 @@ var record = {
     },
 
     handle: function handle(input) {
-        console.log(input)
         components.inputPopUp.hiden()
+        var body = JSON.parse(JSON.stringify(todo.data))
+        body.conclusion += `\n${input}`
+        components.fetch.post({
+            url: 'task/update',
+            body
+        }).then(
+            res => {
+                todo.data = res.data
+                todo.render()
+            },
+            error => {}
+        )
+
+
     }
 }
 
@@ -541,7 +553,7 @@ var todo = {
         /**
          * 需要解决换行问题
          */
-        this.dom.conclusions.innerHTML = conclusion
+        this.dom.conclusions.innerHTML = conclusion.replace(/\n/g,"<br>")
         this.showConclusions(false)
     },
 
