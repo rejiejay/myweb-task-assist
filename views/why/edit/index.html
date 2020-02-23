@@ -10,6 +10,19 @@
     <link type="text/css" rel="stylesheet" href="./../../../css/base.css">
     <link type="text/css" rel="stylesheet" href="./../../../css/flex.css">
 
+    <!-- fetch组合 -->
+    <script type="text/javascript" charset="utf-8" src="./../../../components/fetch/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="./../../../components/toast/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../../components/toast/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="./../../../components/input-popup/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../../components/input-popup/index.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="./../../../utils/json-handle.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./../../../components/service-storage/index.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="./../../../components/confirm-popup/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../../components/confirm-popup/index.js"></script>
+
     <link type="text/css" rel="stylesheet" href="./index.css">
     <script type="text/javascript" charset="utf-8" src="./index.js"></script>
 </head>
@@ -21,7 +34,7 @@
         <div class="reason-operating flex-start">
             <div class="operating-sticky-reason flex-rest flex-center">顶置理由</div>
             <div class="operating-unpin-reason flex-rest flex-center">取消置顶</div>
-            <div class="operating-yes flex-rest flex-center">确认</div>
+            <div class="operating-confirm flex-rest flex-center" id="confirm">确认</div>
             <div class="operating-del flex-rest flex-center">删除</div>
         </div>
     </div>
