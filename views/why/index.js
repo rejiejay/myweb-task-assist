@@ -63,6 +63,7 @@ var initialization = {
 
         spiritual.init()
         add.init()
+        operational.init()
 
         process.init().then(() => {
             self.stepTwo()
@@ -89,6 +90,9 @@ var initialization = {
         reason.related_dom = document.getElementById('reason-related')
         reason.random_dom = document.getElementById('reason-random')
         reason.load_dom = document.getElementById('reason-load')
+        
+        operational.todo_dom = document.getElementById('operational-todo')
+        operational.plan_dom = document.getElementById('operational-plan')
     },
 }
 
@@ -342,5 +346,19 @@ var reason = {
     }) {
         window.localStorage.setItem('task-why-edit-id', id)
         window.location.href = './edit/index.html'
+    }
+}
+
+var operational = {
+    todo_dom: null,
+    plan_dom: null,
+
+    init: function init() {
+        this.todo_dom.onclick = function () {
+            window.location.href = './../todo/list/index.html'
+        }
+        this.plan_dom.onclick = function () {
+            window.location.href = './../plan/index.html'
+        }
     }
 }
