@@ -70,16 +70,19 @@ var initialization = {
         if (editId) {
             textarea.data.id = editId
             this.status = CONST.PAGE_STATUS.EDIT
+            confirm.dom.innerHTML = '编辑'
         }
 
         if (showId) {
             textarea.data.id = showId
             textarea.dom.setAttribute('disabled', 'disabled')
             this.status = CONST.PAGE_STATUS.SHOW
+            confirm.dom.innerHTML = '<span style="text-decoration: line-through;">编辑</span>'
         }
 
         if (!editId && !showId) {
             this.status = CONST.PAGE_STATUS.ADD
+            confirm.dom.innerHTML = '新增'
         }
 
         window.localStorage['task-plan-program-edit-id'] = ''
@@ -100,7 +103,7 @@ var components = {
     toast: null,
     fetch: null,
     serviceStorage: null,
-    
+
     init: function init() {
         this.fetch = Fetch.init()
         this.toast = Toast.init()
@@ -147,24 +150,24 @@ var textarea = {
             self.data.program = this.value
         }
 
-        // this.initDate()
+        this.initDate()
     },
 
     initDate: function initDate() {
         var self = this
 
-        if (initialization.status !== CONST.PAGE_STATUS.EDIT) return
+        if (initialization.status !== CONST.PAGE_STATUS.EDIT && initialization.status !== CONST.PAGE_STATUS.SHOW) return
 
         components.fetch.get({
-            url: 'why/get/one',
+            url: 'plan/get/one',
             query: {
                 id: this.data.id
             }
         }).then(
             res => {
                 self.data = res.data
-                self.data.program = res.data.content
-                self.dom.value = res.data.content
+                self.data.program = res.data.program
+                self.dom.value = res.data.program
             },
             error => {}
         )
@@ -200,7 +203,7 @@ var confirm = {
 
     editHandle: function editHandle() {
         components.fetch.post({
-            url: 'plan/edit',
+            url: 'plan/program/edit',
             body: {
                 id: textarea.data.id,
                 program: textarea.data.program
