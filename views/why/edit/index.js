@@ -46,6 +46,7 @@ var initialization = {
 
         confirm.init()
         del.init()
+        reasonable.init()
 
         target.init().then(() => {
             slef.stepTwo()
@@ -73,6 +74,9 @@ var initialization = {
      */
     initDom: function initDom() {
         textarea.dom = document.getElementById('reason-input')
+
+        reasonable.sticky_dom = document.getElementById('sticky-reason')
+        reasonable.unpin_dom = document.getElementById('unpin-reason')
         confirm.dom = document.getElementById('confirm')
         del.dom = document.getElementById('delete')
     },
@@ -145,6 +149,47 @@ var textarea = {
             error => {}
         )
     },
+}
+
+var reasonable = {
+    dom: null,
+    sticky_dom: null,
+    unpin_dom: null,
+
+    init: function init() {
+        var self = this
+
+        this.sticky_dom.onclick = function () {
+            self.set({
+                setToFullest: true
+            })
+        }
+        this.unpin_dom.onclick = function () {
+            self.set({
+                setToFullest: false
+            })
+        }
+    },
+
+    set: function set({
+        setToFullest
+    }) {
+        if (!textarea.data.id) return components.toast.show('无法置顶新增任务!');
+
+        components.fetch.post({
+            url: 'why/edit/reasonable',
+            body: {
+                id: textarea.data.id,
+                setToFullest
+            }
+        }).then(
+            res => {
+                setTimeout(() => components.toast.show(setToFullest ? '成功顶置任务!' : '成功取消置顶!'), 200)
+                textarea.initDate()
+            },
+            error => {}
+        )
+    }
 }
 
 var confirm = {
