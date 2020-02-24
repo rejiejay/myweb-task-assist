@@ -241,7 +241,7 @@ var program = {
             /**
              * 注意: 可以编辑, 不可删除
              */
-            window.localStorage.setItem('task-plan-program-edit-id', id)
+            window.localStorage.setItem('task-plan-program-edit-id', latest.id)
             window.location.href = './edit/index.html'
         }
 
@@ -255,7 +255,7 @@ var program = {
                     /**
                      * 注意: 不可编辑, 仅能查看, 不可删除
                      */
-                    window.localStorage.setItem('task-plan-program-show-id', id)
+                    window.localStorage.setItem('task-plan-program-show-id', targetItem.id)
                     window.location.href = './edit/index.html'
                 }
             })(index)
