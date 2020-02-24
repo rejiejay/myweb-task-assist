@@ -49,7 +49,7 @@ var initialization = {
 }
 
 var components = {
-    toast: null,
+    fetch: null,
     serviceStorage: null,
 
     init: function init() {
