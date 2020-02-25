@@ -53,6 +53,7 @@ var initialization = {
 
         this.initPageStatus()
         confirm.init()
+        draft.init()
 
         process.init().then(() => {
             self.stepTwo()
@@ -96,6 +97,7 @@ var initialization = {
         textarea.dom = document.getElementById('plan-input')
 
         confirm.dom = document.getElementById('confirm')
+        draft.dom = document.getElementById('draft')
     }
 }
 
@@ -154,10 +156,31 @@ var textarea = {
     },
 
     initDate: function initDate() {
+        if (initialization.status === CONST.PAGE_STATUS.ADD) this.getDateByStorage();
+        if (initialization.status === CONST.PAGE_STATUS.EDIT && initialization.status === CONST.PAGE_STATUS.SHOW) this.getDateByServer();
+    },
+
+    /**
+     * 注意: 这是草稿功能
+     */
+    getDateByStorage: function getDateByStorage() {
         var self = this
 
-        if (initialization.status !== CONST.PAGE_STATUS.EDIT && initialization.status !== CONST.PAGE_STATUS.SHOW) return
+        components.serviceStorage.getItem({
+            key: 'draftPlanDesign'
+        }).then(
+            ({
+                program
+            }) => {
+                self.data.program = program
+                self.dom.value = program
+            },
+            error => {}
+        )
+    },
 
+    getDateByServer: function getDateByServer() {
+        var self = this
         components.fetch.get({
             url: 'plan/get/one',
             query: {
@@ -171,7 +194,7 @@ var textarea = {
             },
             error => {}
         )
-    },
+    }
 }
 
 var confirm = {
@@ -223,6 +246,42 @@ var confirm = {
             }
         }).then(
             res => window.location.href = './../index.html',
+            error => {}
+        )
+    }
+}
+
+var draft = {
+    dom: null,
+
+    init: function init() {
+        if (initialization.status !== CONST.PAGE_STATUS.ADD) return this.dom.style = 'display: none;'
+        this.bindClick()
+        this.initAutoStorage()
+    },
+
+    bindClick: function bindClick() {
+        var self = this
+        this.dom.onclick = function () {
+            self.save()
+        }
+    },
+
+    initAutoStorage: function initAutoStorage() {
+        var self = this
+        setInterval(() => {
+            self.save()
+        }, (1000 * 60 * 1));
+    },
+
+    save: function save() {
+        components.serviceStorage.setItem({
+            key: 'draftPlanDesign',
+            value: {
+                program: textarea.data.program
+            }
+        }).then(
+            res => components.toast.show('保存草稿成功!'),
             error => {}
         )
     }
