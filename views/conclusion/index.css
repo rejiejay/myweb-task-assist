@@ -7,6 +7,22 @@ body {
   color: #606266;
   background-color: #f1f1f1;
 }
+.process-task {
+  padding: 15px 15px 0px 15px;
+}
+.process-task .process-container {
+  background-color: #adc6ff;
+  color: #fff;
+}
+.process-task .process-container > div {
+  height: 45px;
+}
+.process-task .process-container .task-item {
+  border-right: 1px solid #ddd;
+}
+.process-task .process-container .task-del {
+  padding: 0px 10px;
+}
 .sort {
   padding: 15px;
 }
