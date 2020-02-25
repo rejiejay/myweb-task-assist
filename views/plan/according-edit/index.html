@@ -20,6 +20,9 @@
     <script type="text/javascript" charset="utf-8" src="./../../../utils/json-handle.js"></script>
     <script type="text/javascript" charset="utf-8" src="./../../../components/service-storage/index.js"></script>
 
+    <link type="text/css" rel="stylesheet" href="./../../../components/confirm-popup/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../../components/confirm-popup/index.js"></script>
+
     <link type="text/css" rel="stylesheet" href="./index.css">
     <script type="text/javascript" charset="utf-8" src="./index.js"></script>
 </head>
@@ -29,8 +32,8 @@
         <textarea id="according-input" class="according-textarea fiex-rest" type="text" placeholder="请输入依据"></textarea>
 
         <div class="according-operating flex-start">
-            <div class="operating-yes flex-rest flex-center">确定</div>
-            <div class="operating-del flex-rest flex-center">删除</div>
+            <div class="operating-yes flex-rest flex-center" id="confirm">确定</div>
+            <div class="operating-del flex-rest flex-center" id="delete">删除</div>
         </div>
     </div>
 </body>
