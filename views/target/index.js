@@ -97,7 +97,6 @@ var components = {
     fetch: null,
     loadPageVar: null,
     constHandle: null,
-    jsonHandle: null,
     serviceStorage: null,
 
     init: function init() {
@@ -106,7 +105,6 @@ var components = {
 
         this.loadPageVar = LoadPageVar
         this.constHandle = ConstHandle
-        this.jsonHandle = JsonHandle
         this.serviceStorage = ServiceStorage.init()
     }
 }

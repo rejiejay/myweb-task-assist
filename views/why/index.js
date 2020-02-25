@@ -48,6 +48,27 @@ var CONST = {
             dom: 'random_dom',
             des: '任何理由',
         }
+    },
+
+    STATISTICS: {
+        DEFAULTS: {
+            monthCount: 0,
+            twoWeekCount: 0,
+            oneWeekCount: 0,
+            threeDayCount: 0,
+            towDayCount: 0,
+            oneDayCount: 0,
+            expireTimestamp: new Date().getTime()
+        },
+        DEMO: {
+            monthCount: 0,
+            twoWeekCount: 0,
+            oneWeekCount: 0,
+            threeDayCount: 0,
+            towDayCount: 0,
+            oneDayCount: 0,
+            expireTimestamp: new Date().getTime()
+        }
     }
 }
 
@@ -90,7 +111,7 @@ var initialization = {
         reason.related_dom = document.getElementById('reason-related')
         reason.random_dom = document.getElementById('reason-random')
         reason.load_dom = document.getElementById('reason-load')
-        
+
         operational.todo_dom = document.getElementById('operational-todo')
         operational.plan_dom = document.getElementById('operational-plan')
     },
@@ -100,11 +121,13 @@ var components = {
     toast: null,
     serviceStorage: null,
     constHandle: null,
+    jsonHandle: null,
 
     init: function init() {
         this.fetch = Fetch.init()
         this.serviceStorage = ServiceStorage.init()
         this.constHandle = ConstHandle
+        this.jsonHandle = JsonHandle
     }
 }
 
@@ -159,23 +182,73 @@ var statistics = {
     target_des_dom: null,
 
     init: function init() {
+        var targetId = process.target.id
+        var statisticsAllString = window.localStorage['task-todo-statistics-all']
+        var statisticsTargetString = window.localStorage[`task-todo-statistics-${targetId}`]
+
+        if (!statisticsAllString || !statisticsTargetString) return this.getDate()
+
+        var statisticsAllVerify = components.jsonHandle.verifyJSONString({
+            jsonString: statisticsAllString
+        })
+        var statisticsTargetVerify = components.jsonHandle.verifyJSONString({
+            jsonString: statisticsTargetString
+        })
+
+        if (!statisticsAllVerify.isCorrect || !statisticsTargetVerify.isCorrect) return this.getDate()
+
+        var statisticsAll = statisticsAllVerify.data
+        var statisticsTarget = statisticsTargetVerify.data
+        
+        /**
+         * 含义: 现在时间 超过 过期时间, 就表示过期
+         */
+        var nowTimestamp = new Date().getTime()
+        if (!statisticsAll || !statisticsAll.expireTimestamp || (nowTimestamp > +statisticsAll.expireTimestamp)) return this.getDate()
+        if (!statisticsTarget || !statisticsTarget.expireTimestamp || (nowTimestamp > +statisticsAll.expireTimestamp)) return this.getDate()
+
+        this.renderStatisticsAll(statisticsAll)
+        this.renderStatisticsTarget(statisticsTarget)
+    },
+
+    getDate: function getDate() {
         var self = this
+        /**
+         * 含义: 统计一小时后过期
+         * 初衷: 防止频繁调用统计接口
+         */
+        var expireTimestamp = new Date().getTime() + (1000 * 60 * 60)
+        var targetId = process.target.id
 
         components.fetch.get({
             url: 'task/statistics',
             query: {}
         }).then(
-            res => self.renderStatisticsAll(res.data),
+            res => {
+                var statistics = {
+                    expireTimestamp,
+                    ...res.data
+                }
+                window.localStorage.setItem(`task-todo-statistics-all`, JSON.stringify(statistics))
+                self.renderStatisticsAll(statistics)
+            },
             error => {}
         )
 
         components.fetch.get({
             url: 'task/statistics',
             query: {
-                targetId: process.target.id
+                targetId
             }
         }).then(
-            res => self.renderStatisticsTarget(res.data),
+            res => {
+                var statistics = {
+                    expireTimestamp,
+                    ...res.data
+                }
+                window.localStorage.setItem(`task-todo-statistics-${targetId}`, JSON.stringify(statistics))
+                self.renderStatisticsTarget(statistics)
+            },
             error => {}
         )
     },

@@ -19,3 +19,8 @@
 
 定义: 正在执行中的任务
 格式: { id, ... }
+
+- draftPlanDesign  
+
+定义: 目标计划草稿
+格式: { program }

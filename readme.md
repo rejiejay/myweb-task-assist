@@ -11,15 +11,17 @@
 [第一版（纯UI）](https://github.com/rejiejay/myweb-task-assist/tree/b42dcbbaf00dd0c204b64934311d68e44d5a7bdf)
 
 # 发布流程
-1. 修改请求 fetch 配置
-components\fetch\index.js:2
+1. 修改请求 fetch 配置  
+components\fetch\index.js:2  
 
 # localStorage
 
-localStorage['rejiejay-task-assist-token']
-localStorage['rejiejay-task-assist-password']
-localStorage['task-conclusion-list-sort-type']
-localStorage['task-todo-edit-id']
-localStorage['task-why-edit-id']
-localStorage['task-plan-program-edit-id']
-localStorage['task-plan-program-show-id']
+localStorage['rejiejay-task-assist-token']  
+localStorage['rejiejay-task-assist-password']  
+localStorage['task-conclusion-list-sort-type']  
+localStorage['task-todo-edit-id']  
+localStorage['task-todo-statistics-all']  
+localStorage[`task-todo-statistics-${targetId}`]  
+localStorage['task-why-edit-id']  
+localStorage['task-plan-program-edit-id']  
+localStorage['task-plan-program-show-id']  
