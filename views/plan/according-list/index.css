@@ -7,15 +7,21 @@ body {
   color: #606266;
   background-color: #f1f1f1;
 }
-.according {
+.according .according-container {
   padding: 15px;
 }
-.according .according-item {
-  padding-bottom: 15px;
-}
-.according .according-item .item-container {
+.according .according-container .according-item {
   padding: 15px;
   border: 1px solid #ddd;
+}
+.according .operating-container {
+  padding-bottom: 15px;
+}
+.according .operating-container .according-operating {
+  line-height: 32px;
+  text-align: center;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
 .operating {
   border-top: 1px solid #ddd;
@@ -27,5 +33,6 @@ body {
 .operating .operating-button .button-container {
   padding: 15px;
   border: 1px solid #ddd;
+  text-align: center;
   background-color: #fff;
 }

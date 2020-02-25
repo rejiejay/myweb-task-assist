@@ -199,12 +199,8 @@ var program = {
         var diff = count - (10 * pageNo)
         this.handle_show_more_dom.innerHTML = `显示更多(剩余: ${diff > 0 ? diff : 0})`
         var latest = JSON.parse(JSON.stringify(list[0]))
-        var otherList = list.reduce(function (accumulator, currentValue, currentIndex, array) {
-            if (currentIndex !== 0) {
-                return accumulator.concat(currentValue);
-            }
-            return currentIndex !== 0 ? accumulator.concat(currentValue) : accumulator
-        }, []);
+        
+        var otherList = list.filter((program, index) => index === 0);
 
         latest_dom.innerHTML = `
             <div class="content-container">
