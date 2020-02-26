@@ -24,6 +24,17 @@ var CONST = {
             lable: '随机排序',
             description: 'sort by random'
         }
+    },
+
+    STATISTICS: {
+        DEFAULTS: {
+            count: 0,
+            expiredTimestamp: new Date().getTime()
+        },
+        DEMO: {
+            count: 0,
+            expiredTimestamp: 0
+        }
     }
 }
 
@@ -37,7 +48,6 @@ var initialization = {
         this.initDom()
         components.init()
 
-        sort.init()
         edit.init()
 
         process.init().then(() => {
@@ -45,7 +55,9 @@ var initialization = {
         })
     },
 
-    stepTwo: function stepTwo() {},
+    stepTwo: function stepTwo() {
+        sort.init()
+    },
 
     /**
      * 节点 初始化
@@ -56,6 +68,8 @@ var initialization = {
 
         process.description_dom = document.getElementById('process-description')
         process.unlock_dom = document.getElementById('process-unlock')
+        list.list_dom = document.getElementById('list')
+        list.handle_show_more_dom = document.getElementById('show-more')
     }
 }
 
@@ -63,11 +77,15 @@ var components = {
     constHandle: null,
     fetch: null,
     serviceStorage: null,
+    confirmPopUp: null,
+    jsonHandle: null,
 
     init: function init() {
         this.constHandle = ConstHandle
         this.fetch = Fetch.init()
         this.serviceStorage = ServiceStorage.init()
+        this.confirmPopUp = ConfirmPopUp.init()
+        this.jsonHandle = JsonHandle
     }
 }
 
@@ -94,6 +112,9 @@ var process = {
 
             var handle = function handle() {
                 self.unlock()
+                list.initDataAll({
+                    isForce: true
+                })
             }
 
             var parameter = {
@@ -154,6 +175,11 @@ var sort = {
         }
     },
 
+    switchType: function switchType() {
+        var newType = this.type === CONST.SORT.TIME.value ? CONST.SORT.RANDOM.value : CONST.SORT.TIME.value
+        this.initValue(newType)
+    },
+
     initValue: function switchType(type) {
         if (!type || type === 'null') return
         this.type = type
@@ -164,12 +190,15 @@ var sort = {
             supportValue: type,
             targetKey: 'lable'
         })
-    },
 
-    switchType: function switchType() {
-        var newType = this.type === CONST.SORT.TIME.value ? CONST.SORT.RANDOM.value : CONST.SORT.TIME.value
-        this.initValue(newType)
-    }
+        if (this.type === CONST.SORT.TIME.value) {
+            list.initDataByTime()
+        }
+
+        if (this.type === CONST.SORT.RANDOM.value) {
+            list.initDataByRandom()
+        }
+    },
 }
 
 /**
@@ -191,4 +220,172 @@ var edit = {
             window.location.href = './edit/index.html'
         }
     }
+}
+
+var list = {
+    list_dom: null,
+    handle_show_more_dom: null,
+    data: [
+        /** CONST.ACCIORDING.DEMO */
+    ],
+    pageNo: 1,
+    count: 0,
+
+    init: function init() {
+        this.initDataAll()
+        this.initShowMore()
+        sort.type
+    },
+
+    initShowMore: function initShowMore() {
+        var self = this
+        this.handle_show_more_dom.onclick = function () {
+            if (sort.type === CONST.SORT.TIME.value && self.count === self.data.length) return components.toast.show('已加载完成所有数据!')
+
+            self.initDataAll()
+        }
+    },
+
+    initDataAll: function initDataAll({
+        isForce
+    }) {
+        if (sort.type === CONST.SORT.TIME.value) {
+            this.initDataByTime()
+        }
+        if (sort.type === CONST.SORT.RANDOM.value) {
+            this.initDataByRandom()
+        }
+
+        this.initStatistics(isForce)
+    },
+
+    /**
+     * 初衷: 避免消耗太多SQL性能
+     * 定义: 1分钟刷新一次
+     */
+    initStatistics: function initStatistics(isForce) {
+        var self = this
+        var statistic = CONST.STATISTICS.DEFAULTS
+        var nowTimestamp = new Date().getTime()
+
+        var query = targetId ? {
+            targetId
+        } : {}
+
+        /**
+         * 含义: 强制刷新
+         */
+        if (!isForce) {
+            var statisticString = window.localStorage['task-conclusion-list-statistics']
+            var verify = statisticString ? components.jsonHandle.verifyJSONString({
+                jsonString: statisticString,
+                isArray: true
+            }) : {
+                isCorrect: false
+            }
+            /**
+             * 含义: 解析缓存失败情况
+             */
+            if (verify.isCorrect) {
+                statistic = verify.data
+                /**
+                 * 含义: 未过期不执行
+                 * 注意: 当前时间 超过 过期时间, 表示过期
+                 */
+                if (nowTimestamp > +statistic.expiredTimestamp) {
+                    return this.count = statistic.count
+                }
+            }
+        }
+
+        components.fetch.get({
+            url: 'task/conclusion/statistics',
+            query
+        }).then(
+            ({
+                data
+            }) => {
+                self.count = data
+                statistic = {
+                    expiredTimestamp: (nowTimestamp + (1000 * 60 * 1)),
+                    count: data
+                }
+                window.localStorage.setItem('task-conclusion-list-statistics', JSON.stringify(statistic))
+            },
+            error => {}
+        )
+    },
+
+    initDataByTime: function initDataByTime() {
+        var self = this
+        var pageNo = this.pageNo
+        var targetId = process.target.id
+        var query = {
+            pageNo
+        }
+        targetId ? query.targetId = targetId : null
+
+        components.fetch.get({
+            url: 'task/conclusion/list',
+            query
+        }).then(
+            ({
+                data
+            }) => {
+                if (data.length === 0) return components.toast.show('已加载完成所有数据!')
+
+                /**
+                 * 含义: 判断是否新增
+                 */
+                if (self.data.length > 0 && self.pageNo > 1 && self.count > 1) {
+                    self.data = self.data.concat(data)
+                } else {
+                    self.data = data
+                }
+
+                self.render()
+            },
+            error => {}
+        )
+    },
+
+    initDataByRandom: function initDataByRandom() {
+        var self = this
+        var targetId = process.target.id
+        var query = targetId ? {
+            targetId
+        } : {}
+
+        var duplicate = function duplicate(list) {
+            var filters = new Set()
+            return list.filter(according => {
+                var isRepeat = !Array.from(filters).includes(according.id)
+                filters.add(according.id)
+                return isRepeat
+            })
+        }
+
+        this.pageNo = 1
+        components.fetch.get({
+            url: 'task/conclusion/random',
+            query
+        }).then(
+            ({
+                data
+            }) => {
+                if (data.length === 0) return components.toast.show('已加载完成所有数据!')
+
+                /**
+                 * 含义: 每次组合时, 都需要去重一次;
+                 */
+                self.data = duplicate(self.data.concat(data))
+                self.render()
+            },
+            error => {}
+        )
+    },
+
+    render: function render() {
+        console.log(this.data)
+    },
 }

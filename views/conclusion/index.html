@@ -22,6 +22,9 @@
 
     <script type="text/javascript" charset="utf-8" src="./../../utils/const-handle.js"></script>
 
+    <link type="text/css" rel="stylesheet" href="./../../components/confirm-popup/index.css">
+    <script type="text/javascript" charset="utf-8" src="./../../components/confirm-popup/index.js"></script>
+ 
     <link type="text/css" rel="stylesheet" href="./index.css">
     <script type="text/javascript" charset="utf-8" src="./index.js"></script>
 </head>
@@ -40,16 +43,18 @@
     </div>
 
     <div class="conclusion">
-        <div class="conclusion-item">
-            <div class="item-container">
-                <div class="item-title">这是标题</div>
-                <!-- <div class="item-image">
+        <div class="conclusion-list" id="list">
+            <div class="conclusion-item">
+                <div class="item-container">
+                    <div class="item-title">这是标题</div>
+                    <!-- <div class="item-image">
                     <img id="image" src="image.jpg" alt="image">
                 </div> -->
-                <div class="item-description">这是内容</div>
+                    <div class="item-description">这是内容</div>
+                </div>
             </div>
         </div>
-        <div class="conclusion-load flex-center">加载更多</div>
+        <div class="conclusion-load flex-center" id="show-more">加载更多</div>
     </div>
     <div class="operating">
         <div class="operating-button">
