@@ -35,6 +35,30 @@ var CONST = {
             count: 0,
             expiredTimestamp: 0
         }
+    },
+
+    CONCLUSION: {
+        DEFAULTS: {
+            id: null, // 作用: 判空
+            conclusion: null, // 作用: 判空
+        },
+        DEMO: {
+            id: 1,
+            targetId: 'not-null',
+            title: 'not-null',
+            content: '',
+            conclusion: null,
+            measure: null,
+            span: null,
+            aspects: null,
+            worth: null,
+            estimate: null,
+            image: null,
+            putoffTimestamp: null,
+            completeTimestamp: null,
+            sqlTimestamp: null
+        }
+
     }
 }
 
@@ -57,6 +81,7 @@ var initialization = {
 
     stepTwo: function stepTwo() {
         sort.init()
+        list.init()
     },
 
     /**
@@ -79,10 +104,13 @@ var components = {
     serviceStorage: null,
     confirmPopUp: null,
     jsonHandle: null,
+    toast: null,
+
 
     init: function init() {
         this.constHandle = ConstHandle
         this.fetch = Fetch.init()
+        this.toast = Toast.init()
         this.serviceStorage = ServiceStorage.init()
         this.confirmPopUp = ConfirmPopUp.init()
         this.jsonHandle = JsonHandle
@@ -178,6 +206,9 @@ var sort = {
     switchType: function switchType() {
         var newType = this.type === CONST.SORT.TIME.value ? CONST.SORT.RANDOM.value : CONST.SORT.TIME.value
         this.initValue(newType)
+        list.initDataAll({
+            isForce: true
+        })
     },
 
     initValue: function switchType(type) {
@@ -191,13 +222,6 @@ var sort = {
             targetKey: 'lable'
         })
 
-        if (this.type === CONST.SORT.TIME.value) {
-            list.initDataByTime()
-        }
-
-        if (this.type === CONST.SORT.RANDOM.value) {
-            list.initDataByRandom()
-        }
     },
 }
 
@@ -232,31 +256,36 @@ var list = {
     count: 0,
 
     init: function init() {
-        this.initDataAll()
+        this.initDataAll({
+            isForce: true
+        })
         this.initShowMore()
-        sort.type
     },
 
     initShowMore: function initShowMore() {
         var self = this
+
         this.handle_show_more_dom.onclick = function () {
             if (sort.type === CONST.SORT.TIME.value && self.count === self.data.length) return components.toast.show('已加载完成所有数据!')
 
-            self.initDataAll()
+            self.initDataAll({
+                isForce: false
+            })
         }
     },
 
     initDataAll: function initDataAll({
         isForce
     }) {
-        if (sort.type === CONST.SORT.TIME.value) {
-            this.initDataByTime()
-        }
-        if (sort.type === CONST.SORT.RANDOM.value) {
-            this.initDataByRandom()
-        }
-
-        this.initStatistics(isForce)
+        var self = this
+        this.initStatistics(isForce).then(() => {
+            if (sort.type === CONST.SORT.TIME.value) {
+                self.initDataByTime()
+            }
+            if (sort.type === CONST.SORT.RANDOM.value) {
+                self.initDataByRandom()
+            }
+        })
     },
 
     /**
@@ -265,55 +294,62 @@ var list = {
      */
     initStatistics: function initStatistics(isForce) {
         var self = this
+
         var statistic = CONST.STATISTICS.DEFAULTS
         var nowTimestamp = new Date().getTime()
+        var targetId = process.target.id
 
         var query = targetId ? {
             targetId
         } : {}
 
-        /**
-         * 含义: 强制刷新
-         */
-        if (!isForce) {
-            var statisticString = window.localStorage['task-conclusion-list-statistics']
-            var verify = statisticString ? components.jsonHandle.verifyJSONString({
-                jsonString: statisticString,
-                isArray: true
-            }) : {
-                isCorrect: false
-            }
+        return new Promise(resolve => {
             /**
-             * 含义: 解析缓存失败情况
+             * 含义: 强制刷新
              */
-            if (verify.isCorrect) {
-                statistic = verify.data
+            if (!isForce) {
+                var statisticString = window.localStorage['task-conclusion-list-statistics']
+                var verify = statisticString ? components.jsonHandle.verifyJSONString({
+                    jsonString: statisticString,
+                    isArray: true
+                }) : {
+                    isCorrect: false
+                }
+
                 /**
-                 * 含义: 未过期不执行
-                 * 注意: 当前时间 超过 过期时间, 表示过期
+                 * 含义: 解析缓存失败情况
                  */
-                if (nowTimestamp > +statistic.expiredTimestamp) {
-                    return this.count = statistic.count
+                if (verify.isCorrect) {
+                    statistic = verify.data
+                    /**
+                     * 含义: 未过期不执行
+                     * 注意: 当前时间 超过 过期时间, 表示过期
+                     */
+                    if (nowTimestamp > +statistic.expiredTimestamp) {
+                        self.count = +statistic.count
+                        return resolve()
+                    }
                 }
             }
-        }
 
-        components.fetch.get({
-            url: 'task/conclusion/statistics',
-            query
-        }).then(
-            ({
-                data
-            }) => {
-                self.count = data
-                statistic = {
-                    expiredTimestamp: (nowTimestamp + (1000 * 60 * 1)),
-                    count: data
-                }
-                window.localStorage.setItem('task-conclusion-list-statistics', JSON.stringify(statistic))
-            },
-            error => {}
-        )
+            components.fetch.get({
+                url: 'task/conclusion/statistics',
+                query
+            }).then(
+                ({
+                    data
+                }) => {
+                    self.count = +data
+                    statistic = {
+                        expiredTimestamp: (nowTimestamp + (1000 * 60 * 1)),
+                        count: +data
+                    }
+                    window.localStorage.setItem('task-conclusion-list-statistics', JSON.stringify(statistic))
+                    resolve()
+                },
+                error => resolve()
+            )
+        })
     },
 
     initDataByTime: function initDataByTime() {
@@ -343,6 +379,7 @@ var list = {
                     self.data = data
                 }
 
+                self.pageNo++
                 self.render()
             },
             error => {}
@@ -386,6 +423,67 @@ var list = {
     },
 
     render: function render() {
-        console.log(this.data)
+        var {
+            data,
+            handle_show_more_dom,
+            list_dom,
+            count
+        } = this
+        var diff = count - data.length
+        handle_show_more_dom.innerHTML = `显示更多(剩余: ${diff > 0 ? diff : 0})`
+
+        var renderImage = function renderImage(image) {
+            return image ? `<div class="item-image">
+                <img id="image" src="${image}" alt="image">
+            </div>` : ''
+        }
+        list_dom.innerHTML = data.map(({
+            id,
+            targetId,
+            title,
+            content,
+            conclusion,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate,
+            image,
+            putoffTimestamp,
+            completeTimestamp,
+            sqlTimestamp
+        }) => `
+            <div class="conclusion-item">
+                <div class="item-container">
+                    <div class="item-title">${title}</div>
+                    ${renderImage(image)}
+                    <div class="item-description">${content}</div>
+                </div>
+            </div>
+        `).join('')
+
+        var handleOnClick = function handleOnClick(targetItem) {
+            localStorage.setItem('task-conclusion-edit-id', targetItem.id)
+            window.location.href = './edit/index.html'
+        }
+
+        var children_dom = list_dom.children
+        for (var index = 0; index < children_dom.length; index++) {
+
+            (function (index) {
+                var element = children_dom[index];
+                var targetItem = data[index];
+                var title = element.firstElementChild.firstElementChild
+                var description = element.firstElementChild.lastElementChild
+
+
+                title.onclick = function () {
+                    handleOnClick(targetItem)
+                }
+                description.onclick = function () {
+                    handleOnClick(targetItem)
+                }
+            })(index)
+        }
     },
 }
