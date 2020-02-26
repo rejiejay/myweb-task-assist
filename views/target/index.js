@@ -239,8 +239,7 @@ var redirect = {
         var self = this
 
         components.serviceStorage.getItem({
-            key: 'processTarget',
-            hiddenError: true
+            key: 'processTarget'
         }).then(
             res => {
                 var targetId = res.id

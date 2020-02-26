@@ -2,6 +2,19 @@ window.onload = function () {
     initialization.main()
 }
 
+var CONST = {
+    TARGET: {
+        DEFAULTS: {
+            id: '',
+            name: '所有'
+        },
+        DEMO: {
+            id: 'gwy',
+            name: '公务员'
+        }
+    }
+}
+
 /**
  * 初始化方法
  */
@@ -10,15 +23,28 @@ var initialization = {
     clientHeight: 667,
 
     main: function main() {
+        var self = this
+
         this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth;
         this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight;
 
         components.init()
         this.initDom()
 
+        this.initPageStatus()
+
         textarea.init()
         image.init()
+
+
+        process.init().then(() => {
+            self.stepTwo()
+        }, error => {})
     },
+
+    stepTwo: function stepTwo() {},
+
+    initPageStatus: function initPageStatus() {},
 
     /**
      * 节点 初始化
@@ -32,10 +58,43 @@ var initialization = {
 }
 
 var components = {
+    toast: null,
+    fetch: null,
+    serviceStorage: null,
     confirmPopUp: null,
 
     init: function init() {
+        this.fetch = Fetch.init()
+        this.toast = Toast.init()
+        this.serviceStorage = ServiceStorage.init()
         this.confirmPopUp = ConfirmPopUp.init()
+    }
+}
+
+var process = {
+    target: CONST.TARGET.DEFAULTS,
+    dom: null,
+
+    init: function init() {
+        var self = this
+
+        return new Promise((resolve, reject) => {
+            self.initProcessTarget(resolve, reject)
+        })
+    },
+
+    initProcessTarget: function initProcessTarget(resolve, reject) {
+        var self = this
+
+        components.serviceStorage.getItem({
+            key: 'processTarget'
+        }).then(
+            res => {
+                self.target = res
+                resolve()
+            },
+            error => reject()
+        )
     }
 }
 
@@ -56,6 +115,7 @@ var textarea = {
 
 var image = {
     file: null,
+    url: null,
     file_dom: null,
     input_dom: null,
     image_container_dom: null,
@@ -75,8 +135,10 @@ var image = {
         var self = this
 
         this.file_dom.onchange = function (event) {
-            console.dir(event.target)
-            self.showImage()
+            var file = event.target.files[0]
+            self.file = file ? file : null
+
+            if (file) self.uploadFile()
         }
 
         /**
@@ -99,35 +161,61 @@ var image = {
             if (file === null) return
 
             self.file = file
-            self.showImage()
+            self.uploadFile()
         }
 
         document.addEventListener('paste', uploadClipboardData);
     },
 
-    showImage: function showImage(src) {
-        this.input_dom.src = src
+    uploadFile: function uploadFile() {
+        var self = this
+        var file = this.file
 
-        this.image_container_dom.innerHTML = `<img id="image-content" src="${src}" alt="image">`
-        this.initDelImage()
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (ev) {
+            var base64Str = ev.target.result;
+
+            components.fetch.post({
+                url: 'task/image/upload',
+                body: {
+                    imageBase64String: base64Str
+                }
+            }).then(
+                ({
+                    data
+                }) => {
+                    self.url = data
+                    self.render()
+                },
+                error => {}
+            )
+        }
     },
 
-    initDelImage: function initDelImage() {
-        var self = this
+    render: function render() {
+        var {
+            image_container_dom,
+            url,
+            delHandle
+        } = this
 
-        var dom = document.getElementById('image-content')
+        image_container_dom.innerHTML = `<img id="image-content" src="https://rejiejay-1251940173.cos.ap-guangzhou.myqcloud.com/${url}" alt="image">`
 
-        var handle = function handle() {
-            self.file = null
-            self.image_container_dom.innerHTML = ''
-        }
-
-        dom ? dom.onclick = function () {
+        var img_dom = image_container_dom.firstElementChild
+        img_dom.onclick = function imgClickHandle() {
             var parameter = {
-                title: '你确认要删除吗?',
-                succeedHandle: handle
+                title: `确认要删除这张图片?`,
+                succeedHandle: () => delHandle()
             }
             components.confirmPopUp(parameter)
-        } : null
+        }
     },
+
+    delHandle: function delHandle() {
+        this.file = null
+        this.url = null
+        this.file_dom.value = null
+        this.image_container_dom.innerHTML = ''
+    }
 }
