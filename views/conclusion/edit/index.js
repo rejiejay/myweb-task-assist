@@ -103,6 +103,7 @@ var initialization = {
         image.image_container_dom = document.getElementById('image-container')
         submit.dom = document.getElementById('submit')
         del.dom = document.getElementById('delete')
+        relatedTask.dom = document.getElementById('related-task')
     },
 }
 
@@ -308,6 +309,7 @@ var submit = {
             res => {
                 self.data = res.data
                 self.render()
+                res.data.content ? relatedTask.init() : null
             },
             error => {}
         )
@@ -411,6 +413,28 @@ var del = {
             }
         }).then(
             res => window.location.href = './../index.html',
+            error => {}
+        )
+    }
+}
+
+var relatedTask = {
+    dom: null,
+
+    init: function init() {
+        var self = this
+        this.dom.style = 'display: flex;'
+        this.dom.onclick = function () {
+            self.executeTask(submit.data)
+        }
+    },
+
+    executeTask: function executeTask(task) {
+        components.serviceStorage.setItem({
+            key: 'processTask',
+            value: task
+        }).then(
+            res => window.location.href = './../../todo/item/index.html',
             error => {}
         )
     }
