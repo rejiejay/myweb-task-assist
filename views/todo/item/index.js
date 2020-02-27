@@ -542,7 +542,7 @@ var todo = {
         } = this.data
 
         this.dom.title.innerHTML = title
-        this.dom.specific.innerHTML = content
+        this.dom.specific.innerHTML = content ? content : `结论: ${conclusion}`
 
         var nowTimestamp = new Date().getTime()
         if (completeTimestamp) {
