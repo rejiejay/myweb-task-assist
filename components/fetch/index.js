@@ -304,12 +304,6 @@ var Fetch = {
         var self = this
         this.toast.destroy()
 
-        var parameter = {
-            title: '密码过期, 请重新输入密码?',
-            handle: handle,
-            mustInput: true
-        }
-
         var handle = function handle(input) {
             self.reAuthPassword({
                 password: input,
@@ -317,6 +311,12 @@ var Fetch = {
                 reject,
                 isEnterPassword: true
             })
+        }
+
+        var parameter = {
+            title: '密码过期, 请重新输入密码?',
+            handle: handle,
+            mustInput: true
         }
 
         this.inputPopUp.show(parameter)

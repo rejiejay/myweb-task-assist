@@ -84,7 +84,7 @@ var InputPopUp = {
             document.getElementById('rejiejay-input-popup-operate-no').onclick = function () {
                 self.destroy()
             }
-    
+
             document.getElementById('ejiejay-input-popup-mask').onclick = function () {
                 self.destroy()
             }
