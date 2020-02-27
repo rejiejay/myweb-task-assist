@@ -405,7 +405,7 @@ var del = {
 
     delHandle: function delHandle() {
         components.fetch.post({
-            url: 'task/conclusion/del',
+            url: 'task/delete',
             body: {
                 id: submit.data.id
             }
