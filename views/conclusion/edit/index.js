@@ -85,6 +85,7 @@ var initialization = {
             submit.dom.innerHTML = '编辑'
         } else {
             this.status = CONST.PAGE_STATUS.ADD
+            del.dom.style = 'display: none;'
         }
 
         window.localStorage['task-conclusion-edit-id'] = ''
@@ -100,6 +101,7 @@ var initialization = {
         image.input_dom = document.getElementById('image-button')
         image.image_container_dom = document.getElementById('image-container')
         submit.dom = document.getElementById('submit')
+        del.dom = document.getElementById('delete')
     },
 }
 
@@ -257,10 +259,10 @@ var image = {
     },
 
     render: function render() {
+        var self = this
         var {
             image_container_dom,
-            url,
-            delHandle
+            url
         } = this
 
         image_container_dom.innerHTML = `<img id="image-content" src="https://rejiejay-1251940173.cos.ap-guangzhou.myqcloud.com/${url}" alt="image">`
@@ -269,7 +271,7 @@ var image = {
         img_dom.onclick = function imgClickHandle() {
             var parameter = {
                 title: `确认要删除这张图片?`,
-                succeedHandle: () => delHandle()
+                succeedHandle: () => self.delHandle()
             }
             components.confirmPopUp(parameter)
         }
@@ -278,7 +280,7 @@ var image = {
     delHandle: function delHandle() {
         this.file = null
         this.url = null
-        this.file_dom.value = null
+        this.file_dom.value = ''
         this.image_container_dom.innerHTML = ''
     }
 }
@@ -340,13 +342,29 @@ var submit = {
             if (!content) return components.toast.show('内容不能为空');
 
             var status = initialization.status
-            if (status === CONST.PAGE_STATUS.EDIT) return self.editHandle()
+            if (status === CONST.PAGE_STATUS.EDIT) return self.editHandle(title, content)
             if (status === CONST.PAGE_STATUS.ADD) return self.addHandle(title, content)
         }
     },
 
-    editHandle: function editHandle() {
-        console.log('edit')
+    editHandle: function editHandle(title, conclusion) {
+        var targetId = process.target.id
+        var imagePath = image.url
+        var body = {
+            id: this.data.id,
+            title,
+            conclusion
+        }
+        targetId ? body.targetId = targetId : null
+        imagePath ? body.image = imagePath : null
+
+        components.fetch.post({
+            url: 'task/conclusion/edit',
+            body: body
+        }).then(
+            res => window.location.href = './../index.html',
+            error => {}
+        )
     },
 
     addHandle: function addHandle(title, conclusion) {
@@ -363,8 +381,14 @@ var submit = {
             url: 'task/conclusion/add',
             body: body
         }).then(
-            res => {},
+            res => window.location.href = './../index.html',
             error => {}
         )
     }
+}
+
+var del = {
+    dom: null,
+
+    init: function del() {}
 }
