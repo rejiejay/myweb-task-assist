@@ -17,6 +17,30 @@ var CONST = {
         DEFAULTS: 'add',
         ADD: 'add',
         EDIT: 'edit'
+    },
+    TASK: {
+        /** 作用: 判空 */
+        DEFAULTS: {
+            id: null,
+            title: null,
+            conclusion: null,
+        },
+        DEMO: {
+            id: 1,
+            targetId: 'not-null',
+            title: 'not-null',
+            content: null,
+            conclusion: 'not-null',
+            measure: null,
+            span: null,
+            aspects: null,
+            worth: null,
+            estimate: null,
+            image: null,
+            putoffTimestamp: null,
+            completeTimestamp: null,
+            sqlTimestamp: null
+        }
     }
 }
 
@@ -56,7 +80,7 @@ var initialization = {
         var id = window.localStorage['task-conclusion-edit-id']
 
         if (id) {
-            submit.id = id
+            submit.data.id = id
             this.status = CONST.PAGE_STATUS.EDIT
             submit.dom.innerHTML = '编辑'
         } else {
@@ -260,11 +284,54 @@ var image = {
 }
 
 var submit = {
-    id: null,
+    data: CONST.TASK.DEFAULTS,
     dom: null,
 
     init: function init() {
+        this.initDate()
+        this.initSubmitHandle()
+    },
+
+    initDate: function initDate() {
         var self = this
+        if (initialization.status !== CONST.PAGE_STATUS.EDIT) return false
+
+        components.fetch.get({
+            url: 'task/get/one',
+            query: {
+                taskId: this.data.id
+            }
+        }).then(
+            res => {
+                self.data = res.data
+                self.render()
+            },
+            error => {}
+        )
+    },
+
+    render: function render() {
+        var {
+            title,
+            conclusion
+        } = this.data
+        var taskImage = this.data.image
+
+        topic.data = title
+        topic.dom.value = title
+
+        textarea.data = conclusion
+        textarea.dom.value = conclusion
+
+        if (taskImage) {
+            image.url = taskImage
+            image.render()
+        }
+    },
+
+    initSubmitHandle: function initSubmitHandle() {
+        var self = this
+
         this.dom.onclick = function () {
             var title = topic.data
             if (!title) return components.toast.show('标题不能为空');
