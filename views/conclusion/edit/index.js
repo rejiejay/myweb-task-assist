@@ -12,6 +12,11 @@ var CONST = {
             id: 'gwy',
             name: '公务员'
         }
+    },
+    PAGE_STATUS: {
+        DEFAULTS: 'add',
+        ADD: 'add',
+        EDIT: 'edit'
     }
 }
 
@@ -19,6 +24,7 @@ var CONST = {
  * 初始化方法
  */
 var initialization = {
+    status: CONST.PAGE_STATUS.DEFAULTS,
     clientWidth: 375,
     clientHeight: 667,
 
@@ -33,27 +39,43 @@ var initialization = {
 
         this.initPageStatus()
 
+        topic.init()
         textarea.init()
         image.init()
-
 
         process.init().then(() => {
             self.stepTwo()
         }, error => {})
     },
 
-    stepTwo: function stepTwo() {},
+    stepTwo: function stepTwo() {
+        submit.init()
+    },
 
-    initPageStatus: function initPageStatus() {},
+    initPageStatus: function initPageStatus() {
+        var id = window.localStorage['task-conclusion-edit-id']
+
+        if (id) {
+            submit.id = id
+            this.status = CONST.PAGE_STATUS.EDIT
+            submit.dom.innerHTML = '编辑'
+        } else {
+            this.status = CONST.PAGE_STATUS.ADD
+        }
+
+        window.localStorage['task-conclusion-edit-id'] = ''
+    },
 
     /**
      * 节点 初始化
      */
     initDom: function initDom() {
+        topic.dom = document.getElementById('title-input')
         textarea.dom = document.getElementById('content-input')
         image.file_dom = document.getElementById('upload-image')
         image.input_dom = document.getElementById('image-button')
         image.image_container_dom = document.getElementById('image-container')
+        submit.dom = document.getElementById('submit')
     },
 }
 
@@ -98,11 +120,29 @@ var process = {
     }
 }
 
-var textarea = {
+var topic = {
+    data: null,
     dom: null,
 
     init: function init() {
+        var self = this
+        this.dom.oninput = function () {
+            self.data = this.value
+        }
+    },
+}
+
+var textarea = {
+    data: null,
+    dom: null,
+
+    init: function init() {
+        var self = this
         this.initHeight()
+
+        this.dom.oninput = function () {
+            self.data = this.value
+        }
     },
 
     initHeight: function initHeight() {
@@ -128,7 +168,6 @@ var image = {
         }
 
         this.initUpload()
-        this.initDelImage()
     },
 
     initUpload: function initUpload() {
@@ -217,5 +256,48 @@ var image = {
         this.url = null
         this.file_dom.value = null
         this.image_container_dom.innerHTML = ''
+    }
+}
+
+var submit = {
+    id: null,
+    dom: null,
+
+    init: function init() {
+        var self = this
+        this.dom.onclick = function () {
+            var title = topic.data
+            if (!title) return components.toast.show('标题不能为空');
+
+            var content = textarea.data
+            if (!content) return components.toast.show('内容不能为空');
+
+            var status = initialization.status
+            if (status === CONST.PAGE_STATUS.EDIT) return self.editHandle()
+            if (status === CONST.PAGE_STATUS.ADD) return self.addHandle(title, content)
+        }
+    },
+
+    editHandle: function editHandle() {
+        console.log('edit')
+    },
+
+    addHandle: function addHandle(title, conclusion) {
+        var targetId = process.target.id
+        var imagePath = image.url
+        var body = {
+            title,
+            conclusion
+        }
+        targetId ? body.targetId = targetId : null
+        imagePath ? body.image = imagePath : null
+
+        components.fetch.post({
+            url: 'task/conclusion/add',
+            body: body
+        }).then(
+            res => {},
+            error => {}
+        )
     }
 }

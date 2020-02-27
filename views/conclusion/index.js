@@ -58,8 +58,9 @@ var CONST = {
             completeTimestamp: null,
             sqlTimestamp: null
         }
+    },
 
-    }
+    BASE_IMAGE_URL: 'https://rejiejay-1251940173.cos.ap-guangzhou.myqcloud.com/'
 }
 
 /**
@@ -434,9 +435,10 @@ var list = {
 
         var renderImage = function renderImage(image) {
             return image ? `<div class="item-image">
-                <img id="image" src="${image}" alt="image">
+                <img id="image" src="${CONST.BASE_IMAGE_URL}${image}" alt="image">
             </div>` : ''
         }
+
         list_dom.innerHTML = data.map(({
             id,
             targetId,
@@ -457,7 +459,7 @@ var list = {
                 <div class="item-container">
                     <div class="item-title">${title}</div>
                     ${renderImage(image)}
-                    <div class="item-description">${content}</div>
+                    <div class="item-description">${conclusion}</div>
                 </div>
             </div>
         `).join('')
@@ -471,17 +473,27 @@ var list = {
         for (var index = 0; index < children_dom.length; index++) {
 
             (function (index) {
-                var element = children_dom[index];
                 var targetItem = data[index];
-                var title = element.firstElementChild.firstElementChild
-                var description = element.firstElementChild.lastElementChild
 
+                var element = children_dom[index];
+                var container_element = element.firstElementChild
+                var title = container_element.firstElementChild
+                var description = container_element.lastElementChild
 
                 title.onclick = function () {
                     handleOnClick(targetItem)
                 }
                 description.onclick = function () {
                     handleOnClick(targetItem)
+                }
+
+                /** 含义: 存在图片 */
+                if (container_element.childElementCount === 3) {
+                    var image_element = container_element.children[1]
+
+                    image_element.onclick = function () {
+                        imageHandle(`${CONST.BASE_IMAGE_URL}${targetItem.image}`)
+                    }
                 }
             })(index)
         }
