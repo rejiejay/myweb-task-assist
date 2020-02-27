@@ -67,6 +67,7 @@ var initialization = {
         textarea.init()
         image.init()
         del.init()
+        cossdk.init()
 
         process.init().then(() => {
             self.stepTwo()
@@ -238,26 +239,30 @@ var image = {
         var self = this
         var file = this.file
 
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function (ev) {
-            var base64Str = ev.target.result;
+        cossdk.uploadFile(file).then((path) => {
+            self.url = path
+            self.render()
+        }, error => components.toast.show(error))
 
-            components.fetch.post({
-                url: 'task/image/upload',
-                body: {
-                    imageBase64String: base64Str
-                }
-            }).then(
-                ({
-                    data
-                }) => {
-                    self.url = data
-                    self.render()
-                },
-                error => {}
-            )
-        }
+        // var reader = new FileReader();
+        // reader.readAsDataURL(file);
+        // reader.onload = function (ev) {
+        //     var base64Str = ev.target.result;
+        //     components.fetch.post({
+        //         url: 'task/image/upload',
+        //         body: {
+        //             imageBase64String: base64Str
+        //         }
+        //     }).then(
+        //         ({
+        //             data
+        //         }) => {
+        //             self.url = data
+        //             self.render()
+        //         },
+        //         error => {}
+        //     )
+        // }
     },
 
     render: function render() {
@@ -438,4 +443,56 @@ var relatedTask = {
             error => {}
         )
     }
+}
+
+var cossdk = {
+    cos: null,
+
+    init: function () {
+        var self = this
+
+        self.cos = new COS({
+            getAuthorization: function getAuthorization(options, callback) {
+                components.fetch.get({
+                    url: 'task/image/credential',
+                    query: {}
+                }).then(({
+                    data: {
+                        tmpSecretId,
+                        tmpSecretKey,
+                        sessionToken,
+                        startTime,
+                        expiredTime,
+                    }
+                }) => {
+                    callback({
+                        TmpSecretId: tmpSecretId,
+                        TmpSecretKey: tmpSecretKey,
+                        XCosSecurityToken: sessionToken,
+                        StartTime: startTime,
+                        ExpiredTime: expiredTime
+                    });
+                }, error => components.toast.show(error))
+            }
+        });
+    },
+
+    uploadFile: function uploadFile(file) {
+        var self = this
+
+        var nowTimestamp = new Date().getTime()
+        var path = `myweb/task-assist/temporary/${nowTimestamp}.png`
+
+        return new Promise((resolve, reject) => {
+            self.cos.putObject({
+                Bucket: 'rejiejay-1251940173',
+                Region: 'ap-guangzhou',
+                Key: path,
+                Body: file,
+            }, function (err, data) {
+                if (err) return reject(err);
+                return resolve(path);
+            });
+        })
+    },
 }
