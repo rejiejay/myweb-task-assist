@@ -281,10 +281,10 @@ var list = {
         var self = this
         this.initStatistics(isForce).then(() => {
             if (sort.type === CONST.SORT.TIME.value) {
-                self.initDataByTime()
+                self.initDataByTime(isForce)
             }
             if (sort.type === CONST.SORT.RANDOM.value) {
-                self.initDataByRandom()
+                self.initDataByRandom(isForce)
             }
         })
     },
@@ -353,8 +353,9 @@ var list = {
         })
     },
 
-    initDataByTime: function initDataByTime() {
+    initDataByTime: function initDataByTime(isForce) {
         var self = this
+        isForce ? this.pageNo = 1 : null
         var pageNo = this.pageNo
         var targetId = process.target.id
         var query = {
@@ -371,10 +372,12 @@ var list = {
             }) => {
                 if (data.length === 0) return components.toast.show('已加载完成所有数据!')
 
-                /**
-                 * 含义: 判断是否新增
-                 */
-                if (self.data.length > 0 && self.pageNo > 1 && self.count > 1) {
+                if (isForce) {
+                    /** 含义: 强制刷新 */
+                    self.data = data
+
+                } else if (self.data.length > 0 && self.pageNo > 1 && self.count > 1) {
+                    /** 含义: 判断是否新增 */
                     self.data = self.data.concat(data)
                 } else {
                     self.data = data
@@ -387,7 +390,7 @@ var list = {
         )
     },
 
-    initDataByRandom: function initDataByRandom() {
+    initDataByRandom: function initDataByRandom(isForce) {
         var self = this
         var targetId = process.target.id
         var query = targetId ? {
@@ -413,10 +416,13 @@ var list = {
             }) => {
                 if (data.length === 0) return components.toast.show('已加载完成所有数据!')
 
-                /**
-                 * 含义: 每次组合时, 都需要去重一次;
-                 */
-                self.data = duplicate(self.data.concat(data))
+                if (isForce) {
+                    /** 含义: 强制刷新 */
+                    self.data = data
+                } else {
+                    /** 含义: 每次组合时, 都需要去重一次; */
+                    self.data = duplicate(self.data.concat(data))
+                }
                 self.render()
             },
             error => {}
