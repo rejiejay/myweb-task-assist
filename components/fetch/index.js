@@ -20,7 +20,7 @@ var Fetch = {
         origin: 'http://localhost:1932/'
     },
     produce: {
-        origin: '/'
+        origin: '/task-server/'
     },
     toast: null,
     inputPopUp: null,

@@ -459,7 +459,7 @@ var list = {
                 <div class="item-container">
                     <div class="item-title">${title}</div>
                     ${renderImage(image)}
-                    <div class="item-description">${conclusion}</div>
+                    <div class="item-description">${conclusion.replace(/\n/g, "<br>")}</div>
                 </div>
             </div>
         `).join('')
