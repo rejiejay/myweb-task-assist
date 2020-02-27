@@ -66,6 +66,7 @@ var initialization = {
         topic.init()
         textarea.init()
         image.init()
+        del.init()
 
         process.init().then(() => {
             self.stepTwo()
@@ -390,5 +391,27 @@ var submit = {
 var del = {
     dom: null,
 
-    init: function del() {}
+    init: function del() {
+        var self = this
+
+        this.dom.onclick = function () {
+            var parameter = {
+                title: `确认要删除吗?`,
+                succeedHandle: () => self.delHandle()
+            }
+            components.confirmPopUp(parameter)
+        }
+    },
+
+    delHandle: function delHandle() {
+        components.fetch.post({
+            url: 'task/conclusion/del',
+            body: {
+                id: submit.data.id
+            }
+        }).then(
+            res => window.location.href = './../index.html',
+            error => {}
+        )
+    }
 }
