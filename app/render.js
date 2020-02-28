@@ -68,7 +68,7 @@ export const javaScript = async (config, environment) => {
             },
             plugins: [
                 new webpack.DefinePlugin({
-                    'process.env': environment ? environment : '"development"'
+                    'process.env': environment ? environment : '"production"'
                 }),
                 new UglifyJsPlugin({
                     sourceMap: true,
