@@ -1,6 +1,5 @@
 import webpack from 'webpack';
 import fs from 'fs';
-import path from 'path';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import template from 'art-template';
 import gulp from 'gulp';
@@ -12,16 +11,18 @@ import {
     buildPath
 } from './../utils/path-handle.js';
 
-
 const cleanCSSPlugin = new LessPluginCleanCSS({
     advanced: true
 });
 
-const html = async config => await new Promise((resolve, reject) => fs.readFile(buildPath(`${config.entry}/index.art`), 'utf8', (readFileError, content) => {
+export const html = async (config, version) => await new Promise((resolve, reject) => fs.readFile(buildPath(`${config.entry}/index.art`), 'utf8', (readFileError, content) => {
     if (readFileError) return reject(readFileError);
 
+    const templateVersion = {
+        version: version ? `?version=${version}` : ''
+    }
     /** https://aui.github.io/art-template/zh-cn/docs/api.html */
-    const html = template.render(content);
+    const html = template.render(content, templateVersion);
 
     fs.writeFile(buildPath(`${config.output}/index.html`), html, {
         encoding: 'utf8'
@@ -34,7 +35,7 @@ const html = async config => await new Promise((resolve, reject) => fs.readFile(
     error => consequencer.error(error)
 )
 
-const css = async config => await new Promise((resolve, reject) => gulp.src(buildPath(`${config.entry}/index.less`))
+export const css = async config => await new Promise((resolve, reject) => gulp.src(buildPath(`${config.entry}/index.less`))
     .pipe(less({
         paths: buildPath('./css'),
         plugins: [cleanCSSPlugin] /** 压缩 */
@@ -47,7 +48,7 @@ const css = async config => await new Promise((resolve, reject) => gulp.src(buil
     error => consequencer.error(error)
 )
 
-const javaScript = async config => {
+export const javaScript = async (config, environment) => {
     return await new Promise((resolve, reject) => {
         webpack({
             entry: [
@@ -66,6 +67,9 @@ const javaScript = async config => {
                 }]
             },
             plugins: [
+                new webpack.DefinePlugin({
+                    'process.env': environment ? environment : '"development"'
+                }),
                 new UglifyJsPlugin({
                     sourceMap: true,
                     extractComments: true
@@ -81,10 +85,12 @@ const javaScript = async config => {
     )
 }
 
-const render = async config => {
-    const jsInstance = await javaScript(config);
+export const render = async config => {
+    const environment = '"development"'
+    const jsInstance = await javaScript(config, environment);
     if (jsInstance.result !== 1) return jsInstance;
 
+    const version = '1.0.0'
     const htmlInstance = await html(config);
     if (htmlInstance.result !== 1) return htmlInstance;
 
@@ -93,5 +99,3 @@ const render = async config => {
 
     return consequencer.success()
 }
-
-export default render

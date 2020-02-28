@@ -1,7 +1,9 @@
 import Router from 'koa-router';
 
 import configs from './configs.js';
-import render from './render.js';
+import {
+    render
+} from './render.js';
 import lib from './lib.js';
 
 const app = koa => {
@@ -15,7 +17,7 @@ const app = koa => {
         return next();
     }))
 
-    lib.init()
+    lib.init();
 
     koa.use(router.routes());
 }

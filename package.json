@@ -5,7 +5,8 @@
   "description": "my web task assist react",
   "main": "index.js",
   "scripts": {
-    "start": "SET NODE_ENV=development&& nodemon index.js",
+    "start": "SET NODE_ENV=development && node index.js",
+    "start:dev": "SET NODE_ENV=development && nodemon index.js",
     "build": "node build.js"
   },
   "dependencies": {
