@@ -1,14 +1,18 @@
 {
   "name": "my-web-task-assist-react",
   "version": "1.0.0",
+  "author": "rejiejay",
   "description": "my web task assist react",
   "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
   "scripts": {
     "start": "SET NODE_ENV=development&& nodemon index.js",
     "build": "node build.js"
+  },
+  "dependencies": {
+    "@koa/router": "^8.0.8",
+    "koa": "^2.11.0",
+    "koa-router": "^8.0.8",
+    "koa-static": "^5.0.0"
   },
   "repository": {
     "type": "git",
@@ -17,13 +21,13 @@
   "keywords": [
     "react"
   ],
-  "author": "rejiejay",
+  "directories": {
+    "lib": "lib"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/rejiejay/myweb-task-assist/issues"
   },
   "homepage": "https://github.com/rejiejay/myweb-task-assist#readme",
-  "dependencies": {
-    "koa": "^2.11.0"
-  }
+  "type": "module"
 }
