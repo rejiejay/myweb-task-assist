@@ -10,6 +10,11 @@
 # 版本
 [第一版（纯UI）](https://github.com/rejiejay/myweb-task-assist/tree/b42dcbbaf00dd0c204b64934311d68e44d5a7bdf)
 
+# 项目初始化
+cnpm install -d
+cnpm install -g nodemon
+npm start
+
 # 发布流程
 1. 修改请求 fetch 配置  
 components\fetch\index.js:2  
