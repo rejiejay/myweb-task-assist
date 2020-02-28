@@ -1,4 +1,4 @@
-export const consequencer = {
+const consequencer = {
     success: (data, message) => ({
         result: 1,
         data: data || null,
@@ -10,3 +10,5 @@ export const consequencer = {
         message: message
     })
 }
+
+export default consequencer

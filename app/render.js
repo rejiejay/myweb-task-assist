@@ -1,6 +1,3 @@
-import {
-    consequencer
-} from './../utils/consequencer.js';
 import webpack from 'webpack';
 import fs from 'fs';
 import path from 'path';
@@ -10,8 +7,11 @@ import gulp from 'gulp';
 import less from 'gulp-less';
 import LessPluginCleanCSS from 'less-plugin-clean-css';
 
-const __dirname = path.resolve(path.dirname(''));
-const buildPath = myPath => path.join(__dirname, path.relative(__dirname, myPath));
+import consequencer from './../utils/consequencer.js';
+import {
+    buildPath
+} from './../utils/path-handle.js';
+
 
 const cleanCSSPlugin = new LessPluginCleanCSS({
     advanced: true
@@ -81,7 +81,7 @@ const javaScript = async config => {
     )
 }
 
-export const render = async config => {
+const render = async config => {
     const jsInstance = await javaScript(config);
     if (jsInstance.result !== 1) return jsInstance;
 
@@ -93,3 +93,5 @@ export const render = async config => {
 
     return consequencer.success()
 }
+
+export default render

@@ -1,9 +1,7 @@
 import Koa from 'koa';
 
 import Static from 'koa-static';
-import {
-    app as render
-} from './app/index.js';
+import render from './app/index.js';
 
 const app = new Koa();
 

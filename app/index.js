@@ -1,13 +1,10 @@
 import Router from 'koa-router';
 
-import {
-    configs
-} from './configs.js';
-import {
-    render
-} from './render.js';
+import configs from './configs.js';
+import render from './render.js';
+import lib from './lib.js';
 
-export const app = koa => {
+const app = koa => {
     const router = Router()
 
     configs.forEach(config => router.get(config.route, async (ctx, next) => {
@@ -18,5 +15,9 @@ export const app = koa => {
         return next();
     }))
 
+    lib.init()
+
     koa.use(router.routes());
 }
+
+export default app
