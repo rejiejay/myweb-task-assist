@@ -9,5 +9,9 @@ export const configs = [{
             path: './build',
             filename: 'index.js'
         }
-    }
+    },
+    html: {
+        entry: './views/index.art',
+        output: './build/index.html'
+    },
 }]
