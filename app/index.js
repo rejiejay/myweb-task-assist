@@ -10,7 +10,7 @@ import {
 export const app = koa => {
     const router = Router()
 
-    configs.forEach(config => router.get(config.url, async (ctx, next) => {
+    configs.forEach(config => router.get(config.route, async (ctx, next) => {
 
         const effect = await render(config);
         if (effect.result !== 1) return ctx.body = effect.message;
