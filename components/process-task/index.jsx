@@ -1,4 +1,4 @@
-import CONST from './CONST.js'
+import CONST from './const.js'
 import jsonHandle from './../../utils/json-handle.js'
 import consequencer from './../../utils/consequencer.js'
 
@@ -14,6 +14,8 @@ export const getProcess = () => {
     process = verify.data
     return consequencer.success(process)
 }
+
+export const setProcess = ({ id, name }) => window.localStorage.setItem('task-target-process', JSON.stringify({ id, name }));
 
 export class ProcessTask extends React.Component {
     constructor(props) {
@@ -36,7 +38,7 @@ export class ProcessTask extends React.Component {
     unlockHandle() {
         window.localStorage.setItem('task-target-process', '')
         const process = CONST.PROCESS.DEFAULTS
-        this.setState(process)
+        this.setState({ process })
     }
 
     render() {

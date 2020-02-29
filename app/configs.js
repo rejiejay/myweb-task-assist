@@ -5,6 +5,10 @@ const configs = [{
     route: '/index.html',
     entry: './views',
     output: './build'
+}, {
+    route: '/target/index.html',
+    entry: './views/target',
+    output: './build/target'
 }]
 
 export default configs
