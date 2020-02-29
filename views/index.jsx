@@ -1,4 +1,5 @@
 import login from './../components/login.js';
+import { ProcessTask } from './../components/process-task/index.jsx';
 
 class MainComponent extends React.Component {
 
@@ -9,7 +10,8 @@ class MainComponent extends React.Component {
     navigate = href => window.location.href = href
 
     render() {
-        return (
+        return [
+            <ProcessTask></ProcessTask>,
             <div className="todo-assist-list flex-column-center">
                 <div className="button-container">
                     <div className="button noselect"
@@ -53,7 +55,7 @@ class MainComponent extends React.Component {
                     >新的灵感?</div>
                 </div>
             </div>
-        );
+        ]
     }
 }
 
