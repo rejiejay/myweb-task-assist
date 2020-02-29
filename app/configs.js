@@ -9,6 +9,10 @@ const configs = [{
     route: '/target/index.html',
     entry: './views/target',
     output: './build/target'
+}, {
+    route: '/target/json-config/index.html',
+    entry: './views/target/json-config',
+    output: './build/target/json-config'
 }]
 
 export default configs

@@ -85,8 +85,8 @@ class MainComponent extends React.Component {
 
             <div className="target-title">{title}</div>,
 
-            <div className="list">{!!list && list.map(({ id, name }) => (
-                <div class="list-item">
+            <div className="list">{!!list && list.map(({ id, name }, key) => (
+                <div class="list-item" key={key}>
                     <div class="list-item-container"
                         onClick={() => self.keepProcessTargetHandle({ id, name })}
                     >{name}</div>

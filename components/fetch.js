@@ -293,7 +293,7 @@ const instance = {
         this.hiddenError = hiddenError ? true : false
         this.notHandleResult = notHandleResult ? true : false
 
-        const myUrl = this.config.origin + url
+        let myUrl = `${config.origin}${url}`
 
         toast.show()
         return new Promise((resolve, reject) => window.fetch(myUrl, {
