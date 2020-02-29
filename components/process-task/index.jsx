@@ -17,6 +17,8 @@ export const getProcess = () => {
 
 export const setProcess = ({ id, name }) => window.localStorage.setItem('task-target-process', JSON.stringify({ id, name }));
 
+export const clearProcess = () => window.localStorage.setItem('task-target-process', '');
+
 export class ProcessTask extends React.Component {
     constructor(props) {
         super(props)
@@ -42,12 +44,8 @@ export class ProcessTask extends React.Component {
     }
 
     render() {
-        const {
-            isHide
-        } = this.props
-        const {
-            process
-        } = this.state
+        const { isHide } = this.props
+        const { process } = this.state
 
         return (
             <div className="process-task">

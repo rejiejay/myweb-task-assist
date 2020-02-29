@@ -5,7 +5,7 @@ export const confirmPopUpDestroy = () => {
     if (confirm) document.body.removeChild(confirm);
 }
 
-export const inputPopUp = title => new Promise(function (resolve, reject) {
+export const confirmPopUp = ({title, succeedHandle}) => new Promise(function (resolve, reject) {
     /** 目标: 防止重复调用 */
     if (document.getElementById('rejiejay-confirm-popup')) return false;
 

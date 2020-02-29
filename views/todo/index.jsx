@@ -1,13 +1,103 @@
+import { getProcess, clearProcess } from './../../components/process-task/index.jsx';
+import { confirmPopUp } from './../../components/confirm-popup.js';
+import serviceStorage from './../../components/service-storage/index.js';
+
+import consequencer from './../../utils/consequencer.js';
+
+import CONST from './const.js'
+
 class MainComponent extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            processTarget: CONST.PROCESS_TARGET.DEFAULTS,
+            processTask: CONST.TASK.DEFAULTS,
+            todoTask: CONST.TASK.DEFAULTS
+        }
+    }
+
+    async componentDidMount() {
+        this.initProcessTarget()
+        await this.initProcessTask()
+    }
+
+    initProcessTarget() {
+        const processInstance = getProcess()
+        if (processInstance.result !== 1) return /** 含义: 加载失败缓存 */
+        const { id, name } = processInstance.data
+        this.setState({
+            processTarget: { id, name }
+        })
+    }
+
+    processTargetHandle() {
+        const self = this
+        const { processTarget } = this.state
+        const delHandle = () => {
+            clearProcess()
+            self.setState({ processTarget: CONST.PROCESS_TARGET.DEFAULTS })
+        }
+        const selectHandle = () => window.location.href = './../target/index.html?redirect=selectTodoTarget'
+        const isSelectStatus = (!!processTarget && processTarget.id);
+
+        /** 选中状态需要删除 */
+        isSelectStatus ? confirmPopUp({
+            title: `确认要解除锁定“${processTarget.name}”?`,
+            succeedHandle: delHandle
+        }) : confirmPopUp({
+            title: `你要选择目标范围?`,
+            succeedHandle: selectHandle
+        })
+    }
+
+    async initProcessTask() {
+        var self = this
+        await new Promise((resolve, reject) => {
+            serviceStorage.getItem({
+                key: 'processTask',
+                hiddenError: true
+            }).then(
+                res => {
+                    self.setState({ processTask: res })
+                    resolve()
+                },
+                error => reject()
+            )
+        })
+    }
+
+    processTaskHandle() {
+        const self = this
+        const { processTask, todoTask } = this.state
+        const executeTask = () => serviceStorage.setItem({
+            key: 'processTask',
+            value: todoTask
+        }).then(
+            res => self.setState({ processTask: todoTask }),
+            error => { }
+        )
+
+        if (!processTask.id && !todoTask.id && processTask.id !== todoTask.id) confirmPopUp({
+            title: '确定执行此任务?',
+            succeedHandle: executeTask
+        })
+    }
 
     render() {
+        const { processTarget, processTask, todoTask } = this.state
+
         return [
             <div className="caching flex-start">
                 <div className="caching-container target-container flex-start flex-rest">
-                    <div className="task-item flex-rest flex-center">范围: 所有</div>
+                    <div className="task-item flex-rest flex-center"
+                        onClick={this.processTargetHandle.bind(this)}
+                    >范围: {processTarget ? processTarget.name : '全部'}</div>
                 </div>
                 <div className="caching-container doing-container flex-start flex-rest">
-                    <div className="task-item flex-center flex-rest">执行此任务?</div>
+                    <div className="task-item flex-center flex-rest"
+                        onClick={this.processTaskHandle.bind(this)}
+                    >{(processTask.id && todoTask.id && processTask.id === todoTask.id) ? '正在执行中' : '执行此任务?'}</div>
                 </div>
             </div>,
 

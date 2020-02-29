@@ -49,7 +49,7 @@ const CONST = {
             value: 'selectTodoTarget',
             effect: 'goto todo item',
             title: '选择目标范围?',
-            url: './../todo/item/index.html'
+            url: './../todo/index.html'
         }
     },
 
