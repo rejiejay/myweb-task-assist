@@ -15,7 +15,7 @@ class MainComponent extends React.Component {
             <div className="todo-assist-list flex-column-center">
                 <div className="button-container">
                     <div className="button noselect"
-                        onClick={() => this.navigate('./todo/item/index.html')}
+                        onClick={() => this.navigate('./todo/index.html')}
                     >我要做什么?</div>
                 </div>
 

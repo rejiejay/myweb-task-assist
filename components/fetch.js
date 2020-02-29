@@ -26,8 +26,8 @@ let requestCache = {
 }
 
 const initHeaders = () => {
-    var token = localStorage.getItem('rejiejay-task-assist-token')
-    var headers = {
+    const token = localStorage.getItem('rejiejay-task-assist-token')
+    const headers = {
         "Content-Type": 'application/json; charset=utf-8'
     }
 
@@ -67,7 +67,7 @@ const responseHandle = ({
     if (res.result === config.deniedCode) return unAuthHandle(resolve, reject);
 
     // 过期
-    if (res.result === config.expiredCode) return expiredAuthHandle(resolve, reject);
+    if (res.result === config.expiredCode) return expiredAuthHandle(resolve, reject, '服务器返回凭证过期, 执行过期流程;');
 
     // 授权失败
     if (res.result === config.authFailed) {
@@ -96,19 +96,6 @@ const errorHandle = (result, reject) => {
  */
 const unAuthHandle = (resolve, reject) => {
     /**
-     * 未授权 = 从未登录;
-     * 过期 = 一定登录过(至少一次);
-     * 区别在于密码; 过期密码一定正确; 未授权密码可能正确;
-     */
-    const token = localStorage.getItem('rejiejay-task-assist-token')
-
-    /**
-     * 含义: 本地不存在凭证
-     * 结论: 执行过期流程
-     */
-    if (!token || token === 'null') return expiredAuthHandle(resolve, reject)
-
-    /**
      * 含义: 仅重复校验一次(校验凭证合法性)
      */
     if (requestCache.count > 1) {
@@ -116,41 +103,56 @@ const unAuthHandle = (resolve, reject) => {
         return reject({
             result: 7593,
             data: null,
-            message: '校验次数过多'
+            message: '处理未授权次数过多'
         })
     };
+
+    console.log('登录未授权, 进入处理流程;');
+    /**
+     * 未授权 = 从未登录;
+     * 过期 = 一定登录过(至少一次);
+     * 区别在于密码; 过期密码一定正确; 未授权密码可能正确;
+     */
+    const token = localStorage.getItem('rejiejay-task-assist-token')
+    console.log('获取本地token:', token);
+
+    /**
+     * 含义: 本地不存在凭证
+     * 结论: 执行过期流程
+     */
+    if (!token || token === 'null') return expiredAuthHandle(resolve, reject, '本地不存在凭证, 执行过期流程;')
 
     /**
      * 含义: 校验凭证合法性
      */
+    console.log(`校验凭证${token}的合法性;`);
     instance.get({
         url: 'user/verify',
         query: {
             verify: token
         }
     }).then(res => {
+        console.log(`成功校验凭证!!`);
         /**
          * 含义: 凭证是合法的
          * 结论: 再次请求
          * 有可能刷新授权
          */
-        var token = res.data
+        const token = res.data
         localStorage.setItem('rejiejay-task-assist-token', token)
 
         requestCache.count++
         // 并发
-        window.setTimeout(function () {
-            instance[requestCache.method](requestCache.parameter).then(res => {
-                resolve(res)
-            }, error => reject(error))
-        }, 200)
+        window.setTimeout(() => {
+            instance.request(requestCache.method, requestCache.parameter, resolve, reject)
+        }, 500)
     }, error => {
         /**
          * 含义: 校验凭证失败, 也许是网络问题
          */
         if (error.result === config.authFailed) {
             // token错误, 进入过期流程
-            expiredAuthHandle(resolve, reject)
+            expiredAuthHandle(resolve, reject, `校验凭证${token}的合法性失败, 进入过期流程;`)
         } else {
             reject({
                 result: 4532,
@@ -170,16 +172,22 @@ const reAuthPassword = ({
     reject,
     isEnterPassword
 }) => {
-    instance.get({
-        url: 'user/login',
-        query: {
-            name: 'rejiejay',
-            password: password
-        }
-    }).then(res => {
-        const token = res.data
+    console.log('开始再次授权流程;');
 
-        localStorage.setItem('rejiejay-task-assist-token', token)
+    toast.destroy()
+    window.fetch(`${config.origin}user/login?name=rejiejay&password=${password}`, {
+        method: 'GET',
+        headers: initHeaders()
+    }).then(response => response.json(), error => ({
+        result: 233,
+        data: null,
+        message: error
+    })).then(({
+        data
+    }) => {
+        console.log('再次授权成功:', data);
+
+        localStorage.setItem('rejiejay-task-assist-token', data)
         localStorage.setItem('rejiejay-task-assist-password', password)
 
         /**
@@ -187,27 +195,17 @@ const reAuthPassword = ({
          * 原因: 输入密码的情况, 不需要执行缓存请求
          */
         if (isEnterPassword) inputPopUpDestroy();
+        requestCache.count++
 
-        /**
-         * 含义: 仅重复授权一次
-         */
-        if (requestCache.count <= 1) {
-            requestCache.count++
-            // 并发
-            window.setTimeout(function () {
-                instance[requestCache.method](requestCache.parameter).then(res => {
-                    resolve(res)
-                }, error => reject(error))
-            }, 200)
+        window.setTimeout(() => {
+            instance.request(requestCache.method, requestCache.parameter, resolve, reject)
+        }, 500)
 
-        } else {
-            reject({
-                result: 7592,
-                data: null,
-                message: '授权次数过多'
-            })
-        }
     }, error => reject({
+        result: 4532,
+        data: null,
+        message: error
+    })).catch(error => reject({
         result: 4532,
         data: null,
         message: error
@@ -217,14 +215,30 @@ const reAuthPassword = ({
 /**
  * 作用: 处理过期
  */
-const expiredAuthHandle = (resolve, reject) => {
-    var password = localStorage.getItem('rejiejay-task-assist-password')
+const expiredAuthHandle = (resolve, reject, handleDescription) => {
+    /**
+     * 含义: 仅重复校验一次(校验凭证合法性)
+     */
+    if (requestCache.count > 1) {
+        toast.destroy()
+        return reject({
+            result: 7593,
+            data: null,
+            message: '处理过期次数过多'
+        })
+    };
+
+    console.log(handleDescription);
+
+    const password = localStorage.getItem('rejiejay-task-assist-password')
+    console.log('检验缓存密码', password);
 
     /**
      * 含义: 本地密码过期 或者 失效
      */
     if (!password) return reEnterPassword(resolve, reject);
 
+    console.log('缓存密码检验成功, 进入再次授权流程;');
     reAuthPassword({
         password,
         resolve,
@@ -233,6 +247,7 @@ const expiredAuthHandle = (resolve, reject) => {
 }
 
 const reEnterPassword = async (resolve, reject) => {
+    console.log('本地缓存密码已经失效, 开始重新输入密码;');
     toast.destroy()
 
     const handle = await inputPopUp({
@@ -312,6 +327,46 @@ const instance = {
             result: 344,
             message: error
         }, reject)))
+    },
+
+    /**
+     * 含义: 服务于授权和过期流程的请求
+     */
+    request: (method, parameter, resolve, reject) => {
+        toast.show()
+
+        let myUrl = `${config.origin}${parameter.url}`
+
+        if (method === 'get') myUrl += queryToUrl(parameter.query)
+
+        let requestConfig = {
+            method: method.toLocaleUpperCase(),
+            headers: initHeaders()
+        }
+        if (method === 'post') requestConfig.body = parameter.body
+
+        window.fetch(myUrl, requestConfig).then(
+            response => response.json(),
+            error => ({
+                result: 233,
+                data: null,
+                message: error
+            })
+        ).then(response => {
+            toast.destroy()
+            if (!response) return reject('数据为空')
+
+            // 不判断 结果
+            if (parameter.notHandleResult) return resolve(response)
+
+            response.result === 1 ? resolve(res) : reject('授权缘故, 数据有误')
+        }, error => {
+            toast.destroy()
+            reject(error)
+        }).catch(error => {
+            toast.destroy()
+            reject(error)
+        })
     }
 }
 

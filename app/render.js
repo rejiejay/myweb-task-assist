@@ -51,6 +51,7 @@ export const css = async config => await new Promise((resolve, reject) => gulp.s
 export const javaScript = async (config, environment) => {
     return await new Promise((resolve, reject) => {
         webpack({
+            devtool: environment ? 'cheap-module-eval-source-map' : 'cheap-module-source-map',
             entry: [
                 buildPath(`${config.entry}/index.jsx`)
             ],

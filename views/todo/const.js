@@ -7,9 +7,20 @@ const CONST = {
         }
     },
     TASK: {
+        /** 作用: 判空 */
         DEFAULTS: {
-            id: null, // 作用: 判空
-            conclusion: null, // 作用: 判空
+            id: null,
+            conclusion: null,
+            title: null,
+            content: null,
+            completeTimestamp: null,
+            putoffTimestamp: null,
+            conclusion: null,
+            measure: null,
+            span: null,
+            aspects: null,
+            worth: null,
+            estimate: null,
         },
         DEMO: {
             id: 1,

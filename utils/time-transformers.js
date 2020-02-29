@@ -1,4 +1,4 @@
-var TimeTransformers = {
+const timeTransformers = {
     /**
      * Date 转换 xxxx-xx-xx 字符串
      * @param {Date} myDate 要转换的日期
@@ -138,3 +138,5 @@ var TimeTransformers = {
         return new Date(YYYYmmDDarray[0], (YYYYmmDDarray[1] - 1), YYYYmmDDarray[2]).getTime();
     }
 }
+
+export default timeTransformers

@@ -1,8 +1,9 @@
 import { getProcess, clearProcess } from './../../components/process-task/index.jsx';
 import { confirmPopUp } from './../../components/confirm-popup.js';
+import fetch from './../../components/fetch.js';
 import serviceStorage from './../../components/service-storage/index.js';
 
-import consequencer from './../../utils/consequencer.js';
+import timeTransformers from './../../utils/time-transformers.js';
 
 import CONST from './const.js'
 
@@ -13,13 +14,16 @@ class MainComponent extends React.Component {
         this.state = {
             processTarget: CONST.PROCESS_TARGET.DEFAULTS,
             processTask: CONST.TASK.DEFAULTS,
-            todoTask: CONST.TASK.DEFAULTS
+            todoTask: CONST.TASK.DEFAULTS,
+            isShowDetails: false,
+            isShowConclusion: false,
         }
     }
 
     async componentDidMount() {
         this.initProcessTarget()
         await this.initProcessTask()
+        await this.initTodoTask()
     }
 
     initProcessTarget() {
@@ -53,18 +57,15 @@ class MainComponent extends React.Component {
 
     async initProcessTask() {
         var self = this
-        await new Promise((resolve, reject) => {
-            serviceStorage.getItem({
-                key: 'processTask',
-                hiddenError: true
-            }).then(
-                res => {
-                    self.setState({ processTask: res })
-                    resolve()
-                },
-                error => reject()
-            )
-        })
+        await serviceStorage.getItem({
+            key: 'processTask',
+            hiddenError: true
+        }).then(
+            res => {
+                self.setState({ processTask: res })
+            },
+            error => {}
+        )
     }
 
     processTaskHandle() {
@@ -84,8 +85,69 @@ class MainComponent extends React.Component {
         })
     }
 
+    async initTodoTask() {
+        const self = this
+        const { processTarget, processTask } = this.state
+
+        let query = {}
+        if (processTask && processTask.id) {
+            query.taskId = processTask.id
+        } else if (processTarget && processTarget.id) {
+            query.targetId = processTarget.id
+        }
+        await fetch.get({
+            url: 'task/get/one',
+            query
+        }).then(
+            ({ data }) => self.setState({
+                isShowDetails: false,
+                isShowConclusion: false,
+                todoTask: data
+            }),
+            error => { }
+        )
+    }
+
+    showItem(field) {
+        let state = {}
+        state[field] = true
+        this.setState(state)
+    }
+
     render() {
-        const { processTarget, processTask, todoTask } = this.state
+        const self = this
+        const {
+            processTarget,
+            processTask,
+            todoTask,
+            isShowDetails,
+            isShowConclusion
+        } = this.state
+        let {
+            title,
+            content,
+            completeTimestamp,
+            putoffTimestamp,
+            conclusion,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate
+        } = todoTask
+
+        content = content ? content.replace(/\n/g, "<br>") : ''
+        conclusion = conclusion ? conclusion.replace(/\n/g, "<br>") : ''
+
+        /** 注意: 结论可以跳转到任务的情况(暂时未修复)(细分的需求不重要) */
+        let specific = '具体任务内容'
+        if (content) {
+            specific = content
+        } else if (conclusion) {
+            specific = `结论: ${conclusion}`
+        }
+
+        var nowTimestamp = new Date().getTime()
 
         return [
             <div className="caching flex-start">
@@ -103,36 +165,48 @@ class MainComponent extends React.Component {
 
             <div className="todo">
                 <div className="todo-container">
-                    <div className="todo-title">标题</div>
-                    <div className="todo-specific">具体任务内容</div>
+                    {completeTimestamp && <div className="todo-complete flex-center">完成时间: {timeTransformers.dateToYYYYmmDDhhMM(new Date(+completeTimestamp))}</div>}
+                    {(!completeTimestamp && putoffTimestamp && putoffTimestamp > nowTimestamp) && <div className="todo-putoff flex-center">推迟的时间: {timeTransformers.dateToYYYYmmDDhhMM(new Date(+putoffTimestamp))}</div>}
 
-                    <div className="todo-putoff flex-center">推迟的时间?</div>
-                    <div className="todo-complete flex-center" >完成的时间?</div>
+
+                    <div className="todo-title">{title ? title : '标题'}</div>
+                    <div className="todo-specific">{specific}</div>
+
+                    {isShowDetails ? (<div className="todo-details">
+                        <div className="todo-measure">{measure ? `<span>衡量任务完成的标准?</span>- ${measure}` : '衡量任务完成的标准?'}</div>
+                        <div className="todo-span">{span ? `<span>长时间跨度下这任务的意义?</span>- ${span}` : '长时间跨度下这任务的意义?'}</div>
+                        <div className="todo-aspects">{aspects ? `<span>任务影响涉及到哪些方面?</span>- ${aspects}` : '任务影响涉及到哪些方面?'}</div>
+                        <div className="todo-worth">{worth ? `<span>任务的本质是为了什么?</span>- ${worth}` : '任务的本质是为了什么?'}</div>
+                        <div className="todo-time">{estimate ? `<span>是否必须完成?何时?</span>- ${estimate}` : '是否必须完成?何时?'}</div>
+                    </div>) : (<div className="todo-operation flex-start-center">
+                        <div className="todo-details-operation flex-rest flex-center"
+                            onClick={() => self.showItem('isShowDetails')}
+                        >显示任务详情?</div>
+                    </div>)}
+
+                    {isShowConclusion ? (
+                        <div className="todo-conclusions">{conclusion ? conclusion : '暂无任务结论'}</div>
+                    ) : (<div className="todo-operation flex-start-center">
+                        <div className="todo-conclusion-operation flex-rest flex-center"
+                            onClick={() => self.showItem('isShowConclusion')}
+                        >显示结论?</div>
+                    </div>)}
 
                     <div className="todo-operation flex-start-center">
-                        <div className="todo-details-operation flex-rest flex-center" >任务详情?</div>
-                        <div className="todo-conclusion-operation flex-rest flex-center" >显示结论/记录?</div>
+                        <div className="operation-item flex-rest flex-center">编辑?</div>
+                        <span></span>
+                        <div className="operation-item flex-rest flex-center">todo other?</div>
+                        <span></span>
+                        <div className="operation-item flex-rest flex-center">完成?</div>
                     </div>
-
-                    <div className="todo-details">
-                        <div className="todo-measure">衡量任务完成的标准?</div>
-                        <div className="todo-span">长时间跨度下这任务的意义?</div>
-                        <div className="todo-aspects">任务影响涉及到哪些方面?好处?</div>
-                        <div className="todo-worth">任务的本质是为了什么?</div>
-                        <div className="todo-time">是否必须完成?何时?</div>
-                    </div>
-
-                    <div className="todo-conclusions">任务结论</div>
-
-                    <div className="todo-record-add flex-center" >新增结论/记录?</div>
 
                     <div className="todo-operation flex-start-center">
-                        <div className="operation-item flex-rest flex-center" >完成?</div>
                         <input type="text" placeholder="YYYY-MM-DD hh:mm" />
-                        <div className="operation-item flex-rest flex-center" >推迟?</div>
-                        <div className="operation-item flex-rest flex-center" >编辑?</div>
-                        <div className="operation-item flex-rest flex-center" >删除?</div>
-                        <div className="operation-item flex-rest flex-center" >todo other?</div>
+                        <div className="operation-item flex-rest flex-center">推迟?</div>
+                        <span></span>
+                        <div className="operation-item flex-rest flex-center">新增结论?</div>
+                        <span></span>
+                        <div className="operation-item flex-rest flex-center">删除?</div>
                     </div>
                 </div>
             </div>,
