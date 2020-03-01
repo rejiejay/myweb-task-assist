@@ -1,6 +1,6 @@
 import {
     requestHandle
-} from './url-handle.js'
+} from './request-handle.js'
 
 /**
  * 含义: 请求的堆栈
@@ -60,18 +60,28 @@ const asyncRequestHandle = async () => {
 }
 
 const fetch = {
-    post: ({
+    get: ({
         url,
         query,
         hiddenError,
         notHandleResult
-    }) => requestByMethod('get', parameter),
+    }) => requestByMethod('get', {
+        url,
+        query,
+        hiddenError,
+        notHandleResult
+    }),
     post: ({
         url,
         body,
         hiddenError,
         notHandleResult
-    }) => requestByMethod('post', parameter)
+    }) => requestByMethod('post', {
+        url,
+        body,
+        hiddenError,
+        notHandleResult
+    })
 }
 
 export default fetch

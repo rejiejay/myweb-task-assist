@@ -14,6 +14,7 @@ import {
 } from './../input-popup.js';
 import toast from './../toast.js';
 import initHeaders from './headers.js';
+import config from './config.js';
 
 /**
  * 含义: 未授权流程
@@ -24,15 +25,15 @@ const unAuthHandle = ({
     data,
     message
 }) => {
-    console.log('登录未授权, 进入处理流程;');
+    console.log('登录未授权, 进入处理流程;', result);
 
     /** UI不存在token */
-    if (result === CONST.RESULT_CODE.ACCESS_DENIED_UI) {
+    if (result === CONST.RESULT_CODE.ACCESS_DENIED_UI.value) {
         return reEnterPassword()
     }
 
     /** 服务端不存在token */
-    if (result === CONST.RESULT_CODE.ACCESS_DENIED_SERVER) {
+    if (result === CONST.RESULT_CODE.ACCESS_DENIED_SERVER.value) {
         console.log('服务端不存在token')
         const password = localStorage.getItem('rejiejay-task-assist-password')
         if (password && password !== 'null') {
@@ -43,13 +44,13 @@ const unAuthHandle = ({
     }
 
     /** 服务端token已经过期 */
-    if (result === CONST.RESULT_CODE.ACCESS_EXPIRED) {
+    if (result === CONST.RESULT_CODE.ACCESS_EXPIRED.value) {
         console.log('服务端token已经过期')
         return reAuthPassword()
     }
 
     /** token校验失败 */
-    if (result === CONST.RESULT_CODE.ACCESS_VERIFY_FAILED) {
+    if (result === CONST.RESULT_CODE.ACCESS_VERIFY_FAILED.value) {
         const token = localStorage.getItem('rejiejay-task-assist-token')
         console.log(`token(${token})校验失败`)
         if (token && token !== 'null') {
@@ -60,13 +61,13 @@ const unAuthHandle = ({
     }
 
     /** 不存在此用户 */
-    if (result === CONST.RESULT_CODE.ACCESS_USER_FAILED) {
+    if (result === CONST.RESULT_CODE.ACCESS_USER_FAILED.value) {
         console.log('不存在此用户，授权流程执行完毕;')
         return errorHandle(consequencer.error('不存在此用户，授权流程执行完毕;'))
     }
 
     /** 授权数据库发生错误 */
-    if (result === CONST.RESULT_CODE.ACCESS_HANDLE_FAILED) {
+    if (result === CONST.RESULT_CODE.ACCESS_HANDLE_FAILED.value) {
         console.log('授权数据库发生错误，授权流程执行完毕;')
         return errorHandle(consequencer.error('授权数据库发生错误，授权流程执行完毕;'))
     }
@@ -100,7 +101,7 @@ const reEnterPassword = async () => {
                 localStorage.setItem('rejiejay-task-assist-password', password)
 
                 inputPopUpDestroy()
-                reRequestHandle()
+                reRequestHandle(data)
             },
             error => console.log('账号密码授权失败，请再次尝试输入密码；原因: ', error)
         ).catch(
@@ -143,7 +144,7 @@ const reAuthPassword = () => {
             localStorage.setItem('rejiejay-task-assist-token', data)
             localStorage.setItem('rejiejay-task-assist-password', password)
 
-            reRequestHandle()
+            reRequestHandle(data)
         },
         error => {
             console.log(`此次账号密码授权失败${error}，授权流程执行完毕；`)
@@ -163,6 +164,7 @@ const reAuthPassword = () => {
 const reRequestHandle = () => {
     console.log('执行开始原请求流程')
     toast.show()
+    requestConfig.headers = initHeaders()
     window.fetch(requestUrl, requestConfig).then(
         response => response.json(),
         error => consequencer.error(error)

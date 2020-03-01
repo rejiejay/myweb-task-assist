@@ -44,7 +44,7 @@ export const requestHandle = ({
         method: method.toLocaleUpperCase(),
         headers: initHeaders()
     }
-    requestUrl = `${config.origin}${url}`
+    requestUrl = `${config.origin}${parameter.url}`
     if (method === 'get') requestUrl += queryToUrl(parameter.query)
     if (method === 'post') requestConfig.body = parameter.body
 
@@ -68,7 +68,7 @@ export const requestHandle = ({
 
 export const responseHandle = response => {
     if (!response) return errorHandle(consequencer.error('数据格式不正确, 数据为空!'))
-    if (config.deniedCode.find(code => code === response.result)) return unAuthHandle(response);
+    if (config.deniedCodes.find(code => code === response.result)) return unAuthHandle(response);
     if (notHandleResult || response.result === 1) {
         /** 含义: 不自动处理错误 */
         succeedHandle(response)
