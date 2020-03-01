@@ -38,9 +38,11 @@ export class ProcessTask extends React.Component {
     }
 
     unlockHandle() {
-        window.localStorage.setItem('task-target-process', '')
-        const process = CONST.PROCESS.DEFAULTS
-        this.setState({ process })
+        const { callbackHandle } = this.props;
+        window.localStorage.setItem('task-target-process', '');
+        const process = CONST.PROCESS.DEFAULTS;
+        this.setState({ process });
+        callbackHandle ? callbackHandle() : null;
     }
 
     render() {
