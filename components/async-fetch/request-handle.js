@@ -46,7 +46,7 @@ export const requestHandle = ({
     }
     requestUrl = `${config.origin}${parameter.url}`
     if (method === 'get') requestUrl += queryToUrl(parameter.query)
-    if (method === 'post') requestConfig.body = parameter.body
+    if (method === 'post') requestConfig.body = JSON.stringify(parameter.body)
 
     toast.show()
 

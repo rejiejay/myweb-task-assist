@@ -1,7 +1,9 @@
 import { getProcess, clearProcess } from './../../components/process-task/index.jsx';
 import { confirmPopUp } from './../../components/confirm-popup.js';
+import { inputPopUpDestroy, inputPopUp } from './../../components/input-popup.js';
 import fetch from './../../components/async-fetch/fetch.js';
 import serviceStorage from './../../components/service-storage/index.js';
+import toast from './../../components/toast.js';
 
 import timeTransformers from './../../utils/time-transformers.js';
 
@@ -64,7 +66,7 @@ class MainComponent extends React.Component {
             res => {
                 self.setState({ processTask: res })
             },
-            error => {}
+            error => { }
         )
     }
 
@@ -85,12 +87,13 @@ class MainComponent extends React.Component {
         })
     }
 
-    async initTodoTask() {
+    async initTodoTask(isSwitch) {
         const self = this
         const { processTarget, processTask } = this.state
 
         let query = {}
-        if (processTask && processTask.id) {
+        if (processTask && processTask.id && !isSwitch) {
+            /** 含义: 如果有正在执行的任务，并且非强制切换的情况 */
             query.taskId = processTask.id
         } else if (processTarget && processTarget.id) {
             query.targetId = processTarget.id
@@ -112,6 +115,125 @@ class MainComponent extends React.Component {
         let state = {}
         state[field] = true
         this.setState(state)
+    }
+
+    editHandle() {
+        const { id } = this.state.todoTask
+        if (!id) return
+        window.localStorage.setItem('task-todo-edit-id', id)
+        window.location.href = './edit/index.html'
+    }
+
+    completeHandle() {
+        const self = this
+        const { completeTimestamp, id } = this.state.todoTask
+
+        if (completeTimestamp) return toast.show('任务已被完成');
+
+        const handle = () => {
+            fetch.post({
+                url: 'task/complete',
+                body: {
+                    id
+                }
+            }).then(
+                ({ data }) => self.setState({ todoTask: data }),
+                error => { }
+            )
+        }
+
+        confirmPopUp({
+            title: `确认要完成此任务??`,
+            succeedHandle: handle
+        })
+    }
+
+    putoffHandle() {
+        const self = this
+        const nowYear = new Date().getFullYear()
+        const handle = data => {
+            let myTodoTask = JSON.parse(JSON.stringify(self.state.todoTask))
+            myTodoTask.putoffTimestamp = timeTransformers.YYYYmmDDhhMMToTimestamp(data)
+
+            fetch.post({
+                url: 'task/update',
+                body: myTodoTask
+            }).then(
+                ({ data }) => self.setState({ todoTask: data }),
+                error => { }
+            )
+        }
+
+        const datepicker = new Rolldate({
+            el: '#picka-date',
+            format: 'YYYY-MM-DD hh:mm',
+            beginYear: nowYear,
+            endYear: nowYear + 10,
+            lang: {
+                title: '推迟到什么时候?'
+            },
+            confirm: function confirm(date) {
+                const nowTime = new Date().getTime()
+                const pickerTime = new Date(date.replace(/\-/g, "\/")).getTime()
+
+                if (nowTime > pickerTime) {
+                    components.toast.show('不能小于当前的日期')
+                    return false;
+                }
+
+                handle(date)
+            }
+        })
+
+        datepicker.show()
+    }
+
+    addConclusionHandle() {
+        const self = this
+        const handle = input => {
+            let myTodoTask = JSON.parse(JSON.stringify(self.state.todoTask))
+            myTodoTask.conclusion += `\n${input}`
+
+            fetch.post({
+                url: 'task/update',
+                body: myTodoTask
+            }).then(
+                ({ data }) => self.setState({ todoTask: data }, () => inputPopUpDestroy()),
+                error => { }
+            )
+        }
+        inputPopUp({
+            title: '得出什么结论?记录什么?',
+            inputHandle: handle
+        })
+    }
+
+    delHandle() {
+        const self = this
+        const { id } = this.state.todoTask
+
+        const handle = () => {
+            fetch.post({
+                url: 'task/delete',
+                body: {
+                    id
+                }
+            }).then(
+                () => self.initTodoTask(true),
+                error => { }
+            )
+        }
+
+        confirmPopUp({
+            title: `你确认要删除吗??`,
+            succeedHandle: handle
+        })
+    }
+
+    addTaskHandle() {
+        const { id } = this.state.processTarget
+        window.localStorage['task-todo-edit-id'] = ''
+        id ? window.location.href = './edit/index.html' : window.location.href = './../target/index.html?redirect=addTodo'
     }
 
     render() {
@@ -193,29 +315,47 @@ class MainComponent extends React.Component {
                     </div>)}
 
                     <div className="todo-operation flex-start-center">
-                        <div className="operation-item flex-rest flex-center">编辑?</div>
+                        <div className="operation-item flex-rest flex-center"
+                            onClick={this.editHandle.bind(this)}
+                        >编辑?</div>
                         <span></span>
-                        <div className="operation-item flex-rest flex-center">todo other?</div>
+                        <div className="operation-item flex-rest flex-center"
+                            onClick={() => this.initTodoTask(true)}
+                        >todo other?</div>
                         <span></span>
-                        <div className="operation-item flex-rest flex-center">完成?</div>
+                        <div className="operation-item flex-rest flex-center"
+                            onClick={this.completeHandle.bind(this)}
+                        >完成?</div>
                     </div>
 
                     <div className="todo-operation flex-start-center">
-                        <input type="text" placeholder="YYYY-MM-DD hh:mm" />
-                        <div className="operation-item flex-rest flex-center">推迟?</div>
+                        <input type="text" id="picka-date" placeholder="YYYY-MM-DD hh:mm" />
+                        <div className="operation-item flex-rest flex-center"
+                            onClick={this.putoffHandle.bind(this)}
+                        >推迟?</div>
                         <span></span>
-                        <div className="operation-item flex-rest flex-center">新增结论?</div>
+                        <div className="operation-item flex-rest flex-center"
+                            onClick={this.addConclusionHandle.bind(this)}
+                        >新增结论?</div>
                         <span></span>
-                        <div className="operation-item flex-rest flex-center">删除?</div>
+                        <div className="operation-item flex-rest flex-center"
+                            onClick={this.delHandle.bind(this)}
+                        >删除?</div>
                     </div>
                 </div>
             </div>,
             <div className="operation">
-                <div className="operation-button">还有什么可以做?</div>
+                <div className="operation-button"
+                    onClick={() => window.location.href = './list/index.html'}
+                >还有什么可以做?</div>
                 <div className="dividing-line"></div>
-                <div className="operation-button">为什么要做这个?</div>
+                <div className="operation-button"
+                    onClick={() => window.location.href = './../why/index.html'}
+                >为什么要做这个?</div>
                 <div className="dividing-line"></div>
-                <div className="operation-button">新增任务?</div>
+                <div className="operation-button"
+                    onClick={this.addTaskHandle.bind(this)}
+                >新增任务?</div>
             </div>
         ]
     }
