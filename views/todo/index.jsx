@@ -1,6 +1,6 @@
 import { getProcess, clearProcess } from './../../components/process-task/index.jsx';
 import { confirmPopUp } from './../../components/confirm-popup.js';
-import fetch from './../../components/fetch.js';
+import fetch from './../../components/async-fetch/fetch.js';
 import serviceStorage from './../../components/service-storage/index.js';
 
 import timeTransformers from './../../utils/time-transformers.js';

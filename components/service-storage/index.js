@@ -1,4 +1,4 @@
-import fetch from './../fetch.js'
+import fetch from './../async-fetch/fetch.js'
 import toast from './../toast.js'
 import jsonHandle from './../../utils/json-handle.js'
 

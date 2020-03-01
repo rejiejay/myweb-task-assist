@@ -1,4 +1,4 @@
-import fetch from './fetch.js';
+import fetch from './async-fetch/fetch.js';
 import toast from './toast.js';
 import {
     inputPopUp,
@@ -7,29 +7,29 @@ import {
 
 import consequencer from './../utils/consequencer.js';
 
-const showLogInput = async () => {
-    const handle = await inputPopUp({
+const showLogInput = () => {
+    const inputHandle = password => {
+        fetch.get({
+            url: 'user/login',
+            query: {
+                name: 'rejiejay',
+                password: password
+            }
+        }).then(res => {
+            var token = res.data
+
+            localStorage.setItem('rejiejay-task-assist-token', token)
+            localStorage.setItem('rejiejay-task-assist-password', password)
+            inputPopUpDestroy()
+            toast.show('登录成功！')
+        }, error => console.error(error))
+    }
+
+    inputPopUp({
         title: '请输入登录密码?',
+        inputHandle,
         mustInput: true
     })
-
-    if (handle.result !== 1) return
-
-    fetch.get({
-        url: 'user/login',
-        query: {
-            name: 'rejiejay',
-            password: handle.data
-        }
-    }).then(res => {
-        var token = res.data
-
-        localStorage.setItem('rejiejay-task-assist-token', token)
-        localStorage.setItem('rejiejay-task-assist-password', handle.data)
-        inputPopUpDestroy()
-        toast.show('登录成功！')
-    }, error => console.error(error))
-
 }
 
 const init = async () => new Promise(function (resolve, reject) {

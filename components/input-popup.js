@@ -1,5 +1,4 @@
 import toast from './toast.js';
-import consequencer from './../utils/consequencer.js';
 
 export const inputPopUpDestroy = function inputPopUpDestroy() {
     var popup = document.getElementById('rejiejay-input-popup')
@@ -9,8 +8,9 @@ export const inputPopUpDestroy = function inputPopUpDestroy() {
 export const inputPopUp = ({
     title,
     placeholder,
+    inputHandle,
     mustInput
-}) => new Promise(function (resolve, reject) {
+}) => {
     /** 目标: 防止重复调用 */
     if (document.getElementById('rejiejay-input-popup')) return reject();
     const node = document.createElement("div");
@@ -40,22 +40,17 @@ export const inputPopUp = ({
         if (!input.value) {
             return toast.show('值不能为空')
         }
-        resolve(input.value)
+        inputHandle(input.value)
     }
 
     if (!mustInput) {
         document.getElementById('rejiejay-input-popup-operate-no').onclick = function () {
             inputPopUpDestroy()
-            reject()
         }
 
         document.getElementById('ejiejay-input-popup-mask').onclick = function () {
             inputPopUpDestroy()
-            reject()
         }
     }
 
-}).then(
-    value => consequencer.success(value),
-    error => consequencer.error(error)
-)
+}

@@ -1,8 +1,10 @@
+import CONST from './const.js';
+
+const initAnthDeniedCode = () => Object.keys(CONST.RESULT_CODE).map(item => CONST.RESULT_CODE[item].value)
+
 const config = {
     origin: process.env === 'development' ? 'http://localhost:1932/' : '/task-server/',
-    deniedCode: 5703,
-    expiredCode: 5704,
-    authFailed: 5788,
+    deniedCodes: initAnthDeniedCode()
 }
 
 export default config
