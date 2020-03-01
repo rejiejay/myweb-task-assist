@@ -177,7 +177,7 @@ class MainComponent extends React.Component {
                 const pickerTime = new Date(date.replace(/\-/g, "\/")).getTime()
 
                 if (nowTime > pickerTime) {
-                    components.toast.show('不能小于当前的日期')
+                    toast.show('不能小于当前的日期')
                     return false;
                 }
 
