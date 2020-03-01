@@ -1,3 +1,7 @@
+import {
+    requestHandle
+} from './url-handle.js'
+
 /**
  * 含义: 请求的堆栈
  * 作用: 保持请求顺序执行, 防止出现并发
