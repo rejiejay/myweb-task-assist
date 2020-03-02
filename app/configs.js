@@ -25,6 +25,10 @@ const configs = [{
     route: '/todo/list/index.html',
     entry: './views/todo/list',
     output: './build/todo/list'
+}, {
+    route: '/why/index.html',
+    entry: './views/why',
+    output: './build/why'
 }]
 
 export default configs

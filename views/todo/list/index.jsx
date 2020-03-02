@@ -205,60 +205,60 @@ class MainComponent extends React.Component {
 
             <div class="list executable-task">{
                 executableTask.length > 0 ? executableTask.map((task, key) =>
-                    <div class="list-item" key={key}>
-                        <div class="list-item-container"
+                    <div className="list-item" key={key}>
+                        <div className="list-item-container"
                             onClick={() => self.onClickTaskHandle(task)}
                         >
-                            <div class="list-item-title">{task.title}</div>
+                            <div className="list-item-title">{task.title}</div>
                         </div>
                     </div>
                 ) : '已经完成所有任务'
             }</div>,
 
-            isShowPutoff && <div class="list putoff-task">{
+            isShowPutoff && <div className="list putoff-task">{
                 putoffTask.length > 0 ? putoffTask.map((task, key) =>
-                    <div class="list-item" key={key}>
-                        <div class="list-item-container"
+                    <div className="list-item" key={key}>
+                        <div className="list-item-container"
                             onClick={() => self.onClickTaskHandle(task)}
                         >
-                            <div class="list-item-title">{task.title}</div>
-                            <div class="list-item-time">推迟: {timeTransformers.dateToYYYYmmDDhhMM(new Date(+task.putoffTimestamp))}</div>
+                            <div className="list-item-title">{task.title}</div>
+                            <div className="list-item-time">推迟: {timeTransformers.dateToYYYYmmDDhhMM(new Date(+task.putoffTimestamp))}</div>
                         </div>
                     </div>
                 ) : '不存在推迟任务'
             }</div>,
-            !isShowPutoff && <div class="button-container">
-                <div class="button noselect"
+            !isShowPutoff && <div className="button-container">
+                <div className="button noselect"
                     onClick={() => self.setState({ isShowPutoff: true })}
                 >显示推迟</div>
             </div>,
 
-            isShowComplete && <div class="list complete-task">{
+            isShowComplete && <div className="list complete-task">{
                 completeTask.length > 0 ? completeTask.map((task, key) =>
-                    <div class="list-item" key={key}>
-                        <div class="list-item-container"
+                    <div className="list-item" key={key}>
+                        <div className="list-item-container"
                             onClick={() => self.onClickTaskHandle(task)}
                         >
-                            <div class="list-item-title">{task.title}</div>
-                            <div class="list-item-time">完成: {timeTransformers.dateToYYYYmmDDhhMM(new Date(+task.completeTimestamp))}</div>
+                            <div className="list-item-title">{task.title}</div>
+                            <div className="list-item-time">完成: {timeTransformers.dateToYYYYmmDDhhMM(new Date(+task.completeTimestamp))}</div>
                         </div>
                     </div>
                 ) : '不存在已完成的任务'
             }</div>,
 
-            isShowComplete && <div class="button-container">
-                <div class="button noselect"
+            isShowComplete && <div className="button-container">
+                <div className="button noselect"
                     onClick={this.showMoreCompleteHandle.bind(this)}
                 >显示更多({diff > 0 ? diff : 0})</div>
             </div>,
-            !isShowComplete && <div class="button-container">
-                <div class="button noselect"
+            !isShowComplete && <div className="button-container">
+                <div className="button noselect"
                     onClick={() => self.setState({ isShowComplete: true })}
                 >显示已完成</div>
             </div>,
 
-            <div class="operation">
-                <div class="operation-button">新增任务?</div>
+            <div className="operation">
+                <div className="operation-button">新增任务?</div>
             </div>
         ]
     }
