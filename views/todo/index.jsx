@@ -81,7 +81,7 @@ class MainComponent extends React.Component {
             error => { }
         )
 
-        if (!processTask.id && !todoTask.id && processTask.id !== todoTask.id) confirmPopUp({
+        if (processTask.id && todoTask.id && processTask.id !== todoTask.id) confirmPopUp({
             title: '确定执行此任务?',
             succeedHandle: executeTask
         })
