@@ -61,6 +61,10 @@ const configs = [{
     route: '/conclusion/edit/index.html',
     entry: './views/conclusion/edit',
     output: './build/conclusion/edit'
+}, {
+    route: '/add-redirect/index.html',
+    entry: './views/add-redirect',
+    output: './build/add-redirect'
 }]
 
 export default configs
