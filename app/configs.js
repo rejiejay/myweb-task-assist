@@ -45,6 +45,14 @@ const configs = [{
     route: '/plan/edit/index.html',
     entry: './views/plan/edit',
     output: './build/plan/edit'
+}, {
+    route: '/plan/according-list/index.html',
+    entry: './views/plan/according-list',
+    output: './build/plan/according-list'
+}, {
+    route: '/plan/according-edit/index.html',
+    entry: './views/plan/according-edit',
+    output: './build/plan/according-edit'
 }]
 
 export default configs
