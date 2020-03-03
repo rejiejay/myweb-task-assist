@@ -77,7 +77,9 @@ class MainComponent extends React.Component {
                     onClick={() => self.editHandle('edit', latest)}
                 >
                     <div class="content-title">方案{count}</div>
-                    <div class="content-description">{!!latest.program && latest.program.replace(/\n/g, "<br>")}</div>
+                    <div class="content-description"
+                        dangerouslySetInnerHTML={{ __html: latest.program ? latest.latest.program.replace(/\n/g, "<br>") : '' }}
+                    ></div>
                 </div>
             </div>,
 

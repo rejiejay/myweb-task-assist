@@ -210,21 +210,24 @@ class MainComponent extends React.Component {
                     <div class="reason-item" key={key}>
                         <div class="item-container"
                             onClick={() => self.editHandle(why)}
-                        >{why.content.replace(/\n/g, "<br>")}</div>
+                            dangerouslySetInnerHTML={{ __html: why.content.replace(/\n/g, "<br>") }}
+                        ></div>
                     </div>
                 )}</div>
                 <div className="reason-related">{related.map((why, key) =>
                     <div class="reason-item" key={key}>
                         <div class="item-container"
                             onClick={() => self.editHandle(why)}
-                        >{why.content.replace(/\n/g, "<br>")}</div>
+                            dangerouslySetInnerHTML={{ __html: why.content.replace(/\n/g, "<br>") }}
+                        ></div>
                     </div>
                 )}</div>
                 <div className="reason-other">{random.map((why, key) =>
                     <div class="reason-item" key={key}>
                         <div class="item-container"
                             onClick={() => self.editHandle(why)}
-                        >{why.content.replace(/\n/g, "<br>")}</div>
+                            dangerouslySetInnerHTML={{ __html: why.content.replace(/\n/g, "<br>") }}
+                        ></div>
                     </div>
                 )}</div>
                 <div className="reason-load"

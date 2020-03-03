@@ -70,7 +70,8 @@ class MainComponent extends React.Component {
                 <div class="according-container">{list.map((item, key) =>
                     <div class="according-item"
                         onClick={() => self.editHandle(item)}
-                    >{item.according.replace(/\n/g, "<br>")}</div>
+                        dangerouslySetInnerHTML={{ __html: item.according.replace(/\n/g, "<br>") }}
+                    ></div>
                 )}
                 </div>
                 <div class="operating-container">

@@ -90,12 +90,12 @@ class MainComponent extends React.Component {
     }
 
     addHandle() {
-        const { id } = this
+        const { data: { id } } = getProcess()
         const { plan: { program } } = this.state
         if (!program) return toast.show('内容不能为空');
         fetch.post({
             url: 'plan/add',
-            body: { id, program }
+            body: { targetId: id, program }
         }).then(
             res => window.location.href = './../index.html',
             error => { }

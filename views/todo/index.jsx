@@ -293,7 +293,9 @@ class MainComponent extends React.Component {
 
 
                     <div className="todo-title">{title ? title : '标题'}</div>
-                    <div className="todo-specific">{specific}</div>
+                    <div className="todo-specific"
+                        dangerouslySetInnerHTML={{ __html: specific }}
+                    ></div>
 
                     {isShowDetails ? (<div className="todo-details">
                         <div className="todo-measure">{measure ? `<span>衡量任务完成的标准?</span>- ${measure}` : '衡量任务完成的标准?'}</div>
@@ -308,7 +310,9 @@ class MainComponent extends React.Component {
                     </div>)}
 
                     {isShowConclusion ? (
-                        <div className="todo-conclusions">{conclusion ? conclusion : '暂无任务结论'}</div>
+                        <div className="todo-conclusions"
+                            dangerouslySetInnerHTML={{ __html: conclusion ? conclusion.replace(/\n/g, "<br>") : '暂无任务结论' }}
+                        ></div>
                     ) : (<div className="todo-operation flex-start-center">
                         <div className="todo-conclusion-operation flex-rest flex-center"
                             onClick={() => self.showItem('isShowConclusion')}
