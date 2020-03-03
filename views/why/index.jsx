@@ -1,8 +1,8 @@
 import { getProcess } from './../../components/process-task/index.jsx';
 import fetch from './../../components/async-fetch/fetch.js';
-import toast from './../../components/toast.js';
 
 import jsonHandle from './../../utils/json-handle.js';
+import constHandle from './../../utils/const-handle.js';
 
 import CONST from './const.js'
 
@@ -14,12 +14,27 @@ class MainComponent extends React.Component {
             statistics: {
                 all: CONST.STATISTICS.DEFAULTS,
                 target: CONST.STATISTICS.DEFAULTS
+            },
+
+            data: {
+                newest: [
+                    // CONST.WHY.DEFAULTS
+                ],
+                related: [
+                    // CONST.WHY.DEFAULTS
+                ],
+                random: [
+                    // CONST.WHY.DEFAULTS
+                ],
             }
         }
     }
 
     async componentDidMount() {
         await this.initStatistics()
+        await this.initDataBy('newest')
+        await this.initDataBy('related')
+        await this.initDataBy('random', 2)
     }
 
     async initStatistics() {
@@ -137,9 +152,41 @@ class MainComponent extends React.Component {
         }
     }
 
+    async initDataBy(type, count) {
+        let data = JSON.parse(JSON.stringify(this.state.data))
+        const self = this
+        const { data: { id } } = getProcess()
+        const url = constHandle.findValueByValue({
+            CONST: CONST.REASON_TYPE,
+            supportKey: 'value',
+            supportValue: type,
+            targetKey: 'url'
+        })
+
+        let query = { targetId: id }
+        count ? query.count = count : null
+
+        await fetch.get({
+            url,
+            query
+        }).then(
+            res => {
+                data[type] = res.data
+                self.setState({ data })
+            },
+            error => { }
+        )
+    }
+
+    editHandle(why) {
+        window.localStorage.setItem('task-why-edit-id', why.id)
+        window.location.href = './edit/index.html'
+    }
+
     render() {
+        const self = this
         const { data: { name } } = getProcess()
-        const { statistics } = this.state
+        const { statistics, data: { newest, related, random } } = this.state
         const statisticsInstance = {
             all: this.handleStatistics(statistics.all),
             target: this.handleStatistics(statistics.target)
@@ -152,27 +199,53 @@ class MainComponent extends React.Component {
             </div>,
 
             <div className="spiritual">
-                <div className="spiritual-container flex-center">状态觉察怎样?</div>
+                <div className="spiritual-container flex-center"
+                    onClick={() => window.location.href = './spiritual/index.html'}
+                >状态觉察怎样?</div>
             </div>,
 
             <div className="reason">
-                <div className="reason-title">为什么要"任务"?</div>
-                <div className="reason-new"></div>
-                <div className="reason-related">
-                </div>
-                <div className="reason-other">
-                </div>
-                <div className="reason-load">加载更多</div>
+                <div className="reason-title">为什么要“{name}”?</div>
+                <div className="reason-new">{newest.map((why, key) =>
+                    <div class="reason-item" key={key}>
+                        <div class="item-container"
+                            onClick={() => self.editHandle(why)}
+                        >${why.content.replace(/\n/g, "<br>")}</div>
+                    </div>
+                )}</div>
+                <div className="reason-related">{related.map((why, key) =>
+                    <div class="reason-item" key={key}>
+                        <div class="item-container"
+                            onClick={() => self.editHandle(why)}
+                        >${why.content.replace(/\n/g, "<br>")}</div>
+                    </div>
+                )}</div>
+                <div className="reason-other">{random.map((why, key) =>
+                    <div class="reason-item" key={key}>
+                        <div class="item-container"
+                            onClick={() => self.editHandle(why)}
+                        >${why.content.replace(/\n/g, "<br>")}</div>
+                    </div>
+                )}</div>
+                <div className="reason-load"
+                    onClick={() => self.initDataBy('random', 5)}
+                >加载更多</div>
             </div>,
             <div className="operational">
                 <div className="operational-item">
-                    <div className="item-container">新增理由?</div>
+                    <div className="item-container"
+                        onClick={() => window.location.href = './edit/index.html'}
+                    >新增理由?</div>
                 </div>
                 <div className="operational-item">
-                    <div className="item-container">有哪些事情可以做?</div>
+                    <div className="item-container"
+                        onClick={() => window.location.href = './../todo/list/index.html'}
+                    >有哪些事情可以做?</div>
                 </div>
                 <div className="operational-item">
-                    <div className="item-container">具体计划是什么?</div>
+                    <div className="item-container"
+                        onClick={() => window.location.href = './../plan/index.html'}
+                    >具体计划是什么?</div>
                 </div>
             </div>,
         ]

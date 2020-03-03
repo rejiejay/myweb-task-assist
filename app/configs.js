@@ -29,6 +29,10 @@ const configs = [{
     route: '/why/index.html',
     entry: './views/why',
     output: './build/why'
+}, {
+    route: '/why/spiritual/index.html',
+    entry: './views/why/spiritual',
+    output: './build/why/spiritual'
 }]
 
 export default configs

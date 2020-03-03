@@ -16,8 +16,8 @@ const CONST = {
     },
 
     REASON_TYPE: {
-        NEW: {
-            value: 'new',
+        NEWEST: {
+            value: 'newest',
             url: 'why/get/three',
             dom: 'new_dom',
             des: '最新理由',
