@@ -3,7 +3,7 @@ const CONST = {
         DEFAULTS: 'add',
         ADD: 'add',
         EDIT: 'edit',
-        SHOW: 'show',
+        SHOW: 'show'
     },
     PLAN: {
         DEFAULTS: {
