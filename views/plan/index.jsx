@@ -74,7 +74,7 @@ class MainComponent extends React.Component {
 
             !!latest && <div class="plan-content">
                 <div class="content-container"
-                    onClick={() => self.editHandle('eidt')}
+                    onClick={() => self.editHandle('edit', latest)}
                 >
                     <div class="content-title">方案{count}</div>
                     <div class="content-description">{!!latest.program && latest.program.replace(/\n/g, "<br>")}</div>
@@ -85,7 +85,7 @@ class MainComponent extends React.Component {
                 <div class="list-container">{otherList.map((item, key) =>
                     <div class="content-container" key={key}>
                         <div class="plan-other flex-start-center"
-                            onClick={() => self.editHandle('show')}
+                            onClick={() => self.editHandle('show', item)}
                         >方案{count - (key + 1)}（{timeTransformers.dateToYYYYmmDDhhMM(new Date(+item.sqlTimestamp))}）</div>
                     </div>
                 )}</div>
