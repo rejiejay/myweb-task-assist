@@ -1,4 +1,9 @@
 const CONST = {
+    PAGE_STATUS: {
+        DEFAULTS: 'add',
+        ADD: 'add',
+        EDIT: 'edit',
+    },
     WHY: {
         DEFAULTS: {
             id: null, // 作用: 判空
