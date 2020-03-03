@@ -1,69 +1,14 @@
-/**
- * 策略: 仅首页检查一次即可
- * 使用注意: 需前置引入组件依赖
- * components/fetch
- * components/toast
- * components/input-popup
- * utils/json-handle
- */
-var ServiceStorage = {
-    components: {
-        fetch: null,
-        jsonHandle: null,
-        toast: null,
-    },
+import fetch from './../async-fetch/fetch.js'
+import toast from './../toast.js'
+import jsonHandle from './../../utils/json-handle.js'
 
-    init: function init() {
-        var self = this
-
-        this.initComponents()
-
-        var instance = {
-            getItem: function getItem({
-                key,
-                hiddenError,
-                isArray
-            }) {
-                return new Promise(function (resolve, reject) {
-                    self.getItem(key, hiddenError, isArray, resolve, reject)
-                })
-            },
-            setItem: function setItem({
-                key,
-                value,
-                hiddenError
-            }) {
-                return new Promise(function (resolve, reject) {
-                    self.setItem(key, value, hiddenError, resolve, reject)
-                })
-            },
-            clearItem: function clearItem({
-                key,
-                hiddenError
-            }) {
-                return new Promise(function (resolve, reject) {
-                    self.clearItem(key, hiddenError, resolve, reject)
-                })
-            }
-        }
-
-        return instance
-    },
-
-    initComponents: function initComponents() {
-        var components = {
-            fetch: Fetch.init(),
-            jsonHandle: JsonHandle,
-            toast: Toast.init()
-        }
-
-        this.components = components
-    },
-
-    getItem: function getItem(key, hiddenError, isArray, resolve, reject) {
-        var self = this
-
-        this.components.fetch.get({
+const serviceStorage = {
+    getItem: ({
+        key,
+        hiddenError,
+        isArray
+    }) => new Promise((resolve, reject) => {
+        fetch.get({
             url: 'map/get',
             query: {
                 key
@@ -71,8 +16,8 @@ var ServiceStorage = {
             hiddenError
         }).then(
             res => {
-                var jsonString = res.data.value
-                var verify = self.components.jsonHandle.verifyJSONString({
+                const jsonString = res.data.value
+                const verify = jsonHandle.verifyJSONString({
                     jsonString,
                     isArray
                 })
@@ -81,19 +26,22 @@ var ServiceStorage = {
                     resolve(verify.data)
                 } else {
                     if (!hiddenError) {
-                        self.components.toast.destroy()
-                        self.components.toast.show(verify.msg)
+                        toast.destroy()
+                        toast.show(verify.msg)
                     }
                     reject(verify.msg)
                 }
             },
             error => reject(error)
         )
-    },
+    }),
 
-    setItem: function setItem(key, value, hiddenError, resolve, reject) {
-        var self = this
-        this.components.fetch.post({
+    setItem: ({
+        key,
+        value,
+        hiddenError
+    }) => new Promise((resolve, reject) => {
+        fetch.post({
             url: 'map/set',
             body: {
                 key,
@@ -104,10 +52,13 @@ var ServiceStorage = {
             res => resolve(),
             error => reject(error)
         )
-    },
+    }),
 
-    clearItem: function clearItem(key, hiddenError, resolve, reject) {
-        this.components.fetch.get({
+    clearItem: ({
+        key,
+        hiddenError
+    }) => new Promise((resolve, reject) => {
+        fetch.get({
             url: 'map/clear',
             query: {
                 key
@@ -117,5 +68,7 @@ var ServiceStorage = {
             res => resolve(),
             error => reject(error)
         )
-    }
+    })
 }
+
+export default serviceStorage

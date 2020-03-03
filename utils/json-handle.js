@@ -1,10 +1,9 @@
-var JsonHandle = {
-    verifyJSONString: function verifyJSONString({
+const jsonHandle = {
+    verifyJSONString: ({
         jsonString,
         isArray
-    }) {
-
-        var result = {
+    }) => {
+        const result = {
             isCorrect: false,
             msg: '',
             data: null
@@ -16,7 +15,7 @@ var JsonHandle = {
         }
 
         try {
-            var obj = JSON.parse(jsonString)
+            const obj = JSON.parse(jsonString)
             if (obj && typeof obj === 'object') {
 
                 // 判断数组
@@ -45,3 +44,5 @@ var JsonHandle = {
         return result
     }
 }
+
+export default jsonHandle

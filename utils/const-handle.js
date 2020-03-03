@@ -1,17 +1,17 @@
-var ConstHandle = {
+const constHandle = {
     /**
      * 作用: 通过CONST值找到值
      */
-    findValueByValue: function findValueByValue({
+    findValueByValue: ({
         CONST,
         supportKey,
         supportValue,
         targetKey
-    }) {
-        var targetValue = null
+    }) => {
+        let targetValue = null
 
         Object.keys(CONST).forEach(function (thisKey) {
-            var obj = CONST[thisKey]
+            const obj = CONST[thisKey]
 
             if (obj[supportKey] === supportValue) {
                 targetValue = obj[targetKey]
@@ -21,3 +21,5 @@ var ConstHandle = {
         return targetValue
     }
 }
+
+export default constHandle
