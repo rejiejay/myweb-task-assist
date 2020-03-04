@@ -26,6 +26,10 @@ const configs = [{
     entry: './views/todo/list',
     output: './build/todo/list'
 }, {
+    route: '/todo/template/index.html',
+    entry: './views/todo/template',
+    output: './build/todo/template'
+}, {
     route: '/why/index.html',
     entry: './views/why',
     output: './build/why'
