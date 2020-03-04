@@ -11,6 +11,7 @@ const init = async () => {
 
     const copyInstance = await copyDirectory(targetFolderPath, renderFolderPath);
     if (copyInstance.result !== 1) return console.error(copyInstance.message);
+    return copyInstance
 }
 
 const lib = {
