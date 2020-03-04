@@ -10,12 +10,14 @@
 [第二版（React）](https://github.com/rejiejay/myweb-task-assist/)
 
 # 项目初始化
-cnpm install -d
-cnpm install -g nodemon
-npm start
+cnpm install -d  
+
+cnpm install -g nodemon  
+
+npm start  
 
 # 发布流程
-暂无
+npm run build  
 
 # localStorage
 

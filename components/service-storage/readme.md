@@ -20,3 +20,9 @@ localStorage不能跨越浏览器
 
 定义: 目标计划草稿
 格式: { program }
+
+
+- todoTaskTemplate  
+
+定义: 目标计划草稿
+格式: [{ title, content, measure, span, aspects, worth, estimate }]

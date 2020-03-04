@@ -1,13 +1,13 @@
 {
   "name": "my-web-task-assist-react",
-  "version": "2.96.0",
+  "version": "2.134.0",
   "author": "rejiejay",
   "description": "my web task assist react",
   "main": "index.js",
   "scripts": {
     "start": "SET NODE_ENV=development && node index.js",
     "start:dev": "SET NODE_ENV=development && nodemon index.js",
-    "build": "node build.js"
+    "build": "SET NODE_ENV=production && node build.js"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
