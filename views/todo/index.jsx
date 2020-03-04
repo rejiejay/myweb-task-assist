@@ -234,7 +234,7 @@ class MainComponent extends React.Component {
         const { processTarget } = this.state
         window.localStorage['task-todo-edit-id'] = '';
 
-        (processTarget && processTarget.id) ? window.location.href = './edit/index.html' : window.location.href = './../target/index.html?redirect=addTodo'
+        (processTarget && processTarget.id) ? window.location.href = './template/index.html' : window.location.href = './../target/index.html?redirect=addTodo'
     }
 
     render() {

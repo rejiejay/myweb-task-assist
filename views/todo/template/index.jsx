@@ -1,4 +1,5 @@
 import serviceStorage from './../../../components/service-storage/index.js'
+import { confirmPopUp } from './../../../components/confirm-popup.js';
 
 import CONST from './const.js'
 import toast from '../../../components/toast.js'
@@ -88,7 +89,31 @@ class MainComponent extends React.Component {
     }
 
     selectedHandle() {
+        const {
+            list,
+            selectIndex,
+        } = this.state
+        const {
+            title,
+            content,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate
+        } = list[+selectIndex]
 
+        window.localStorage.setItem('task-todo-template', JSON.stringify({
+            title,
+            content,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate
+        }))
+
+        window.location.replace('./../edit/index.html')
     }
 
     showEditHandle() {
@@ -152,6 +177,30 @@ class MainComponent extends React.Component {
     }
 
     deleteEditHandle() {
+        const self = this
+        const {
+            list,
+            selectIndex
+        } = this.state
+
+        const handle = async () => {
+            let newList = list.filter((item, key) => key !== +selectIndex)
+
+            const saveInstance = await self.saveHandle(newList)
+
+            if (saveInstance.result === 1) {
+                self.setState({
+                    status: CONST.PAGE_STATUS.DEFAULTS,
+                    list: newList
+                });
+                toast.show('成功删除!');
+            }
+        }
+
+        confirmPopUp({
+            title: `确认要删除模板?`,
+            succeedHandle: handle
+        })
     }
 
     render() {
@@ -187,6 +236,11 @@ class MainComponent extends React.Component {
                 </div>
 
                 <div className="operating">
+                    <div className="operating-button">
+                        <div className="button-container flex-center"
+                            onClick={() => window.location.href = window.location.replace('./../edit/index.html')}
+                        >不需要模板</div>
+                    </div>
                     <div className="operating-button">
                         <div className="button-container flex-center"
                             onClick={() => self.setState({ status: CONST.PAGE_STATUS.ADD })}
@@ -331,7 +385,17 @@ class MainComponent extends React.Component {
 
                     <div className="operating-button">
                         <div className="button-container flex-center"
-                            onClick={() => { }}
+                            onClick={() => self.setState({
+                                status: CONST.PAGE_STATUS.DEFAULTS,
+                                selectIndex: null,
+                                title: null,
+                                content: null,
+                                measure: null,
+                                span: null,
+                                aspects: null,
+                                worth: null,
+                                estimate: null
+                            })}
                         >取消</div>
                     </div>
                 </div>

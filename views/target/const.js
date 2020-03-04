@@ -37,7 +37,7 @@ const CONST = {
             value: 'addTodo',
             effect: 'What new tasks are created?',
             title: '创建哪些新任务?',
-            url: './../todo/edit/index.html'
+            url: './../todo/template/index.html'
         },
         ADD_OTHER: {
             value: 'addOther',

@@ -5,6 +5,7 @@ import { confirmPopUp } from './../../../components/confirm-popup.js';
 import serviceStorage from './../../../components/service-storage/index.js'
 
 import timeTransformers from './../../../utils/time-transformers.js';
+import jsonHandle from './../../../utils/json-handle.js';
 
 import CONST from './const.js'
 
@@ -43,6 +44,23 @@ class MainComponent extends React.Component {
             this.id = id
         } else {
             this.status = CONST.PAGE_STATUS.ADD
+
+            const templateStr = window.localStorage['task-todo-template']
+            const templateVerify = templateStr ? jsonHandle.verifyJSONString({
+                jsonString: templateStr
+            }) : { isCorrect: false }
+
+            if (templateVerify.isCorrect) this.setState({
+                title: templateVerify.data.title,
+                content: templateVerify.data.content,
+                conclusion: templateVerify.data.conclusion,
+                measure: templateVerify.data.measure,
+                span: templateVerify.data.span,
+                aspects: templateVerify.data.aspects,
+                worth: templateVerify.data.worth,
+                estimate: templateVerify.data.estimate,
+            })
+            window.localStorage['task-todo-template'] = ''
         }
     }
 
