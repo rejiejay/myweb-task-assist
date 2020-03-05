@@ -238,7 +238,7 @@ class MainComponent extends React.Component {
                 <div className="operating">
                     <div className="operating-button">
                         <div className="button-container flex-center"
-                            onClick={() => window.location.href = window.location.replace('./../edit/index.html')}
+                            onClick={() => window.location.replace('./../edit/index.html')}
                         >不需要模板</div>
                     </div>
                     <div className="operating-button">
