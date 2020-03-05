@@ -50,9 +50,9 @@ export const requestHandle = ({
 
     toast.show()
 
-    return new Promise((resolve, reject) => {
-        requestResolve = resolve;
-        requestReject = reject;
+    return new Promise((res, rej) => {
+        requestResolve = res;
+        requestReject = rej;
 
         window.fetch(requestUrl, requestConfig).then(
             response => response.json(),
@@ -60,10 +60,10 @@ export const requestHandle = ({
         ).then(
             response => responseHandle(response),
             error => errorHandle(error)
-        ).catch(
-            error => errorHandle(consequencer.error(error))
         )
-    })
+    }).catch(error => {
+        asyncReject(consequencer.error(error))
+    });
 }
 
 export const responseHandle = response => {

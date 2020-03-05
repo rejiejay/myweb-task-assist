@@ -16,7 +16,7 @@ const showLogInput = () => {
                 password: password
             }
         }).then(res => {
-            var token = res.data
+            const token = res.data
 
             localStorage.setItem('rejiejay-task-assist-token', token)
             localStorage.setItem('rejiejay-task-assist-password', password)
@@ -32,36 +32,26 @@ const showLogInput = () => {
     })
 }
 
-const init = async () => new Promise(function (resolve, reject) {
+const init = async () => {
     let token = localStorage.getItem('rejiejay-task-assist-token')
     let password = localStorage.getItem('rejiejay-task-assist-password')
 
     if (!token || !password) {
-        reject()
         return showLogInput()
     }
 
-    fetch.get({
+    await fetch.get({
         url: 'user/verify',
         query: {
             verify: token
         },
         hiddenError: true
     }).then(
-        res => {
-            resolve()
-            var token = res.data
-            localStorage.setItem('rejiejay-task-assist-token', token)
-        },
-        error => {
-            reject()
-            showLogInput()
-        }
+        ({
+            data
+        }) => localStorage.setItem('rejiejay-task-assist-token', data),
+        error => showLogInput()
     )
-
-}).then(
-    () => consequencer.success(),
-    error => consequencer.error(error)
-)
+}
 
 export default init
