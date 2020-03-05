@@ -258,7 +258,9 @@ class MainComponent extends React.Component {
             </div>,
 
             <div className="operation">
-                <div className="operation-button">新增任务?</div>
+                <div className="operation-button"
+                    onClick={() => window.location.href = './../edit/index.html'}
+                >新增任务?</div>
             </div>
         ]
     }

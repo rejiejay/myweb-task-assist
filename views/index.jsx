@@ -11,7 +11,7 @@ class MainComponent extends React.Component {
 
     async navigateTarget() {
         clearProcess()
-        window.location.href = './target/index.html'
+        window.location.href = './target/index.html?redirect=needTodo'
     }
 
     render() {
