@@ -78,7 +78,7 @@ class MainComponent extends React.Component {
                 >
                     <div class="content-title">方案{count}</div>
                     <div class="content-description"
-                        dangerouslySetInnerHTML={{ __html: latest.program ? latest.latest.program.replace(/\n/g, "<br>") : '' }}
+                        dangerouslySetInnerHTML={{ __html: latest.program ? latest.program.replace(/\n/g, "<br>") : '' }}
                     ></div>
                 </div>
             </div>,

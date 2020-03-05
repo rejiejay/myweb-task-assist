@@ -11,7 +11,8 @@ class MainComponent extends React.Component {
         super(props)
 
         this.state = {
-            plan: CONST.PLAN.DEFAULTS
+            plan: CONST.PLAN.DEFAULTS,
+            draft: {}
         }
 
         this.id = null
@@ -48,11 +49,24 @@ class MainComponent extends React.Component {
 
     async initDateByStorage() {
         const self = this
+        const { data: { name } } = getProcess()
 
         await serviceStorage.getItem({
             key: 'draftPlanDesign'
         }).then(
-            ({ program }) => self.setState({ plan: { program } }),
+            draft => {
+                let newState = {}
+                if (draft) {
+                    newState.draft = draft
+
+                    if (draft[name]) {
+                        newState.plan = {
+                            program: draft[name]
+                        }
+                    }
+                }
+                self.setState(newState)
+            },
             error => { }
         )
     }
@@ -103,11 +117,16 @@ class MainComponent extends React.Component {
     }
 
     draftHandle() {
-        const { plan: { program } } = this.state
+        let { draft, plan: { program } } = this.state
+        const { data: { name } } = getProcess()
+
         if (!program) return toast.show('内容不能为空');
+
+        draft[name] = program
+
         serviceStorage.setItem({
             key: 'draftPlanDesign',
-            value: { program }
+            value: draft
         }).then(
             res => toast.show('保存草稿成功!'),
             error => { }

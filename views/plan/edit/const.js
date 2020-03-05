@@ -17,6 +17,13 @@ const CONST = {
             according: null,
             sqlTimestamp: 'not-null',
         }
+    },
+    DRAFT: {
+        DEFAULTS: {},
+        DEMO: {
+            gwy: '草稿1',
+            targetName: '草稿2'
+        }
     }
 }
 
