@@ -1,5 +1,5 @@
 import login from './../components/login.js';
-import { ProcessTask } from './../components/process-task/index.jsx';
+import { ProcessTask, clearProcess } from './../components/process-task/index.jsx';
 
 class MainComponent extends React.Component {
 
@@ -8,6 +8,11 @@ class MainComponent extends React.Component {
     }
 
     navigate = href => window.location.href = href
+
+    async navigateTarget() {
+        clearProcess()
+        window.location.href = './target/index.html'
+    }
 
     render() {
         return [
@@ -27,7 +32,7 @@ class MainComponent extends React.Component {
 
                 <div className="button-container">
                     <div className="button noselect"
-                        onClick={() => this.navigate('./target/index.html?redirect=needTodo')}
+                        onClick={this.navigateTarget}
                     >有哪些可以做?</div>
                 </div>
 
