@@ -92,7 +92,7 @@ export const render = async config => {
     if (jsInstance.result !== 1) return jsInstance;
 
     const version = '1.0.0'
-    const htmlInstance = await html(config);
+    const htmlInstance = await html(config, version);
     if (htmlInstance.result !== 1) return htmlInstance;
 
     const cssInstance = await css(config);

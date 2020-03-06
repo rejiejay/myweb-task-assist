@@ -243,7 +243,17 @@ class MainComponent extends React.Component {
                     </div>
                     <div className="operating-button">
                         <div className="button-container flex-center"
-                            onClick={() => self.setState({ status: CONST.PAGE_STATUS.ADD })}
+                            onClick={() => self.setState({
+                                status: CONST.PAGE_STATUS.ADD,
+                                selectIndex: null,
+                                title: null,
+                                content: null,
+                                measure: null,
+                                span: null,
+                                aspects: null,
+                                worth: null,
+                                estimate: null
+                            })}
                         >新增模板</div>
                     </div>
                 </div>
