@@ -1,5 +1,8 @@
-import { getProcess } from './../../components/process-task/index.jsx';
+import { getProcess, setProcess } from './../../components/process-task/index.jsx';
 import login from './../../components/login.js';
+import { dropDownSelectPopup } from './../../components/drop-down-select-popup.js';
+import serviceStorage from './../../components/service-storage/index.js';
+import consequencer from './../../utils/consequencer.js';
 
 import ListComponent from './list.jsx';
 import SearchComponent from './search.jsx';
@@ -21,20 +24,51 @@ class MainComponent extends React.Component {
 
     async componentDidMount() {
         await login()
-        this.initProcess()
+        const processInstance = this.initProcess()
+        if (processInstance.result !== 1) return this.showProcessSelected()
+
+        await this.refs.list.init()
     }
 
     initProcess() {
         const processInstance = getProcess()
         /** 含义: 这里必须选择目标 */
-        if (processInstance.result !== 1) return this.showProcessSelected()
+        if (processInstance.result !== 1) return consequencer.error()
+
         const { id, name } = processInstance.data
         this.setState({ processTarget: { id, name } })
+
+        return consequencer.success()
     }
 
-    /** 注意: 需要触发一次刷新 */
-    showProcessSelected() {
-        console.log('显示')
+    async showProcessSelected() {
+        const self = this
+        const allTargetInstance = await serviceStorage.getItem({
+            key: 'allTarget',
+            isArray: true
+        }).then(
+            res => consequencer.success(res),
+            msg => consequencer.error(msg)
+        )
+
+        const handle = async ({ value, label }) => {
+            const processTarget = { id: value, name: label }
+            setProcess(processTarget)
+            self.setState({ processTarget })
+            self.refs.list.init()
+        }
+
+        if (allTargetInstance.result === 1) {
+            dropDownSelectPopup({
+                list: allTargetInstance.data.map(({ id, name }) => ({
+                    value: id,
+                    label: name
+                })),
+                handle
+            })
+        } else {
+            window.location.href = './../target/json-config/index.html'
+        }
     }
 
     render() {
@@ -61,6 +95,7 @@ class MainComponent extends React.Component {
                 style={{ minHeight: (clientHeight - 46 - 61 - 52) }}
             >
                 <ListComponent
+                    ref="list"
                     isShow={pageStatus === CONST.PAGE_STATUS.DEFAULTS || pageStatus === CONST.PAGE_STATUS.LIST}
                 ></ListComponent>
                 <SearchComponent

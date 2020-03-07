@@ -12,7 +12,7 @@ export const inputPopUp = ({
     mustInput
 }) => {
     /** 目标: 防止重复调用 */
-    if (document.getElementById('rejiejay-input-popup')) return reject();
+    if (document.getElementById('rejiejay-input-popup')) return false;
     const node = document.createElement("div");
 
     const node_content = `

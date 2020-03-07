@@ -7,6 +7,10 @@ class ListComponent extends React.Component {
 
     componentDidMount() { }
 
+    async init() {
+
+    }
+
     render() {
         const { isShow } = this.props
 
