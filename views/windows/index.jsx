@@ -75,7 +75,7 @@ class MainComponent extends React.Component {
         const { processTarget: { id, name }, pageStatus } = this.state
         const { clientHeight } = this
         return [
-            <div className="headder flex-start-center">
+            <div className="headder flex-start-center noselect">
                 <div className="process-task hover-item"
                     onClick={this.showProcessSelected.bind(this)}
                 >目标范围: {name}</div>
@@ -97,9 +97,15 @@ class MainComponent extends React.Component {
                 </div>
 
                 <div className="fast-operating flex-start-center">
-                    <div className="operat-item hover-item">理由</div>
-                    <div className="operat-item hover-item">计划</div>
-                    <div className="operat-item hover-item">新建任务</div>
+                    <div className="operat-item hover-item"
+                        onClick={() => window.location.href = "./../why/index.html"}
+                    >理由</div>
+                    <div className="operat-item hover-item"
+                        onClick={() => window.location.href = "./../plan/index.html"}
+                    >计划</div>
+                    <div className="operat-item hover-item"
+                        onClick={() => window.location.href = "./../todo/template/index.html"}
+                    >新建任务</div>
                 </div>
             </div >,
 

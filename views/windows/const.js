@@ -14,7 +14,30 @@ const CONST = {
         LIST: 'list',
         SEARCH: 'search',
         EDIT: 'edit'
-    }
+    },
+    TASK: {
+        DEFAULTS: {
+            id: null,
+            title: null,
+            conclusion: null
+        },
+        DEMO: {
+            id: 1,
+            targetId: 'not-null',
+            title: 'not-null',
+            content: '',
+            conclusion: null,
+            measure: null,
+            span: null,
+            aspects: null,
+            worth: null,
+            estimate: null,
+            image: null,
+            putoffTimestamp: null,
+            completeTimestamp: null,
+            sqlTimestamp: null
+        }
+    },
 }
 
 export default CONST
