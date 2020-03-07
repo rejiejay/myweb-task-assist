@@ -5,6 +5,10 @@ const configs = [{
     route: '/index.html',
     entry: './views',
     output: './build'
+},{
+    route: '/windows/index.html',
+    entry: './views/windows',
+    output: './build/windows'
 }, {
     route: '/target/index.html',
     entry: './views/target',

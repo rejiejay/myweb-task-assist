@@ -7,6 +7,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Task Todo</title>
 
+    <script>
+        if (
+            !!![
+                'Android',
+                'iPhone',
+                'SymbianOS',
+                'Windows Phone',
+                'iPod'
+            ].find(agent => agent === window.navigator.userAgent)
+        ) window.location.replace('./windows/index.html');
+    </script>
+
     <script type="text/javascript" charset="utf-8" src="./lib/react/react.js"></script>
     <script type="text/javascript" charset="utf-8" src="./lib/react/react-dom.js"></script>
 
