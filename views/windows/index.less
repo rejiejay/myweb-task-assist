@@ -19,3 +19,55 @@ body {
     color: @black2;
     background-color: #f1f1f1;
 }
+
+.headder {
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    height: 46px;
+
+    .fast-operating {
+        padding-right: 7.5px;
+
+        .operat-item {
+            padding: 7.5px;
+        }
+    }
+
+    .hover-item {
+        cursor: pointer;
+        transition: color 0.25s;
+        -moz-transition: color 0.25s;
+        /* Firefox 4 */
+        -webkit-transition: color 0.25s;
+        /* Safari 和 Chrome */
+        -o-transition: color 0.25s;
+        /* Opera */
+        transition: background-color 1s;
+        -moz-transition: background-color 1s;
+        /* Firefox 4 */
+        -webkit-transition: background-color 1s;
+        /* Safari 和 Chrome */
+        -o-transition: background-color 1s;
+        /* Opera */
+    }
+
+    .hover-item:hover {
+        color: @black1;
+        background-color: rgba(0, 0, 0, 0.08);
+    }
+}
+
+.content-container-area {
+    padding: 25px;
+}
+
+.copyright-component {
+    padding-top: 35px;
+    padding-bottom: 5px;
+
+    .copyright-describe {
+        text-align: center;
+        font-size: 14px;
+    }
+}

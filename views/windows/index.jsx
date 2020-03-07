@@ -1,18 +1,78 @@
+import { getProcess } from './../../components/process-task/index.jsx';
+import login from './../../components/login.js';
+
+import ListComponent from './list.jsx';
+import SearchComponent from './search.jsx';
+import EditComponent from './edit.jsx';
+import CONST from './const.js';
+
 class MainComponent extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            processName: ''
+            processTarget: CONST.PROCESS_TARGET.DEFAULTS,
+            pageStatus: CONST.PAGE_STATUS.DEFAULTS
         }
+
+        this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
+        this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await login()
+        this.initProcess()
+    }
+
+    initProcess() {
+        const processInstance = getProcess()
+        /** 含义: 这里必须选择目标 */
+        if (processInstance.result !== 1) return this.showProcessSelected()
+        const { id, name } = processInstance.data
+        this.setState({ processTarget: { id, name } })
+    }
+
+    /** 注意: 需要触发一次刷新 */
+    showProcessSelected() {
+        console.log('显示')
     }
 
     render() {
-        return (<div class="windows">
-        </div>)
+        const { processTarget: { id, name }, pageStatus } = this.state
+        const { clientHeight } = this
+        return [
+            <div className="headder flex-start-center">
+                <div className="process-task hover-item"
+                    onClick={this.showProcessSelected.bind(this)}
+                >目标范围: {name}</div>
+
+                <div className="search flex-rest flex-center">
+                    搜索功能
+                </div>
+
+                <div className="fast-operating flex-start-center">
+                    <div className="operat-item hover-item">理由</div>
+                    <div className="operat-item hover-item">计划</div>
+                    <div className="operat-item hover-item">新建任务</div>
+                </div>
+            </div>,
+
+            <div className="content-container-area"
+                style={{ minHeight: (clientHeight - 46 - 61 - 52) }}
+            >
+                <ListComponent
+                    isShow={pageStatus === CONST.PAGE_STATUS.DEFAULTS || pageStatus === CONST.PAGE_STATUS.LIST}
+                ></ListComponent>
+                <SearchComponent
+                    isShow={pageStatus === CONST.PAGE_STATUS.SEARCH}
+                ></SearchComponent>
+                <EditComponent
+                    isShow={pageStatus === CONST.PAGE_STATUS.EDIT}
+                ></EditComponent>
+            </div>,
+
+            <div class="copyright-component"><div class="copyright-describe">粤ICP备17119404号 Copyright © Rejiejay曾杰杰</div></div>
+        ]
     }
 }
 
