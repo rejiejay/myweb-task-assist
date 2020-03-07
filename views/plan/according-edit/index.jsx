@@ -56,7 +56,7 @@ class MainComponent extends React.Component {
             url: 'plan/according/edit',
             body: { id, according }
         }).then(
-            res => window.location.href = './../according-list/index.html',
+            res => window.location.replace('./../according-list/index.html'),
             error => { }
         )
     }
@@ -69,7 +69,7 @@ class MainComponent extends React.Component {
             url: 'plan/add',
             body: { targetId: id, according }
         }).then(
-            res => window.location.href = './../according-list/index.html',
+            res => window.location.replace('./../according-list/index.html'),
             error => { }
         )
     }
@@ -81,7 +81,7 @@ class MainComponent extends React.Component {
             url: 'plan/del',
             body: { id }
         }).then(
-            res => window.location.href = './../according-list/index.html',
+            res => window.location.replace('./../according-list/index.html'),
             error => { }
         )
 

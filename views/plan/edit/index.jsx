@@ -98,7 +98,7 @@ class MainComponent extends React.Component {
             url: 'plan/program/edit',
             body: { id, program }
         }).then(
-            res => window.location.href = './../index.html',
+            res => window.location.replace('./../index.html'),
             error => { }
         )
     }
@@ -111,7 +111,7 @@ class MainComponent extends React.Component {
             url: 'plan/add',
             body: { targetId: id, program }
         }).then(
-            res => window.location.href = './../index.html',
+            res => window.location.replace('./../index.html'),
             error => { }
         )
     }

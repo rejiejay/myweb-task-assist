@@ -45,6 +45,11 @@ export class ProcessTask extends React.Component {
         callbackHandle ? callbackHandle() : null;
     }
 
+    selectTarget() {
+        const { reSelectTarget } = this.props
+        if (reSelectTarget) window.location.replace(reSelectTarget) 
+    }
+
     render() {
         const { isHide } = this.props
         const { process } = this.state
@@ -52,7 +57,9 @@ export class ProcessTask extends React.Component {
         return (
             <div className="process-task">
                 {!isHide && <div className="process-container flex-start">
-                    <div className="task-item flex-rest flex-center">范围: {process ? process.name : '全部'}</div>
+                    <div className="task-item flex-rest flex-center"
+                        onClick={this.selectTarget.bind(this)}
+                    >范围: {process ? process.name : '全部'}</div>
                     {!!process && <div className="task-unlock flex-center"
                         onClick={this.unlockHandle.bind(this)}
                     >unlock</div>}

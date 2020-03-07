@@ -238,11 +238,6 @@ class MainComponent extends React.Component {
                 <div className="operating">
                     <div className="operating-button">
                         <div className="button-container flex-center"
-                            onClick={() => window.location.replace('./../edit/index.html')}
-                        >不需要模板</div>
-                    </div>
-                    <div className="operating-button">
-                        <div className="button-container flex-center"
                             onClick={() => self.setState({
                                 status: CONST.PAGE_STATUS.ADD,
                                 selectIndex: null,
@@ -256,6 +251,12 @@ class MainComponent extends React.Component {
                             })}
                         >新增模板</div>
                     </div>
+                </div>
+
+                <div className="not-need-template">
+                    <div className="button-container flex-center"
+                        onClick={() => window.location.replace('./../edit/index.html')}
+                    >不需要模板</div>
                 </div>
             </div>,
 

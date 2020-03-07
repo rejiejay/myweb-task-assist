@@ -9,6 +9,12 @@ const CONST = {
             title: '有哪些可以做?',
             url: null
         },
+        HOME: {
+            value: 'home',
+            effect: 'goto todo home',
+            title: '选择目标?',
+            url: './../index.html'
+        },
         NEED_TODO: {
             value: 'needTodo',
             effect: 'goto todo list',

@@ -66,13 +66,14 @@ class MainComponent extends React.Component {
 
     async initDate() {
         const self = this
+        const { status, id } = this
 
-        if (this.status !== CONST.PAGE_STATUS.EDIT) return
+        if (status !== CONST.PAGE_STATUS.EDIT) return
 
         await fetch.get({
             url: 'task/get/one',
             query: {
-                taskId: this.id
+                taskId: id
             }
         }).then(
             ({ data }) => self.setState({
@@ -163,7 +164,7 @@ class MainComponent extends React.Component {
                 key: 'processTask',
                 value: data
             }).then(
-                res => window.location.href = './../index.html',
+                res => window.location.replace('./../index.html'),
                 error => { }
             ),
             error => { }
@@ -171,7 +172,7 @@ class MainComponent extends React.Component {
     }
 
     editHandle() {
-        const self = this
+        const { id } = this
         const {
             title,
             content,
@@ -201,7 +202,7 @@ class MainComponent extends React.Component {
                 putoffTimestamp: putoffTimestamp ? timeTransformers.YYYYmmDDhhMMToTimestamp(putoffTimestamp) : null
             }
         }).then(
-            () => window.location.href = './../index.html',
+            () => window.location.replace('./../index.html'),
             error => { }
         )
     }
@@ -212,7 +213,7 @@ class MainComponent extends React.Component {
             url: 'task/complete',
             body: { id }
         }).then(
-            () => window.location.href = './../index.html',
+            () => window.location.replace('./../index.html'),
             error => { }
         )
         confirmPopUp({
@@ -222,7 +223,7 @@ class MainComponent extends React.Component {
     }
 
     cancelHandle() {
-        const handle = () => window.location.href = './../index.html';
+        const handle = () => window.location.replace('./../index.html');
         confirmPopUp({
             title: `确认要返回?`,
             succeedHandle: handle
@@ -236,7 +237,7 @@ class MainComponent extends React.Component {
             body: { id }
         }).then(
             res => serviceStorage.clearItem({ key: 'processTask' }).then(
-                res => window.location.href = './../index.html',
+                res => window.location.replace('./../index.html'),
                 error => { }
             ),
             error => { }

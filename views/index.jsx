@@ -16,7 +16,7 @@ class MainComponent extends React.Component {
 
     render() {
         return [
-            <ProcessTask></ProcessTask>,
+            <ProcessTask reSelectTarget='./target/index.html?redirect=home'></ProcessTask>,
             <div className="todo-assist-list flex-column-center">
                 <div className="button-container">
                     <div className="button noselect"

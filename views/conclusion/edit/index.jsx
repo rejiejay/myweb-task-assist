@@ -140,7 +140,7 @@ class MainComponent extends React.Component {
             url: 'task/conclusion/add',
             body: body
         }).then(
-            res => window.location.href = './../index.html',
+            res => window.location.replace('./../index.html'),
             error => { }
         )
     }
@@ -162,7 +162,7 @@ class MainComponent extends React.Component {
             url: 'task/conclusion/edit',
             body: body
         }).then(
-            res => window.location.href = './../index.html',
+            res => window.location.replace('./../index.html'),
             error => { }
         )
     }
@@ -185,7 +185,7 @@ class MainComponent extends React.Component {
             url: 'task/delete',
             body: { id }
         }).then(
-            res => window.location.href = './../index.html',
+            res => window.location.replace('./../index.html'),
             error => { }
         )
 

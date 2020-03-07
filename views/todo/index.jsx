@@ -192,7 +192,7 @@ class MainComponent extends React.Component {
         const self = this
         const handle = input => {
             let myTodoTask = JSON.parse(JSON.stringify(self.state.todoTask))
-            myTodoTask.conclusion += `\n${input}`
+            myTodoTask.conclusion ? myTodoTask.conclusion += `\n${input}` : myTodoTask.conclusion = input
 
             fetch.post({
                 url: 'task/update',
@@ -298,11 +298,21 @@ class MainComponent extends React.Component {
                     ></div>
 
                     {isShowDetails ? (<div className="todo-details">
-                        <div className="todo-measure">{measure ? `<span>衡量任务完成的标准?</span>- ${measure}` : '衡量任务完成的标准?'}</div>
-                        <div className="todo-span">{span ? `<span>长时间跨度下这任务的意义?</span>- ${span}` : '长时间跨度下这任务的意义?'}</div>
-                        <div className="todo-aspects">{aspects ? `<span>任务影响涉及到哪些方面?</span>- ${aspects}` : '任务影响涉及到哪些方面?'}</div>
-                        <div className="todo-worth">{worth ? `<span>任务的本质是为了什么?</span>- ${worth}` : '任务的本质是为了什么?'}</div>
-                        <div className="todo-time">{estimate ? `<span>是否必须完成?何时?</span>- ${estimate}` : '是否必须完成?何时?'}</div>
+                        <div className="todo-measure"
+                            dangerouslySetInnerHTML={{ __html: measure ? `<span>衡量任务完成的标准?</span>- ${measure}` : '衡量任务完成的标准?' }}
+                        ></div>
+                        <div className="todo-span"
+                            dangerouslySetInnerHTML={{ __html: span ? `<span>长时间跨度下这任务的意义?</span>- ${span}` : '长时间跨度下这任务的意义?' }}
+                        ></div>
+                        <div className="todo-aspects"
+                            dangerouslySetInnerHTML={{ __html: aspects ? `<span>任务影响涉及到哪些方面?</span>- ${aspects}` : '任务影响涉及到哪些方面?' }}
+                        ></div>
+                        <div className="todo-worth"
+                            dangerouslySetInnerHTML={{ __html: worth ? `<span>任务的本质是为了什么?</span>- ${worth}` : '任务的本质是为了什么?' }}
+                        ></div>
+                        <div className="todo-time"
+                            dangerouslySetInnerHTML={{ __html: estimate ? `<span>是否必须完成?何时?</span>- ${estimate}` : '是否必须完成?何时?' }}
+                        ></div>
                     </div>) : (<div className="todo-operation flex-start-center">
                         <div className="todo-details-operation flex-rest flex-center"
                             onClick={() => self.showItem('isShowDetails')}

@@ -23,6 +23,7 @@ body {
 .list {
     width: 100%;
     height: 100%;
+    position: relative;
 
     .list-container {
         padding: 25px 15px 15px 15px;
@@ -30,6 +31,28 @@ body {
         .item {
             padding: 15px;
             border: 1px solid #ddd;
+            background-color: #fff;
+        }
+    }
+
+    .operating {
+        padding-bottom: 75px;
+    }
+
+    .not-need-template {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        height: 46px;
+        border-top: 1px solid #ddd;
+
+        .button-container {
+            font-size: 16px;
+            color: @black1;
+            height: 45px;
+            width: 100%;
+            background-color: #fff;
         }
     }
 }

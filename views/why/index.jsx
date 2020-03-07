@@ -206,6 +206,7 @@ class MainComponent extends React.Component {
 
             <div className="reason">
                 <div className="reason-title">为什么要“{name}”?</div>
+                {newest.length > 0 && <div className="reason-des">最新理由?</div>}
                 <div className="reason-new">{newest.map((why, key) =>
                     <div class="reason-item" key={key}>
                         <div class="item-container"
@@ -214,6 +215,7 @@ class MainComponent extends React.Component {
                         ></div>
                     </div>
                 )}</div>
+                {related.length > 0 && <div className="reason-des">顶置理由?</div>}
                 <div className="reason-related">{related.map((why, key) =>
                     <div class="reason-item" key={key}>
                         <div class="item-container"
@@ -222,6 +224,7 @@ class MainComponent extends React.Component {
                         ></div>
                     </div>
                 )}</div>
+                {random.length > 0 && <div className="reason-des">随机理由?</div>}
                 <div className="reason-other">{random.map((why, key) =>
                     <div class="reason-item" key={key}>
                         <div class="item-container"
