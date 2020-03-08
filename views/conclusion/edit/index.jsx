@@ -118,8 +118,8 @@ class MainComponent extends React.Component {
         }, function (err, data) {
             if (err) return toast.show(err);
             self.refs.file.value = null
-            file = null
-            return self.setState({ url: path });
+            self.file = null
+            self.setState({ url: path });
         });
     }
 

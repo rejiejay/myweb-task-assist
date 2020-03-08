@@ -1,4 +1,5 @@
 import fetch from './../../components/async-fetch/fetch.js';
+import toast from './../../components/toast.js'
 import { confirmPopUp } from './../../components/confirm-popup.js';
 import { getProcess } from './../../components/process-task/index.jsx';
 
@@ -17,13 +18,37 @@ class EditComponent extends React.Component {
         this.status = CONST.PAGE_EDIT_STATUS.DEFAULTS
         this.task = CONST.TASK.DEFAULTS
         this.id = null
+        this.file = null
 
         this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
         this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
+
+        this.cossdk = null
+    }
+
+    initCosJsSdk() {
+        if (!!!this.cossdk) this.cossdk = new COS({
+            getAuthorization: (options, callback) => fetch.get({
+                url: 'task/image/credential',
+                query: {}
+            }).then(
+                ({ data: { tmpSecretId, tmpSecretKey, sessionToken, startTime, expiredTime } }) => callback({
+                    TmpSecretId: tmpSecretId,
+                    TmpSecretKey: tmpSecretKey,
+                    XCosSecurityToken: sessionToken,
+                    StartTime: startTime,
+                    ExpiredTime: expiredTime
+                }),
+                error => toast.show(error)
+            )
+        })
     }
 
     async init(id) {
         const self = this
+
+        this.initCosJsSdk()
+
         if (!!!id) return this.setState({
             title: '',
             conclusion: '',
@@ -127,7 +152,44 @@ class EditComponent extends React.Component {
         })
     }
 
+    uploadFileHandle({ target: { files } }) {
+        const self = this
+        let { file, cossdk } = this
+
+        const nowTimestamp = new Date().getTime()
+        const path = `myweb/task-assist/temporary/${nowTimestamp}.png`
+
+        file = files[0]
+
+        if (!file) return toast.show('不存在文件');
+        if (!cossdk) return toast.show('未初始化SDK');
+
+        cossdk.putObject({
+            Bucket: 'rejiejay-1251940173',
+            Region: 'ap-guangzhou',
+            Key: path,
+            Body: file,
+        }, function (err, data) {
+            if (err) return toast.show(err);
+            self.refs.file.value = null
+            self.file = null
+            self.setState({ image: path });
+        });
+    }
+
+    delImage() {
+        const self = this
+
+        const handle = () => self.setState({ image: null })
+
+        confirmPopUp({
+            title: `你确认要删除吗?`,
+            succeedHandle: handle
+        })
+    }
+
     render() {
+        const self = this
         const { isShow } = this.props
         const { title, conclusion, image } = this.state
         const { clientHeight, status } = this
@@ -168,8 +230,22 @@ class EditComponent extends React.Component {
                                     dangerouslySetInnerHTML={{ __html: conclusion.replace(/\n/g, "<br>") }}
                                 ></div>
                             </div>
+                            <input className="image-input"
+                                ref='file'
+                                type="file"
+                                name="file"
+                                onChange={this.uploadFileHandle.bind(this)}
+                            />
                             {!!!image && <div className="preview-operating">
-                                <div className="preview-operating-container flex-center noselect">图片</div>
+                                <div className="preview-operating-container flex-center noselect"
+                                    onClick={() => self.refs.file.click()}
+                                >图片</div>
+                            </div>}
+                            {!!image && <div className="image-container">
+                                <img alt="image"
+                                    onClick={self.delImage.bind(self)}
+                                    src={`https://rejiejay-1251940173.cos.ap-guangzhou.myqcloud.com/${image}`}
+                                ></img>
                             </div>}
                             {status === CONST.PAGE_EDIT_STATUS.ADD && <div className="preview-operating">
                                 <div className="preview-operating-container flex-center noselect"
