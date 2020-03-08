@@ -97,11 +97,43 @@ body {
 }
 
 .copyright-component {
-    padding-top: 35px;
     padding-bottom: 5px;
 
     .copyright-describe {
         text-align: center;
         font-size: 14px;
+    }
+}
+
+.content-container-area .task-container {
+    min-width: 960px;
+
+    .task-float {
+        overflow: hidden;
+        padding: 0px 7.5px;
+
+        >div {
+            float: left;
+        }
+    }
+
+    .task-item {
+        width: 176px;
+        padding: 0px 7.5px 15px 7.5px;
+
+        .task-item-container {
+            border: 1px solid #fff;
+            padding: 15px;
+            height: 90px;
+            background-color: #fff;
+            border-radius: 4px;
+            word-wrap: break-word;
+            overflow: hidden;
+            cursor: pointer;
+        }
+    }
+
+    .task-item-selected .task-item-container {
+        border: 1px solid #1890ff;
     }
 }

@@ -15,11 +15,16 @@ class ListComponent extends React.Component {
                 /** CONST.TASK.DEMO */
             ],
             pageNo: 1,
-            pageSize: 10,
-            count: 1
+            pageSize: 15,
+            count: 1,
+
+            selectedTaskId: null
         }
 
         this.completeExpiredTimestamp = new Date().getTime()
+        this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
+        this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
+
     }
 
     async init() {
@@ -29,22 +34,12 @@ class ListComponent extends React.Component {
 
     async initDataByTime(isForceRefresh) {
         const self = this
-        const { pageNo, list, count } = this.state
+        const { pageNo, pageSize, list, count } = this.state
         const { data: { id } } = getProcess()
-        let query = { pageNo, targetId: id }
+        let query = { pageNo, pageSize, targetId: id }
 
         await fetch.get({ url: 'task/conclusion/list', query }).then(
-            ({ data }) => {
-                if (data.length === 0) return toast.show('已加载完成所有数据!')
-
-                let newList = data
-                if (list.length > 0 && pageNo > 1 && count > 1) {
-                    /** 含义: 判断是否新增 */
-                    newList = list.concat(data)
-                }
-
-                self.setState({ list: newList })
-            },
+            ({ data }) => self.setState({ list: data }),
             error => { }
         )
 
@@ -89,7 +84,7 @@ class ListComponent extends React.Component {
                 /** 此处是未过期情况 */
                 const { count } = verify.data
                 console.log(`解析缓存“结论”成功, 共有${count}条已经完成任务, 还有${Math.ceil((completeExpiredTimestamp - nowTimestamp) / 1000)}秒过期!`)
-                // return this.setState({ count })
+                return this.setState({ count })
             }
         }
 
@@ -104,7 +99,7 @@ class ListComponent extends React.Component {
                     expiredTimestamp: (nowTimestamp + (1000 * 60 * 1)),
                     count: +data
                 }))
-                // self.setState({ count: +data })
+                self.setState({ count: +data })
             },
             error => { }
         )
@@ -117,12 +112,47 @@ class ListComponent extends React.Component {
         )
     }
 
-    render() {
-        const { list, pageNo, pageSize, count } = this.state
-        const { isShow } = this.props
+    selectedTaskHandle(id) {
+        const { selectedTaskId } = this.state
+        if (id !== selectedTaskId) return this.setState({ selectedTaskId: id });
 
-        return <div className="list flex-column-center" style={!!!isShow ? { display: 'none' } : {}}>
-            <div className="container flex-rest">
+    }
+
+    render() {
+        const self = this
+        const { list, pageNo, pageSize, count, selectedTaskId } = this.state
+        const { isShow } = this.props
+        const { clientHeight } = this
+        let style = { minHeight: (clientHeight - 46 - 26 - 52) }
+        !!!isShow ? style.display = 'none' : '';
+
+        return <div className="list flex-column-center"
+            style={style}
+        >
+            <div className="task-container flex-rest flex-column-center">
+                <div className="task-float noselect">{list.map(({
+                    id,
+                    targetId,
+                    title,
+                    content,
+                    conclusion,
+                    measure,
+                    span,
+                    aspects,
+                    worth,
+                    estimate,
+                    image,
+                    putoffTimestamp,
+                    completeTimestamp,
+                    sqlTimestamp
+                }, key) => <div className={`task-item ${selectedTaskId === id ? 'task-item-selected' : ''}`} key={key}>
+                        <div className="task-item-container"
+                            onClick={() => self.selectedTaskHandle(id)}
+                        >
+                            {selectedTaskId === id ? conclusion : title}
+                        </div>
+                    </div>
+                )}</div>
             </div>
             <div className="pagination flex-center">
                 <PaginationComponent

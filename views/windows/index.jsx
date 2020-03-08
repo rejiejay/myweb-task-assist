@@ -17,9 +17,6 @@ class MainComponent extends React.Component {
             processTarget: CONST.PROCESS_TARGET.DEFAULTS,
             pageStatus: CONST.PAGE_STATUS.DEFAULTS
         }
-
-        this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
-        this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
     }
 
     async componentDidMount() {
@@ -73,7 +70,6 @@ class MainComponent extends React.Component {
 
     render() {
         const { processTarget: { id, name }, pageStatus } = this.state
-        const { clientHeight } = this
         return [
             <div className="headder flex-start-center noselect">
                 <div className="process-task hover-item"
@@ -109,9 +105,7 @@ class MainComponent extends React.Component {
                 </div>
             </div >,
 
-            <div className="content-container-area"
-                style={{ minHeight: (clientHeight - 46 - 61 - 52) }}
-            >
+            <div className="content-container-area">
                 <ListComponent
                     ref="list"
                     isShow={pageStatus === CONST.PAGE_STATUS.DEFAULTS || pageStatus === CONST.PAGE_STATUS.LIST}
