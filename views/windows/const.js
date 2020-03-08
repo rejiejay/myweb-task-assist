@@ -15,6 +15,11 @@ const CONST = {
         SEARCH: 'search',
         EDIT: 'edit'
     },
+    PAGE_EDIT_STATUS: {
+        DEFAULTS: 'edit',
+        ADD: 'add',
+        EDIT: 'edit'
+    },
     TASK: {
         DEFAULTS: {
             id: null,

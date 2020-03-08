@@ -21,7 +21,7 @@ class SearchComponent extends React.Component {
     selectedTaskHandle(id) {
         const { selectedTaskId } = this.state
         if (id !== selectedTaskId) return this.setState({ selectedTaskId: id });
-
+        this.props.selectedTaskHandle(id)
     }
 
     async init(searchString) {

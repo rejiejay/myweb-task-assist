@@ -114,7 +114,7 @@ class ListComponent extends React.Component {
     selectedTaskHandle(id) {
         const { selectedTaskId } = this.state
         if (id !== selectedTaskId) return this.setState({ selectedTaskId: id });
-
+        this.props.selectedTaskHandle(id)
     }
 
     render() {

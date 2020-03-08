@@ -81,6 +81,16 @@ class MainComponent extends React.Component {
         this.setState({ searchInput, pageStatus })
     }
 
+    selectedTaskHandle(id) {
+        this.setState({ pageStatus: CONST.PAGE_STATUS.EDIT })
+        this.refs.edit.init(id)
+    }
+
+    editTaskHandle(isUpdate) {
+        this.setState({ pageStatus: CONST.PAGE_STATUS.LIST })
+        !!isUpdate ? this.refs.list.init() : null
+    }
+
     render() {
         const { processTarget: { id, name }, pageStatus } = this.state
         return [
@@ -119,6 +129,9 @@ class MainComponent extends React.Component {
                     <div className="operat-item hover-item"
                         onClick={() => window.location.href = "./../todo/template/index.html"}
                     >新建任务</div>
+                    <div className="operat-item hover-item"
+                        onClick={() => this.selectedTaskHandle()}
+                    >新增结论</div>
                 </div>
             </div >,
 
@@ -126,13 +139,17 @@ class MainComponent extends React.Component {
                 <ListComponent
                     ref="list"
                     isShow={pageStatus === CONST.PAGE_STATUS.DEFAULTS || pageStatus === CONST.PAGE_STATUS.LIST}
+                    selectedTaskHandle={this.selectedTaskHandle.bind(this)}
                 ></ListComponent>
                 <SearchComponent
                     ref="search"
                     isShow={pageStatus === CONST.PAGE_STATUS.SEARCH}
+                    selectedTaskHandle={this.selectedTaskHandle.bind(this)}
                 ></SearchComponent>
                 <EditComponent
+                    ref="edit"
                     isShow={pageStatus === CONST.PAGE_STATUS.EDIT}
+                    editTaskHandle={this.editTaskHandle.bind(this)}
                 ></EditComponent>
             </div>,
 

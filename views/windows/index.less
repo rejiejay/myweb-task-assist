@@ -22,6 +22,7 @@ body {
     background-color: #f1f1f1;
 }
 
+// 头部
 .headder {
     width: 100%;
     background: #fff;
@@ -92,10 +93,6 @@ body {
     }
 }
 
-.content-container-area {
-    padding: 25px;
-}
-
 .copyright-component {
     padding-bottom: 5px;
 
@@ -105,8 +102,14 @@ body {
     }
 }
 
+// 内容(公用
+.content-container-area {
+    padding: 25px;
+}
+
+// 内容(列表/搜索
 .content-container-area .task-container {
-    min-width: 960px;
+    width: 960px;
 
     .task-float {
         overflow: hidden;
@@ -134,5 +137,66 @@ body {
 
     .task-item-selected .task-item-container {
         border: 1px solid #1890ff;
+    }
+}
+
+// 内容(编辑
+.content-container-area .edit {
+
+    .edit-container {
+        width: 960px;
+    }
+
+    .edit-operating {
+        background-color: #fff;
+
+        .title-input {
+            padding: 15px;
+            height: 32px;
+            border-bottom: 1px solid #ddd;
+
+            input {
+                font-size: 18px;
+            }
+        }
+    }
+
+    .edit-preview {
+        padding-left: 25px;
+
+        .edit-preview-container {
+            width: 320px;
+        }
+
+        .item-description-container {
+            padding: 15px 0px;
+        }
+
+        .item-description {
+            word-wrap: break-word;
+            padding: 15px;
+            min-height: 320px;
+            background-color: #ffffff;
+        }
+    }
+
+    .preview-operating {
+        padding-bottom: 15px;
+    }
+
+    .preview-operating-container {
+        cursor: pointer;
+        height: 45px;
+        border: 1px solid #ddd;
+    }
+
+    .preview-operating-container:hover {
+        color: #fff;
+        background-color: #52c41a;
+    }
+
+    .close-container {
+        color: #fff;
+        background-color: #1890ff;
     }
 }
