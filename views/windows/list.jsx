@@ -24,7 +24,6 @@ class ListComponent extends React.Component {
         this.completeExpiredTimestamp = new Date().getTime()
         this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
         this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
-
     }
 
     async init() {
@@ -126,9 +125,7 @@ class ListComponent extends React.Component {
         let style = { minHeight: (clientHeight - 46 - 26 - 52) }
         !!!isShow ? style.display = 'none' : '';
 
-        return <div className="list flex-column-center"
-            style={style}
-        >
+        return <div className="list flex-column-center" style={style} >
             <div className="task-container flex-rest flex-column-center">
                 <div className="task-float noselect">{list.map(({
                     id,
