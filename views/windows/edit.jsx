@@ -73,24 +73,67 @@ class EditComponent extends React.Component {
         )
     }
 
+    verifyEditDiff() {
+        const { status } = this
+        if (status !== CONST.PAGE_EDIT_STATUS.EDIT) return false
+
+        const { title, conclusion, image } = this.state
+        const task = this.task
+
+        let isDiff = false
+        if (title !== task.title) isDiff = true
+        if (conclusion !== task.conclusion) isDiff = true
+        if (image !== task.image) isDiff = true
+        return isDiff
+    }
+
     closeHandle() {
         const { title, conclusion, image } = this.state
-        const { editTaskHandle } = this.props
+        const { editTaskCloseHandle } = this.props
         const { status } = this
         const task = this.task
 
         /** 含义: 未有任何数据 */
-        if (status === CONST.PAGE_EDIT_STATUS.ADD && !!!title && !!!conclusion && !!!image) return editTaskHandle();
-        if (status === CONST.PAGE_EDIT_STATUS.EDIT && title === task.title && conclusion === task.conclusion && image === task.image) return editTaskHandle();
+        if (status === CONST.PAGE_EDIT_STATUS.ADD && !!!title && !!!conclusion && !!!image) return editTaskCloseHandle();
+        if (this.verifyEditDiff() === false) return editTaskCloseHandle();
 
         confirmPopUp({
             title: `数据未保存, 你确认要退出吗?`,
-            succeedHandle: () => editTaskHandle()
+            succeedHandle: () => editTaskCloseHandle()
         })
     }
 
+    editTemporaryHandle() {
+        const self = this
+        const { id } = this
+        const { title, conclusion, image } = this.state
+
+        if (!title) return toast.show('标题不能为空');
+        if (!conclusion) return toast.show('内容不能为空');
+
+        let body = {
+            id,
+            title,
+            conclusion
+        }
+        image ? body.image = image : null
+
+        fetch.post({
+            url: 'task/conclusion/edit',
+            body: body
+        }).then(
+            res => {
+                self.task.title = title
+                self.task.conclusion = conclusion
+                self.task.image = image
+                self.setState({ title, conclusion, image })
+            },
+            error => { }
+        )
+    }
+
     addHandle() {
-        const { editTaskHandle } = this.props
+        const { editTaskCloseHandle } = this.props
         const { title, conclusion, image } = this.state
         if (!title) return toast.show('标题不能为空');
         if (!conclusion) return toast.show('内容不能为空');
@@ -107,13 +150,13 @@ class EditComponent extends React.Component {
             url: 'task/conclusion/add',
             body: body
         }).then(
-            res => editTaskHandle(true),
+            res => editTaskCloseHandle({ isUpdate: true }),
             error => { }
         )
     }
 
     editHandle() {
-        const { editTaskHandle } = this.props
+        const { editTaskCloseHandle } = this.props
         const { id } = this
         const { title, conclusion, image } = this.state
         if (!title) return toast.show('标题不能为空');
@@ -130,20 +173,20 @@ class EditComponent extends React.Component {
             url: 'task/conclusion/edit',
             body: body
         }).then(
-            res => editTaskHandle(true),
+            res => editTaskCloseHandle({ isUpdate: true }),
             error => { }
         )
     }
 
     delHandle() {
-        const { editTaskHandle } = this.props
+        const { editTaskCloseHandle } = this.props
         const { id } = this
 
         const handle = () => fetch.post({
-            url: 'task/delete',
+            url: 'task/conclusion/delete',
             body: { id }
         }).then(
-            res => editTaskHandle(true),
+            res => editTaskCloseHandle({ isUpdate: true }),
             error => { }
         )
 
@@ -195,6 +238,7 @@ class EditComponent extends React.Component {
         const { title, conclusion, image } = this.state
         const { clientHeight, status } = this
         const minHeight = clientHeight - 46 - 26 - 52
+        const isDiff = this.verifyEditDiff()
 
         return [
             <div className="edit flex-center" style={!!!isShow ? { display: 'none' } : {}}>
@@ -226,6 +270,11 @@ class EditComponent extends React.Component {
                                     onClick={this.closeHandle.bind(this)}
                                 >关闭</div>
                             </div>
+                            {isDiff && <div className="preview-operating">
+                                <div className="preview-operating-container flex-center noselect"
+                                    onClick={this.editTemporaryHandle.bind(this)}
+                                >暂存</div>
+                            </div>}
                             <div className="item-description-container">
                                 <div className="item-description"
                                     dangerouslySetInnerHTML={{ __html: conclusion.replace(/\n/g, "<br>") }}

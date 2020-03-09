@@ -86,7 +86,7 @@ class MainComponent extends React.Component {
         this.refs.edit.init(id)
     }
 
-    editTaskHandle(isUpdate) {
+    editTaskCloseHandle({ isUpdate }) {
         this.setState({ pageStatus: CONST.PAGE_STATUS.LIST })
         !!isUpdate ? this.refs.list.init() : null
     }
@@ -149,7 +149,7 @@ class MainComponent extends React.Component {
                 <EditComponent
                     ref="edit"
                     isShow={pageStatus === CONST.PAGE_STATUS.EDIT}
-                    editTaskHandle={this.editTaskHandle.bind(this)}
+                    editTaskCloseHandle={this.editTaskCloseHandle.bind(this)}
                 ></EditComponent>
             </div>,
 
