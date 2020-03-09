@@ -136,6 +136,7 @@ class EditComponent extends React.Component {
     }
 
     delHandle() {
+        const { editTaskHandle } = this.props
         const { id } = this
 
         const handle = () => fetch.post({
