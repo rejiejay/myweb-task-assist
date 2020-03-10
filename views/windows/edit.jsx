@@ -94,12 +94,12 @@ class EditComponent extends React.Component {
         const task = this.task
 
         /** 含义: 未有任何数据 */
-        if (status === CONST.PAGE_EDIT_STATUS.ADD && !!!title && !!!conclusion && !!!image) return editTaskCloseHandle();
-        if (this.verifyEditDiff() === false) return editTaskCloseHandle();
+        if (status === CONST.PAGE_EDIT_STATUS.ADD && !!!title && !!!conclusion && !!!image) return editTaskCloseHandle({ isUpdate: false });
+        if (this.verifyEditDiff() === false) return editTaskCloseHandle({ isUpdate: false });
 
         confirmPopUp({
             title: `数据未保存, 你确认要退出吗?`,
-            succeedHandle: () => editTaskCloseHandle()
+            succeedHandle: () => editTaskCloseHandle({ isUpdate: false })
         })
     }
 
