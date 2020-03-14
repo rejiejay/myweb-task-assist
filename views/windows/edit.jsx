@@ -99,7 +99,7 @@ class EditComponent extends React.Component {
 
         confirmPopUp({
             title: `数据未保存, 你确认要退出吗?`,
-            succeedHandle: () => editTaskCloseHandle({ isUpdate: false })
+            succeedHandle: () => editTaskCloseHandle({ isUpdate: true })
         })
     }
 
