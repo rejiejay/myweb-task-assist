@@ -6,7 +6,7 @@ const deviceDiffer = () => {
     const ua = window.navigator.userAgent
     const agents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPod']
 
-    return agents.find(agent => agent === ua);
+    return agents.find(agent => 0 < ua.indexOf(agent));
 }
 
 export default deviceDiffer

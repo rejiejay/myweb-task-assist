@@ -15,7 +15,7 @@
                 'SymbianOS',
                 'Windows Phone',
                 'iPod'
-            ].find(agent => agent === window.navigator.userAgent)
+            ].find(agent => 0 < window.navigator.userAgent.indexOf(agent))
         ) window.location.replace('./windows/index.html');
     </script>
 
