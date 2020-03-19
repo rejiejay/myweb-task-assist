@@ -5,9 +5,7 @@ import {
     inputPopUpDestroy
 } from './input-popup.js';
 
-import consequencer from './../utils/consequencer.js';
-
-const showLogInput = () => {
+const showLogInput = () => new Promise((resolve, reject) => {
     const inputHandle = password => {
         fetch.get({
             url: 'user/login',
@@ -22,7 +20,8 @@ const showLogInput = () => {
             localStorage.setItem('rejiejay-task-assist-password', password)
             inputPopUpDestroy()
             toast.show('登录成功！')
-        }, error => console.error(error))
+            resolve()
+        }, error => reject(error))
     }
 
     inputPopUp({
@@ -30,7 +29,7 @@ const showLogInput = () => {
         inputHandle,
         mustInput: true
     })
-}
+})
 
 const init = async () => {
     let token = localStorage.getItem('rejiejay-task-assist-token')
