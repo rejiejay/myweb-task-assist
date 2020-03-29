@@ -110,10 +110,13 @@ const reEnterPassword = async () => {
 
     }
 
+    const defaultValue = localStorage.getItem('rejiejay-task-assist-password')
+
     inputPopUp({
         title: '请输入登录密码?',
         inputHandle,
-        mustInput: true
+        mustInput: true,
+        defaultValue
     })
 }
 

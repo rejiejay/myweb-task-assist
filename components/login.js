@@ -24,10 +24,13 @@ const showLogInput = () => new Promise((resolve, reject) => {
         }, error => reject(error))
     }
 
+    const defaultValue = localStorage.getItem('rejiejay-task-assist-password')
+
     inputPopUp({
         title: '请输入登录密码?',
         inputHandle,
-        mustInput: true
+        mustInput: true,
+        defaultValue
     })
 })
 

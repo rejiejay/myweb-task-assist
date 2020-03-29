@@ -9,7 +9,8 @@ export const inputPopUp = ({
     title,
     placeholder,
     inputHandle,
-    mustInput
+    mustInput,
+    defaultValue
 }) => {
     /** 目标: 防止重复调用 */
     if (document.getElementById('rejiejay-input-popup')) return false;
@@ -35,6 +36,8 @@ export const inputPopUp = ({
     document.body.appendChild(node);
 
     const input = document.getElementById('rejiejay-input-popup-operate-value')
+
+    if (!!defaultValue) input.value = defaultValue;
 
     document.getElementById('rejiejay-input-popup-operate-yes').onclick = function () {
         if (!input.value) {
