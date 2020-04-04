@@ -1,6 +1,5 @@
 class MainComponent extends React.Component {
 
-
     render() {
         return [
             <div className="spiritual">
@@ -28,6 +27,10 @@ class MainComponent extends React.Component {
                 </div>
                 <div className="spiritual-item">
                     <div className="item-container">不想做事，判断大脑在“逃避痛苦”？意志力消耗殆净</div>
+                </div>
+                <div className="spiritual-title">思绪清理</div>
+                <div className="spiritual-item">
+                    <div className="item-container">内心是否有事情积压未完成?</div>
                 </div>
 
                 <div className="spiritual-title">解决方案</div>
