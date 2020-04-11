@@ -13,21 +13,21 @@
 @black4: #C0C4CC;
 
 body {
-    width: 100%;
-    height: 100%;
-    padding: 0px;
-    margin: 0px;
-    font-size: 14px;
-    color: @black2;
+    width           : 100%;
+    height          : 100%;
+    padding         : 0px;
+    margin          : 0px;
+    font-size       : 14px;
+    color           : @black2;
     background-color: #f1f1f1;
 }
 
 // 头部
 .headder {
-    width: 100%;
-    background: #fff;
+    width        : 100%;
+    background   : #fff;
     border-bottom: 1px solid #ddd;
-    height: 46px;
+    height       : 46px;
 
     .fast-operating {
         padding-right: 7.5px;
@@ -38,15 +38,15 @@ body {
     }
 
     .hover-item {
-        cursor: pointer;
-        transition: color 0.25s;
+        cursor         : pointer;
+        transition     : color 0.25s;
         -moz-transition: color 0.25s;
         /* Firefox 4 */
         -webkit-transition: color 0.25s;
         /* Safari 和 Chrome */
         -o-transition: color 0.25s;
         /* Opera */
-        transition: background-color 1s;
+        transition     : background-color 1s;
         -moz-transition: background-color 1s;
         /* Firefox 4 */
         -webkit-transition: background-color 1s;
@@ -56,18 +56,18 @@ body {
     }
 
     .hover-item:hover {
-        color: @black1;
+        color           : @black1;
         background-color: rgba(0, 0, 0, 0.08);
     }
 
     .search {
-        height: 32px;
+        height : 32px;
         padding: 0px 15px;
 
         .search-container {
-            height: 32px;
-            border-radius: 16px;
-            overflow: hidden;
+            height          : 32px;
+            border-radius   : 16px;
+            overflow        : hidden;
             background-color: #f1f1f1;
         }
 
@@ -78,7 +78,7 @@ body {
         .cancel-icon,
         .search-icon {
             padding: 0px 15px;
-            cursor: pointer;
+            cursor : pointer;
 
             path {
                 fill: @black3;
@@ -98,7 +98,7 @@ body {
 
     .copyright-describe {
         text-align: center;
-        font-size: 14px;
+        font-size : 14px;
     }
 }
 
@@ -120,19 +120,23 @@ body {
     }
 
     .task-item {
-        width: 176px;
+        width  : 176px;
         padding: 0px 7.5px 15px 7.5px;
 
         .task-item-container {
-            border: 1px solid #fff;
-            padding: 15px;
-            height: 90px;
+            border          : 1px solid #fff;
+            padding         : 15px;
+            height          : 90px;
             background-color: #fff;
-            border-radius: 4px;
-            word-wrap: break-word;
-            overflow: hidden;
-            cursor: pointer;
+            border-radius   : 4px;
+            word-wrap       : break-word;
+            overflow        : hidden;
+            cursor          : pointer;
         }
+    }
+
+    .task-item-putoff .task-item-container {
+        border: 1px solid #f5222d;
     }
 
     .task-item-selected .task-item-container {
@@ -151,8 +155,8 @@ body {
         background-color: #fff;
 
         .title-input {
-            padding: 15px;
-            height: 32px;
+            padding      : 15px;
+            height       : 32px;
             border-bottom: 1px solid #ddd;
 
             input {
@@ -177,8 +181,8 @@ body {
         }
 
         .item-description {
-            word-wrap: break-word;
-            padding: 15px;
+            word-wrap       : break-word;
+            padding         : 15px;
             background-color: #ffffff;
         }
 
@@ -191,8 +195,8 @@ body {
 
             img {
                 display: block;
-                width: 100%;
-                height: 100%;
+                width  : 100%;
+                height : 100%;
             }
         }
     }
@@ -208,40 +212,40 @@ body {
     }
 
     .other-operating-container:hover {
-        color: #fff;
+        color           : #fff;
         background-color: #52c41a;
     }
 
     .close-container {
-        color: #fff;
+        color           : #fff;
         background-color: #1890ff;
     }
 
     .other-input {
         .edit-title {
-            color: @black1;
+            color         : @black1;
             padding-bottom: 10px;
         }
-    
+
         .edit-input {
             padding-bottom: 15px;
-    
+
             input {
-                border: 1px solid #ddd;
-                height: 45px;
+                border    : 1px solid #ddd;
+                height    : 45px;
                 background: #fff;
             }
-    
+
             textarea {
-                border: 1px solid #ddd;
+                border    : 1px solid #ddd;
                 background: #fff;
             }
-    
+
             .picka-clear {
-                height: 47px;
-                font-size: 12px;
+                height          : 47px;
+                font-size       : 12px;
                 background-color: #dadada;
-                padding: 0px 15px;
+                padding         : 0px 15px;
             }
         }
 

@@ -19,20 +19,34 @@ class ListComponent extends React.Component {
 
     async init() {
         await this.initExecutableTask()
+        await this.initPutoffTask()
     }
 
     async initExecutableTask() {
         const self = this
         const processTask = getProcess()
-        const query = processTask.result === 1 ? {
-            targetId: processTask.data.id
-        } : {}
+        const query = processTask.result === 1 ? { targetId: processTask.data.id } : {}
 
         await fetch.get({
             url: 'task/get/list/executable',
             query
         }).then(
             ({ data }) => self.setState({ list: data }),
+            error => { }
+        )
+    }
+
+    async initPutoffTask() {
+        const self = this
+        const { list } = this.state
+        const processTask = getProcess()
+        const query = processTask.result === 1 ? { targetId: processTask.data.id } : {}
+
+        await fetch.get({
+            url: 'task/get/list/putoff',
+            query
+        }).then(
+            ({ data }) => self.setState({ list: list.concat(data) }),
             error => { }
         )
     }
@@ -51,6 +65,14 @@ class ListComponent extends React.Component {
         let style = { minHeight: (clientHeight - 46 - 26 - 52) }
         !!!isShow ? style.display = 'none' : '';
 
+        const rnederTaskItemStyle = (id, putoffTimestamp) => {
+            let style = 'task-item'
+            if (selectedTaskId === id) style += ' task-item-selected'
+            if (putoffTimestamp) style += ' task-item-putoff'
+
+            return style
+        }
+
         return <div className="list flex-column-center" style={style} >
             <div className="task-container flex-rest flex-column-center">
                 <div className="task-float noselect">{list.map(({
@@ -68,7 +90,7 @@ class ListComponent extends React.Component {
                     putoffTimestamp,
                     completeTimestamp,
                     sqlTimestamp
-                }, key) => <div className={`task-item ${selectedTaskId === id ? 'task-item-selected' : ''}`} key={key}>
+                }, key) => <div className={rnederTaskItemStyle(id, putoffTimestamp)} key={key}>
                         <div className="task-item-container"
                             onClick={() => self.selectedTaskHandle(id)}
                         >

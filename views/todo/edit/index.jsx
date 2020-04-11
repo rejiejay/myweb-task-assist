@@ -326,7 +326,7 @@ class MainComponent extends React.Component {
                 <div class="edit-input flex-start-center">
                     <input readonly type="text"
                         id="picka-date"
-                        value={putoffTimestamp ? timeTransformers.dateToYYYYmmDDhhMM(new Date(putoffTimestamp)) : ''}
+                        value={putoffTimestamp ? timeTransformers.dateToYYYYmmDDhhMM(new Date(+putoffTimestamp)) : ''}
                         placeholder="推迟?"
                         onClick={this.putoffHandle.bind(this)}
                     />
