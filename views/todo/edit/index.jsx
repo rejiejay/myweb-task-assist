@@ -86,7 +86,7 @@ class MainComponent extends React.Component {
                 aspects: data.aspects,
                 worth: data.worth,
                 estimate: data.estimate,
-                putoffTimestamp: data.putoffTimestamp ? timeTransformers.YYYYmmDDhhMMToTimestamp(new Date(+data.putoffTimestamp)) : null
+                putoffTimestamp: data.putoffTimestamp
             }),
             error => { }
         )
@@ -95,7 +95,7 @@ class MainComponent extends React.Component {
     putoffHandle() {
         const self = this
         const nowYear = new Date().getFullYear()
-        const handle = data => self.setState({ putoffTimestamp: timeTransformers.YYYYmmDDhhMMToTimestamp(data) })
+        const handle = data => self.setState({ putoffTimestamp: data })
 
         const datepicker = new Rolldate({
             el: '#picka-date',
@@ -156,7 +156,7 @@ class MainComponent extends React.Component {
                 aspects,
                 worth,
                 estimate,
-                putoffTimestamp: putoffTimestamp ? timeTransformers.YYYYmmDDhhMMToTimestamp(putoffTimestamp) : null
+                putoffTimestamp
             }
         }).then(
             ({ data }) => serviceStorage.setItem({
@@ -198,7 +198,7 @@ class MainComponent extends React.Component {
                 aspects,
                 worth,
                 estimate,
-                putoffTimestamp: putoffTimestamp ? timeTransformers.YYYYmmDDhhMMToTimestamp(putoffTimestamp) : null
+                putoffTimestamp
             }
         }).then(
             () => window.location.replace('./../index.html'),
@@ -326,7 +326,7 @@ class MainComponent extends React.Component {
                 <div class="edit-input flex-start-center">
                     <input readonly type="text"
                         id="picka-date"
-                        value={putoffTimestamp}
+                        value={putoffTimestamp ? timeTransformers.dateToYYYYmmDDhhMM(new Date(putoffTimestamp)) : ''}
                         placeholder="推迟?"
                         onClick={this.putoffHandle.bind(this)}
                     />
