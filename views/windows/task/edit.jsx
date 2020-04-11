@@ -147,7 +147,7 @@ class EditComponent extends React.Component {
         const { id } = this
 
         const handle = () => fetch.post({
-            url: 'task/conclusion/delete',
+            url: 'task/delete',
             body: { id }
         }).then(
             res => editTaskCloseHandle({ isUpdate: true }),
