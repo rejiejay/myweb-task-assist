@@ -88,7 +88,7 @@ class MainComponent extends React.Component {
 
                 <div className="fast-operating flex-start-center">
                     <div className="operat-item hover-item"
-                        onClick={() => window.location.href = "./../todo/template/index.html"}
+                        onClick={() => this.selectedTaskHandle()}
                     >新建任务</div>
                 </div>
             </div >,

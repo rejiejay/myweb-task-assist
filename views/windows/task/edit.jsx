@@ -26,17 +26,22 @@ class EditComponent extends React.Component {
     async init(id) {
         const self = this
 
-        if (!!!id) return this.setState({
-            title: '',
-            content: '',
-            measure: '',
-            span: '',
-            aspects: '',
-            worth: '',
-            estimate: ''
-        }, () => self.status = CONST.PAGE_EDIT_STATUS.ADD)
+        if (!!!id) {
+            this.status = CONST.PAGE_EDIT_STATUS.ADD
+            return this.setState({
+                title: '',
+                content: '',
+                measure: '',
+                span: '',
+                aspects: '',
+                worth: '',
+                estimate: '',
+                putoffTimestamp: null
+            })
+        }
 
         this.id = id
+        this.status = CONST.PAGE_EDIT_STATUS.EDIT
 
         await fetch.get({
             url: 'task/get/one',
@@ -51,7 +56,8 @@ class EditComponent extends React.Component {
                     span: data.span,
                     aspects: data.aspects,
                     worth: data.worth,
-                    estimate: data.estimate
+                    estimate: data.estimate,
+                    putoffTimestamp: data.putoffTimestamp
                 })
             },
             error => { }
@@ -59,7 +65,11 @@ class EditComponent extends React.Component {
     }
 
     closeHandle() {
+        const { title, content } = this.state
+        const { status } = this
         const { editTaskCloseHandle } = this.props
+
+        if (status === CONST.PAGE_EDIT_STATUS.ADD && !!!title && !!!content) return editTaskCloseHandle({ isUpdate: false });
 
         confirmPopUp({
             title: '你确认要退出吗?',
@@ -69,21 +79,25 @@ class EditComponent extends React.Component {
 
     addHandle() {
         const { editTaskCloseHandle } = this.props
-        const { title, conclusion, image } = this.state
+        const { title, content, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
         if (!title) return toast.show('标题不能为空');
-        if (!conclusion) return toast.show('内容不能为空');
+        if (!content) return toast.show('内容不能为空');
 
-        const { data: { id } } = getProcess()
-        let body = {
-            targetId: id,
-            title,
-            conclusion
-        }
-        image ? body.image = image : null
+        const process = getProcess()
 
         fetch.post({
-            url: 'task/conclusion/add',
-            body: body
+            url: 'task/add',
+            body: {
+                targetId: process.data.id,
+                title,
+                content,
+                measure,
+                span,
+                aspects,
+                worth,
+                estimate,
+                putoffTimestamp: putoffTimestamp ? timeTransformers.YYYYmmDDhhMMToTimestamp(putoffTimestamp) : null
+            }
         }).then(
             res => editTaskCloseHandle({ isUpdate: true }),
             error => { }
@@ -131,10 +145,44 @@ class EditComponent extends React.Component {
         })
     }
 
+    putoffHandle() {
+        const self = this
+        const nowYear = new Date().getFullYear()
+        const handle = data => self.setState({ putoffTimestamp: timeTransformers.YYYYmmDDhhMMToTimestamp(data) })
+
+        const datepicker = new Rolldate({
+            el: '#picka-date',
+            format: 'YYYY-MM-DD hh:mm',
+            beginYear: nowYear,
+            endYear: nowYear + 10,
+            lang: {
+                title: '推迟到什么时候?'
+            },
+            confirm: function confirm(date) {
+                const nowTime = new Date().getTime()
+                const pickerTime = new Date(date.replace(/\-/g, "\/")).getTime()
+
+                if (nowTime > pickerTime) {
+                    toast.show('不能小于当前的日期')
+                    return false;
+                }
+
+                handle(date)
+            }
+        })
+
+        datepicker.show()
+    }
+
+    putoffClearHandle() {
+        document.getElementById('picka-date').value = ''
+        this.setState({ putoffTimestamp: null });
+    }
+
     render() {
         const self = this
         const { isShow } = this.props
-        const { title, content } = this.state
+        const { title, content, conclusion } = this.state
         const { clientHeight, status } = this
         const minHeight = clientHeight - 46 - 26 - 52
 
@@ -168,11 +216,13 @@ class EditComponent extends React.Component {
                                     onClick={this.closeHandle.bind(this)}
                                 >关闭</div>
                             </div>
-                            <div className="item-description-container">
-                                <div className="item-description"
-                                    dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, "<br>") }}
-                                ></div>
-                            </div>
+                            {
+                                conclusion && <div className="item-description-container">
+                                    <div className="item-description"
+                                        dangerouslySetInnerHTML={{ __html: conclusion.replace(/\n/g, "<br>") }}
+                                    ></div>
+                                </div>
+                            }
                             {status === CONST.PAGE_EDIT_STATUS.ADD && <div className="preview-operating">
                                 <div className="preview-operating-container flex-center noselect"
                                     onClick={this.addHandle.bind(this)}
