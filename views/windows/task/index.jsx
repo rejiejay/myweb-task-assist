@@ -19,6 +19,21 @@ class MainComponent extends React.Component {
     }
 
     async componentDidMount() {
+        const processInstance = this.initProcess()
+        if (processInstance.result !== 1) return this.showProcessSelected()
+
+        await this.refs.list.init()
+    }
+
+    initProcess() {
+        const processInstance = getProcess()
+        /** 含义: 这里必须选择目标 */
+        if (processInstance.result !== 1) return consequencer.error()
+
+        const { id, name } = processInstance.data
+        this.setState({ processTarget: { id, name } })
+
+        return consequencer.success()
     }
 
     selectedTaskHandle(id) {

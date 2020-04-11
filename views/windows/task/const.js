@@ -12,7 +12,6 @@ const CONST = {
     PAGE_STATUS: {
         DEFAULTS: 'list',
         LIST: 'list',
-        SEARCH: 'search',
         EDIT: 'edit'
     },
     PAGE_EDIT_STATUS: {
