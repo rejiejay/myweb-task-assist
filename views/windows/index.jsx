@@ -127,8 +127,8 @@ class MainComponent extends React.Component {
                         onClick={() => window.location.href = "./../plan/index.html"}
                     >计划</div>
                     <div className="operat-item hover-item"
-                        onClick={() => window.location.href = "./../todo/template/index.html"}
-                    >新建任务</div>
+                        onClick={() => window.location.href = "./task/index.html"}
+                    >任务</div>
                     <div className="operat-item hover-item"
                         onClick={() => this.selectedTaskHandle()}
                     >新增结论</div>
