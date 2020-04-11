@@ -49,13 +49,17 @@ class EditComponent extends React.Component {
 
         this.initCosJsSdk()
 
-        if (!!!id) return this.setState({
-            title: '',
-            conclusion: '',
-            image: null
-        }, () => self.status = CONST.PAGE_EDIT_STATUS.ADD)
+        if (!!!id) {
+            this.status = CONST.PAGE_EDIT_STATUS.ADD
+            return this.setState({
+                title: '',
+                conclusion: '',
+                image: null
+            })
+        }
 
         this.id = id
+        this.status = CONST.PAGE_EDIT_STATUS.EDIT
 
         await fetch.get({
             url: 'task/get/one',

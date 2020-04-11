@@ -119,7 +119,6 @@ class MainComponent extends React.Component {
         })
 
         datepicker.show()
-
     }
 
     putoffClearHandle() {
