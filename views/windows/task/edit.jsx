@@ -97,7 +97,7 @@ class EditComponent extends React.Component {
                 aspects,
                 worth,
                 estimate,
-                putoffTimestamp: putoffTimestamp ? timeTransformers.YYYYmmDDhhMMToTimestamp(putoffTimestamp) : null
+                putoffTimestamp
             }
         }).then(
             res => editTaskCloseHandle({ isUpdate: true }),
@@ -108,20 +108,34 @@ class EditComponent extends React.Component {
     editHandle() {
         const { editTaskCloseHandle } = this.props
         const { id } = this
-        const { title, conclusion, image } = this.state
-        if (!title) return toast.show('标题不能为空');
-        if (!conclusion) return toast.show('内容不能为空');
-
-        let body = {
-            id,
+        const {
             title,
-            conclusion
-        }
-        image ? body.image = image : null
+            content,
+            conclusion,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate,
+            putoffTimestamp
+        } = this.state
+        if (!title) return toast.show('标题不能为空');
+        if (!content) return toast.show('内容不能为空');
 
         fetch.post({
-            url: 'task/conclusion/edit',
-            body: body
+            url: 'task/update',
+            body: {
+                id,
+                title,
+                content,
+                conclusion,
+                measure,
+                span,
+                aspects,
+                worth,
+                estimate,
+                putoffTimestamp
+            }
         }).then(
             res => editTaskCloseHandle({ isUpdate: true }),
             error => { }
@@ -277,7 +291,7 @@ class EditComponent extends React.Component {
                                 <div class="edit-input flex-start-center">
                                     <input readonly type="text"
                                         id="picka-date"
-                                        value={putoffTimestamp}
+                                        value={putoffTimestamp ? timeTransformers.dateToYYYYmmDDhhMM(new Date(putoffTimestamp)) : ''}
                                         placeholder="推迟?"
                                         onClick={this.putoffHandle.bind(this)}
                                     />
