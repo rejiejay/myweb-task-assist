@@ -2,6 +2,7 @@ import fetch from './../../../components/async-fetch/fetch.js';
 import toast from './../../../components/toast.js'
 import { confirmPopUp } from './../../../components/confirm-popup.js';
 import { getProcess } from './../../../components/process-task/index.jsx';
+import timeTransformers from './../../../utils/time-transformers.js';
 
 import CONST from './const.js';
 
@@ -182,7 +183,17 @@ class EditComponent extends React.Component {
     render() {
         const self = this
         const { isShow } = this.props
-        const { title, content, conclusion } = this.state
+        const {
+            title,
+            content,
+            conclusion,
+            measure,
+            span,
+            aspects,
+            worth,
+            estimate,
+            putoffTimestamp
+        } = this.state
         const { clientHeight, status } = this
         const minHeight = clientHeight - 46 - 26 - 52
 
@@ -207,14 +218,73 @@ class EditComponent extends React.Component {
                             ></textarea>
                         </div>
                     </div>
-                    <div className="edit-preview">
-                        <div className="edit-preview-container"
+                    <div className="edit-other">
+                        <div className="edit-other-container"
                             style={{ minHeight }}
                         >
-                            <div className="preview-operating">
-                                <div className="preview-operating-container flex-center close-container noselect"
+                            <div className="other-operating">
+                                <div className="other-operating-container flex-center close-container noselect"
                                     onClick={this.closeHandle.bind(this)}
                                 >关闭</div>
+                            </div>
+                            <div className="other-input">
+                                <div class="edit-title">衡量任务完成的标准?</div>
+                                <div class="edit-input flex-start-center">
+                                    <input type="text" placeholder="衡量任务完成的标准"
+                                        value={measure}
+                                        onChange={({ target: { value } }) => this.setState({ measure: value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="other-input">
+                                <div class="edit-title">长时间跨度下这任务的意义?</div>
+                                <div class="edit-input flex-start-center">
+                                    <input type="text" placeholder="长时间跨度下这任务的意义"
+                                        value={span}
+                                        onChange={({ target: { value } }) => this.setState({ span: value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="other-input">
+                                <div class="edit-title">任务影响涉及到哪些方面?好处?</div>
+                                <div class="edit-input flex-start-center">
+                                    <input type="text" placeholder="任务影响涉及到哪些方面?好处?"
+                                        value={aspects}
+                                        onChange={({ target: { value } }) => this.setState({ aspects: value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="other-input">
+                                <div class="edit-title">任务的本质是为了什么?</div>
+                                <div class="edit-input flex-start-center">
+                                    <input type="text" placeholder="任务的本质是为了什么"
+                                        value={worth}
+                                        onChange={({ target: { value } }) => this.setState({ worth: value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="other-input">
+                                <div class="edit-title">是否必须完成?何时?</div>
+                                <div class="edit-input flex-start-center">
+                                    <input type="text" placeholder="是否必须完成"
+                                        value={estimate}
+                                        onChange={({ target: { value } }) => this.setState({ estimate: value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="other-input">
+                                <div class="edit-title">是否需要推迟完成?</div>
+                                <div class="edit-input flex-start-center">
+                                    <input readonly type="text"
+                                        id="picka-date"
+                                        value={putoffTimestamp}
+                                        placeholder="推迟?"
+                                        onClick={this.putoffHandle.bind(this)}
+                                    />
+                                    <div class="picka-clear flex-center"
+                                        onClick={this.putoffClearHandle.bind(this)}
+                                    >取消</div>
+                                </div>
                             </div>
                             {
                                 conclusion && <div className="item-description-container">
@@ -223,18 +293,18 @@ class EditComponent extends React.Component {
                                     ></div>
                                 </div>
                             }
-                            {status === CONST.PAGE_EDIT_STATUS.ADD && <div className="preview-operating">
-                                <div className="preview-operating-container flex-center noselect"
+                            {status === CONST.PAGE_EDIT_STATUS.ADD && <div className="other-operating">
+                                <div className="other-operating-container flex-center noselect"
                                     onClick={this.addHandle.bind(this)}
                                 >新增</div>
                             </div>}
-                            {status === CONST.PAGE_EDIT_STATUS.EDIT && <div className="preview-operating">
-                                <div className="preview-operating-container flex-center noselect"
+                            {status === CONST.PAGE_EDIT_STATUS.EDIT && <div className="other-operating">
+                                <div className="other-operating-container flex-center noselect"
                                     onClick={this.editHandle.bind(this)}
                                 >编辑</div>
                             </div>}
-                            {status === CONST.PAGE_EDIT_STATUS.EDIT && <div className="preview-operating">
-                                <div className="preview-operating-container flex-center noselect"
+                            {status === CONST.PAGE_EDIT_STATUS.EDIT && <div className="other-operating">
+                                <div className="other-operating-container flex-center noselect"
                                     onClick={this.delHandle.bind(this)}
                                 >删除</div>
                             </div>}
