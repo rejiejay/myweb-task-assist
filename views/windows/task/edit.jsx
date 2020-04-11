@@ -11,9 +11,15 @@ class EditComponent extends React.Component {
         super(props)
 
         this.state = {
+            copy: window.sessionStorage['task-copy-edit'],
             title: '',
             content: '',
-            image: null
+            measure: '',
+            span: '',
+            aspects: '',
+            worth: '',
+            estimate: '',
+            putoffTimestamp: null
         }
 
         this.status = CONST.PAGE_EDIT_STATUS.DEFAULTS
@@ -194,10 +200,28 @@ class EditComponent extends React.Component {
         this.setState({ putoffTimestamp: null });
     }
 
+    copyHandle() {
+        const { title, content, conclusion, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
+        const copy = JSON.stringify({ title, content, conclusion, measure, span, aspects, worth, estimate, putoffTimestamp })
+        window.sessionStorage.setItem('task-copy-edit', copy)
+        this.setState({ copy })
+    }
+
+    copyClearHandle() {
+        window.sessionStorage['task-copy-edit'] = ''
+        this.setState({ copy: null })
+    }
+
+    pasteHandle() {
+        const copy = window.sessionStorage['task-copy-edit']
+        if (copy) this.setState(JSON.parse(copy))
+    }
+
     render() {
         const self = this
         const { isShow } = this.props
         const {
+            copy,
             title,
             content,
             conclusion,
@@ -241,6 +265,21 @@ class EditComponent extends React.Component {
                                     onClick={this.closeHandle.bind(this)}
                                 >关闭</div>
                             </div>
+                            {status === CONST.PAGE_EDIT_STATUS.EDIT && <div className="other-operating">
+                                <div className="other-operating-container flex-center noselect"
+                                    onClick={this.copyHandle.bind(this)}
+                                >复制</div>
+                            </div>}
+                            {copy && <div className="other-operating">
+                                <div className="other-operating-container flex-center noselect"
+                                    onClick={this.copyClearHandle.bind(this)}
+                                >清除</div>
+                            </div>}
+                            {copy && <div className="other-operating">
+                                <div className="other-operating-container flex-center noselect"
+                                    onClick={this.pasteHandle.bind(this)}
+                                >粘贴</div>
+                            </div>}
                             <div className="other-input">
                                 <div class="edit-title">衡量任务完成的标准?</div>
                                 <div class="edit-input flex-start-center">
