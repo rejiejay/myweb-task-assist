@@ -71,12 +71,32 @@ class EditComponent extends React.Component {
         )
     }
 
+    verifyEditDiff() {
+        const { status } = this
+        if (status !== CONST.PAGE_EDIT_STATUS.EDIT) return false
+
+        const { title, content, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
+        const task = this.task
+
+        let isDiff = false
+        if (title !== task.title) isDiff = true
+        if (content !== task.content) isDiff = true
+        if (measure !== task.measure) isDiff = true
+        if (span !== task.span) isDiff = true
+        if (aspects !== task.aspects) isDiff = true
+        if (worth !== task.worth) isDiff = true
+        if (estimate !== task.estimate) isDiff = true
+        if (putoffTimestamp !== task.putoffTimestamp) isDiff = true
+        return isDiff
+    }
+
     closeHandle() {
         const { title, content } = this.state
         const { status } = this
         const { editTaskCloseHandle } = this.props
 
         if (status === CONST.PAGE_EDIT_STATUS.ADD && !!!title && !!!content) return editTaskCloseHandle({ isUpdate: false });
+        if (this.verifyEditDiff() === false) return editTaskCloseHandle({ isUpdate: false });
 
         confirmPopUp({
             title: '你确认要退出吗?',
@@ -114,17 +134,7 @@ class EditComponent extends React.Component {
     editHandle() {
         const { editTaskCloseHandle } = this.props
         const { id } = this
-        const {
-            title,
-            content,
-            conclusion,
-            measure,
-            span,
-            aspects,
-            worth,
-            estimate,
-            putoffTimestamp
-        } = this.state
+        const { title, content, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
         if (!title) return toast.show('标题不能为空');
         if (!content) return toast.show('内容不能为空');
 
