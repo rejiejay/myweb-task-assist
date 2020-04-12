@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Task</title>
+    <title>Task Conclusion</title>
 
     <script type="text/javascript" charset="utf-8" src="./../lib/react/react.js"></script>
     <script type="text/javascript" charset="utf-8" src="./../lib/react/react-dom.js"></script>
-    
+
     <script type="text/javascript" charset="utf-8" src="./../lib/cos-js-sdk-v5/cos-js-sdk-v5.js"></script>
 
     <link type="text/css" rel="stylesheet" href="./index.css<%=version%>">

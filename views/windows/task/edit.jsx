@@ -14,12 +14,14 @@ class EditComponent extends React.Component {
             copy: window.sessionStorage['task-copy-edit'],
             title: '',
             content: '',
+            conclusion: '',
             measure: '',
             span: '',
             aspects: '',
             worth: '',
             estimate: '',
-            putoffTimestamp: null
+            putoffTimestamp: null,
+            completeTimestamp: null
         }
 
         this.status = CONST.PAGE_EDIT_STATUS.DEFAULTS
@@ -38,12 +40,14 @@ class EditComponent extends React.Component {
             return this.setState({
                 title: '',
                 content: '',
+                conclusion: '',
                 measure: '',
                 span: '',
                 aspects: '',
                 worth: '',
                 estimate: '',
-                putoffTimestamp: null
+                putoffTimestamp: null,
+                completeTimestamp: null
             })
         }
 
@@ -59,12 +63,14 @@ class EditComponent extends React.Component {
                 self.setState({
                     title: data.title,
                     content: data.content,
+                    conclusion: data.conclusion,
                     measure: data.measure,
                     span: data.span,
                     aspects: data.aspects,
                     worth: data.worth,
                     estimate: data.estimate,
-                    putoffTimestamp: data.putoffTimestamp
+                    putoffTimestamp: data.putoffTimestamp,
+                    completeTimestamp: data.completeTimestamp
                 })
             },
             error => { }
@@ -75,12 +81,13 @@ class EditComponent extends React.Component {
         const { status } = this
         if (status !== CONST.PAGE_EDIT_STATUS.EDIT) return false
 
-        const { title, content, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
+        const { title, content, conclusion, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
         const task = this.task
 
         let isDiff = false
         if (title !== task.title) isDiff = true
         if (content !== task.content) isDiff = true
+        if (conclusion !== task.conclusion) isDiff = true
         if (measure !== task.measure) isDiff = true
         if (span !== task.span) isDiff = true
         if (aspects !== task.aspects) isDiff = true
@@ -106,7 +113,7 @@ class EditComponent extends React.Component {
 
     addHandle() {
         const { editTaskCloseHandle } = this.props
-        const { title, content, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
+        const { title, content, conclusion, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
         if (!title) return toast.show('标题不能为空');
         if (!content) return toast.show('内容不能为空');
 
@@ -118,6 +125,7 @@ class EditComponent extends React.Component {
                 targetId: process.data.id,
                 title,
                 content,
+                conclusion,
                 measure,
                 span,
                 aspects,
@@ -131,10 +139,34 @@ class EditComponent extends React.Component {
         )
     }
 
+    completeHandle() {
+        const self = this
+        const { completeTimestamp } = this.state
+        const { id } = this
+        const { editTaskCloseHandle } = this.props
+
+        if (completeTimestamp) return toast.show('任务已被完成');
+
+        const handle = () => {
+            fetch.post({
+                url: 'task/complete',
+                body: { id }
+            }).then(
+                res => editTaskCloseHandle({ isUpdate: true }),
+                error => { }
+            )
+        }
+
+        confirmPopUp({
+            title: `确认要完成此任务??`,
+            succeedHandle: handle
+        })
+    }
+
     editHandle() {
         const { editTaskCloseHandle } = this.props
         const { id } = this
-        const { title, content, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
+        const { title, content, conclusion, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
         if (!title) return toast.show('标题不能为空');
         if (!content) return toast.show('内容不能为空');
 
@@ -215,6 +247,7 @@ class EditComponent extends React.Component {
         const copy = JSON.stringify({ title, content, conclusion, measure, span, aspects, worth, estimate, putoffTimestamp })
         window.sessionStorage.setItem('task-copy-edit', copy)
         this.setState({ copy })
+        toast.show('复制成功')
     }
 
     copyClearHandle() {
@@ -230,18 +263,7 @@ class EditComponent extends React.Component {
     render() {
         const self = this
         const { isShow } = this.props
-        const {
-            copy,
-            title,
-            content,
-            conclusion,
-            measure,
-            span,
-            aspects,
-            worth,
-            estimate,
-            putoffTimestamp
-        } = this.state
+        const { copy, title, content, conclusion, measure, span, aspects, worth, estimate, putoffTimestamp } = this.state
         const { clientHeight, status } = this
         const minHeight = clientHeight - 46 - 26 - 52
 
@@ -349,17 +371,24 @@ class EditComponent extends React.Component {
                                     >取消</div>
                                 </div>
                             </div>
-                            {
-                                conclusion && <div className="item-description-container">
-                                    <div className="item-description"
-                                        dangerouslySetInnerHTML={{ __html: conclusion.replace(/\n/g, "<br>") }}
-                                    ></div>
+                            <div className="other-input">
+                                <div class="edit-title">结论?</div>
+                                <div class="edit-input flex-start-center">
+                                    <input type="text" placeholder="结论"
+                                        value={conclusion}
+                                        onChange={({ target: { value } }) => this.setState({ conclusion: value })}
+                                    />
                                 </div>
-                            }
+                            </div>
                             {status === CONST.PAGE_EDIT_STATUS.ADD && <div className="other-operating">
                                 <div className="other-operating-container flex-center noselect"
                                     onClick={this.addHandle.bind(this)}
                                 >新增</div>
+                            </div>}
+                            {status === CONST.PAGE_EDIT_STATUS.EDIT && <div className="other-operating">
+                                <div className="other-operating-container flex-center noselect"
+                                    onClick={this.completeHandle.bind(this)}
+                                >完成</div>
                             </div>}
                             {status === CONST.PAGE_EDIT_STATUS.EDIT && <div className="other-operating">
                                 <div className="other-operating-container flex-center noselect"
