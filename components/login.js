@@ -5,7 +5,7 @@ import {
     inputPopUpDestroy
 } from './input-popup.js';
 
-const showLogInput = () => new Promise((resolve, reject) => {
+const showLogInput = (resolve, reject) => {
     const inputHandle = password => {
         fetch.get({
             url: 'user/login',
@@ -32,15 +32,13 @@ const showLogInput = () => new Promise((resolve, reject) => {
         mustInput: true,
         defaultValue
     })
-})
+}
 
-const init = async () => {
+const init = () => new Promise((resolve, reject) => {
     let token = localStorage.getItem('rejiejay-task-assist-token')
     let password = localStorage.getItem('rejiejay-task-assist-password')
 
-    if (!token || !password) {
-        return showLogInput()
-    }
+    if (!token || !password) return showLogInput(resolve, reject)
 
     await fetch.get({
         url: 'user/verify',
@@ -49,11 +47,12 @@ const init = async () => {
         },
         hiddenError: true
     }).then(
-        ({
-            data
-        }) => localStorage.setItem('rejiejay-task-assist-token', data),
-        error => showLogInput()
+        ({ data }) => {
+            localStorage.setItem('rejiejay-task-assist-token', data)
+            resolve()
+        },
+        error => showLogInput(resolve, reject)
     )
-}
+})
 
 export default init
