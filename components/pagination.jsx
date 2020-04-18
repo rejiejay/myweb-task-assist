@@ -13,15 +13,15 @@ class PaginationComponent extends React.Component {
     }
 
     previousPageHandle() {
-        const { pageNo, pageTotal } = this.props
-        if (pageNo >= pageTotal) return false
+        const { pageNo } = this.props
+        if (pageNo <= 1) return false
 
         this.pageNoChangeHandle(pageNo - 1)
     }
 
     nextPageHandle() {
-        const { pageNo } = this.props
-        if (pageNo <= 1) return false
+        const { pageNo, pageTotal } = this.props
+        if (pageNo >= pageTotal) return false
 
         this.pageNoChangeHandle(pageNo + 1)
     }

@@ -8,15 +8,13 @@
     <title>Task Todo</title>
 
     <script>
-        if (
-            !!![
+        if (!!![
                 'Android',
                 'iPhone',
                 'SymbianOS',
                 'Windows Phone',
                 'iPod'
-            ].find(agent => 0 < window.navigator.userAgent.indexOf(agent))
-        ) window.location.replace('./windows/index.html');
+            ].find(agent => 0 < window.navigator.userAgent.indexOf(agent))) window.location.replace('./windows/index.html');
     </script>
 
     <script type="text/javascript" charset="utf-8" src="./lib/react/react.js"></script>
