@@ -40,7 +40,7 @@ const init = () => new Promise((resolve, reject) => {
 
     if (!token || !password) return showLogInput(resolve, reject)
 
-    await fetch.get({
+    fetch.get({
         url: 'user/verify',
         query: {
             verify: token
