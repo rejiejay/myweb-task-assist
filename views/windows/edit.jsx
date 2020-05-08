@@ -95,7 +95,6 @@ class EditComponent extends React.Component {
         const { title, conclusion, image } = this.state
         const { editTaskCloseHandle } = this.props
         const { status } = this
-        const task = this.task
 
         /** 含义: 未有任何数据 */
         if (status === CONST.PAGE_EDIT_STATUS.ADD && !!!title && !!!conclusion && !!!image) return editTaskCloseHandle({ isUpdate: false });
