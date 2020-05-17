@@ -1,5 +1,6 @@
 import fetch from './../../../components/async-fetch/fetch.js'
 import toast from './../../../components/toast.js'
+import serviceStorage from './../../../components/service-storage/index.js'
 import { getProcess } from './../../../components/process-task/index.jsx';
 import { confirmPopUp } from './../../../components/confirm-popup.js';
 
@@ -173,7 +174,7 @@ class MainComponent extends React.Component {
             key: 'processTask',
             value: data
         }).then(
-            res => window.location.href = './../../todo/item/index.html',
+            res => window.location.href = './../../todo/index.html',
             error => { }
         )
     }

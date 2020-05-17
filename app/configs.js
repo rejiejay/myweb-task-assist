@@ -6,6 +6,10 @@ const configs = [{
     entry: './views',
     output: './build'
 }, {
+    route: '/redirect/index.html',
+    entry: './views/redirect',
+    output: './build/redirect'
+}, {
     route: '/windows/index.html',
     entry: './views/windows',
     output: './build/windows'
