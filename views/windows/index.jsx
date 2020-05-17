@@ -62,7 +62,8 @@ class MainComponent extends React.Component {
                     value: id,
                     label: name
                 })),
-                handle
+                handle,
+                mustInput: true
             })
         } else {
             window.location.href = './../target/json-config/index.html'
