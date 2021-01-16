@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import less from 'less';
-import * as webpack from 'webpack';
-import * as UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import webpack from 'webpack';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
 import config from './../config/index.js'
 import { projectRelativePath } from './../utils/path-handle.js';
@@ -42,41 +42,41 @@ class ResourcesUtils {
         return { isStatic, isConfigured }
     }
 
-    responseHandle (parameter) {
+    responseHandle(parameter) {
         const { message, code, contentType } = parameter
         this.response.writeHead(code, { 'Content-Type': contentType ? contentType : 'text/plain' })
         this.response.write(message)
         this.response.end()
     }
 
-    renderLeanerStyleSheets () {
+    renderLeanerStyleSheets() {
         const resourcePath = projectRelativePath(`${this.resourcePath}index.less`)
         const outputPath = projectRelativePath(`${this.outputPath}index.css`)
         // http://lesscss.org/usage/#less-options
         const options = {
-            paths: [ projectRelativePath('./view/css/') ],
-            rootpath: [ projectRelativePath('./view/css/') ],
+            paths: [projectRelativePath('./view/css/')],
+            rootpath: [projectRelativePath('./view/css/')],
             rewriteUrls: 'off',
             compress: !this.isDev
         }
 
         return new Promise((resolve, reject) => {
             const lessRender = lessStr => less.render(lessStr, options)
-            .then(
-                output => fs.writeFile(
-                    outputPath,
-                    // output.css = string of css
-                    // output.map = string of sourcemap
-                    // output.imports = array of string filenames of the imports referenced
-                    output.css,
-                    { encoding: 'utf8' },
-                    writeFileError => {
-                        if (writeFileError) return reject(consequencer.error(JSON.stringify(writeFileError)))
-                        resolve(consequencer.success(output.css))
-                    }
-                ),
-                error => reject(consequencer.error(JSON.stringify(readFileError)))
-            )
+                .then(
+                    output => fs.writeFile(
+                        outputPath,
+                        // output.css = string of css
+                        // output.map = string of sourcemap
+                        // output.imports = array of string filenames of the imports referenced
+                        output.css,
+                        { encoding: 'utf8' },
+                        writeFileError => {
+                            if (writeFileError) return reject(consequencer.error(JSON.stringify(writeFileError)))
+                            resolve(consequencer.success(output.css))
+                        }
+                    ),
+                    error => reject(consequencer.error(error))
+                )
 
             fs.readFile(resourcePath, 'utf8', (readFileError, lessStr) => {
                 if (readFileError) return reject(consequencer.error(JSON.stringify(readFileError)))
@@ -85,11 +85,49 @@ class ResourcesUtils {
         })
     }
 
-    renderTypedJavaScriptXML () {
+    renderTypedJavaScriptXML() {
+        const isProduction = !this.isDev
+        const entryPath = projectRelativePath(`${this.resourcePath}index.jsx`)
+        const outputPath = projectRelativePath(`${this.outputPath}`)
+        const plugins = [new webpack.DefinePlugin({ 'process.env': isProduction ? '"production"' : '"development"' })]
+        const uglifyJsPlugin = new UglifyJsPlugin({ sourceMap: true, extractComments: true })
+        if (isProduction) plugins.push(uglifyJsPlugin)
+
         return new Promise((resolve, reject) => {
-            resolve()
+            webpack({
+                /**
+                 * cheap-module-eval-source-map: 每个模块使用 eval() 执行，并且 SourceMap 转换为 DataUrl 后添加到 eval() 中。初始化 SourceMap 时比较慢，但是会在重构建时提供很快的速度，并且生成实际的文件。行数能够正确映射，因为会映射到原始代码中。
+                 * eval-source-map: 不带列映射(column-map)的 SourceMap，将加载的 Source Map 简化为每行单独映射。
+                 */
+                devtool: isProduction ? 'cheap-module-source-map' : 'cheap-module-eval-source-map', // 'source-map' 'inline-source-map' also works
+                entry: [
+                    entryPath
+                ],
+                output: {
+                    publicPath: './',
+                    path: outputPath,
+                    filename: 'index.js'
+                },
+                resolve: { extensions: ['.ts', '.tsx', '.js', '.jsx'] },
+                module: {
+                    rules: [{
+                        test: /\.tsx?$/,
+                        exclude: /node_modules/,
+                        loader: 'ts-loader'
+                    }, {
+                        test: /\.jsx?$/,
+                        exclude: /node_modules/,
+                        loader: 'babel-loader'
+                    }]
+                },
+                externals: { react: 'React', 'react-dom': 'ReactDOM' },
+                plugins
+            }, (err, stats) => {
+                if (err || stats.hasErrors()) return reject(consequencer.error(err))
+                return resolve(consequencer.success())
+            });
         })
-    } // TODO
+    }
 }
 
 class ResourcesHandle extends ResourcesUtils {
@@ -122,7 +160,7 @@ class ResourcesHandle extends ResourcesUtils {
         this.renderStatic()
     }
 
-    async renderHyperTextMarkupLanguage (version = '') {
+    async renderHyperTextMarkupLanguage(version = '') {
         const entryPath = projectRelativePath(`${this.resourcePath}/index.html`)
         const outputPath = projectRelativePath(`${this.outputPath}/index.html`)
 
@@ -175,7 +213,7 @@ class ResourcesHandle extends ResourcesUtils {
 
     renderStatic() { }
 
-    static buildLibrary () { } // TODO
+    static buildLibrary() { } // TODO
 
     buildAllWebResource() { } // TODO
 }
