@@ -1,37 +1,38 @@
 {
-    "name": "myweb-task-assist",
-    "version": "2.1.1",
-    "description": "My Web Task Assist Version 2",
-    "main": "development.js",
-    "author": {
-        "name": "rejiejay-jeker-zeng"
-    },
-    "scripts": {
-        "dev": "SET NODE_ENV=development && babel-node -- ./development.js",
-        "start-dev": "SET NODE_ENV=development && C:\\Jekerfolder\\node-v13.6.0-win-x64\\node.exe babel-core-register.js",
-        "start-pro": "SET NODE_ENV=production && C:\\Jekerfolder\\node-v13.6.0-win-x64\\node.exe --experimental-modules production.js"
-    },
-    "dependencies": {
-        "babel-runtime": "^6.26.0",
-        "react": "^16.13.1",
-        "react-dom": "^16.13.1"
-    },
-    "devDependencies": {
-        "@babel/cli": "^7.10.4",
-        "@babel/core": "^7.10.4",
-        "@babel/node": "^7.10.4",
-        "@babel/plugin-syntax-optional-chaining": "^7.8.3",
-        "@babel/plugin-transform-runtime": "^7.10.1",
-        "@babel/polyfill": "^7.8.3",
-        "@babel/preset-env": "^7.10.4",
-        "babel-loader": "^8.0.6",
-        "@babel/preset-react": "^7.10.1",
-        "babel-polyfill": "6.26.0",
-        "@babel/register": "^7.10.4",
-        "babel-plugin-module-resolver": "^4.0.0",
-        "babel-plugin-transform-runtime": "^6.23.0",
-        "less": "^4.1.0",
-        "uglifyjs-webpack-plugin": "^2.2.0",
-        "webpack": "^4.41.5"
-    }
+  "name": "myweb-task-assist",
+  "version": "2.1.1",
+  "description": "My Web Task Assist Version 2",
+  "main": "development.js",
+  "author": {
+    "name": "rejiejay-jeker-zeng"
+  },
+  "scripts": {
+    "dev": "SET NODE_ENV=development && babel-node -- ./development.js",
+    "start-dev": "SET NODE_ENV=development && C:\\Jekerfolder\\node-v13.6.0-win-x64\\node.exe babel-core-register.js",
+    "start-pro": "SET NODE_ENV=production && C:\\Jekerfolder\\node-v13.6.0-win-x64\\node.exe --experimental-modules production.js"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.26.0",
+    "fs-extra": "^9.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.10.4",
+    "@babel/node": "^7.10.4",
+    "@babel/plugin-syntax-optional-chaining": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.10.1",
+    "@babel/polyfill": "^7.8.3",
+    "@babel/preset-env": "^7.10.4",
+    "babel-loader": "^8.0.6",
+    "@babel/preset-react": "^7.10.1",
+    "babel-polyfill": "6.26.0",
+    "@babel/register": "^7.10.4",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "less": "^4.1.0",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.41.5"
+  }
 }

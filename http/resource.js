@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as Path from 'path'
 import less from 'less';
 import webpack from 'webpack';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
@@ -6,20 +7,15 @@ import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import config from './../config/index.js'
 import { projectRelativePath } from './../utils/path-handle.js';
 import consequencer from './../utils/consequencer.js'
+import copyDirectory from './../utils/node-copy-directory.js'
 
 class ResourcesUtils {
-    constructor() {
-        this.mineTypeMap = { html: 'text/html;charset=utf-8', htm: 'text/html;charset=utf-8', xml: "text/xml;charset=utf-8", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", css: "text/css;charset=utf-8", txt: "text/plain;charset=utf-8", mp3: "audio/mpeg", mp4: "video/mp4", ico: "image/x-icon", tif: "image/tiff", svg: "image/svg+xml", zip: "application/zip", ttf: "font/ttf", woff: "font/woff", woff2: "font/woff2" }
-    }
-
-    getMineType() { }
-
     initUrlCatch() {
         const slef = this
         const { view } = config.resource
         const { url } = this.request
-        let isStatic
-        let isConfigured
+        let isStatic = false
+        let isConfigured = false
 
         Object.keys(view).forEach(page => {
             if (url === view[page].matchURL) {
@@ -33,11 +29,8 @@ class ResourcesUtils {
 
         if (isConfigured) return { isStatic, isConfigured }
 
-        /**
-         * 判断是否存在资源  isStatic = true
-         * TODO
-         */
-        const resourcePath = `./view/build${url}`
+        const resourcePath = projectRelativePath(`./view/build${url}`)
+        if (fs.existsSync(resourcePath)) isStatic = true
 
         return { isStatic, isConfigured }
     }
@@ -108,13 +101,9 @@ class ResourcesUtils {
                     path: outputPath,
                     filename: 'index.js'
                 },
-                resolve: { extensions: ['.ts', '.tsx', '.js', '.jsx'] },
+                resolve: { extensions: ['.js', '.jsx'] },
                 module: {
                     rules: [{
-                        test: /\.tsx?$/,
-                        exclude: /node_modules/,
-                        loader: 'ts-loader'
-                    }, {
                         test: /\.jsx?$/,
                         exclude: /node_modules/,
                         loader: 'babel-loader'
@@ -211,9 +200,23 @@ class ResourcesHandle extends ResourcesUtils {
         }, reject => self.responseHandle({ code: 200, message: reject.message }))
     }
 
-    renderStatic() { }
+    renderStatic() {
+        const mineTypeMap = { html: 'text/html;charset=utf-8', htm: 'text/html;charset=utf-8', xml: "text/xml;charset=utf-8", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", css: "text/css;charset=utf-8", txt: "text/plain;charset=utf-8", mp3: "audio/mpeg", mp4: "video/mp4", ico: "image/x-icon", tif: "image/tiff", svg: "image/svg+xml", zip: "application/zip", ttf: "font/ttf", woff: "font/woff", woff2: "font/woff2" }
+        const { url } = this.request
+        const resourcePath = projectRelativePath(`./view/build${url}`)
 
-    static buildLibrary() { } // TODO
+        const extName = Path.extname(resourcePath).substr(1)
+        if (mineTypeMap[extName]) this.response.writeHead(200, { 'Content-Type': mineTypeMap[extName] })
+        fs.createReadStream(resourcePath).pipe(this.response)
+    }
+
+    static buildLibrary() {
+        const entryPath = projectRelativePath('./view/library/')
+        const outputPath = projectRelativePath('./view/build/lib/')
+
+        copyDirectory(entryPath, outputPath)
+            .then(resolve => { }, reject => console.log('reject', reject))
+    }
 
     buildAllWebResource() { } // TODO
 }
