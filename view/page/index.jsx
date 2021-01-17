@@ -1,13 +1,13 @@
-class MobileComponent extends React.Component {
-    constructor(props) {
-        super(props)
+import deviceHandle from './../utils/device-handle'
 
-        this.state = {}
-    }
+window.onload = () => {
+    if (deviceHandle.isMobile()) return import('./mobile.jsx').then(module => {
+        const MobileComponent = module.MobileComponent
+        ReactDOM.render(<MobileComponent />, document.getElementById('jeker-task-assist-system'))
+    })
 
-    render() {
-        return <div>1</div>
-    }
+    import('./web.jsx').then(module => {
+        const WebComponent = module.WebComponent
+        ReactDOM.render(<WebComponent />, document.getElementById('jeker-task-assist-system'))
+    })
 }
-
-window.onload = () => ReactDOM.render(< MobileComponent />, document.body)

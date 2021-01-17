@@ -99,7 +99,8 @@ class ResourcesUtils {
                 output: {
                     publicPath: './',
                     path: outputPath,
-                    filename: 'index.js'
+                    filename: 'index.js',
+                    chunkFilename: '[name]chunk.js'
                 },
                 resolve: { extensions: ['.js', '.jsx'] },
                 module: {
