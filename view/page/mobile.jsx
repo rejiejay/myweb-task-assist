@@ -1,3 +1,33 @@
+/**
+ * 因为GroupTask和Task的数据不太一样、所以分开2个React.Component
+ */
+class TaskCar extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            isBigCar: true
+        }
+    }
+
+    render() {
+        return <div className='task-car'>TaskSmallCar</div>
+    }
+}
+class GroupTaskCar extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            isBigCar: true
+        }
+    }
+
+    render() {
+        return <div className='group-task-car'>TaskSmallCar</div>
+    }
+}
+
 export class MobileComponent extends React.Component {
     constructor(props) {
         super(props)

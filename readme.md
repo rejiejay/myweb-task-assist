@@ -1,10 +1,13 @@
 # myweb-task-assist
 
-My Web Task Assist Version: 2  
+My Web Task Assist Version: 4  
 
 Agile Development  
 
+## Version
+V1: https://github.com/rejiejay/myweb-task-assist/tree/task-assist-v1
+V2: https://github.com/rejiejay/myweb-task-assist/tree/react
+V3: https://github.com/rejiejay/website-station-system-version-fives
 
 ## Construct
-cnpm install -g gulp-cli -d  
-cnpm install --save-dev typescript gulp@4.0.0 gulp-typescript -d  
+cnpm install -d  
