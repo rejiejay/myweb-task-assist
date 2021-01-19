@@ -16,6 +16,11 @@ let config = {
                 matchURL: '/',
                 resourcePath: './view/page/',
                 outputPath: './view/build/'
+            },
+            SQLiteGUI: {
+                matchURL: '/sql-lite-gui/',
+                resourcePath: './view/page/sql-lite-gui/',
+                outputPath: './view/build/sql-lite-gui/'
             }
         }
     }
