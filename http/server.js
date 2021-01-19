@@ -4,30 +4,7 @@ import config from './../config/index.js'
 import Controller from './../controller/index.js'
 import utils from './utils.js'
 import Resource from './resource.js'
-import consequencer from './../utils/consequencer.js'
-
-class ResponseHandle {
-    constructor(response) {
-        this.response = response
-    }
-
-    responseJsonHandle(data) {
-        this.response.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
-        this.response.end(JSON.stringify(data))
-    }
-
-    json(data) {
-        return this.responseJsonHandle(data)
-    }
-
-    success(data, message) {
-        return this.responseJsonHandle(consequencer.success(data, message))
-    }
-
-    failure(message, result, data) {
-        return this.responseJsonHandle(consequencer.error(message, result, data))
-    }
-}
+import ResponseHandle from './response-handle.js'
 
 async function requestHandle(request, response) {
     const responseHandle = new ResponseHandle(response)

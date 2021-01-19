@@ -6,16 +6,21 @@
 import SqliteJs from './sqlitejs.instantiate.js'
 import localDatabaseSqlite from './local.database.sqlite.js'
 
-const SQLite = {
-    SqliteJs: SqliteJs.db,
+function initDev() {
+    const self = this
 
-    initDev: () => {
-        SqliteJs.init()
-            .then(instantiate => {
-                console.log('create SQLite service successful')
-                localDatabaseSqlite.init(instantiate)
-            }).catch(error => console.error('initSqlJs error', error))
-    },
+    SqliteJs.init()
+        .then(instantiate => {
+            console.log('create SQLite service successful')
+            self.db = instantiate
+            localDatabaseSqlite.init(instantiate)
+        }).catch(error => console.error('initSqlJs error', error))
+}
+
+const SQLite = {
+    db: SqliteJs.db,
+
+    initDev,
 
     initPro: () => { } // TODO
 }

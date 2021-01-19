@@ -16,7 +16,7 @@ class Controller {
     constructor(request) {
         const url = request.url
         const method = request.method
-        const controllerName = `${method}${url.replace(new RegExp('/', 'g'), '_')}` // ${method}_${pathname}_${pathname}_${pathname}
+        const controllerName = `${method.toLocaleLowerCase()}${url.replace(new RegExp('/', 'g'), '_')}` // ${method}_${pathname}_${pathname}_${pathname}
         const requestMethod = controllerMethod[controllerName]
 
         if (requestMethod) {
