@@ -6,5 +6,7 @@
  * API接口
  */
 import HTTP from './http/index.js';
+import SQLite from './module/SQLite/index.js';
 
 HTTP.initDev()
+SQLite.initDev()

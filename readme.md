@@ -11,3 +11,6 @@ V3: https://github.com/rejiejay/website-station-system-version-fives
 
 ## Construct
 cnpm install -d  
+
+## TODO
+fetch

@@ -11,7 +11,10 @@ const SQLite = {
 
     initDev: () => {
         SqliteJs.init()
-            .then(instantiate => localDatabaseSqlite.init(instantiate))
+            .then(instantiate => {
+                console.log('create SQLite service successful')
+                localDatabaseSqlite.init(instantiate)
+            })
     },
 
     initPro: () => { } // TODO

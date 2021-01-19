@@ -40,7 +40,7 @@ async function requestHandle(request, response) {
 
 function init() {
     const server = http.createServer(requestHandle.bind(this))
-    server.listen(config.port, config.host, () => console.log('create server success'))
+    server.listen(config.port, config.host, () => console.log('create http service successful'))
 }
 
 const server = {

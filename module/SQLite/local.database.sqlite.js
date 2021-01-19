@@ -1,15 +1,15 @@
 const utils = {
-    createTaskTable = `
+    createTaskTable: `
         CREATE TABLE task (
             task_id INT UNSIGNED AUTO_INCREMENT,
             task_tag_id TINYINT NOT NULL,
             PRIMARY KEY (task_id)
         )
     `,
-    insertTaskData = ({ task_tag_id }) => `
+    insertTaskData: ({ task_tag_id }) => `
         INSERT INTO task (task_tag_id) VALUES (${task_tag_id});
     `,
-    createTaskTagRelationalTable = `
+    createTaskTagRelationalTable: `
         CREATE TABLE task (
             tag_id INT UNSIGNED AUTO_INCREMENT,
             task_id INT NOT NULL,
@@ -18,7 +18,7 @@ const utils = {
             PRIMARY KEY (tag_id)
         )
     `,
-    insertTaskTagRelationalData = ({ task_id, js, exam }) => `
+    insertTaskTagRelationalData: ({ task_id, js, exam }) => `
         INSERT INTO task (task_id, js, exam) VALUES (${task_id}, ${js}, ${exam});
     `,
 }

@@ -1,3 +1,5 @@
+import server from './server.js'
+
 /**
  * 因为GroupTask和Task的数据不太一样、所以分开2个React.Component
  */
@@ -35,6 +37,10 @@ export class MobileComponent extends React.Component {
         this.state = {
             isShowBigCar: true
         }
+    }
+
+    componentDidMount() {
+        server.getTaskList()
     }
 
     render() {

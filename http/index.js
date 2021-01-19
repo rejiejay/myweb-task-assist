@@ -14,7 +14,7 @@ const HTTP = {
         server.isDev = true
         server.init()
     },
-    renderWebResource: async () => {}, // TODO
+    renderWebResource: async () => { }, // TODO
     initPro: () => server.init() // TODO
 }
 
