@@ -14,7 +14,7 @@ const SQLite = {
             .then(instantiate => {
                 console.log('create SQLite service successful')
                 localDatabaseSqlite.init(instantiate)
-            })
+            }).catch(error => console.error('initSqlJs error', error))
     },
 
     initPro: () => { } // TODO

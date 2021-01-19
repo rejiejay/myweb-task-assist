@@ -7,8 +7,11 @@ function init(filebuffer) {
         .then(SQL => {
             if (!!filebuffer) self.db = new SQL.Database(filebuffer)
             if (!filebuffer) self.db = new SQL.Database()
-            resolve()
-        }).catch(error => console.error('initSqlJs error', error)))
+            resolve(self.db)
+        }).catch(error => {
+            console.error('initSqlJs error', error)
+            reject()
+        }))
 }
 
 const SqliteJs = {

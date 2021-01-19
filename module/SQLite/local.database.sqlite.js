@@ -10,7 +10,7 @@ const utils = {
         INSERT INTO task (task_tag_id) VALUES (${task_tag_id});
     `,
     createTaskTagRelationalTable: `
-        CREATE TABLE task (
+        CREATE TABLE task_tag_relational (
             tag_id INT UNSIGNED AUTO_INCREMENT,
             task_id INT NOT NULL,
             js TINYTEXT NOT NULL,
@@ -19,7 +19,7 @@ const utils = {
         )
     `,
     insertTaskTagRelationalData: ({ task_id, js, exam }) => `
-        INSERT INTO task (task_id, js, exam) VALUES (${task_id}, ${js}, ${exam});
+        INSERT INTO task_tag_relational (task_id, js, exam) VALUES (${task_id}, ${js}, ${exam});
     `,
 }
 
@@ -42,12 +42,14 @@ function initTaskTagRelational() {
 function init(SqliteJs) {
     this.SqliteJs = SqliteJs
 
-    initTask()
-    initTaskTagRelational()
+    this.initTask()
+    this.initTaskTagRelational()
 }
 
 const localDatabaseSqlite = {
-    init
+    init,
+    initTask,
+    initTaskTagRelational
 }
 
 export default localDatabaseSqlite
