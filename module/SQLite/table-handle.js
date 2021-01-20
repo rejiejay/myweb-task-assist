@@ -155,7 +155,11 @@ class TableHandle {
 
         const findOneHandle = () => self.find(id)
             .then(
-                result => updateOneHandle(result),
+                find => {
+                    if (find.result !== 1) return promiseHandle.reject(find)
+                    const data = find.data
+                    updateOneHandle(data)
+                },
                 error => promiseHandle.reject(error)
             ).catch(error => promiseHandle.reject(consequencer.error(error)))
 
