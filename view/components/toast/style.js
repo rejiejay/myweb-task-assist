@@ -1,15 +1,15 @@
 import jsxStyle from './../jsx-style/index'
 
-const content = {
-    position: 'fixed',
-    width: '100%',
-    height: '100%',
-    top: '0px',
-    left: '0px',
-    padding: '15px',
-    zIndex: '99',
-    ...jsxStyle.basicFlex.center
-}
+// const content = {
+//     position: 'fixed',
+//     width: '100%',
+//     height: '100%',
+//     top: '0px',
+//     left: '0px',
+//     zIndex: '99',
+//     ...jsxStyle.basicFlex.center
+// }
+const content = 'position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; z-index: 99; display: flex; -webkit-box-pack: center; justify-content: center; -webkit-box-align: center; align-items: center;'
 
 const message = {
     maxWidth: '100%',

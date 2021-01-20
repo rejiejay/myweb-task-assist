@@ -10,7 +10,9 @@ function show(message) {
     if (!!this.element) return
 
     const div = document.createElement('div')
+    div.setAttribute('style', style.content)
     this.element = div
+    if (!!message) div.onclick = () => this.destroy.call(this)
     document.body.appendChild(div)
 
     this.destroy = () => {
@@ -18,15 +20,11 @@ function show(message) {
         this.element = null
     }
 
-    ReactDOM.render(
-        <div style={style.content}>
-            {!!message ?
-                <div style={style.message}>{message}</div>
-                :
-                <div style={style.loader}>
-                    <div style={style.audioWave} />
-                </div>
-            }
+    if (!!message) return ReactDOM.render(<div style={style.message} onClick={this.destroy.bind(this)}>{message}</div>, div);
+
+    return ReactDOM.render(
+        <div style={style.loader}>
+            <div style={style.audioWave} />
         </div>,
         div
     )
