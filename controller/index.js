@@ -1,7 +1,7 @@
 /**
  * controller模块对外方法: 目前和以后仅开放一个公共方法 Controller
  */
-import Task from './task.js';
+import Task from './task/index.js';
 
 const controllerMethod = {
     ...Task

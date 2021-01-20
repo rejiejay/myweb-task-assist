@@ -1,9 +1,12 @@
 /**
  * SQLite 对外方法:
+ * @db SQLite的实例
  * @initDev 初始化开发环境方法
  * @initPro 初始化开发环境方法
+ * @TableHandle SQLite的Table常用操作方法
  */
 import SqliteJs from './sqlitejs.instantiate.js'
+import TableHandle from './table-handle.js'
 import localDatabaseSqlite from './local.database.sqlite.js'
 
 function initDev() {
@@ -22,7 +25,9 @@ const SQLite = {
 
     initDev,
 
-    initPro: () => { } // TODO
+    initPro: () => { }, // TODO
+
+    TableHandle
 }
 
 export default SQLite

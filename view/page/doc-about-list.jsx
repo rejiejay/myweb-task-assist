@@ -10,7 +10,7 @@ const list = [{
     createTimestamp: 123123213,
     minEffectTimestamp: 123123213,
     maxEffectTimestamp: 123123213,
-    tag: '', // 
+    tag: '', // 多选标签
 }]
 
 const sql_table = {

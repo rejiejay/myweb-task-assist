@@ -1,42 +1,70 @@
-const utils = {
-    createTaskTable: `
+/**
+ * local.database.sqlite is only for local development
+ */
+const table = {
+    task: `
         CREATE TABLE task (
-            task_id INT UNSIGNED AUTO_INCREMENT,
-            task_tag_id TINYINT NOT NULL,
-            PRIMARY KEY (task_id)
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            taskTagId TINYINT,
+            longTermId TINYINT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            specific TEXT,
+            measurable TEXT,
+            attainable TEXT,
+            relevant TEXT,
+            timeBound TEXT,
+            createTimestamp BIGINT NOT NULL,
+            minEffectTimestamp BIGINT,
+            maxEffectTimestamp BIGINT,
+            status TINYTEXT,
+            priority TINYINT
         )
     `,
-    insertTaskData: ({ task_tag_id }) => `
-        INSERT INTO task (task_tag_id) VALUES (${task_tag_id});
-    `,
-    createTaskTagRelationalTable: `
-        CREATE TABLE task_tag_relational (
-            tag_id INT UNSIGNED AUTO_INCREMENT,
-            task_id INT NOT NULL,
+
+    taskTagRelational: `
+        CREATE TABLE taskTagRelational (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            taskId INT NOT NULL,
             js TINYTEXT NOT NULL,
-            exam TINYTEXT NOT NULL,
-            PRIMARY KEY (tag_id)
+            exam TINYTEXT NOT NULL
         )
     `,
-    insertTaskTagRelationalData: ({ task_id, js, exam }) => `
-        INSERT INTO task_tag_relational (task_id, js, exam) VALUES (${task_id}, ${js}, ${exam});
-    `,
+
+    longTermTaskRelational: `
+        CREATE TABLE longTermTaskRelational (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            taskId INT NOT NULL,
+            title TEXT NOT NULL,
+            record LONGTEXT
+        )
+    `
 }
 
 function initTask() {
-    this.SqliteJs.exec(utils.createTaskTable);
-    this.SqliteJs.exec(utils.insertTaskData({ task_tag_id: 1 }));
-    this.SqliteJs.exec(utils.insertTaskData({ task_tag_id: 2 }));
-    this.SqliteJs.exec(utils.insertTaskData({ task_tag_id: 3 }));
+    const slef = this
+    const insertTaskData = data => utils.insertTaskData('task', data)
+    this.SqliteJs.exec(table.task);
+    const list = [
+        { title: '任务1', content: '任务内容1', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(), taskTagId: 1 },
+        { title: '任务2', content: '任务内容2', createTimestamp: new Date(2021, 2, 2, 0, 0).getTime(), taskTagId: 2, longTermId: 1 },
+        { title: '任务3', content: '任务内容3', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), taskTagId: 3 }
+    ]
+    list.forEach(item => slef.SqliteJs.exec(insertTaskData(item)))
 }
 
 function initTaskTagRelational() {
-    this.SqliteJs.exec(utils.createTaskTagRelationalTable);
-    this.SqliteJs.exec(utils.insertTaskTagRelationalData({
-        task_id: 1,
-        js: 0,
-        exam: 1
-    }));
+    const insertTaskData = data => utils.insertTaskData('taskTagRelational', data)
+    this.SqliteJs.exec(table.taskTagRelational);
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, js: 0, exam: 1 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, js: 0, exam: 1 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, js: 0, exam: 1 }));
+}
+
+function initLongTermTaskRelational() {
+    const insertTaskData = data => utils.insertTaskData('longTermTaskRelational', data)
+    this.SqliteJs.exec(table.longTermTaskRelational);
+    this.SqliteJs.exec(insertTaskData({ taskId: 2, title: '长期任务', record: '长期任务内容' }));
 }
 
 function init(SqliteJs) {
@@ -44,12 +72,32 @@ function init(SqliteJs) {
 
     this.initTask()
     this.initTaskTagRelational()
+    this.initLongTermTaskRelational()
 }
+
+const utils = {
+    dataToAddSql(data) {
+        const keys = []
+        const values = []
+        Object.keys(data).forEach(key => {
+            keys.push(key)
+            values.push(data[key])
+        })
+    
+        return `(${keys.join(',')}) VALUES (${values.join(',')})`
+    },
+
+    insertTaskData(table, data) {
+        return `INSERT INTO ${table} ${this.dataToAddSql(data)};`
+    },
+}
+
 
 const localDatabaseSqlite = {
     init,
     initTask,
-    initTaskTagRelational
+    initTaskTagRelational,
+    initLongTermTaskRelational
 }
 
 export default localDatabaseSqlite
