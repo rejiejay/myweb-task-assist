@@ -11,7 +11,7 @@ class TableHandle {
         let result = {}
         try {
             result = SqliteJs.db.exec(sql)
-        } catch(err) {
+        } catch (err) {
             console.error('SqliteJs execute error', err)
             reject(consequencer.error(err))
         }
@@ -64,17 +64,34 @@ class TableHandle {
             if (!id) return reject(consequencer.error('id could not empty'))
 
             self.query(`SELECT * FROM ${self.table} WHERE id=${id}`)
+                .then(
+                    query => {
+                        if (query.result !== 1) return reject(query)
+                        const data = query.data[0]
+                        const values = data.values
+                        if (values.length <= 0) return reject(consequencer.error(`could not find value where id=${id}`))
+                        resolve(consequencer.success(self.mapperFindSQLtoObject({ columns: data.columns, values: values[0] })))
+                    },
+                    error => reject(error)
+                )
+        })
+    }
+
+    list(filterSQL) {
+        const self = this
+
+        return new Promise((resolve, reject) => self.query(`SELECT * FROM ${self.table} ${filterSQL}`)
             .then(
                 query => {
                     if (query.result !== 1) return reject(query)
                     const data = query.data[0]
                     const values = data.values
-                    if (values.length <= 0) return reject(consequencer.error(`could not find value where id=${id}`))
-                    resolve(consequencer.success(self.mapperFindSQLtoObject({ columns: data.columns, values: values[0] })))
+                    if (values.length <= 0) return resolve(consequencer.success([]))
+                    resolve(consequencer.success(self.mapperQuerySQLtoList(data)))
                 },
                 error => reject(error)
             )
-        })
+        )
     }
 
     verify(data) {
@@ -103,10 +120,10 @@ class TableHandle {
             if (verifyInstance.result !== 1) return reject(verifyInstance)
 
             self.query(`INSERT INTO ${self.table} ${self.dataToAddSql(data)}`)
-            .then(
-                result => resolve(consequencer.success(data)),
-                error => reject(error)
-            ).catch(error => reject(consequencer.error(error)))
+                .then(
+                    result => resolve(consequencer.success(data)),
+                    error => reject(error)
+                ).catch(error => reject(consequencer.error(error)))
         })
     }
 
@@ -115,16 +132,16 @@ class TableHandle {
         let promiseHandle = {}
 
         const findOneHandle = () => self.find(id)
-        .then(
-            result => deleteOneHandle(),
-            error => promiseHandle.reject(error)
-        ).catch(error => promiseHandle.reject(consequencer.error(error)))
+            .then(
+                result => deleteOneHandle(),
+                error => promiseHandle.reject(error)
+            ).catch(error => promiseHandle.reject(consequencer.error(error)))
 
         const deleteOneHandle = () => self.query(`DELETE FROM ${self.table} WHERE id=${id}`)
-        .then(
-            result => promiseHandle.resolve(result),
-            error => promiseHandle.reject(error)
-        ).catch(error => promiseHandle.reject(consequencer.error(error)))
+            .then(
+                result => promiseHandle.resolve(result),
+                error => promiseHandle.reject(error)
+            ).catch(error => promiseHandle.reject(consequencer.error(error)))
 
         return new Promise((resolve, reject) => {
             promiseHandle = { resolve, reject }
@@ -137,16 +154,16 @@ class TableHandle {
         let promiseHandle = {}
 
         const findOneHandle = () => self.find(id)
-        .then(
-            result => updateOneHandle(result),
-            error => promiseHandle.reject(error)
-        ).catch(error => promiseHandle.reject(consequencer.error(error)))
+            .then(
+                result => updateOneHandle(result),
+                error => promiseHandle.reject(error)
+            ).catch(error => promiseHandle.reject(consequencer.error(error)))
 
         const updateOneHandle = result => self.query(`UPDATE ${self.table} SET ${self.dataToUpdateSql(data, data)} WHERE id=${id}`)
-        .then(
-            result => promiseHandle.resolve(consequencer.success(result)),
-            error => promiseHandle.reject(error)
-        ).catch(error => promiseHandle.reject(consequencer.error(error)))
+            .then(
+                result => promiseHandle.resolve(consequencer.success(result)),
+                error => promiseHandle.reject(error)
+            ).catch(error => promiseHandle.reject(consequencer.error(error)))
 
         return new Promise((resolve, reject) => {
             promiseHandle = { resolve, reject }

@@ -6,7 +6,7 @@ import service from './../../service/index.js'
 const getTaskList = function getTaskList(parameter, responseHanle) {
     service.task.getList()
     .then(
-        result => responseHanle.success(result),
+        result => responseHanle.json(result),
         error => responseHanle.json(error)
     )
 }

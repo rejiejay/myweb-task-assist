@@ -46,9 +46,9 @@ function initTask() {
     const insertTaskData = data => utils.insertTaskData('task', data)
     this.SqliteJs.exec(table.task);
     const list = [
-        { title: '任务1', content: '任务内容1', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(), taskTagId: 1 },
-        { title: '任务2', content: '任务内容2', createTimestamp: new Date(2021, 2, 2, 0, 0).getTime(), taskTagId: 2, longTermId: 1 },
-        { title: '任务3', content: '任务内容3', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), taskTagId: 3 }
+        { title: '"任务1"', content: '"任务内容1"', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(), taskTagId: 1 },
+        { title: '"任务2"', content: '"任务内容2"', createTimestamp: new Date(2021, 2, 2, 0, 0).getTime(), taskTagId: 2, longTermId: 1 },
+        { title: '"任务3"', content: '"任务内容3"', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), taskTagId: 3 }
     ]
     list.forEach(item => slef.SqliteJs.exec(insertTaskData(item)))
 }
@@ -64,7 +64,7 @@ function initTaskTagRelational() {
 function initLongTermTaskRelational() {
     const insertTaskData = data => utils.insertTaskData('longTermTaskRelational', data)
     this.SqliteJs.exec(table.longTermTaskRelational);
-    this.SqliteJs.exec(insertTaskData({ taskId: 2, title: '长期任务', record: '长期任务内容' }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 2, title: '"长期任务"', record: '"长期任务内容"' }));
 }
 
 function init(SqliteJs) {
@@ -83,7 +83,7 @@ const utils = {
             keys.push(key)
             values.push(data[key])
         })
-    
+
         return `(${keys.join(',')}) VALUES (${values.join(',')})`
     },
 
