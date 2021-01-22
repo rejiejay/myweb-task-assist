@@ -198,8 +198,7 @@ class ResourcesHandle extends ResourcesUtils {
         ]).then(([jsInstance, lessInstance, htmlInstance]) => {
             const html = htmlInstance.data
             self.responseHandle({ code: 200, message: html, contentType: 'text/html;charset=utf-8' })
-        })
-        .catch(error => self.responseHandle({ code: 200, message: `${error}` }))
+        }).catch(error => self.responseHandle({ code: 200, message: `${error}` }))
     }
 
     renderStatic() {

@@ -5,10 +5,10 @@ import service from './../../service/index.js'
 
 const getTaskList = function getTaskList(parameter, responseHanle) {
     service.task.getList()
-    .then(
-        result => responseHanle.json(result),
-        error => responseHanle.json(error)
-    )
+        .then(
+            result => responseHanle.json(result),
+            error => responseHanle.json(error)
+        )
 }
 
 const Task = {

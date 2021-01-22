@@ -77,10 +77,10 @@ class TaskCard extends React.Component {
                     </div>
                     <div className='operate-right flex-start-center'>
                         {data.longTermId && <div className='operate-right-button long-term-task flex-center'
-                            onClick={() => {}}
+                            onClick={() => { }}
                         >Enter Long Term Task</div>}
                         <div className='operate-right-button operate-right-edit flex-center'
-                            onClick={() => {}}
+                            onClick={() => { }}
                         >Edit</div>
                     </div>
                 </div>
@@ -89,7 +89,7 @@ class TaskCard extends React.Component {
     }
 }
 
-const TaskList = ({ list, isShowBigCard }) => <div className='task-list-container'>{list.map(item => 
+const TaskList = ({ list, isShowBigCard }) => <div className='task-list-container'>{list.map(item =>
     <TaskCard
         key={item.id}
         data={item}
