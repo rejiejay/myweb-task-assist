@@ -1,10 +1,14 @@
 /**
  * controller模块对外方法: 目前和以后仅开放一个公共方法 Controller
  */
+import * as URL from 'url';
+
 import Task from './task/index.js';
+import Tag from './tag/index.js';
 
 const controllerMethod = {
-    ...Task
+    ...Task,
+    ...Tag
 }
 
 /**
@@ -14,9 +18,9 @@ const emptyMethod = (parameter, responseHanle, request) => responseHanle.failure
 
 class Controller {
     constructor(request) {
-        const url = request.url
+        const url = URL.parse(request.url, true)
         const method = request.method
-        const controllerName = `${method.toLocaleLowerCase()}${url.replace(new RegExp('/', 'g'), '_')}` // ${method}_${pathname}_${pathname}_${pathname}
+        const controllerName = `${method.toLocaleLowerCase()}${url.pathname.replace(new RegExp('/', 'g'), '_')}` // ${method}_${pathname}_${pathname}_${pathname}
         const requestMethod = controllerMethod[controllerName]
 
         if (requestMethod) {

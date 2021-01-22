@@ -1,4 +1,4 @@
-import deviceHandle from './../utils/device-handle'
+import deviceHandle from './../../utils/device-handle'
 
 window.onload = () => {
     const root = document.getElementById('jeker-task-assist-system')

@@ -8,6 +8,7 @@ const dataAccessObject = {
     specific: { required: false },
     measurable: { required: false },
     attainable: { required: false },
+    relevant: { required: false },
     timeBound: { required: false },
     minEffectTimestamp: { required: false },
     maxEffectTimestamp: { required: false },

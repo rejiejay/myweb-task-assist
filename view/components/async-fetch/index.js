@@ -44,9 +44,11 @@ function get(parameter, { resolve, reject }) {
             reject(error)
         }
         window.fetch(url, optional)
-            .then(async response => {
-                const data = response.json()
-
+            .then(
+                response => response.json(),
+                error => consequencer.error(error)
+            )
+            .then(async data => {
                 if (parameter.isShowError && data.result !== 1) {
                     await confirm(data.message)
                     return rejectHandle(data)
@@ -88,8 +90,11 @@ function post(parameter, { resolve, reject }) {
             reject(error)
         }
         window.fetch(url, optional)
-            .then(response => {
-                const data = response.json()
+            .then(
+                response => response.json(),
+                error => consequencer.error(error)
+            )
+            .then(data => {
                 /**
                  * 这里不自动处理isShowError, 因为post方法还是手动处理错误为好
                  */

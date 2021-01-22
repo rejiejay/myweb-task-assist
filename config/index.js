@@ -14,7 +14,7 @@ let config = {
         view: {
             root: {
                 matchURL: '/',
-                resourcePath: './view/page/',
+                resourcePath: './view/page/entry/',
                 outputPath: './view/build/'
             },
             SQLiteGUI: {

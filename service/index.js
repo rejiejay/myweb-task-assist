@@ -3,9 +3,11 @@
  * @task 数据库 task 模块里面各种操作方法
  */
 import task from './task/index.js'
+import tag from './tag/index.js'
 
 const service = {
-    task
+    task,
+    tag
 }
 
 export default service

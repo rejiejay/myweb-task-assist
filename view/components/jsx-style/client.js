@@ -8,8 +8,8 @@ const getClien = (field, defaultValue) => {
 const client = {
     height: () => getClien('Height', 667),
     width: () => getClien('Width', 375),
-    heightPercentagePx: (percentage) => `${Math.floor(getClien('Height', 667) * percentage)}px`,
-    widthPercentagePx: (percentage) => `${Math.floor(getClien('Width', 375) * percentage)}px`,
+    heightPercentagePx: (percentage) => `${Math.floor(getClien('Height', 667) * percentage / 100)}px`,
+    widthPercentagePx: (percentage) => `${Math.floor(getClien('Width', 375) * percentage / 100)}px`,
     heightPx: () => `${getClien('Height', 667)}px`,
     widthPx: () => `${getClien('Width', 375)}px`
 }

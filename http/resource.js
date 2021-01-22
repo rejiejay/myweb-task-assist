@@ -113,9 +113,36 @@ class ResourcesUtils {
                 externals: { react: 'React', 'react-dom': 'ReactDOM' },
                 plugins
             }, (err, stats) => {
-                if (err || stats.hasErrors()) return reject(consequencer.error(err))
+                if (err || stats.hasErrors()) return reject(`${stats}`)
                 return resolve(consequencer.success())
-            });
+            })
+        })
+    }
+
+    renderHyperTextMarkupLanguage(version = '') {
+        const entryPath = projectRelativePath(`${this.resourcePath}/index.html`)
+        const outputPath = projectRelativePath(`${this.outputPath}/index.html`)
+
+        return new Promise((resolve, reject) => {
+            const writeFile = content => fs.writeFile(
+                outputPath,
+                content,
+                { encoding: 'utf8' },
+                writeFileError => {
+                    if (writeFileError) return reject(consequencer.error(JSON.stringify(writeFileError)))
+                    resolve(consequencer.success(content))
+                }
+            )
+
+            const initVersion = content => {
+                const contentVersion = content.replace(/<%=version%>/g, version)
+                writeFile(contentVersion)
+            }
+
+            fs.readFile(entryPath, 'utf8', (readFileError, content) => {
+                if (readFileError) return reject(consequencer.error(JSON.stringify(readFileError)))
+                initVersion(content)
+            })
         })
     }
 }
@@ -150,33 +177,6 @@ class ResourcesHandle extends ResourcesUtils {
         this.renderStatic()
     }
 
-    async renderHyperTextMarkupLanguage(version = '') {
-        const entryPath = projectRelativePath(`${this.resourcePath}/index.html`)
-        const outputPath = projectRelativePath(`${this.outputPath}/index.html`)
-
-        return new Promise((resolve, reject) => {
-            const writeFile = content => fs.writeFile(
-                outputPath,
-                content,
-                { encoding: 'utf8' },
-                writeFileError => {
-                    if (writeFileError) return reject(consequencer.error(JSON.stringify(writeFileError)))
-                    resolve(consequencer.success(content))
-                }
-            )
-
-            const initVersion = content => {
-                const contentVersion = content.replace(/<%=version%>/g, version)
-                writeFile(contentVersion)
-            }
-
-            fs.readFile(entryPath, 'utf8', (readFileError, content) => {
-                if (readFileError) return reject(consequencer.error(JSON.stringify(readFileError)))
-                initVersion(content)
-            })
-        })
-    }
-
     buildConfigured() {
         const self = this
         // const jsInstance = await this.renderTypedJavaScriptXML()
@@ -198,7 +198,8 @@ class ResourcesHandle extends ResourcesUtils {
         ]).then(([jsInstance, lessInstance, htmlInstance]) => {
             const html = htmlInstance.data
             self.responseHandle({ code: 200, message: html, contentType: 'text/html;charset=utf-8' })
-        }, reject => self.responseHandle({ code: 200, message: reject.message }))
+        })
+        .catch(error => self.responseHandle({ code: 200, message: `${error}` }))
     }
 
     renderStatic() {

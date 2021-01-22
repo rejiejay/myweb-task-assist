@@ -102,7 +102,7 @@ class TableHandle {
         Object.keys(format).forEach(key => {
             const thisFormat = format[key]
             const value = data[key]
-            if (thisFormat.isRequired) {
+            if (thisFormat && thisFormat.isRequired) {
                 if (!value) check = consequencer.error(`${key} is required`)
                 // 因为SQL都是字符串，所以这里就不校验类型了、
                 // if (typeof value !== thisFormat.type) check = consequencer.error(`${key} need ${thisFormat.type}`)

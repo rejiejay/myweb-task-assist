@@ -48,7 +48,8 @@ function initTask() {
     const list = [
         { title: '"任务1"', content: '"任务内容1"', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(), taskTagId: 1 },
         { title: '"任务2"', content: '"任务内容2"', createTimestamp: new Date(2021, 2, 2, 0, 0).getTime(), taskTagId: 2, longTermId: 1 },
-        { title: '"任务3"', content: '"任务内容3"', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), taskTagId: 3 }
+        { title: '"任务3"', content: '"任务内容3"', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), taskTagId: 3 },
+        { title: '"测试换行"', content: '"第一行  \n  第二行"', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), specific: '"第一行  \n  第二行"', measurable: '"第一行  \n  第二行"', attainable: '"第一行  \n  第二行"', relevant: '"第一行  \n  第二行"', timeBound: '"第一行  \n  第二行"' }
     ]
     list.forEach(item => slef.SqliteJs.exec(insertTaskData(item)))
 }

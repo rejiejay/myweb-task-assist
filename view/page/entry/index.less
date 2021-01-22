@@ -1,0 +1,113 @@
+@import './base.less';
+@import './flex.less';
+
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.web-device-container,
+.mobile-device-container {
+    position        : relative;
+    width           : 100%;
+    min-height      : 100%;
+    padding         : 0px;
+    margin          : 0px;
+    font-size       : 14px;
+    color           : @black2;
+    background-color: #f1f1f1;
+}
+
+.mobile-device-container .list-top-operate {
+    position: fixed;
+    top     : 0px;
+    left    : 0px;
+    height  : 45px;
+    width   : 100%;
+
+    >div {
+        padding: 0px 7.5px;
+    }
+
+    .list-top-button {
+        padding         : 0px 12px;
+        line-height     : 32px;
+        border-radius   : 5px;
+        background-color: #fff;
+    }
+}
+
+.mobile-device-container .task-list-container {
+    padding: 50px 0px 0px 0px;
+
+    .task-card {
+        border-top: 1px solid #ddd;
+        padding: 15px 15px 0px 15px;
+
+        .task-card-title {
+            font-weight: bold;
+            padding-bottom: 5px;
+        }
+
+        .other-content-description {
+            font-size: 12px;
+
+            > div {
+                padding-top: 5px;
+            }
+        }
+    }
+
+    .task-card-operate {
+        padding-top: 15px;
+        font-size: 12px;
+        font-weight: bold;
+        color: @black3;
+
+        .card-operate-container {
+            border-top: 1px solid #ddd;
+            height: 32px;
+        }
+
+        .switch-attach-infor {
+            padding-right: 12px;
+            border-right: 1px solid #ddd;
+        }
+
+        .operate-right-button {
+            padding: 0px 12px;
+            border-right: 1px solid #ddd;
+        }
+
+        .operate-right-button:last-child { 
+            padding: 0px 0px 0px 12px;
+            border-right: none;
+        }
+
+    }
+
+    .task-card:last-child { 
+        border-bottom: 1px solid #ddd;
+    }
+}
+
+.mobile-device-container .list-bottom-operate {
+    position        : fixed;
+    bottom          : 0px;
+    left            : 0px;
+    height          : 50px;
+    width           : 100%;
+    background-color: #fff;
+
+    .right-line {
+        border-right: 1px solid #ddd;
+    }
+
+    .left-line {
+        border-left: 1px solid #ddd;
+    }
+
+    .list-bottom-button {
+        padding: 0px 15px;
+    }
+}
