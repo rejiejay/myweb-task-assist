@@ -1,30 +1,95 @@
 import jsxStyle from './../../../components/jsx-style'
 import service from './../service'
+import timeTransformers from './../../../../utils/time-transformers'
+import CONSTS from './../../../../library/consts'
+
+const NotRequiredDescription = ({ field, description }) => {
+    if (!description) return null
+
+    return <div className={`other-content-${field}`}>{field}: {description}</div>
+}
 
 class CardAttachmentDetail extends React.Component {
     constructor(props) {
         super(props)
 
+        const defaultDescription = { field: null, data: null }
+
         this.state = {
-            tagsNameList: []
+            tag: defaultDescription,
+            effectTime: defaultDescription,
+            status: defaultDescription,
+            priority: defaultDescription
         }
     }
 
     componentDidMount() {
-        const { data } = this.props
+        this.initTaskTagInfor()
+        this.initEffectTime()
+        this.initStatus()
+        this.initPriority()
+    }
 
-        if (data.taskTagId) this.initTaskTagInfor(data.taskTagId)
+    initEffectTime() {
+        const { data } = this.props
+        const field = 'Effect Time'
+
+        if (!data.minEffectTimestamp && !data.maxEffectTimestamp) return
+        const minEffectTime = !!data.minEffectTimestamp ? timeTransformers.dateToYYYYmmDDhhMM(new Date(+data.minEffectTimestamp)) : ''
+        const maxEffectTime = !!data.maxEffectTimestamp ? timeTransformers.dateToYYYYmmDDhhMM(new Date(+data.maxEffectTimestamp)) : ''
+
+        let description = ''
+        if (!!data.minEffectTimestamp) description = `${minEffectTime}`
+        if (!!data.maxEffectTimestamp) description = `${maxEffectTime}`
+        if (!!data.minEffectTimestamp && !!data.maxEffectTimestamp) description = `${minEffectTime} - ${maxEffectTime}`
+
+        this.setState({ effectTime: { field, description } })
+    }
+
+    initStatus() {
+        const { data } = this.props
+        if (!data.status) return
+
+        const field = 'Task Status'
+        const description = CONSTS.utils.serviceValueToViewLable(CONSTS.task.status, data.status)
+        this.setState({ status: { field, description } })
+    }
+
+    initPriority() {
+        const { data } = this.props
+        if (!data.priority) return
+
+        const field = 'Task Priority'
+        const description = CONSTS.utils.serviceValueToViewLable(CONSTS.task.priority, data.priority)
+        this.setState({ priority: { field, description } })
     }
 
     async initTaskTagInfor(taskTagId) {
+        const { data } = this.props
+        if (!data.taskTagId) return
+
         const fetchInstance = await service.getTaskTagInfor(taskTagId)
         if (fetchInstance.result !== 1) return
 
-        this.setState({ tagsNameList: fetchInstance.data })
+        const field = 'Task Tag'
+        const tags = fetchInstance.data
+        const description = Object.keys(tags).reduce((accumulator, currentValue) => {
+            if (currentValue === 'id' || currentValue === 'taskId') return accumulator
+            if (+tags[currentValue] === 1) accumulator.push(currentValue)
+            return accumulator
+        }, []).join()
+
+        this.setState({ tag: { field, description } })
     }
 
     render() {
+        const { effectTime, status, priority, tag } = this.state
+
         return <div className='task-attachment-information'>
+            <NotRequiredDescription key='effectTime' {...effectTime} />
+            <NotRequiredDescription key='status' {...status} />
+            <NotRequiredDescription key='priority' {...priority} />
+            <NotRequiredDescription key='tag' {...tag} />
         </div>
     }
 }
@@ -40,16 +105,9 @@ class TaskCard extends React.Component {
         this.bigCardStyle = { minHeight: jsxStyle.client.heightPercentagePx(68) }
     }
 
-    notRequiredDescription = ({ field, data }) => {
-        if (!data) return null
-
-        return <div className={`other-content-${field}`}>{field}: {data}</div>
-    }
-
     render() {
         const { data, isShowBigCard } = this.props
         const { isShowAttachInfor } = this.state
-        const NotRequiredDescription = this.notRequiredDescription
         const newText = text => text && text.split('\n').map((item, i) => <p key={i}>{item}</p>)
         let style = {}
         if (!!isShowBigCard) style = this.bigCardStyle
@@ -60,15 +118,15 @@ class TaskCard extends React.Component {
                 {isShowBigCard && <div className='big-card-content'>{newText(data.content)}</div>}
                 {!isShowBigCard && <div className='small-card-content'>{newText(data.content)}</div>}
                 {isShowBigCard && <div className='other-content-description'>
-                    <NotRequiredDescription key='specific' field='specific' data={newText(data.specific)} />
-                    <NotRequiredDescription key='measurable' field='measurable' data={newText(data.measurable)} />
-                    <NotRequiredDescription key='attainable' field='attainable' data={newText(data.attainable)} />
-                    <NotRequiredDescription key='relevant' field='relevant' data={newText(data.relevant)} />
-                    <NotRequiredDescription key='timeBound' field='timeBound' data={newText(data.timeBound)} />
+                    <NotRequiredDescription key='specific' field='specific' description={newText(data.specific)} />
+                    <NotRequiredDescription key='measurable' field='measurable' description={newText(data.measurable)} />
+                    <NotRequiredDescription key='attainable' field='attainable' description={newText(data.attainable)} />
+                    <NotRequiredDescription key='relevant' field='relevant' description={newText(data.relevant)} />
+                    <NotRequiredDescription key='timeBound' field='timeBound' description={newText(data.timeBound)} />
                 </div>}
             </div>
             {isShowAttachInfor && <CardAttachmentDetail data={data} />}
-            <div className='task-card-operate'>
+            <div className={`task-card-operate ${isShowAttachInfor && 'operate-show-attach'}`}>
                 <div className='card-operate-container flex-start-center'>
                     <div className='operate-left flex-rest flex-start'>
                         <div className='switch-attach-infor flex-center'
