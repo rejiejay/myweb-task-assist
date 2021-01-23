@@ -1,20 +1,18 @@
 /**
- * toast 对外方法:
- * @show 显示
- * @destroy 销毁
+ * ActionSheet 对外方法:
  */
 import style from './style.js'
 import consequencer from './../../../utils/consequencer'
 
-function Confirm(message) {
+const ActionSheet = ({ title, options }) => {
     let resolveHandle = () => { }
     let rejectHandle = () => { }
     const div = document.createElement('div')
     div.setAttribute('style', style.content)
 
     const destroy = () => document.body.removeChild(div)
-    const confirmHandle = () => {
-        resolveHandle(consequencer.success())
+    const selectHandle = ({ value, label }) => {
+        resolveHandle(consequencer.success({ value, label }))
         destroy()
     }
     const cancelHandle = () => {
@@ -25,13 +23,16 @@ function Confirm(message) {
     document.body.appendChild(div)
     ReactDOM.render(
         <>
-            <div style={style.mask} />
+            <div style={style.mask} onClick={cancelHandle} />
             <div style={style.container}>
-                <div style={style.title}>{message || 'please confirm operation'}</div>
-                <div style={style.operating}>
-                    <div style={style.confirm} onClick={confirmHandle}>确认</div>
-                    <div style={style.cancel} onClick={cancelHandle}>取消</div>
-                </div>
+                <div style={style.title}>{title || 'please select item'}</div>
+                <div style={style.selector}>{options.map(({ value, label }, key) =>
+                    <div
+                        key={key}
+                        style={style.item}
+                        onClick={() => selectHandle({ value, label })}
+                    >{label}</div>
+                )}</div>
             </div>
         </>
         ,
@@ -44,4 +45,4 @@ function Confirm(message) {
     })
 }
 
-export default Confirm
+export default ActionSheet

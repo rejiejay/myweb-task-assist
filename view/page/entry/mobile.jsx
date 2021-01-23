@@ -1,5 +1,9 @@
 import service from './service.js'
 import TaskList from './mobile-components/task-car'
+import FilterEdit from './common-components/filter-edit'
+import ActionSheet from './../../components/action-sheet'
+import FullscreenIframe from './../../components/fullscreen-iframe'
+import CONSTS from './../../../library/consts'
 
 export class MobileComponent extends React.Component {
     constructor(props) {
@@ -7,12 +11,15 @@ export class MobileComponent extends React.Component {
 
         this.state = {
             isShowBigCard: false,
-            list: []
+            list: [],
+            sortLable: 'Sort'
         }
     }
 
     componentDidMount() {
         this.initList()
+
+        this.selectFilterHandle()
     }
 
     async initList() {
@@ -22,8 +29,36 @@ export class MobileComponent extends React.Component {
         this.setState({ list: fetchInstance.data })
     }
 
+    selectSortHandle = async () => {
+        const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.sort)
+        const selectInstance = await ActionSheet({
+            title: '请选择排序',
+            options
+        })
+
+        if (selectInstance.result !== 1) return
+
+        let sortLable = selectInstance.data.label
+        if (selectInstance.data.label === '默认排序') sortLable = 'Sort'
+
+        // TODO: add API
+        this.setState({ sortLable })
+    }
+
+    selectFilterHandle = async () => {
+        const selectInstance = await FullscreenIframe({
+            Element: FilterEdit,
+            className: 'mobile-device-task-filter-edit',
+            props: { }
+        })
+
+        if (selectInstance.result !== 1) return
+
+        console.log('selectInstance', selectInstance)
+    }
+
     render() {
-        const { list, isShowBigCard } = this.state
+        const { list, isShowBigCard, sortLable } = this.state
 
         return <>
             <div className='list-top-operate flex-start-center'>
@@ -44,10 +79,10 @@ export class MobileComponent extends React.Component {
 
             <div className='list-bottom-operate flex-start-center'>
                 <div className='bottom-operate-filter flex-start flex-rest'>
-                    <div className='list-bottom-button right-line'>Filter</div>
+                    <div className='list-bottom-button right-line' onClick={this.selectFilterHandle}>Filter</div>
                 </div>
                 <div className='bottom-operate-sort'>
-                    <div className='list-bottom-button left-line'>Sort</div>
+                    <div className='list-bottom-button left-line' onClick={this.selectSortHandle}>{sortLable}</div>
                 </div>
             </div>
         </>

@@ -5,10 +5,12 @@ import * as URL from 'url';
 
 import Task from './task/index.js';
 import Tag from './tag/index.js';
+import longTerm from './long-term';
 
 const controllerMethod = {
     ...Task,
-    ...Tag
+    ...Tag,
+    ...longTerm
 }
 
 /**

@@ -64,11 +64,11 @@ class CardAttachmentDetail extends React.Component {
         this.setState({ priority: { field, description } })
     }
 
-    async initTaskTagInfor(taskTagId) {
+    async initTaskTagInfor() {
         const { data } = this.props
         if (!data.taskTagId) return
 
-        const fetchInstance = await service.getTaskTagInfor(taskTagId)
+        const fetchInstance = await service.getTaskTagInfor(data.taskTagId)
         if (fetchInstance.result !== 1) return
 
         const field = 'Task Tag'

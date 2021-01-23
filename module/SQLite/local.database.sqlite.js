@@ -26,15 +26,15 @@ const table = {
         CREATE TABLE taskTagRelational (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             taskId INT NOT NULL,
-            js TINYTEXT NOT NULL,
-            exam TINYTEXT NOT NULL
+            js TINYTEXT,
+            exam TINYTEXT,
+            love TINYTEXT
         )
     `,
 
     longTermTaskRelational: `
         CREATE TABLE longTermTaskRelational (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            taskId INT NOT NULL,
             title TEXT NOT NULL,
             record LONGTEXT
         )
@@ -58,15 +58,15 @@ function initTask() {
 function initTaskTagRelational() {
     const insertTaskData = data => utils.insertTaskData('taskTagRelational', data)
     this.SqliteJs.exec(table.taskTagRelational);
-    this.SqliteJs.exec(insertTaskData({ taskId: 1, js: 0, exam: 1 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 1, js: 0, exam: 1 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 1, js: 0, exam: 1 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 2, js: 1 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 3, exam: 1 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 4, love: 1 }));
 }
 
 function initLongTermTaskRelational() {
     const insertTaskData = data => utils.insertTaskData('longTermTaskRelational', data)
     this.SqliteJs.exec(table.longTermTaskRelational);
-    this.SqliteJs.exec(insertTaskData({ taskId: 2, title: '"长期任务"', record: '"长期任务内容"' }));
+    this.SqliteJs.exec(insertTaskData({ title: '"长期任务"', record: '"长期任务内容"' }));
 }
 
 function init(SqliteJs) {

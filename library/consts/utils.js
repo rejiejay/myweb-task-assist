@@ -23,6 +23,13 @@ const findValueByValue = ({
 }
 
 // 作用: 通过CONST 转换为 downSelect 格式
+function toDefaultDownSelectFormat(CONST) {
+    return this.toDownSelectFormat({
+        CONST,
+        valueName: 'viewValue',
+        labelName: 'viewLable',
+    })
+}
 const toDownSelectFormat = ({ CONST, valueName, labelName }) => Object.keys(CONST).map(key => ({
     value: CONST[key][valueName],
     label: CONST[key][labelName]
@@ -40,7 +47,8 @@ function serviceValueToViewLable(CONST, supportValue) {
 const utils = {
     findValueByValue,
     toDownSelectFormat,
-    serviceValueToViewLable
+    serviceValueToViewLable,
+    toDefaultDownSelectFormat
 }
 
 export default utils

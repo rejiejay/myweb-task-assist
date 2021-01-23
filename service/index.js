@@ -4,10 +4,12 @@
  */
 import task from './task/index.js'
 import tag from './tag/index.js'
+import longTerm from './long-term'
 
 const service = {
     task,
-    tag
+    tag,
+    longTerm
 }
 
 export default service

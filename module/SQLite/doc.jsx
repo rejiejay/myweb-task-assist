@@ -49,5 +49,5 @@ ALTER TABLE task_tag_relational CHANGE hkjc new_hkjc_anme TINYTEXT;
 ALTER TABLE task_tag_relational DROP hkjc;
 `
 查询所有表名 = `
-desc task_tag_relational;
+PRAGMA task_tag_relational;
 `

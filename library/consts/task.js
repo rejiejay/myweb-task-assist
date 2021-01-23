@@ -52,10 +52,28 @@ const priority = {
         viewLable: '不紧急不重要'
     }
 }
+const sort = {
+    default: {
+        serviceValue: 1,
+        viewValue: 1,
+        viewLable: '默认排序'
+    },
+    time: {
+        serviceValue: 1,
+        viewValue: 1,
+        viewLable: '时间排序'
+    },
+    random: {
+        serviceValue: 2,
+        viewValue: 2,
+        viewLable: '随机排序'
+    }
+}
 
 const task = {
     status,
-    priority
+    priority,
+    sort
 }
 
 export default task
