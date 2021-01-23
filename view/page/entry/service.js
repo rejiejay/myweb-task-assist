@@ -18,13 +18,13 @@ const getTaskTagInfor = async id => await fetch.get({
 
 const getAllTaskTagInfor = async () => await fetch.get({
     url: 'tag/all',
-    query: { },
+    query: {},
     isShowError: true
 })
 
 const getAllLongTermTask = async () => await fetch.get({
     url: 'longTerm/all',
-    query: { },
+    query: {},
     isShowError: true
 })
 

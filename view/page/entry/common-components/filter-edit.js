@@ -7,26 +7,27 @@ class FilterEdit extends React.Component {
 
         this.state = {
             tagOptions: [],
-            tagFilter: null
+            tagFilter: null,
+            longTermOptions: [],
+            longTermFilter: {
+                id: null,
+                des: ''
+            }
         }
     }
 
     async componentDidMount() {
+        this.initTaskTagFilter()
         await this.initAllTaskTagInfor()
-        await this.initTaskTagFilter()
         await this.initTaskLongTermInfor()
     }
 
     async initAllTaskTagInfor() {
-
         const fetchInstance = await service.getAllTaskTagInfor()
         if (fetchInstance.result !== 1) return
         const tags = fetchInstance.data
 
-        this.setState({
-            tagOptions: tags.map(tag => ({ value: tag, label: tag })),
-            tagFilter: tagFilter ? tagFilter : null
-        })
+        this.setState({ tagOptions: tags.map(tag => ({ value: tag, label: tag })) })
     }
 
     initTaskTagFilter() {
@@ -37,7 +38,21 @@ class FilterEdit extends React.Component {
     }
 
     async initTaskLongTermInfor() {
-        const { longTermTaskId } = this.props
+        const { longTermFilterId } = this.props
+        let { longTermFilter } = this.state
+
+        const fetchInstance = await service.getAllLongTermTask()
+        if (fetchInstance.result !== 1) return
+        const allLongTermTask = fetchInstance.data
+
+        const longTermOptions = allLongTermTask.map(longTerm => ({ value: longTerm.id, label: longTerm.title }))
+
+        if (longTermFilterId) longTermFilter = longTermOptions.reduce((filter, longTerm) => {
+            if (longTermFilterId === longTerm.value) filter = { id: longTerm.value, des: longTerm.label }
+            return filter
+        }, longTermFilter);
+
+        this.setState({ longTermOptions, longTermFilter })
     }
 
     render() {

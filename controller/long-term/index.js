@@ -4,7 +4,7 @@
 import service from './../../service/index.js'
 
 const listAllLongTermTaskRelational = function listAllLongTermTaskRelational(parameter, responseHanle) {
-    service.longTerm()
+    service.longTerm.listAll()
         .then(
             result => responseHanle.json(result),
             error => responseHanle.json(error)
