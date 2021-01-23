@@ -1,5 +1,7 @@
-import SQLite from './../../module/SQLite/index.js'
 import dataAccessObject from './data-access-object'
+
+import SQLite from './../../module/SQLite/index.js'
+import consequencer from './../../utils/consequencer'
 
 const tableHandle = new SQLite.TableHandle('taskTagRelational', dataAccessObject)
 
@@ -9,19 +11,23 @@ const findOne = function findOne(id) {
 
 const alterTableDescription = function alterTableDescription() {
     return new Promise((resolve, reject) => {
-        // tableHandle.query('PRAGMA table_info([longTermTaskRelational])')
-        tableHandle.query(`select * from sqlite_master where type="table" and name="longTermTaskRelational"`)
-        .then(
-            query => {
-                if (query.result !== 1) return reject(query)
-                const data = query.data[0]
-                console.log('columns', data.columns)
-                console.log('values', data.values)
-                // console.log('query', query)
-                resolve(query)
-            },
-            error => reject(error)
-        )
+        tableHandle.query('PRAGMA table_info(taskTagRelational)')
+            .then(
+                query => {
+                    if (query.result !== 1) return reject(query)
+                    const data = query.data[0]
+                    const values = data.values
+                    const columns = values.reduce((total, columnInfor) => {
+                        const column = columnInfor[1]
+                        if (column === 'id' || column === 'taskId') return total
+                        total.push(column)
+                        return total
+                    }, [])
+
+                    resolve(consequencer.success(columns))
+                },
+                error => reject(error)
+            )
     })
 }
 

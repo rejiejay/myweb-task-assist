@@ -5,22 +5,39 @@ class FilterEdit extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {}
+        this.state = {
+            tagOptions: [],
+            tagFilter: null
+        }
     }
 
-   async componentDidMount() {
-        await this.initTaskTagInfor()
+    async componentDidMount() {
+        await this.initAllTaskTagInfor()
+        await this.initTaskTagFilter()
         await this.initTaskLongTermInfor()
     }
 
-    async initTaskTagInfor() {
-        const { longTermTaskId } = this.props
+    async initAllTaskTagInfor() {
+
         const fetchInstance = await service.getAllTaskTagInfor()
-        console.log('fetchInstance', fetchInstance)
+        if (fetchInstance.result !== 1) return
+        const tags = fetchInstance.data
+
+        this.setState({
+            tagOptions: tags.map(tag => ({ value: tag, label: tag })),
+            tagFilter: tagFilter ? tagFilter : null
+        })
+    }
+
+    initTaskTagFilter() {
+        const { tagFilter } = this.props
+        if (!tagFilter) return
+
+        this.setState({ tagFilter })
     }
 
     async initTaskLongTermInfor() {
-        const { taskTagId } = this.props
+        const { longTermTaskId } = this.props
     }
 
     render() {
