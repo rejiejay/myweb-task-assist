@@ -1,4 +1,7 @@
 import CommonlyListItem from './../../../components/mobile/commonly-list-item'
+import Button from './../../../components/button'
+import jsxStyle from './../../../components/jsx-style'
+
 import service from './../service'
 
 class FilterEdit extends React.Component {
@@ -60,7 +63,8 @@ class FilterEdit extends React.Component {
             <CommonlyListItem key='long-term-task'
                 title='是否为(Long Term Task)项目?'
             >
-                <div>Long Term Task</div>
+                <Button style={{ ...jsxStyle.basicFlex.startCenter }}
+                >Long Term Task</Button>
             </CommonlyListItem>
             <CommonlyListItem key='time-filter'
                 title='时间过滤器'
