@@ -2,21 +2,26 @@ import CommonlyListItem from './../../../components/mobile/commonly-list-item'
 import Button from './../../../components/button'
 import ActionSheet from './../../../components/action-sheet'
 import jsxStyle from './../../../components/jsx-style'
+import timeTransformers from './../../../../utils/time-transformers'
+import DatePicker from './../../../components/date-picker-sheet'
 
 import service from './../service'
 
-class FilterEdit extends React.Component {
+export class FilterEdit extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
             tagOptions: [],
-            tagFilter: null,
+            tagFilter: [],
             longTermOptions: [],
             longTermFilter: {
                 id: null,
                 des: ''
-            }
+            },
+            minEffectTimestampFilter: null,
+            maxEffectTimestampFilter: null,
+            statusFilter: null
         }
     }
 
@@ -69,8 +74,36 @@ class FilterEdit extends React.Component {
 
     cancelSelectLongTermTaskHandle = () => this.setState({ longTermFilter: { id: null, des: '' } })
 
+    effectTimePickHandle = async field => {
+        let state = this.state
+        const pickerInstance = await DatePicker({ scriptUrl: `./lib/picka-date/rolldate.min.js` })
+        if (pickerInstance.result !== 1) return
+        const timestamp = pickerInstance.data
+        state[field] = timestamp
+        this.setState(state)
+    }
+
+    selectTagFilterHandle = async () => {
+        const { tagOptions } = this.state
+        const selectInstance = await ActionSheet({ title: '请选择需要过滤的标签', options: tagOptions, isMultiple: true })
+        if (selectInstance.result !== 1) return
+        const tagFilter = selectInstance.data.map(tags => tags.value)
+        this.setState({ tagFilter })
+    }
+
+    selectStatusFilterHandle = async () => {
+        const { statusFilter } = this.state
+        const selectInstance = await ActionSheet({ title: '请选择需要过滤的标签', options: tagOptions, isMultiple: true })
+        if (selectInstance.result !== 1) return
+        const tagFilter = selectInstance.data.map(tags => tags.value)
+        this.setState({ tagFilter })
+    }
+
     render() {
-        const { longTermFilter } = this.state
+        const {
+            longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter,
+            tagFilter, statusFilter
+        } = this.state
 
         return <div className='filter-edit-container'>
             <CommonlyListItem key='long-term-task'
@@ -87,6 +120,7 @@ class FilterEdit extends React.Component {
                     </Button>
                     <div style={{ height: '5px' }}></div>
                     {longTermFilter.id && <Button
+                        style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
                         onClick={this.cancelSelectLongTermTaskHandle}
                     >取消选择长期</Button>}
                 </>
@@ -94,17 +128,67 @@ class FilterEdit extends React.Component {
             <CommonlyListItem key='time-filter'
                 title='时间过滤器'
             >
-                <div>Time Filter</div>
+                <>
+                    <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                        <Button
+                            style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                            onClick={() => this.effectTimePickHandle('minEffectTimestampFilter')}
+                            isError={minEffectTimestampFilter && maxEffectTimestampFilter && (minEffectTimestampFilter >= maxEffectTimestampFilter)}
+                        >{minEffectTimestampFilter ? timeTransformers.dateToYYYYmmDDhhMM(new Date(minEffectTimestampFilter)) : 'Start Time'}</Button>
+                        <Button
+                            style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                            onClick={() => this.setState({ minEffectTimestampFilter: null })}
+                            isDisabled={!minEffectTimestampFilter}
+                        >Cancel</Button>
+                    </div>
+                    <div>-</div>
+                    <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                        <Button
+                            style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                            onClick={() => this.effectTimePickHandle('maxEffectTimestampFilter')}
+                            isError={minEffectTimestampFilter && maxEffectTimestampFilter && (maxEffectTimestampFilter <= minEffectTimestampFilter)}
+                        >{maxEffectTimestampFilter ? timeTransformers.dateToYYYYmmDDhhMM(new Date(maxEffectTimestampFilter)) : 'End Time'}</Button>
+                        <Button
+                            style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                            onClick={() => this.setState({ maxEffectTimestampFilter: null })}
+                            isDisabled={!maxEffectTimestampFilter}
+                        >Cancel</Button>
+                    </div>
+                </>
             </CommonlyListItem>
             <CommonlyListItem key='tag-filter'
                 title='标签Tag过滤器'
             >
-                <div>Tag Filter</div>
+                <>
+                    <Button key='tag-filter-select'
+                        onClick={this.selectTagFilterHandle}
+                    >
+                        {tagFilter.length > 0 ?
+                            tagFilter.join('、') :
+                            '请选择需要过滤的标签'
+                        }
+                    </Button>
+                    <div style={{ height: '5px' }}></div>
+                    {tagFilter.length > 0 && <Button  key='tag-filter-cancel'
+                        style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
+                        onClick={() => this.setState({ tagFilter: [] })}
+                    >取消标签过滤</Button>}
+                </>
             </CommonlyListItem>
             <CommonlyListItem key='task-status-filter'
                 title='任务状态筛选器'
             >
-                <div>Task Filter</div>
+                <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                    <Button
+                        style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                        onClick={this.selectStatusFilterHandle}
+                    >{statusFilter ? statusFilter : '请选择任务筛状选态'}</Button>
+                    <Button
+                        style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                        onClick={() => this.setState({ statusFilter: null })}
+                        isDisabled={!statusFilter}
+                    >Clear</Button>
+                </div>
             </CommonlyListItem>
             <div style={{ height: '15px' }}></div>
             <div style={{ borderTop: '1px solid #ddd' }}></div>

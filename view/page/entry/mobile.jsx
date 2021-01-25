@@ -1,8 +1,8 @@
 import service from './service.js'
 import TaskList from './mobile-components/task-car'
-import FilterEdit from './common-components/filter-edit'
 import ActionSheet from './../../components/action-sheet'
 import FullscreenIframe from './../../components/fullscreen-iframe'
+import toast from './../../components/toast'
 import CONSTS from './../../../library/consts'
 
 export class MobileComponent extends React.Component {
@@ -45,16 +45,20 @@ export class MobileComponent extends React.Component {
         this.setState({ sortLable })
     }
 
-    selectFilterHandle = async () => {
-        const selectInstance = await FullscreenIframe({
-            Element: FilterEdit,
-            className: 'mobile-device-task-filter-edit',
-            props: { }
+    selectFilterHandle = () => {
+        toast.show()
+        import('./common-components/filter-edit').then(async ({ FilterEdit }) => {
+            toast.destroy()
+            const selectInstance = await FullscreenIframe({
+                Element: FilterEdit,
+                className: 'mobile-device-task-filter-edit',
+                props: { }
+            })
+    
+            if (selectInstance.result !== 1) return
+    
+            console.log('selectInstance', selectInstance)
         })
-
-        if (selectInstance.result !== 1) return
-
-        console.log('selectInstance', selectInstance)
     }
 
     render() {

@@ -6,6 +6,7 @@
 import style from './style.js'
 
 function show(message) {
+    const self = this
     /** 目标: 防止重复调用 */
     if (!!this.element) return
 
@@ -16,8 +17,9 @@ function show(message) {
     document.body.appendChild(div)
 
     this.destroy = () => {
+        if (self.element === null) return
         document.body.removeChild(div)
-        this.element = null
+        self.element = null
     }
 
     if (!!message) return ReactDOM.render(<div style={style.message} onClick={this.destroy.bind(this)}>{message}</div>, div);

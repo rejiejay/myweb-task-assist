@@ -31,7 +31,7 @@ const container = {
     overflowY: 'auto'
 }
 
-const title = {
+const singleTitle = {
     padding: '0px 15px',
     height: '32px',
     color: '#303133',
@@ -41,20 +41,53 @@ const title = {
 
 const selector = {}
 
-const item = {
+const singleItem = {
     height: '45px',
     padding: '0px 15px',
     borderBottom: '1px solid #ddd',
     ...jsxStyle.basicFlex.startCenter
 }
 
+const multipleTop = {
+    padding: '0px 15px',
+    height: '45px',
+    borderBottom: '1px solid #ddd',
+    ...jsxStyle.basicFlex.startCenter
+}
+
+const multipleTitle = {
+    ...jsxStyle.basicFlex.rest
+}
+
+const multipleConfirm = {
+    paddingLeft: '12px',
+    color: '#303133',
+    borderLeft: '1px solid #ddd',
+}
+
+const multipleItem = {
+    padding: '0px 15px',
+    height: '45px',
+    borderBottom: '1px solid #ddd',
+    ...jsxStyle.basicFlex.startCenter
+}
+
+const multipleLable = {
+    ...jsxStyle.basicFlex.rest
+}
+
 const style = {
     content,
     mask,
     container,
-    title,
+    singleTitle,
     selector,
-    item
+    singleItem,
+    multipleTop,
+    multipleTitle,
+    multipleConfirm,
+    multipleItem,
+    multipleLable
 }
 
 export default style
