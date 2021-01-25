@@ -22,7 +22,8 @@ export class FilterEdit extends React.Component {
             },
             minEffectTimestampFilter: null,
             maxEffectTimestampFilter: null,
-            statusFilter: { value: null, lable: null }
+            statusFilter: { value: null, lable: null },
+            priorityFilter: { value: null, lable: null }
         }
     }
 
@@ -99,10 +100,17 @@ export class FilterEdit extends React.Component {
         this.setState({ statusFilter: selectInstance.data })
     }
 
+    selectPriorityFilterHandle = async () => {
+        const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.priority)
+        const selectInstance = await ActionSheet({ title: '请选择需要筛选的任务优先级', options })
+        if (selectInstance.result !== 1) return
+        this.setState({ statusFilter: selectInstance.data })
+    }
+
     render() {
         const {
             longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter,
-            tagFilter, statusFilter
+            tagFilter, statusFilter, priorityFilter
         } = this.state
 
         return <div className='filter-edit-container'>
@@ -187,6 +195,21 @@ export class FilterEdit extends React.Component {
                         style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
                         onClick={() => this.setState({ statusFilter: { value: null, lable: null } })}
                         isDisabled={!statusFilter}
+                    >Clear</Button>
+                </div>
+            </CommonlyListItem>
+            <CommonlyListItem key='task-status-priority'
+                title='任务优先级筛选器'
+            >
+                <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                    <Button
+                        style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                        onClick={this.selectPriorityFilterHandle}
+                    >{priorityFilter.value ? priorityFilter.label : '任务优先级筛选器'}</Button>
+                    <Button
+                        style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                        onClick={() => this.setState({ priorityFilter: { value: null, lable: null } })}
+                        isDisabled={!priorityFilter}
                     >Clear</Button>
                 </div>
             </CommonlyListItem>
