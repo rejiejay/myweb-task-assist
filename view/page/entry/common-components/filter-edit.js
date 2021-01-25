@@ -22,8 +22,10 @@ export class FilterEdit extends React.Component {
             },
             minEffectTimestampFilter: null,
             maxEffectTimestampFilter: null,
-            statusFilter: { value: null, lable: null },
-            priorityFilter: { value: null, lable: null }
+            statusFilter: { value: null, label: null },
+            statusMultipleFilter: [],
+            priorityFilter: { value: null, label: null },
+            priorityMultipleFilter: []
         }
     }
 
@@ -95,22 +97,39 @@ export class FilterEdit extends React.Component {
 
     selectStatusFilterHandle = async () => {
         const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.status)
-        const selectInstance = await ActionSheet({ title: '请选择需要筛选的任务状态', options })
+        const selectInstance = await ActionSheet({ title: '请选择任务状态', options })
         if (selectInstance.result !== 1) return
         this.setState({ statusFilter: selectInstance.data })
     }
 
     selectPriorityFilterHandle = async () => {
         const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.priority)
-        const selectInstance = await ActionSheet({ title: '请选择需要筛选的任务优先级', options })
+        const selectInstance = await ActionSheet({ title: '请选择任务优先级', options })
         if (selectInstance.result !== 1) return
-        this.setState({ statusFilter: selectInstance.data })
+        this.setState({ priorityFilter: selectInstance.data })
+    }
+
+    selectStatusMultipleFilterHandle = async () => {
+        const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.status)
+        const selectInstance = await ActionSheet({ title: '请选择需要筛选的任务状态', options, isMultiple: true })
+        if (selectInstance.result !== 1) return
+        console.log('selectInstance.data', selectInstance.data)
+        this.setState({ statusMultipleFilter: selectInstance.data })
+    }
+
+    selectPriorityMultipleFilterHandle = async () => {
+        const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.priority)
+        const selectInstance = await ActionSheet({ title: '请选择需要筛选的任务优先级', options, isMultiple: true })
+        if (selectInstance.result !== 1) return
+        console.log('selectInstance.data', selectInstance.data)
+        this.setState({ priorityMultipleFilter: selectInstance.data })
     }
 
     render() {
+        const { isMultipleFilter } = this.props
         const {
             longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter,
-            tagFilter, statusFilter, priorityFilter
+            tagFilter, statusFilter, priorityFilter, statusMultipleFilter, priorityMultipleFilter
         } = this.state
 
         return <div className='filter-edit-container'>
@@ -176,43 +195,91 @@ export class FilterEdit extends React.Component {
                             '请选择需要过滤的标签'
                         }
                     </Button>
-                    <div style={{ height: '5px' }}></div>
-                    {tagFilter.length > 0 && <Button key='tag-filter-cancel'
-                        style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
-                        onClick={() => this.setState({ tagFilter: [] })}
-                    >取消标签过滤</Button>}
+                    {tagFilter.length > 0 && <>
+                        <div style={{ height: '5px' }}></div>
+                        <Button key='tag-filter-cancel'
+                            style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
+                            onClick={() => this.setState({ tagFilter: [] })}
+                        >取消标签过滤</Button>
+                    </>}
                 </>
             </CommonlyListItem>
-            <CommonlyListItem key='task-status-filter'
-                title='任务状态筛选器'
-            >
-                <div style={{ ...jsxStyle.basicFlex.startCenter }}>
-                    <Button
-                        style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
-                        onClick={this.selectStatusFilterHandle}
-                    >{statusFilter.value ? statusFilter.label : '请选择任务筛状选态'}</Button>
-                    <Button
-                        style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
-                        onClick={() => this.setState({ statusFilter: { value: null, lable: null } })}
-                        isDisabled={!statusFilter}
-                    >Clear</Button>
-                </div>
-            </CommonlyListItem>
-            <CommonlyListItem key='task-status-priority'
-                title='任务优先级筛选器'
-            >
-                <div style={{ ...jsxStyle.basicFlex.startCenter }}>
-                    <Button
-                        style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
-                        onClick={this.selectPriorityFilterHandle}
-                    >{priorityFilter.value ? priorityFilter.label : '任务优先级筛选器'}</Button>
-                    <Button
-                        style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
-                        onClick={() => this.setState({ priorityFilter: { value: null, lable: null } })}
-                        isDisabled={!priorityFilter}
-                    >Clear</Button>
-                </div>
-            </CommonlyListItem>
+            {!isMultipleFilter && <>
+                <CommonlyListItem key='task-status-filter'
+                    title='任务状态'
+                >
+                    <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                        <Button
+                            style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                            onClick={this.selectStatusFilterHandle}
+                        >{statusFilter.value ? statusFilter.label : '请选择任务状态'}</Button>
+                        <Button
+                            style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                            onClick={() => this.setState({ statusFilter: { value: null, label: null } })}
+                            isDisabled={!statusFilter}
+                        >Clear</Button>
+                    </div>
+                </CommonlyListItem>
+                <CommonlyListItem key='task-status-priority'
+                    title='任务优先级'
+                >
+                    <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                        <Button
+                            style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                            onClick={this.selectPriorityFilterHandle}
+                        >{priorityFilter.value ? priorityFilter.label : '请选择任务优先级'}</Button>
+                        <Button
+                            style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                            onClick={() => this.setState({ priorityFilter: { value: null, label: null } })}
+                            isDisabled={!priorityFilter}
+                        >Clear</Button>
+                    </div>
+                </CommonlyListItem>
+            </>}
+            {!!isMultipleFilter && <>
+                <CommonlyListItem key='task-status-filter'
+                    title='任务状态筛选器'
+                >
+                    <>
+                        <Button key='tag-filter-select'
+                            onClick={this.selectStatusMultipleFilterHandle}
+                        >
+                            {statusMultipleFilter.length > 0 ?
+                                statusMultipleFilter.map(filter => filter.label).join('、') :
+                                '请选择需要过滤的任务状态'
+                            }
+                        </Button>
+                        {statusMultipleFilter.length > 0 && <>
+                            <div style={{ height: '5px' }}></div>
+                            <Button key='tag-filter-cancel'
+                                style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
+                                onClick={() => this.setState({ statusMultipleFilter: [] })}
+                            >取消任务状态过滤</Button>
+                        </>}
+                    </>
+                </CommonlyListItem>
+                <CommonlyListItem key='task-status-priority'
+                    title='任务优先级筛选器'
+                >
+                    <>
+                        <Button key='tag-filter-select'
+                            onClick={this.selectPriorityMultipleFilterHandle}
+                        >
+                            {priorityMultipleFilter.length > 0 ?
+                                priorityMultipleFilter.map(filter => filter.label).join('、') :
+                                '请选择需要过滤的任务优先级'
+                            }
+                        </Button>
+                        {priorityMultipleFilter.length > 0 && <>
+                            <div style={{ height: '5px' }}></div>
+                            <Button key='tag-filter-cancel'
+                                style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
+                                onClick={() => this.setState({ priorityMultipleFilter: [] })}
+                            >取消任务优先级过滤</Button>
+                        </>}
+                    </>
+                </CommonlyListItem>
+            </>}
             <div style={{ height: '15px' }}></div>
             <div style={{ borderTop: '1px solid #ddd' }}></div>
             <div style={{ height: '15px' }}></div>
