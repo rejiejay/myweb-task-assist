@@ -52,11 +52,11 @@ export class MobileComponent extends React.Component {
             const selectInstance = await FullscreenIframe({
                 Element: FilterEdit,
                 className: 'mobile-device-task-filter-edit',
-                props: { }
+                props: {}
             })
-    
+
             if (selectInstance.result !== 1) return
-    
+
             console.log('selectInstance', selectInstance)
         })
     }

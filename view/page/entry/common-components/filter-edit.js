@@ -4,6 +4,7 @@ import ActionSheet from './../../../components/action-sheet'
 import jsxStyle from './../../../components/jsx-style'
 import timeTransformers from './../../../../utils/time-transformers'
 import DatePicker from './../../../components/date-picker-sheet'
+import CONSTS from './../../../../library/consts'
 
 import service from './../service'
 
@@ -21,7 +22,7 @@ export class FilterEdit extends React.Component {
             },
             minEffectTimestampFilter: null,
             maxEffectTimestampFilter: null,
-            statusFilter: null
+            statusFilter: { value: null, lable: null }
         }
     }
 
@@ -92,11 +93,10 @@ export class FilterEdit extends React.Component {
     }
 
     selectStatusFilterHandle = async () => {
-        const { statusFilter } = this.state
-        const selectInstance = await ActionSheet({ title: '请选择需要过滤的标签', options: tagOptions, isMultiple: true })
+        const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.status)
+        const selectInstance = await ActionSheet({ title: '请选择需要筛选的任务状态', options })
         if (selectInstance.result !== 1) return
-        const tagFilter = selectInstance.data.map(tags => tags.value)
-        this.setState({ tagFilter })
+        this.setState({ statusFilter: selectInstance.data })
     }
 
     render() {
@@ -169,7 +169,7 @@ export class FilterEdit extends React.Component {
                         }
                     </Button>
                     <div style={{ height: '5px' }}></div>
-                    {tagFilter.length > 0 && <Button  key='tag-filter-cancel'
+                    {tagFilter.length > 0 && <Button key='tag-filter-cancel'
                         style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
                         onClick={() => this.setState({ tagFilter: [] })}
                     >取消标签过滤</Button>}
@@ -182,10 +182,10 @@ export class FilterEdit extends React.Component {
                     <Button
                         style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
                         onClick={this.selectStatusFilterHandle}
-                    >{statusFilter ? statusFilter : '请选择任务筛状选态'}</Button>
+                    >{statusFilter.value ? statusFilter.label : '请选择任务筛状选态'}</Button>
                     <Button
                         style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
-                        onClick={() => this.setState({ statusFilter: null })}
+                        onClick={() => this.setState({ statusFilter: { value: null, lable: null } })}
                         isDisabled={!statusFilter}
                     >Clear</Button>
                 </div>
