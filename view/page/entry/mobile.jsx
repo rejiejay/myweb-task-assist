@@ -12,14 +12,21 @@ export class MobileComponent extends React.Component {
         this.state = {
             isShowBigCard: false,
             list: [],
-            sortLable: 'Sort'
+            sort: { value: 1, lable: 'Sort' },
+            longTermId: { id: null, title: '' } // 长期的任务不进行多选
+        }
+
+        this.filter = {
+            tags: [],
+            minEffectTimestampFilter: null,
+            maxEffectTimestampFilter: null,
+            status: [],
+            priority: []
         }
     }
 
     componentDidMount() {
         this.initList()
-
-        this.selectFilterHandle()
     }
 
     async initList() {
@@ -38,11 +45,10 @@ export class MobileComponent extends React.Component {
 
         if (selectInstance.result !== 1) return
 
-        let sortLable = selectInstance.data.label
-        if (selectInstance.data.label === '默认排序') sortLable = 'Sort'
+        const sort = selectInstance.data
 
         // TODO: add API
-        this.setState({ sortLable })
+        this.setState({ sort })
     }
 
     selectFilterHandle = () => {
@@ -64,7 +70,7 @@ export class MobileComponent extends React.Component {
     }
 
     render() {
-        const { list, isShowBigCard, sortLable } = this.state
+        const { list, isShowBigCard, sort } = this.state
 
         return <>
             <div className='list-top-operate flex-start-center'>
@@ -88,7 +94,7 @@ export class MobileComponent extends React.Component {
                     <div className='list-bottom-button right-line' onClick={this.selectFilterHandle}>Filter</div>
                 </div>
                 <div className='bottom-operate-sort'>
-                    <div className='list-bottom-button left-line' onClick={this.selectSortHandle}>{sortLable}</div>
+                    <div className='list-bottom-button left-line' onClick={this.selectSortHandle}>{sort.lable}</div>
                 </div>
             </div>
         </>

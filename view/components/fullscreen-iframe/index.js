@@ -13,8 +13,8 @@ const FullscreenIframe = ({ Element, zIndex, props, className }) => {
     div.className = !!className ? className : ''
 
     const destroy = () => document.body.removeChild(div)
-    const selectResolveHandle = () => {
-        resolveHandle(consequencer.success({ value, label }))
+    const selectResolveHandle = result => {
+        resolveHandle(result)
         destroy()
     }
     const selectRejectHandle = () => {

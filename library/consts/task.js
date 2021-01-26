@@ -56,7 +56,7 @@ const sort = {
     default: {
         serviceValue: 1,
         viewValue: 1,
-        viewLable: '默认排序'
+        viewLable: 'Sort'
     },
     time: {
         serviceValue: 1,

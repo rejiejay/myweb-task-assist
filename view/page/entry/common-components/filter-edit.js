@@ -3,10 +3,27 @@ import Button from './../../../components/button'
 import ActionSheet from './../../../components/action-sheet'
 import jsxStyle from './../../../components/jsx-style'
 import timeTransformers from './../../../../utils/time-transformers'
+import consequencer from './../../../../utils/consequencer'
 import DatePicker from './../../../components/date-picker-sheet'
+import Confirm from './../../../components/confirm'
 import CONSTS from './../../../../library/consts'
 
 import service from './../service'
+
+const props = {
+    resolve: () => {},
+    reject: () => {},
+    isMultipleFilter: false,
+    initFilter: {
+        tags: [],
+        minEffectTimestampFilter: null,
+        maxEffectTimestampFilter: null,
+        status: [],
+        priority: [],
+        multipleStatus: [],
+        multiplePriority: []
+    }
+}
 
 export class FilterEdit extends React.Component {
     constructor(props) {
@@ -16,10 +33,7 @@ export class FilterEdit extends React.Component {
             tagOptions: [],
             tagFilter: [],
             longTermOptions: [],
-            longTermFilter: {
-                id: null,
-                des: ''
-            },
+            longTermFilter: { id: null, title: '' },
             minEffectTimestampFilter: null,
             maxEffectTimestampFilter: null,
             statusFilter: { value: null, label: null },
@@ -30,7 +44,7 @@ export class FilterEdit extends React.Component {
     }
 
     async componentDidMount() {
-        this.initTaskTagFilter()
+        this.initTaskFilter()
         await this.initAllTaskTagInfor()
         await this.initTaskLongTermInfor()
     }
@@ -43,15 +57,13 @@ export class FilterEdit extends React.Component {
         this.setState({ tagOptions: tags.map(tag => ({ value: tag, label: tag })) })
     }
 
-    initTaskTagFilter() {
-        const { tagFilter } = this.props
-        if (!tagFilter) return
-
-        this.setState({ tagFilter })
+    initTaskFilter() {
+        const { initFilter } = this.props
+        // this.setState({ tagFilter })
     }
 
     async initTaskLongTermInfor() {
-        const { longTermFilterId } = this.props
+        const { initFilter } = this.props
         let { longTermFilter } = this.state
 
         const fetchInstance = await service.getAllLongTermTask()
@@ -60,8 +72,8 @@ export class FilterEdit extends React.Component {
 
         const longTermOptions = allLongTermTask.map(longTerm => ({ value: longTerm.id, label: longTerm.title }))
 
-        if (longTermFilterId) longTermFilter = longTermOptions.reduce((filter, longTerm) => {
-            if (longTermFilterId === longTerm.value) filter = { id: longTerm.value, des: longTerm.label }
+        if (initFilter && initFilter.longTerm && initFilter.longTerm.id) longTermFilter = longTermOptions.reduce((filter, longTerm) => {
+            if (initFilter.longTerm.id === longTerm.value) filter = { id: longTerm.value, des: longTerm.label }
             return filter
         }, longTermFilter);
 
@@ -73,10 +85,10 @@ export class FilterEdit extends React.Component {
         const selectInstance = await ActionSheet({ title: '请选择 Long Term Task', options: longTermOptions })
         if (selectInstance.result !== 1) return
         const longTerm = selectInstance.data
-        this.setState({ longTermFilter: { id: longTerm.value, des: longTerm.label } })
+        this.setState({ longTermFilter: { id: longTerm.value, title: longTerm.label } })
     }
 
-    cancelSelectLongTermTaskHandle = () => this.setState({ longTermFilter: { id: null, des: '' } })
+    cancelSelectLongTermTaskHandle = () => this.setState({ longTermFilter: { id: null, title: '' } })
 
     effectTimePickHandle = async field => {
         let state = this.state
@@ -113,7 +125,6 @@ export class FilterEdit extends React.Component {
         const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.status)
         const selectInstance = await ActionSheet({ title: '请选择需要筛选的任务状态', options, isMultiple: true })
         if (selectInstance.result !== 1) return
-        console.log('selectInstance.data', selectInstance.data)
         this.setState({ statusMultipleFilter: selectInstance.data })
     }
 
@@ -121,8 +132,27 @@ export class FilterEdit extends React.Component {
         const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.priority)
         const selectInstance = await ActionSheet({ title: '请选择需要筛选的任务优先级', options, isMultiple: true })
         if (selectInstance.result !== 1) return
-        console.log('selectInstance.data', selectInstance.data)
         this.setState({ priorityMultipleFilter: selectInstance.data })
+    }
+
+    confirmResolveHandle = async () => {
+        const { resolve } = this.props
+        const comfirmInstance = await Confirm('选择确认?')
+        if (comfirmInstance.result !== 1) return
+        const result = this.initConfirmata()
+        resolve(consequencer.success(result))
+    }
+
+    // TODO
+    initConfirmata = () => {
+        const { isMultipleFilter } = this.props
+    }
+
+    cancelRejectHandle = async () => {
+        const { reject } = this.props
+        const comfirmInstance = await Confirm('确认需要取消?')
+        if (comfirmInstance.result !== 1) return
+        reject()
     }
 
     render() {
@@ -134,15 +164,15 @@ export class FilterEdit extends React.Component {
 
         return <div className='filter-edit-container'>
             <CommonlyListItem key='long-term-task'
-                title='是否为(Long Term Task)项目?'
+                title={isMultipleFilter ? '是否选择过滤(Long Term Task)项目?' : '此项目是否为(Long Term Task)项目?'}
             >
                 <>
                     <Button style={{ ...jsxStyle.basicFlex.startCenter }}
                         onClick={this.selectLongTermTaskHandle}
                     >
                         {longTermFilter.id ?
-                            `属于长期项目: ${longTermFilter.des}` :
-                            '不属于长期任务项目'
+                            `${isMultipleFilter ? '过滤' : ''}长期项目: ${longTermFilter.title}` :
+                            `不${isMultipleFilter ? '过滤' : '属于'}长期任务项目`
                         }
                     </Button>
                     <div style={{ height: '5px' }}></div>
@@ -285,10 +315,12 @@ export class FilterEdit extends React.Component {
             <div style={{ height: '15px' }}></div>
             <Button
                 style={{ backgroundColor: '#1890ff' }}
+                onClick={this.confirmResolveHandle}
             >确认</Button>
             <div style={{ height: '5px' }}></div>
             <Button
                 style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
+                onClick={this.cancelRejectHandle}
             >取消</Button>
         </div>
     }
