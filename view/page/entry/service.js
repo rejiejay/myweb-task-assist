@@ -1,11 +1,11 @@
 import fetch from './../../components/async-fetch/index.js'
 
-async function getTaskList() {
-    const data = await fetch.get({
-        url: 'task/list',
-        query: {},
-        isShowError: true
-    })
+// TODO: add api
+async function getTaskList({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }, sort) {
+    let query = {}
+    if (sort.value && sort.value !== 1) query.sort = sort.value
+
+    const data = await fetch.reGetConfirm({ url: 'task/list', query, isShowError: true });
 
     return data
 }
