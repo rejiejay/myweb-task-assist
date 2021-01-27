@@ -16,10 +16,11 @@ const props = {
     isMultipleFilter: false,
     initFilter: {
         tags: [],
-        minEffectTimestampFilter: null,
-        maxEffectTimestampFilter: null,
-        status: [],
-        priority: [],
+        longTerm: { id: null, title: '' },
+        minEffectTimestamp: null,
+        maxEffectTimestamp: null,
+        status: { value: null, label: null },
+        priority: { value: null, label: null },
         multipleStatus: [],
         multiplePriority: []
     }
@@ -58,26 +59,34 @@ export class FilterEdit extends React.Component {
     }
 
     initTaskFilter() {
-        const { initFilter } = this.props
-        // this.setState({ tagFilter })
+        const { isMultipleFilter, initFilter } = this.props
+        let state = this.state
+        if (!initFilter) return
+
+        if (initFilter.tags) state.tagFilter = initFilter.tags
+        if (initFilter.longTerm) state.longTermFilter = initFilter.longTerm
+        if (initFilter.minEffectTimestamp) state.minEffectTimestampFilter = initFilter.minEffectTimestamp
+        if (initFilter.maxEffectTimestamp) state.maxEffectTimestampFilter = initFilter.maxEffectTimestamp
+        if (!!isMultipleFilter) {
+            if (initFilter.multipleStatus) state.statusMultipleFilter = initFilter.multipleStatus
+            if (initFilter.multiplePriority) state.priorityMultipleFilter = initFilter.multiplePriority
+        }
+        if (!isMultipleFilter) {
+            if (initFilter.status) state.statusFilter = initFilter.status
+            if (initFilter.priority) state.priorityFilter = initFilter.priority
+        }
+
+        this.setState(state)
     }
 
     async initTaskLongTermInfor() {
-        const { initFilter } = this.props
-        let { longTermFilter } = this.state
-
         const fetchInstance = await service.getAllLongTermTask()
         if (fetchInstance.result !== 1) return
         const allLongTermTask = fetchInstance.data
 
         const longTermOptions = allLongTermTask.map(longTerm => ({ value: longTerm.id, label: longTerm.title }))
 
-        if (initFilter && initFilter.longTerm && initFilter.longTerm.id) longTermFilter = longTermOptions.reduce((filter, longTerm) => {
-            if (initFilter.longTerm.id === longTerm.value) filter = { id: longTerm.value, des: longTerm.label }
-            return filter
-        }, longTermFilter);
-
-        this.setState({ longTermOptions, longTermFilter })
+        this.setState({ longTermOptions })
     }
 
     selectLongTermTaskHandle = async () => {
@@ -137,15 +146,10 @@ export class FilterEdit extends React.Component {
 
     confirmResolveHandle = async () => {
         const { resolve } = this.props
+        const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter } = this.state
         const comfirmInstance = await Confirm('选择确认?')
         if (comfirmInstance.result !== 1) return
-        const result = this.initConfirmata()
-        resolve(consequencer.success(result))
-    }
-
-    // TODO
-    initConfirmata = () => {
-        const { isMultipleFilter } = this.props
+        resolve(consequencer.success({ tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter }))
     }
 
     cancelRejectHandle = async () => {

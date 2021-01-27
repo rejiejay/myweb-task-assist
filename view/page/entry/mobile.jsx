@@ -13,15 +13,15 @@ export class MobileComponent extends React.Component {
             isShowBigCard: false,
             list: [],
             sort: { value: 1, lable: 'Sort' },
-            longTermId: { id: null, title: '' } // 长期的任务不进行多选
+            longTerm: { id: null, title: '' } // 长期的任务不进行多选
         }
 
         this.filter = {
             tags: [],
-            minEffectTimestampFilter: null,
-            maxEffectTimestampFilter: null,
-            status: [],
-            priority: []
+            minEffectTimestamp: null,
+            maxEffectTimestamp: null,
+            multipleStatus: [],
+            multiplePriority: []
         }
     }
 
@@ -30,7 +30,9 @@ export class MobileComponent extends React.Component {
     }
 
     async initList() {
-        const fetchInstance = await service.getTaskList()
+        const { longTerm, sort } = this.state
+        const filter = { longTerm, ...this.filter }
+        const fetchInstance = await service.getTaskList(filter, sort)
         if (fetchInstance.result !== 1) return
 
         this.setState({ list: fetchInstance.data })
@@ -47,11 +49,16 @@ export class MobileComponent extends React.Component {
 
         const sort = selectInstance.data
 
-        // TODO: add API
-        this.setState({ sort })
+        this.setState({ sort }, this.initList)
     }
 
     selectFilterHandle = () => {
+        const self = this
+        const initFilter = {
+            longTerm: this.state.longTerm,
+            ...this.filter
+        }
+
         toast.show()
         import('./common-components/filter-edit').then(async ({ FilterEdit }) => {
             toast.destroy()
@@ -59,13 +66,22 @@ export class MobileComponent extends React.Component {
                 Element: FilterEdit,
                 className: 'mobile-device-task-filter-edit',
                 props: {
-                    isMultipleFilter: true
+                    isMultipleFilter: true,
+                    initFilter
                 }
             })
 
             if (selectInstance.result !== 1) return
+            const filter = selectInstance.data
 
-            console.log('selectInstance', selectInstance)
+            self.filter = {
+                tags: filter.tagFilter,
+                minEffectTimestamp: filter.minEffectTimestamp,
+                maxEffectTimestamp: filter.maxEffectTimestamp,
+                multipleStatus: filter.statusMultipleFilter,
+                multiplePriority: filter.priorityMultipleFilter
+            }
+            self.setState({ longTerm: filter.longTermFilter }, self.initList)
         })
     }
 
