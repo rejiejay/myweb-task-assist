@@ -11,8 +11,19 @@ const isId = id => {
     return consequencer.success()
 }
 
+/**
+ * 判断字段为数组并且数据大于0
+ */
+const isArrayNil = obj => {
+    if (!obj) return consequencer.error('Nil')
+    if (!obj instanceof Array) return consequencer.error('is Not Array')
+    if (obj.length <= 0) return consequencer.error('Array is Nil')
+    return consequencer.success()
+}
+
 const valuesStructuresVerify = {
-    isId
+    isId,
+    isArrayNil
 }
 
 export default valuesStructuresVerify

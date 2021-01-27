@@ -3,10 +3,12 @@
  * @db SQLite的实例
  * @initDev 初始化开发环境方法
  * @initPro 初始化开发环境方法
+ * @TableHandle SQLite的SQL字符串常用操作方法
  * @TableHandle SQLite的Table常用操作方法
  */
 import SqliteJs from './sqlitejs.instantiate.js'
 import TableHandle from './table-handle.js'
+import SqlHandle from './sql-handle.js'
 import localDatabaseSqlite from './local.database.sqlite.js'
 
 function initDev() {
@@ -27,6 +29,7 @@ const SQLite = {
 
     initPro: () => { }, // TODO
 
+    SqlHandle,
     TableHandle
 }
 

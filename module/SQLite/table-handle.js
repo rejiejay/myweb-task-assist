@@ -1,10 +1,12 @@
 import SqliteJs from './sqlitejs.instantiate.js'
+import SqlHandle from './sql-handle.js'
 import consequencer from './../../utils/consequencer'
 
 class TableHandle {
     constructor(table, dataAccessObject) {
         this.table = table /** 表的名称 */
         this.format = dataAccessObject /** 表的默认结构 */
+        this.sqlHandle = new SqlHandle()
     }
 
     query = sql => new Promise((resolve, reject) => {
@@ -18,34 +20,6 @@ class TableHandle {
 
         resolve(consequencer.success(result))
     })
-
-    dataToAddSql(data) {
-        const keys = []
-        const values = []
-        Object.keys(data).forEach(key => {
-            keys.push(key)
-            values.push(data[key])
-        })
-
-        return `(${keys.join(',')}) VALUES (${values.join(',')})`
-    }
-
-    dataToUpdateSql(oldVal, newVal) {
-        const sqls = []
-
-        Object.keys(newVal).forEach(key => {
-            if (newVal[key] !== oldVal[key]) sqls.push(`${key}=${newVal[key]}`)
-        })
-
-        return sqls.join(',')
-    }
-
-    mapperQuerySQLtoList(result) {
-        const columns = result.columns
-        const values = result.values
-
-        return values.map(val => this.mapperFindSQLtoObject({ columns, values: val }))
-    }
 
     mapperFindSQLtoObject({ columns, values }) {
         let object = {}
@@ -87,7 +61,7 @@ class TableHandle {
                     const data = query.data[0]
                     const values = data.values
                     if (values.length <= 0) return resolve(consequencer.success([]))
-                    resolve(consequencer.success(self.mapperQuerySQLtoList(data)))
+                    resolve(consequencer.success(self.sqlHandle.mapperQuerySQLtoList(data)))
                 },
                 error => reject(error)
             )
@@ -119,7 +93,7 @@ class TableHandle {
             const verifyInstance = self.verify(data)
             if (verifyInstance.result !== 1) return reject(verifyInstance)
 
-            self.query(`INSERT INTO ${self.table} ${self.dataToAddSql(data)}`)
+            self.query(`INSERT INTO ${self.table} ${self.sqlHandle.dataToAddSql(data)}`)
                 .then(
                     result => resolve(consequencer.success(data)),
                     error => reject(error)
@@ -163,7 +137,7 @@ class TableHandle {
                 error => promiseHandle.reject(error)
             ).catch(error => promiseHandle.reject(consequencer.error(error)))
 
-        const updateOneHandle = result => self.query(`UPDATE ${self.table} SET ${self.dataToUpdateSql(data, data)} WHERE id=${id}`)
+        const updateOneHandle = result => self.query(`UPDATE ${self.table} SET ${self.sqlHandle.dataToUpdateSql(data, data)} WHERE id=${id}`)
             .then(
                 result => promiseHandle.resolve(consequencer.success(result)),
                 error => promiseHandle.reject(error)
