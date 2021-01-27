@@ -6,7 +6,7 @@
  */
 import config from './../../configs/index.js'
 import toast from './../toast/index.js'
-import confirm from './../confirm'
+import Confirm from './../confirm'
 
 import WaitStackInterval from './wait-stack-interval.js'
 import optionalHeaders from './optional-headers.js'
@@ -50,7 +50,7 @@ function get(parameter, { resolve, reject }) {
             )
             .then(async data => {
                 if (parameter.isShowError && data.result !== 1) {
-                    await confirm(data.message)
+                    await Confirm(data.message)
                     return rejectHandle(data)
                 }
 
@@ -111,24 +111,59 @@ function post(parameter, { resolve, reject }) {
 
 
 /**
- * TODO: 暂时不管
+ * 必定要成功的Get请求, 否则一直弹出Error
+ * 目标: 保证 fetch 的数据一定 result === 1
  * @param {*} parameter 请求参数
  * @param {resolve, reject} promise 返回结果的方法
  */
-function reGetConfirm(parameter, awaitStackIntervalRequest) {
-    return new Promise((resolve, reject) => { })
+function reGetConfirm(parameter, { resolve, reject }) {
+    let awaitStackInterval = { resolve: () => {}, reject: () => {} }
+    const resolveHandle = data => {
+        toast.destroy()
+        awaitStackInterval.resolve(data)
+        resolve(data)
+    }
+    const rejectHandle = error => {
+        toast.destroy()
+        awaitStackInterval.reject(error)
+        reject(error)
+    }
+    const url = `${config.origin}${parameter.url}${utils.queryToUrl(parameter.query)}`
+    const optional = { method: 'GET', headers: optionalHeaders() }
+
+    const fetch = () => {
+        toast.show()
+        window.fetch(url, optional)
+        .then(
+            response => response.json(),
+            error => consequencer.error(error)
+        )
+        .then(async data => {
+            if (data.result !== 1) {
+                toast.destroy()
+                const confirmInstance = await Confirm(`请求错误, 原因: ${data.message} \n 是否重新请求?`)
+                if (confirmInstance.result !== 1) return rejectHandle(data)
+                fetch()
+            }
+
+            resolveHandle(data)
+        })
+        .catch(async error => {
+            toast.destroy()
+            const confirmInstance = await await Confirm(`请求错误, 原因: ${error} \n 是否重新请求?`)
+            if (confirmInstance.result !== 1) return rejectHandle(error)
+            fetch()
+        })
+    }
+
+    return new Promise((awaitStackIntervalResolve, awaitStackIntervalReject) => {
+        awaitStackInterval = { resolve: awaitStackIntervalResolve, reject: awaitStackIntervalReject }
+        fetch()
+    })
 }
 
 const AsyncFetch = {
-    /**
-     * @parameter.url {sring} /task/list
-     * @parameter.query {object}
-     */
     get: parameter => WaitStackInterval({ parameter, method: get }),
-    /**
-     * @parameter.url {sring} /task/list
-     * @parameter.body {object}
-     */
     post: parameter => WaitStackInterval({ parameter, method: post }),
     reGetConfirm: parameter => WaitStackInterval({ parameter, method: reGetConfirm })
 }
