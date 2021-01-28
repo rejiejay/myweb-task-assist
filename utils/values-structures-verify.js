@@ -3,26 +3,25 @@ import consequencer from './consequencer';
 const MAX_INT = 2147483647
 const MAX_TIMESTAMP = 100000000000000
 
+const isIntNumString = function isIntNumString(num, fieldName = 'it') {
+    var regPos = /^\d+(\.\d+)?$/; // 非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
+    if (regPos.test(num) || regNeg.test(num)) return consequencer.success()
+    return consequencer.error(`${fieldName} is not Int Number`)
+}
+
 const isId = function isId(id, fieldName = 'id') {
     const data = +id
+
+    const isIntNumStringInstance = this.isIntNumString(timestamp, fieldName)
+    if (isIntNumStringInstance.result !== 1) return isIntNumStringInstance
+
     if (data === 0) return consequencer.error(`${fieldName} can·t 0`, 2317)
-
-    // todo isNumber
-    if (!data) return consequencer.error(`${fieldName} is NaN, Not String`, 6439)
-
-    if (data < 0 && data > MAX_INT) return consequencer.error(`${fieldName} is out of max range`, 5372)
+    if (data < 0) return consequencer.error(`${fieldName} can·t < 0`, 2318)
+    if (data > MAX_INT) return consequencer.error(`${fieldName} is out of max range`, 5372)
     return consequencer.success()
 }
 
-const isNumber = function isNumber(num, fieldName = 'id') {
-}
-
-const isNumberString = function isNumberString(num, fieldName = 'id') {
-}
-
-/**
- * 判断字段为数组并且数据大于0
- */
 const isArrayNil = function isArrayNil(obj, fieldName = 'it') {
     const isArrayInstance = this.isArray(obj)
     if (isArrayInstance.result !== 1) return isArrayInstance
@@ -38,7 +37,7 @@ const isArray = function isArray(obj, fieldName = 'it') {
 
 const isJSONString = function isJSONString(jsonString, fieldName = 'it') {
     if (!jsonString) return consequencer.error(`${fieldName} is null`)
-    
+
     try {
         const obj = JSON.parse(jsonString)
         if (obj && typeof obj === 'object') return consequencer.success(obj)
@@ -46,15 +45,15 @@ const isJSONString = function isJSONString(jsonString, fieldName = 'it') {
     } catch (e) {
         return consequencer.error(`parse ${fieldName} Error: ${e}`)
     }
-    
+
 }
 
 const isArrayString = function isArrayString(arrayString, fieldName = 'it') {
     if (!arrayString) return consequencer.error(`${fieldName} is Not array string`)
-    
+
     const isJSONStringInstance = this.isJSONString(arrayString, fieldName)
     if (isJSONStringInstance.result !== 1) return isJSONStringInstance
-    
+
     const josn = isJSONStringInstance.data
     const isArrayInstance = this.isArray(josn, fieldName)
     if (isArrayInstance.result !== 1) return isArrayInstance
@@ -64,10 +63,10 @@ const isArrayString = function isArrayString(arrayString, fieldName = 'it') {
 
 const isArrayNilString = function isArrayNilString(arrayString, fieldName = 'it') {
     if (!arrayString) return consequencer.error(`${fieldName} is Not array string`)
-    
+
     const isJSONStringInstance = this.isJSONString(arrayString, fieldName)
     if (isJSONStringInstance.result !== 1) return isJSONStringInstance
-    
+
     const josn = isJSONStringInstance.data
     const isArrayInstance = this.isArrayNil(josn, fieldName)
     if (isArrayInstance.result !== 1) return isArrayInstance
@@ -76,10 +75,9 @@ const isArrayNilString = function isArrayNilString(arrayString, fieldName = 'it'
 }
 
 const isTimestamp = function isTimestamp(timestamp, fieldName = 'it') {
-    if (!timestamp && timestamp !== 0) return consequencer.error(`${fieldName} is Not timestamp`)
-    // todo isNumber
-    if (typeof timestamp !== 'number') return consequencer.error(`${fieldName} is Not Number`)
-    if (isNaN(timestamp)) return consequencer.error(`${fieldName} is NaN`)
+    const isIntNumStringInstance = this.isIntNumString(timestamp, fieldName)
+    if (isIntNumStringInstance.result !== 1) return isIntNumStringInstance
+
     if (timestamp > -MAX_TIMESTAMP && timestamp < MAX_TIMESTAMP) return consequencer.success()
     return consequencer.error(`${fieldName} is Not timestamp`)
 }
@@ -111,9 +109,10 @@ const group = function group(verifys) {
 
     return consequencer.success()
 }
-    
+
 
 const valuesStructuresVerify = {
+    isIntNumString,
     isId,
     isArray,
     isArrayNil,
