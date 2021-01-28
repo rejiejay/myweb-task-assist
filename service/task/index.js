@@ -1,6 +1,7 @@
 import SQLite from './../../module/SQLite/index.js'
 import dataAccessObject from './data-access-object'
 import valuesStructuresVerify from './../../utils/values-structures-verify'
+import CONST from './../../library/consts'
 
 import tag from './../tag/index'
 
@@ -13,13 +14,9 @@ const getList = async function getList({ longTermId, tags, minEffectTimestamp, m
     const sqlHandle = new SQLite.SqlHandle()
     if (!!longTermId) sqlHandle.addAndFilterSql(`longTermId = ${longTermId}`)
 
-    if (!!isRandom) sqlHandle.addOrderByRandom()
+    if (!!isRandom) sqlHandle.addOrderByRandom(pageSize ? pageSize : CONST.defaultPageSize)
+    if (!!pageNo) sqlHandle.addPagination(pageNo, pageSize)
 
-    /**
-     * TODO
-     * 这里需要通过 taskTagRelational 表进行查询 taskTagId
-     * 然后根据 taskTagId 进行查询所有数据
-     */
     const tagsVerifyInstance = valuesStructuresVerify.isArrayNil(tags, 'tags')
     if (tagsVerifyInstance.result === 1) {
         const taskTagyInstance = await tag.findTaskIdsByField(tags)

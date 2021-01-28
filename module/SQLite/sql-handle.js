@@ -1,3 +1,5 @@
+import CONST from './../../library/consts'
+
 class SqlHandle {
     constructor() {
         this.filterSql = ''
@@ -52,7 +54,7 @@ class SqlHandle {
         this.filterSql += `AND ${sql}`
     }
 
-    addOrderByRandom(limit  = 15) {
+    addOrderByRandom(limit = CONST.defaultPageSize) {
         this.isRandom = true
         this.randomLimit = limit
     }
@@ -66,9 +68,9 @@ class SqlHandle {
         let sql = ''
 
         if (this.isFilter) sql += `WHERE ${this.sql}`
-    
+
         if (this.isRandom) sql += `RANDOM() LIMIT ${this.randomLimit}`
-    
+
         if (!this.isRandom && !!this.limit) {
             const { limit, offset } = this.limit
             sql += `LIMIT ${limit} OFFSET ${offset}`

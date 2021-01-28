@@ -6,7 +6,10 @@
 import task from './task.js'
 import utils from './utils.js'
 
+const defaultPageSize = 15
+
 const CONST = {
+    defaultPageSize,
     task,
     utils
 }
