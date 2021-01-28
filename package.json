@@ -8,8 +8,8 @@
   },
   "scripts": {
     "dev": "SET NODE_ENV=development && babel-node -- ./development.js",
-    "start-dev": "SET NODE_ENV=development && C:\\Jekerfolder\\node-v13.6.0-win-x64\\node.exe babel-core-register.js",
-    "start-pro": "SET NODE_ENV=production && C:\\Jekerfolder\\node-v13.6.0-win-x64\\node.exe --experimental-modules production.js"
+    "start-dev": "SET NODE_ENV=development && babel-core-register.js",
+    "start-pro": "SET NODE_ENV=production && --experimental-modules production.js"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",

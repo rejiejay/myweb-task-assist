@@ -1,6 +1,10 @@
 class SqlHandle {
-    constructor(sql) {
-        this.sql = sql ? sql : ''
+    constructor() {
+        this.filterSql = ''
+        this.isFilter = false
+        this.ilmit = false
+        this.isRandom = false
+        this.randomLimit = 15
     }
 
     dataToAddSql(data) {
@@ -42,13 +46,35 @@ class SqlHandle {
     }
 
     addAndFilterSql(sql) {
-        if (!this.sql) return this.sql = sql
-        this.sql += `AND ${sql}`
+        this.isFilter = true
+
+        if (!this.filterSql) return this.filterSql = sql
+        this.filterSql += `AND ${sql}`
     }
 
-    toWhereString() {
-        if (!this.sql) return ''
-        return `WHERE ${this.sql}`
+    addOrderByRandom(limit  = 15) {
+        this.isRandom = true
+        this.randomLimit = limit
+    }
+
+    addPagination(pageNo, pageSize) {
+        const offset = pageNo * pageSize
+        this.limit = { limit: pageSize, offset }
+    }
+
+    toSqlString() {
+        let sql = ''
+
+        if (this.isFilter) sql += `WHERE ${this.sql}`
+    
+        if (this.isRandom) sql += `RANDOM() LIMIT ${this.randomLimit}`
+    
+        if (!this.isRandom && !!this.limit) {
+            const { limit, offset } = this.limit
+            sql += `LIMIT ${limit} OFFSET ${offset}`
+        }
+
+        return sql
     }
 }
 

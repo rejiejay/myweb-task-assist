@@ -5,7 +5,7 @@ import service from './../../service/index.js'
 import valuesStructuresVerify from './../../utils/values-structures-verify'
 
 const getTaskTagsById = function getTaskTagsById({ id }, responseHanle) {
-    const verifyInstance = valuesStructuresVerify.isId(id)
+    const verifyInstance = valuesStructuresVerify.isId(id, 'taskId')
     if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
 
     service.tag.findOne(id)

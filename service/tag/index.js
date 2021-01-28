@@ -31,9 +31,17 @@ const alterTableDescription = function alterTableDescription() {
     })
 }
 
-const task = {
-    findOne,
-    alterTableDescription
+// TODO
+const findTaskIdsByField = async function findTaskIdsByField() {
+    return new Promise((resolve, reject) => {
+        resolve()
+    })
 }
 
-export default task
+const tag = {
+    findOne,
+    alterTableDescription,
+    findTaskIdsByField
+}
+
+export default tag
