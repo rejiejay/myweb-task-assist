@@ -3,12 +3,17 @@ import dataAccessObject from './data-access-object'
 
 const tableHandle = new SQLite.TableHandle('longTermTaskRelational', dataAccessObject)
 
-const listAll = function listAll(id) {
+const listAll = function listAll() {
     return tableHandle.list('')
 }
 
-const task = {
-    listAll
+const getOne = function getOne(id) {
+    return tableHandle.find(+id)
 }
 
-export default task
+const longTerm = {
+    listAll,
+    getOne
+}
+
+export default longTerm

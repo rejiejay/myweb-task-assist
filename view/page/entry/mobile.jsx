@@ -1,9 +1,11 @@
-import service from './service.js'
-import TaskList from './mobile-components/task-car'
 import ActionSheet from './../../components/action-sheet'
 import FullscreenIframe from './../../components/fullscreen-iframe'
+import Button from './../../components/button'
 import toast from './../../components/toast'
 import CONSTS from './../../../library/consts'
+
+import service from './service.js'
+import TaskList from './mobile-components/task-car'
 
 export class MobileComponent extends React.Component {
     constructor(props) {
@@ -11,8 +13,13 @@ export class MobileComponent extends React.Component {
 
         this.state = {
             isShowBigCard: false,
+
             list: [],
-            sort: { value: 1, lable: 'Sort' },
+            count: 0,
+            pageNo: 1,
+            pageSize: CONSTS.defaultPageSize,
+
+            sort: { value: 1, label: 'Sort' },
             longTerm: { id: null, title: '' } // 长期的任务不进行多选
         }
 
@@ -29,13 +36,14 @@ export class MobileComponent extends React.Component {
         this.initList()
     }
 
-    async initList() {
+    initList = async () => {
         const { longTerm, sort } = this.state
         const filter = { longTerm, ...this.filter }
         const fetchInstance = await service.getTaskList(filter, sort)
         if (fetchInstance.result !== 1) return
+        const fetch = fetchInstance.data
 
-        this.setState({ list: fetchInstance.data })
+        this.setState({ list: fetch.list, count: fetch.count })
     }
 
     selectSortHandle = async () => {
@@ -85,8 +93,16 @@ export class MobileComponent extends React.Component {
         })
     }
 
+    loadRandomHandle = () => this.setState({ pageNo: 1 }, this.initList)
+
+    loadMoreHandle = () => {
+        const { list, count, pageNo } = this.state
+        if (list.length === count) return toast.show('All have been loaded')
+        this.setState({ pageNo: ++pageNo }, this.initList)
+    }
+
     render() {
-        const { list, isShowBigCard, sort } = this.state
+        const { list, isShowBigCard, sort, count } = this.state
 
         return <>
             <div className='list-top-operate flex-start-center'>
@@ -105,12 +121,17 @@ export class MobileComponent extends React.Component {
                 isShowBigCard={isShowBigCard}
             />
 
+            <div className='list-operate-load'>
+                {sort.value === 2 && <Button onClick={this.loadRandomHandle}>加载更多</Button>}
+                {sort.value !== 2 && <Button onClick={this.loadMoreHandle}>加载更多({count - list.length}/{count})</Button>}
+            </div>
+
             <div className='list-bottom-operate flex-start-center'>
                 <div className='bottom-operate-filter flex-start flex-rest'>
                     <div className='list-bottom-button right-line' onClick={this.selectFilterHandle}>Filter</div>
                 </div>
                 <div className='bottom-operate-sort'>
-                    <div className='list-bottom-button left-line' onClick={this.selectSortHandle}>{sort.lable}</div>
+                    <div className='list-bottom-button left-line' onClick={this.selectSortHandle}>{sort.label}</div>
                 </div>
             </div>
         </>

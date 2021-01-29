@@ -23,9 +23,24 @@ const getTaskList = async function getTaskList({ longTermId, tags, minEffectTime
     let parameter = verifyInstance.data
     if ((!!isRandom && !pageSize) || (!!pageNo && !pageSize)) parameter.pageSize = CONST.defaultPageSize
 
-    const result = await service.task.getList(parameter)
+    const listInstance = await service.task.getList(parameter)
+    if (listInstance.result !== 1) return responseHanle.json(listInstance)
+    const list = listInstance.data
 
-    responseHanle.json(result)
+    const countInstance = await service.task.getCount(parameter)
+    if (countInstance.result !== 1) return responseHanle.json(countInstance)
+    const count = countInstance.data
+
+    let result = { list, count }
+
+    if (!!parameter.longTermId) {
+        const longTermInstance = await service.longTerm.getOne(parameter.longTermId)
+        if (longTermInstance.result !== 1) return responseHanle.json(longTermInstance)
+        const longTerm = longTermInstance.data
+        result.longTerm = longTerm
+    }
+
+    responseHanle.success(result)
 }
 
 const Task = {

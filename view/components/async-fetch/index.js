@@ -4,6 +4,7 @@
  * @post method
  * @reGetConfirm method This for must get successful
  */
+import consequencer from './../../../utils/consequencer'
 import config from './../../configs/index.js'
 import toast from './../toast/index.js'
 import Confirm from './../confirm'

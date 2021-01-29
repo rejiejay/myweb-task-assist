@@ -12,7 +12,12 @@ async function requestHandle(request, response) {
     const resource = new Resource(request, response, this.isDev)
     if (this.isDev && resource.isStatic) return resource.render()
     const parameter = utils.reqToParameter(request)
-    controller.request(parameter, responseHandle, request)
+
+    try {
+        controller.request(parameter, responseHandle, request)
+    } catch (error) {
+        responseHandle.failure(`${error}`)
+    }
 }
 
 function init() {

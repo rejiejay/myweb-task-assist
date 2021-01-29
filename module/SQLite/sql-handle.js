@@ -2,11 +2,17 @@ import CONST from './../../library/consts'
 
 class SqlHandle {
     constructor() {
-        this.filterSql = ''
         this.isFilter = false
-        this.ilmit = false
+        this.filterSql = ''
+
         this.isRandom = false
-        this.randomLimit = 15
+        this.randomSQL = ''
+
+        this.isOrder = false
+        this.orderSQL = ''
+
+        this.isPagination = false
+        this.paginationSQL = ''
     }
 
     dataToAddSql(data) {
@@ -20,7 +26,7 @@ class SqlHandle {
         return `(${keys.join(',')}) VALUES (${values.join(',')})`
     }
 
-    dataToUpdateSql(oldVal, newVal) {
+    dataToUpdateSql({ oldVal, newVal }) {
         const sqls = []
 
         Object.keys(newVal).forEach(key => {
@@ -51,29 +57,44 @@ class SqlHandle {
         this.isFilter = true
 
         if (!this.filterSql) return this.filterSql = sql
-        this.filterSql += `AND ${sql}`
+        this.filterSql += ` AND ${sql} `
+    }
+
+    addOrFilterSql(sql) {
+        this.isFilter = true
+
+        if (!this.filterSql) return this.filterSql = sql
+        this.filterSql += ` OR ${sql} `
     }
 
     addOrderByRandom(limit = CONST.defaultPageSize) {
         this.isRandom = true
-        this.randomLimit = limit
+        this.randomSQL = ` ORDER BY RANDOM() LIMIT ${limit} `
     }
 
     addPagination(pageNo, pageSize) {
-        const offset = pageNo * pageSize
-        this.limit = { limit: pageSize, offset }
+        const offset = (pageNo - 1) * pageSize
+        const limit = pageSize
+        this.isPagination = true
+        this.paginationSQL = ` LIMIT ${limit} OFFSET ${offset} `
+    }
+
+    addOrder(column, isASC = true) {
+        this.isOrder = true
+        this.orderSQL = ` ORDER BY ${column} ${isASC ? 'ASC' : 'DESC'} `
     }
 
     toSqlString() {
         let sql = ''
 
-        if (this.isFilter) sql += `WHERE ${this.sql}`
+        if (!!this.isFilter) sql += `WHERE ${this.filterSql || ''} `
 
-        if (this.isRandom) sql += `RANDOM() LIMIT ${this.randomLimit}`
-
-        if (!this.isRandom && !!this.limit) {
-            const { limit, offset } = this.limit
-            sql += `LIMIT ${limit} OFFSET ${offset}`
+        // random 会覆盖 pagination order
+        if (!!this.isRandom) {
+            sql += this.randomSQL
+        } else {
+            if (!!this.isPagination) sql += this.paginationSQL
+            if (!!this.orderSQL) sql += this.orderSQL
         }
 
         return sql

@@ -29,13 +29,15 @@ const alterTableDescription = function alterTableDescription() {
                 error => reject(error)
             )
     })
+    .catch(error => consequencer.error(`${error}`))
 }
 
-// TODO
-const findTaskIdsByField = async function findTaskIdsByField() {
-    return new Promise((resolve, reject) => {
-        resolve()
-    })
+const findTaskIdsByField = async function findTaskIdsByField(tagFields) {
+    const sqlHandle = new SQLite.SqlHandle()
+
+    tagFields.forEach(field => sqlHandle.addOrFilterSql(`${field} = 1`))
+
+    return tableHandle.list(sqlHandle.toSqlString())
 }
 
 const tag = {

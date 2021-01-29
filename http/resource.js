@@ -76,6 +76,7 @@ class ResourcesUtils {
                 lessRender(lessStr)
             })
         })
+        .catch(error => consequencer.error(`${error}`))
     }
 
     renderTypedJavaScriptXML() {
@@ -117,6 +118,7 @@ class ResourcesUtils {
                 return resolve(consequencer.success())
             })
         })
+        .catch(error => consequencer.error(`${error}`))
     }
 
     renderHyperTextMarkupLanguage(version = '') {
@@ -144,6 +146,7 @@ class ResourcesUtils {
                 initVersion(content)
             })
         })
+        .catch(error => consequencer.error(`${error}`))
     }
 }
 

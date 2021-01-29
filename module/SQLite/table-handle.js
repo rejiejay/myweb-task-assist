@@ -13,61 +13,61 @@ class TableHandle {
         let result = {}
         try {
             result = SqliteJs.db.exec(sql)
-        } catch (err) {
-            console.error('SqliteJs execute error', err)
-            reject(consequencer.error(err))
+        } catch (error) {
+            console.error(`SqliteJs execute ${sql} error: `, error)
+            return reject(consequencer.error(`${error}`))
         }
 
         resolve(consequencer.success(result))
     })
-
-    mapperFindSQLtoObject({ columns, values }) {
-        let object = {}
-        columns.forEach((key, index) => {
-            const value = values[index]
-            object[key] = value
-        })
-
-        return object
-    }
+        .catch(error => consequencer.error(`${error}`))
 
     find(id) {
         const self = this
 
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (!id) return reject(consequencer.error('id could not empty'))
 
-            self.query(`SELECT * FROM ${self.table} WHERE id=${id}`)
-                .then(
-                    query => {
-                        if (query.result !== 1) return reject(query)
-                        const data = query.data[0]
-                        const values = data.values
-                        if (values.length <= 0) return reject(consequencer.error(`could not find value where id=${id}`))
-                        resolve(consequencer.success(self.mapperFindSQLtoObject({ columns: data.columns, values: values[0] })))
-                    },
-                    error => reject(error)
-                )
+            const queryInstance = await self.query(`SELECT * FROM ${self.table} WHERE id=${id}`)
+            if (queryInstance.result !== 1) return reject(queryInstance)
+            const query = queryInstance.data
+
+            try {
+                const data = query[0]
+                const values = data.values
+                if (values.length <= 0) return reject(consequencer.error(`could not find value where id=${id}`))
+                resolve(consequencer.success(self.sqlHandle.mapperFindSQLtoObject({ columns: data.columns, values: values[0] })))
+            } catch (error) {
+                reject(consequencer.error(`${error}`))
+            }
         })
+            .catch(error => consequencer.error(`${error}`))
     }
 
     list(filterSQL) {
         const self = this
 
-        return new Promise((resolve, reject) => self.query(`SELECT * FROM ${self.table} ${filterSQL}`)
-            .then(
-                query => {
-                    if (query.result !== 1) return reject(query)
-                    const data = query.data[0]
-                    const values = data.values
-                    if (values.length <= 0) return resolve(consequencer.success([]))
-                    resolve(consequencer.success(self.sqlHandle.mapperQuerySQLtoList(data)))
-                },
-                error => reject(error)
-            )
-        )
+        return new Promise(async (resolve, reject) => {
+            const queryInstance = await self.query(`SELECT * FROM ${self.table} ${filterSQL}`)
+            if (queryInstance.result !== 1) return reject(queryInstance)
+            const query = queryInstance.data
+
+            try {
+                const data = query[0]
+                const values = data.values
+                if (values.length <= 0) return resolve(consequencer.success([]))
+                resolve(consequencer.success(self.sqlHandle.mapperQuerySQLtoList(data)))
+            } catch (error) {
+                reject(consequencer.error(`${error}`))
+            }
+        })
+            .catch(error => consequencer.error(`${error}`))
     }
 
+    /**
+     * 目标: 校验数据是否正确, 防止出现非必填的情况
+     * @param {*} data 
+     */
     verify(data) {
         const format = this.format
 
@@ -89,64 +89,51 @@ class TableHandle {
     add(data) {
         const self = this
 
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const verifyInstance = self.verify(data)
             if (verifyInstance.result !== 1) return reject(verifyInstance)
 
-            self.query(`INSERT INTO ${self.table} ${self.sqlHandle.dataToAddSql(data)}`)
-                .then(
-                    result => resolve(consequencer.success(data)),
-                    error => reject(error)
-                ).catch(error => reject(consequencer.error(error)))
+            const queryInstance = await self.query(`INSERT INTO ${self.table} ${self.sqlHandle.dataToAddSql(data)}`)
+            if (queryInstance.result !== 1) return reject(queryInstance)
+            // const query = queryInstance.data
+
+            resolve(consequencer.success(data))
         })
+            .catch(error => consequencer.error(`${error}`))
     }
 
     del(id) {
         const self = this
-        let promiseHandle = {}
 
-        const findOneHandle = () => self.find(id)
-            .then(
-                result => deleteOneHandle(),
-                error => promiseHandle.reject(error)
-            ).catch(error => promiseHandle.reject(consequencer.error(error)))
+        return new Promise(async (resolve, reject) => {
+            const findInstance = await self.find(id)
+            if (findInstance.result !== 1) return reject(findInstance)
+            const find = queryInstance.data
 
-        const deleteOneHandle = () => self.query(`DELETE FROM ${self.table} WHERE id=${id}`)
-            .then(
-                result => promiseHandle.resolve(result),
-                error => promiseHandle.reject(error)
-            ).catch(error => promiseHandle.reject(consequencer.error(error)))
+            const deleteInstance = await self.query(`DELETE FROM ${self.table} WHERE id=${id}`)
+            if (deleteInstance.result !== 1) return reject(deleteInstance)
+            // const result = deleteInstance.data
 
-        return new Promise((resolve, reject) => {
-            promiseHandle = { resolve, reject }
-            findOneHandle()
+            resolve(consequencer.success(find))
         })
+            .catch(error => consequencer.error(`${error}`))
     }
 
     updata(id, data) {
         const self = this
-        let promiseHandle = {}
 
-        const findOneHandle = () => self.find(id)
-            .then(
-                find => {
-                    if (find.result !== 1) return promiseHandle.reject(find)
-                    const data = find.data
-                    updateOneHandle(data)
-                },
-                error => promiseHandle.reject(error)
-            ).catch(error => promiseHandle.reject(consequencer.error(error)))
+        return new Promise(async (resolve, reject) => {
+            const findInstance = await self.find(id)
+            if (findInstance.result !== 1) return reject(findInstance)
+            const find = queryInstance.data
 
-        const updateOneHandle = result => self.query(`UPDATE ${self.table} SET ${self.sqlHandle.dataToUpdateSql(data, data)} WHERE id=${id}`)
-            .then(
-                result => promiseHandle.resolve(consequencer.success(result)),
-                error => promiseHandle.reject(error)
-            ).catch(error => promiseHandle.reject(consequencer.error(error)))
+            const updateInstance = await self.query(`UPDATE ${self.table} SET ${self.sqlHandle.dataToUpdateSql({ oldVal: find, newVal: data })} WHERE id=${id}`)
+            if (updateInstance.result !== 1) return reject(updateInstance)
+            // const result = updateInstance.data
 
-        return new Promise((resolve, reject) => {
-            promiseHandle = { resolve, reject }
-            findOneHandle()
+            resolve(consequencer.success(data))
         })
+            .catch(error => consequencer.error(`${error}`))
     }
 }
 

@@ -112,7 +112,6 @@ const group = function group(verifys) {
     return consequencer.success(verifyData)
 }
 
-
 const valuesStructuresVerify = {
     isIntNumString,
     isId,

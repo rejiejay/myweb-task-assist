@@ -1,9 +1,8 @@
 import fetch from './../../components/async-fetch/index.js'
 
-// TODO: add api
 async function getTaskList({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }, sort) {
     let query = {}
-    if (sort.value && sort.value !== 1) query.sort = sort.value
+    if (sort.value && sort.value === 2) query.isRandom = 'true'
 
     const data = await fetch.reGetConfirm({ url: 'task/list', query, isShowError: true });
 

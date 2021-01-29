@@ -60,7 +60,7 @@ export class FilterEdit extends React.Component {
 
     initTaskFilter() {
         const { isMultipleFilter, initFilter } = this.props
-        let state = this.state
+        let state = JSON.parse(JSON.stringify(this.state))
         if (!initFilter) return
 
         if (initFilter.tags) state.tagFilter = initFilter.tags

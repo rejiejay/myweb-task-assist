@@ -11,15 +11,17 @@ import TableHandle from './table-handle.js'
 import SqlHandle from './sql-handle.js'
 import localDatabaseSqlite from './local.database.sqlite.js'
 
-function initDev() {
+async function initDev() {
     const self = this
 
-    SqliteJs.init()
-        .then(instantiate => {
-            console.log('create SQLite service successful')
-            self.db = instantiate
-            localDatabaseSqlite.init(instantiate)
-        }).catch(error => console.error('initSqlJs error', error))
+    const initInstance = await SqliteJs.init()
+    if (initInstance.result !== 1) return initInstance
+    const instantiate = initInstance.data
+    self.db = instantiate
+    localDatabaseSqlite.init(instantiate)
+    console.log('create SQLite service successful')
+
+    return initInstance
 }
 
 const SQLite = {

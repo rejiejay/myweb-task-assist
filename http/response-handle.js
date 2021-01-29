@@ -14,11 +14,11 @@ class ResponseHandle {
         return this.responseJsonHandle(data)
     }
 
-    success(data, message) {
+    success(data, message = '') {
         return this.responseJsonHandle(consequencer.success(data, message))
     }
 
-    failure(message, result, data) {
+    failure(message, result = '2333', data = null) {
         return this.responseJsonHandle(consequencer.error(message, result, data))
     }
 }
