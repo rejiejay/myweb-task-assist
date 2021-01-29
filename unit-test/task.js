@@ -37,7 +37,7 @@ const task = {
     getTaskListWithPagination: utils.resolveHandle(getTaskListWithPagination, { isShowResult: false }),
     getTaskListWithLongTerm: utils.resolveHandle(getTaskListWithLongTerm, { isShowResult: false }),
     getTaskListWithTags: utils.resolveHandle(getTaskListWithTags, { isShowResult: false }),
-    getTaskListWithTimestamp: utils.resolveHandle(getTaskListWithTimestamp, { isShowResult: true }),
+    getTaskListWithTimestamp: utils.resolveHandle(getTaskListWithTimestamp, { isShowResult: false }),
     getTaskListWithMinTimestamp: utils.resolveHandle(getTaskListWithMinTimestamp, { isShowResult: true }),
     getTaskListWithMaxTimestamp: utils.resolveHandle(getTaskListWithMaxTimestamp, { isShowResult: true })
 }

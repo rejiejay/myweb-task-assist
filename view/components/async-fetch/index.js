@@ -45,10 +45,7 @@ function get(parameter, { resolve, reject }) {
             reject(error)
         }
         window.fetch(url, optional)
-            .then(
-                response => response.json(),
-                error => consequencer.error(error)
-            )
+            .then(response => response.json())
             .then(async data => {
                 if (parameter.isShowError && data.result !== 1) {
                     await Confirm(data.message)
@@ -57,7 +54,7 @@ function get(parameter, { resolve, reject }) {
 
                 resolveHandle(data)
             }).catch(error => rejectHandle(error))
-    })
+    }).catch(error => consequencer.error(`${error}`))
 }
 
 /**
@@ -91,10 +88,7 @@ function post(parameter, { resolve, reject }) {
             reject(error)
         }
         window.fetch(url, optional)
-            .then(
-                response => response.json(),
-                error => consequencer.error(error)
-            )
+            .then(response => response.json())
             .then(data => {
                 /**
                  * 这里不自动处理isShowError, 因为post方法还是手动处理错误为好
@@ -107,7 +101,7 @@ function post(parameter, { resolve, reject }) {
                     reject: rejectHandle
                 })
             }).catch(error => rejectHandle(error))
-    })
+    }).catch(error => consequencer.error(`${error}`))
 }
 
 
@@ -143,13 +137,12 @@ function reGetConfirm(parameter, { resolve, reject }) {
             if (data.result !== 1) {
                 toast.destroy()
                 const confirmInstance = await Confirm(`请求错误, 原因: ${data.message} \n 是否重新请求?`)
-                if (confirmInstance.result !== 1) return rejectHandle(data)
+                if (confirmInstance.result !== 1) return rejectHandle(confirmInstance.message)
                 fetch()
             }
 
             resolveHandle(data)
-        })
-        .catch(async error => {
+        }).catch(async error => {
             toast.destroy()
             const confirmInstance = await await Confirm(`请求错误, 原因: ${error} \n 是否重新请求?`)
             if (confirmInstance.result !== 1) return rejectHandle(error)
@@ -160,7 +153,7 @@ function reGetConfirm(parameter, { resolve, reject }) {
     return new Promise((awaitStackIntervalResolve, awaitStackIntervalReject) => {
         awaitStackInterval = { resolve: awaitStackIntervalResolve, reject: awaitStackIntervalReject }
         fetch()
-    })
+    }).catch(error => consequencer.error(`${error}`))
 }
 
 const AsyncFetch = {

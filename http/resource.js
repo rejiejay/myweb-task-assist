@@ -75,8 +75,7 @@ class ResourcesUtils {
                 if (readFileError) return reject(consequencer.error(JSON.stringify(readFileError)))
                 lessRender(lessStr)
             })
-        })
-        .catch(error => consequencer.error(`${error}`))
+        }).catch(error => error)
     }
 
     renderTypedJavaScriptXML() {
@@ -117,8 +116,7 @@ class ResourcesUtils {
                 if (err || stats.hasErrors()) return reject(`${stats}`)
                 return resolve(consequencer.success())
             })
-        })
-        .catch(error => consequencer.error(`${error}`))
+        }).catch(error => error)
     }
 
     renderHyperTextMarkupLanguage(version = '') {
@@ -145,8 +143,7 @@ class ResourcesUtils {
                 if (readFileError) return reject(consequencer.error(JSON.stringify(readFileError)))
                 initVersion(content)
             })
-        })
-        .catch(error => consequencer.error(`${error}`))
+        }).catch(error => error)
     }
 }
 

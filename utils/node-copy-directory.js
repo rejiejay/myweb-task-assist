@@ -5,7 +5,6 @@ const copyDirectory = (targetFolderPath, renderFolderPath) => new Promise((resol
         if (error) return reject(error);
         resolve();
     })
-        .catch(error => `${error}`)
-})
+}).catch(error => `${error}`)
 
 export default copyDirectory

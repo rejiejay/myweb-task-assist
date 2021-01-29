@@ -28,8 +28,7 @@ const alterTableDescription = function alterTableDescription() {
                 },
                 error => reject(error)
             )
-    })
-    .catch(error => consequencer.error(`${error}`))
+    }).catch(error => error)
 }
 
 const findTaskIdsByField = async function findTaskIdsByField(tagFields) {

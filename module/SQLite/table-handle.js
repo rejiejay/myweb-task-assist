@@ -19,8 +19,7 @@ class TableHandle {
         }
 
         resolve(consequencer.success(result))
-    })
-        .catch(error => consequencer.error(`${error}`))
+    }).catch(error => error)
 
     find(id) {
         const self = this
@@ -40,8 +39,7 @@ class TableHandle {
             } catch (error) {
                 reject(consequencer.error(`${error}`))
             }
-        })
-            .catch(error => consequencer.error(`${error}`))
+        }).catch(error => error)
     }
 
     list(filterSQL) {
@@ -55,13 +53,15 @@ class TableHandle {
             try {
                 const data = query[0]
                 const values = data.values
+                console.log('values', values)
                 if (values.length <= 0) return resolve(consequencer.success([]))
                 resolve(consequencer.success(self.sqlHandle.mapperQuerySQLtoList(data)))
             } catch (error) {
+                console.log('error', error)
+                console.log('consequencer.error(`${error}`)', consequencer.error(`${error}`))
                 reject(consequencer.error(`${error}`))
             }
-        })
-            .catch(error => consequencer.error(`${error}`))
+        }).catch(error => error)
     }
 
     /**
@@ -98,8 +98,7 @@ class TableHandle {
             // const query = queryInstance.data
 
             resolve(consequencer.success(data))
-        })
-            .catch(error => consequencer.error(`${error}`))
+        }).catch(error => error)
     }
 
     del(id) {
@@ -115,8 +114,7 @@ class TableHandle {
             // const result = deleteInstance.data
 
             resolve(consequencer.success(find))
-        })
-            .catch(error => consequencer.error(`${error}`))
+        }).catch(error => error)
     }
 
     updata(id, data) {
@@ -132,8 +130,7 @@ class TableHandle {
             // const result = updateInstance.data
 
             resolve(consequencer.success(data))
-        })
-            .catch(error => consequencer.error(`${error}`))
+        }).catch(error => error)
     }
 }
 
