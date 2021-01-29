@@ -25,17 +25,20 @@ const getList = async function getList({ longTermId, tags, minEffectTimestamp, m
     }
 
     if (!!minEffectTimestamp && !!maxEffectTimestamp) {
-        sqlHandle.addAndFilterSql(`minEffectTimestamp >= ${minEffectTimestamp}`)
-        sqlHandle.addAndFilterSql(`maxEffectTimestamp <= ${maxEffectTimestamp}`)
+        /**
+         * myRange = 数据库的数据范围
+         * min = 筛选的最小时间
+         * max = 筛选的最大时间
+         * myRange 必须和 min 和 max 有交集
+         * myRange 最大值比 min 大 = 一定存在交集
+         * myRange 最小值比 max 小 = 一定存在交集
+         */
+        sqlHandle.addAndFilterSql(`(minEffectTimestamp <= ${maxEffectTimestamp} OR maxEffectTimestamp >= ${minEffectTimestamp})`)
     } else {
-        if (!!minEffectTimestamp) {
-            sqlHandle.addAndFilterSql(`minEffectTimestamp >= ${minEffectTimestamp}`)
-            sqlHandle.addAndFilterSql(`maxEffectTimestamp <= ${minEffectTimestamp}`)
-        }
-        if (!!maxEffectTimestamp) {
-            sqlHandle.addAndFilterSql(`maxEffectTimestamp <= ${maxEffectTimestamp}`)
-            sqlHandle.addAndFilterSql(`minEffectTimestamp >= ${maxEffectTimestamp}`)
-        }
+        /** myRange 最大值比 min 大 = 一定存在交集 */
+        if (!!minEffectTimestamp) sqlHandle.addAndFilterSql(`maxEffectTimestamp >= ${minEffectTimestamp}`)
+        /** myRange 最小值比 max 小 = 一定存在交集 */
+        if (!!maxEffectTimestamp) sqlHandle.addAndFilterSql(`minEffectTimestamp <= ${maxEffectTimestamp}`)
     }
 
     const statusVerifyInstance = valuesStructuresVerify.isArrayNil(status, 'status')

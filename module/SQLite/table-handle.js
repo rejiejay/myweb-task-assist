@@ -51,14 +51,12 @@ class TableHandle {
             const query = queryInstance.data
 
             try {
+                if (query.length <= 0) return resolve(consequencer.success([]))
                 const data = query[0]
                 const values = data.values
-                console.log('values', values)
                 if (values.length <= 0) return resolve(consequencer.success([]))
                 resolve(consequencer.success(self.sqlHandle.mapperQuerySQLtoList(data)))
             } catch (error) {
-                console.log('error', error)
-                console.log('consequencer.error(`${error}`)', consequencer.error(`${error}`))
                 reject(consequencer.error(`${error}`))
             }
         }).catch(error => error)

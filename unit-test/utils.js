@@ -35,8 +35,7 @@ const resolveHandle = (method, { isShowResult } = { isShowResult: false }) => ()
     } catch (error) {
         reject(consequencer.error(`${error}`))
     }
-})
-    .catch(error => consequencer.error(`${error}`))
+}).catch(error => consequencer.error(`${error}`))
 
 const utils = {
     methodHelper,
