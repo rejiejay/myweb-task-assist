@@ -1,8 +1,18 @@
 import fetch from './../../components/async-fetch/index.js'
 
-async function getTaskList({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }, sort) {
-    let query = {}
-    if (sort.value && sort.value === 2) query.isRandom = 'true'
+async function getTaskList({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority, pageNo, pageSize }, sort) {
+    let query = { pageNo, pageSize }
+    if (sort && sort.value && sort.value === 2) {
+        query.isRandom = 'true'
+        delete query.pageNo
+        delete query.pageSize
+    }
+    if (longTerm && longTerm.id) query.longTermId = longTerm.id
+    if (tags && tags.length > 0) query.tags = JSON.stringify(tags)
+    if (!!minEffectTimestamp) query.minEffectTimestamp = minEffectTimestamp
+    if (!!maxEffectTimestamp) query.maxEffectTimestamp = maxEffectTimestamp
+    if (multipleStatus && multipleStatus.length > 0) query.status = JSON.stringify(multipleStatus.map(({ value }) => value))
+    if (multiplePriority && multiplePriority.length > 0) query.prioritys = JSON.stringify(multiplePriority.map(({ value }) => value))
 
     const data = await fetch.reGetConfirm({ url: 'task/list', query, isShowError: true });
 

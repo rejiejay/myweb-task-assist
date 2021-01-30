@@ -3,12 +3,12 @@ const container = {
     paddingBottom: '15px'
 }
 
-const title = {
-    color: '#303133',
+const title = isRequiredHighlight => ({
+    color: isRequiredHighlight ? '#f5222d' : '#303133',
     fontSize: '12px',
     fontWeight: 'bold',
     paddingBottom: '5px'
-}
+})
 
 const element = {
 }

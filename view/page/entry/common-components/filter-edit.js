@@ -15,14 +15,20 @@ const props = {
     reject: () => {},
     isMultipleFilter: false,
     initFilter: {
-        tags: [],
+        tags: [
+            // "exam", "love"
+        ],
         longTerm: { id: null, title: '' },
         minEffectTimestamp: null,
         maxEffectTimestamp: null,
         status: { value: null, label: null },
         priority: { value: null, label: null },
-        multipleStatus: [],
-        multiplePriority: []
+        multipleStatus: [
+            // { value: null, label: null }
+        ],
+        multiplePriority: [
+            // { value: null, label: null }
+        ]
     }
 }
 
@@ -154,8 +160,6 @@ export class FilterEdit extends React.Component {
 
     cancelRejectHandle = async () => {
         const { reject } = this.props
-        const comfirmInstance = await Confirm('确认需要取消?')
-        if (comfirmInstance.result !== 1) return
         reject()
     }
 

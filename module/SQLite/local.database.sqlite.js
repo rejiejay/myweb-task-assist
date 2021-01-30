@@ -47,10 +47,10 @@ function initTask() {
     this.SqliteJs.exec(table.task);
     const list = [
         { title: '"最简"', content: '"最简内容"', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime() },
-        { title: '"任务1"', content: '"任务内容1"', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(), taskTagId: 1, minEffectTimestamp: new Date(2000, 1, 3, 0, 0).getTime(), maxEffectTimestamp: new Date(2000, 1, 5, 0, 0).getTime() },
-        { title: '"任务2"', content: '"任务内容2"', createTimestamp: new Date(2021, 2, 2, 0, 0).getTime(), taskTagId: 2, minEffectTimestamp: new Date(2000, 1, 6, 0, 0).getTime(), maxEffectTimestamp: new Date(2000, 1, 8, 0, 0).getTime(), longTermId: 1, status: 1 },
-        { title: '"任务3"', content: '"任务内容3"', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), taskTagId: 3, minEffectTimestamp: new Date(2000, 1, 1, 0, 0).getTime(), maxEffectTimestamp: new Date(2000, 1, 10, 0, 0).getTime(), priority: 1 },
-        { title: '"任务4"', content: '"任务内容4"', createTimestamp: new Date(2021, 2, 4, 10, 10).getTime(), taskTagId: 4, priority: 1 },
+        { title: '"任务1"', content: '"任务内容1 \n taskTagId: 1 \n min-maxEffectTimestamp 2000, 1, 3-5"', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(), taskTagId: 1, minEffectTimestamp: new Date(2000, 1, 3, 0, 0).getTime(), maxEffectTimestamp: new Date(2000, 1, 5, 0, 0).getTime() },
+        { title: '"任务2"', content: '"任务内容2 \n taskTagId: 2 \n min-maxEffectTimestamp 2000, 1, 6-8"', createTimestamp: new Date(2021, 2, 2, 0, 0).getTime(), taskTagId: 2, minEffectTimestamp: new Date(2000, 1, 6, 0, 0).getTime(), maxEffectTimestamp: new Date(2000, 1, 8, 0, 0).getTime(), longTermId: 1, status: 1 },
+        { title: '"任务3"', content: '"任务内容3 \n taskTagId: 3 \n priority: 1 \n longTermId: 1 \n min-maxEffectTimestamp 2000, 1, 1-10"', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), taskTagId: 3, minEffectTimestamp: new Date(2000, 1, 1, 0, 0).getTime(), maxEffectTimestamp: new Date(2000, 1, 10, 0, 0).getTime(), priority: 1 },
+        { title: '"任务4"', content: '"任务内容4 \n taskTagId: 4 \n priority: 1"', createTimestamp: new Date(2021, 2, 4, 10, 10).getTime(), taskTagId: 4, priority: 1 },
         { title: '"测试换行"', content: '"第一行  \n  第二行"', createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(), specific: '"第一行  \n  第二行"', measurable: '"第一行  \n  第二行"', attainable: '"第一行  \n  第二行"', relevant: '"第一行  \n  第二行"', timeBound: '"第一行  \n  第二行"' }
     ]
 

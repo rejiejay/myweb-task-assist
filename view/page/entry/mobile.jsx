@@ -3,6 +3,7 @@ import FullscreenIframe from './../../components/fullscreen-iframe'
 import Button from './../../components/button'
 import toast from './../../components/toast'
 import CONSTS from './../../../library/consts'
+import ArrayHelper from './../../../utils/array-helper'
 
 import service from './service.js'
 import TaskList from './mobile-components/task-car'
@@ -34,30 +35,39 @@ export class MobileComponent extends React.Component {
 
     componentDidMount() {
         this.initList()
+        this.showEditHandle()
     }
 
     initList = async () => {
-        const { longTerm, sort } = this.state
-        const filter = { longTerm, ...this.filter }
+        const { longTerm, sort, pageNo, pageSize } = this.state
+        const filter = { longTerm, pageNo, pageSize, ...this.filter }
+
         const fetchInstance = await service.getTaskList(filter, sort)
         if (fetchInstance.result !== 1) return
         const fetch = fetchInstance.data
+        let list = fetch.list
 
-        this.setState({ list: fetch.list, count: fetch.count })
+        if (pageNo > 1 && sort.value !== 2) list = this.state.list.concat(fetch.list)
+        if (sort.value === 2) list = ArrayHelper.uniqueDeduplicationByKey({ array: this.state.list.concat(fetch.list), key: 'id' }) 
+
+        this.setState({ list, count: fetch.count })
     }
 
     selectSortHandle = async () => {
         const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.sort)
-        const selectInstance = await ActionSheet({
-            title: '请选择排序',
-            options
-        })
-
+        const selectInstance = await ActionSheet({  title: '请选择排序', options })
         if (selectInstance.result !== 1) return
-
         const sort = selectInstance.data
 
-        this.setState({ sort }, this.initList)
+        const state = this.state
+        let list = state.list
+        let pageNo = state.pageNo
+        if (sort.value !== state.value) {
+            list = []
+            pageNo = 1
+        }
+
+        this.setState({ list, pageNo, sort }, this.initList)
     }
 
     selectFilterHandle = () => {
@@ -84,8 +94,8 @@ export class MobileComponent extends React.Component {
 
             self.filter = {
                 tags: filter.tagFilter,
-                minEffectTimestamp: filter.minEffectTimestamp,
-                maxEffectTimestamp: filter.maxEffectTimestamp,
+                minEffectTimestamp: filter.minEffectTimestampFilter,
+                maxEffectTimestamp: filter.maxEffectTimestampFilter,
                 multipleStatus: filter.statusMultipleFilter,
                 multiplePriority: filter.priorityMultipleFilter
             }
@@ -98,7 +108,31 @@ export class MobileComponent extends React.Component {
     loadMoreHandle = () => {
         const { list, count, pageNo } = this.state
         if (list.length === count) return toast.show('All have been loaded')
-        this.setState({ pageNo: ++pageNo }, this.initList)
+        this.setState({ pageNo: pageNo + 1 }, this.initList)
+    }
+
+    showEditHandle = ({ isAdd, editId } = {}) => {
+        const self = this
+        const { longTerm } = this.state
+        const { tags } = this.filter
+
+        let props = {}
+        if (!isAdd) props.id = editId
+        if (!!longTerm.id) props.longTerm = longTerm
+        if (tags.length > 0) props.tags = tags
+
+        toast.show()
+        import('./edit/mobile').then(async ({ TaskEdit }) => {
+            toast.destroy()
+            const editInstance = await FullscreenIframe({
+                Element: TaskEdit,
+                className: 'mobile-device-task-edit',
+                props
+            })
+
+            console.log('editInstance', editInstance)
+            if (editInstance.result !== 1) return
+        })
     }
 
     render() {
@@ -130,8 +164,9 @@ export class MobileComponent extends React.Component {
                 <div className='bottom-operate-filter flex-start flex-rest'>
                     <div className='list-bottom-button right-line' onClick={this.selectFilterHandle}>Filter</div>
                 </div>
-                <div className='bottom-operate-sort'>
+                <div className='bottom-operate-sort flex-start'>
                     <div className='list-bottom-button left-line' onClick={this.selectSortHandle}>{sort.label}</div>
+                    <div className='list-bottom-button left-line' onClick={() => this.showEditHandle({ isAdd: true })}>add</div>
                 </div>
             </div>
         </>

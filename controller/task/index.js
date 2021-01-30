@@ -23,6 +23,13 @@ const getTaskList = async function getTaskList({ longTermId, tags, minEffectTime
     let parameter = verifyInstance.data
     if ((!!isRandom && !pageSize) || (!!pageNo && !pageSize)) parameter.pageSize = CONST.defaultPageSize
 
+    if (!!parameter.tags) {
+        const taskTagyInstance = await service.tag.findTaskIdsByField(parameter.tags)
+        if (taskTagyInstance.result !== 1) return taskTagyInstance
+        const taskTags = taskTagyInstance.data
+        parameter.taskTagIds = taskTags.map(({ taskId }) => taskId)
+    }
+
     const listInstance = await service.task.getList(parameter)
     if (listInstance.result !== 1) return responseHanle.json(listInstance)
     const list = listInstance.data

@@ -9,10 +9,10 @@ export default class CommonlyListItem extends React.Component {
     }
 
     render() {
-        const { title, children } = this.props
+        const { title, children, isRequiredHighlight } = this.props
         
         return <div className='commonly-list-item' style={style.container}>
-            <div style={style.title}>{title}</div>
+            <div style={style.title(isRequiredHighlight)}>{isRequiredHighlight && '*'}{title}</div>
             <div style={style.element}>
                 {children}
             </div>
