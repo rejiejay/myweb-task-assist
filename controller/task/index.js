@@ -27,7 +27,7 @@ const getTaskList = async function getTaskList({ longTermId, tags, minEffectTime
         const taskTagyInstance = await service.tag.findTaskIdsByField(parameter.tags)
         if (taskTagyInstance.result !== 1) return taskTagyInstance
         const taskTags = taskTagyInstance.data
-        parameter.taskTagIds = taskTags.map(({ taskId }) => taskId)
+        parameter.taskTagIds = taskTags
     }
 
     const listInstance = await service.task.getList(parameter)

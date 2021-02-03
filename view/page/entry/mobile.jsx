@@ -2,6 +2,7 @@ import ActionSheet from './../../components/action-sheet'
 import FullscreenIframe from './../../components/fullscreen-iframe'
 import Button from './../../components/button'
 import toast from './../../components/toast'
+import CommonlyBottomOperate from './../../components/mobile/commonly-bottom-operate'
 import CONSTS from './../../../library/consts'
 import ArrayHelper from './../../../utils/array-helper'
 
@@ -35,7 +36,6 @@ export class MobileComponent extends React.Component {
 
     componentDidMount() {
         this.initList()
-        this.showEditHandle()
     }
 
     initList = async () => {
@@ -155,20 +155,24 @@ export class MobileComponent extends React.Component {
                 isShowBigCard={isShowBigCard}
             />
 
-            <div className='list-operate-load'>
+            <div className='list-operate-load' style={{ padding: '25px 15px 15px 15px' }}>
                 {sort.value === 2 && <Button onClick={this.loadRandomHandle}>加载更多</Button>}
                 {sort.value !== 2 && <Button onClick={this.loadMoreHandle}>加载更多({count - list.length}/{count})</Button>}
             </div>
 
-            <div className='list-bottom-operate flex-start-center'>
-                <div className='bottom-operate-filter flex-start flex-rest'>
-                    <div className='list-bottom-button right-line' onClick={this.selectFilterHandle}>Filter</div>
-                </div>
-                <div className='bottom-operate-sort flex-start'>
-                    <div className='list-bottom-button left-line' onClick={this.selectSortHandle}>{sort.label}</div>
-                    <div className='list-bottom-button left-line' onClick={() => this.showEditHandle({ isAdd: true })}>add</div>
-                </div>
-            </div>
+            <CommonlyBottomOperate
+                leftElement={[{
+                    cilckHandle: this.selectFilterHandle,
+                    element: 'filter'
+                }]}
+                rightElement={[{
+                    cilckHandle: this.selectSortHandle,
+                    element: sort.label
+                }, {
+                    cilckHandle: () => this.showEditHandle({ isAdd: true }),
+                    element: 'add'
+                }]}
+            />
         </>
     }
 }

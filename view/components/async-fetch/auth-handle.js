@@ -3,7 +3,7 @@
  */
 const authHandle = ({ url, optional, response, resolve, reject }) => {
     // 目前暂不处理
-    resolveHandle(response)
+    resolve(response)
 }
 
 export default authHandle

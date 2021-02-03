@@ -2,47 +2,82 @@ import dataAccessObject from './data-access-object'
 
 import SQLite from './../../module/SQLite/index.js'
 import consequencer from './../../utils/consequencer'
+import ArrayHelper from './../../utils/array-helper'
 
-const tableHandle = new SQLite.TableHandle('taskTagRelational', dataAccessObject)
+const tableTagRelational = new SQLite.TableHandle('taskTagRelational', dataAccessObject.taskTagRelational)
+const tableTags = new SQLite.TableHandle('taskTags', dataAccessObject.taskTags)
 
-const findOne = function findOne(id) {
-    return tableHandle.find(id)
+/**
+ * 通过任务 taskTagId 查询所有 tags name
+ */
+const getTaskTagsById = async function getTaskTagsById(id) {
+    const tagsRelationalInstance = await tableTagRelational.list(`WHERE taskId = ${id}`)
+    if (tagsRelationalInstance.result !== 1) return tagsRelationalInstance
+    const tagsRelational = tagsRelationalInstance.data
+    const tagsIds = tagsRelational.map(({ tagsId }) => tagsId)
+
+    const sqlHandle = new SQLite.SqlHandle()
+    tagsIds.forEach(tagsId => sqlHandle.addOrFilterSql(`id = ${tagsId}`))
+    const tagsListInstance = await tableTags.list(sqlHandle.toSqlString())
+    if (tagsListInstance.result !== 1) return tagsListInstance
+    const tagsList = tagsListInstance.data
+
+    const tagsName = tagsList.map(({ name }) => name)
+    return consequencer.success(tagsName)
 }
 
-const alterTableDescription = function alterTableDescription() {
-    return new Promise((resolve, reject) => {
-        tableHandle.query('PRAGMA table_info(taskTagRelational)')
-            .then(
-                query => {
-                    if (query.result !== 1) return reject(query)
-                    const data = query.data[0]
-                    const values = data.values
-                    const columns = values.reduce((total, columnInfor) => {
-                        const column = columnInfor[1]
-                        if (column === 'id' || column === 'taskId') return total
-                        total.push(column)
-                        return total
-                    }, [])
+const listAllTaskTags = async function listAllTaskTags() {
+    const tagsInstance = await tableTags.list()
+    if (tagsInstance.result !== 1) return tagsInstance
+    const tagsList = tagsInstance.data
+    return consequencer.success(tagsList)
+}
 
-                    resolve(consequencer.success(columns))
-                },
-                error => reject(error)
-            )
-    }).catch(error => error)
+const getTagIdsByNames = async function getTagIdsByNames(tagFields) {
+    const tagSqlHandle = new SQLite.SqlHandle()
+
+    tagFields.forEach(field => tagSqlHandle.addOrFilterSql(`name = "${field}"`))
+    const tagsInstance = await tableTags.list(tagSqlHandle.toSqlString())
+    if (tagsInstance.result !== 1) return tagsInstance
+    const tagsList = tagsInstance.data
+    const tagIds = tagsList
+
+    return consequencer.success(tagIds)
 }
 
 const findTaskIdsByField = async function findTaskIdsByField(tagFields) {
-    const sqlHandle = new SQLite.SqlHandle()
+    const tagsInstance = await this.getTagIdsByNames(tagFields)
+    if (tagsInstance.result !== 1) return tagsInstance
+    const tagIds = tagsInstance.data.map(({ id }) => id)
 
-    tagFields.forEach(field => sqlHandle.addOrFilterSql(`${field} = 1`))
+    const tagsRelationalSqlHandle = new SQLite.SqlHandle()
+    tagIds.forEach(tagId => tagsRelationalSqlHandle.addOrFilterSql(`tagsId = ${tagId}`))
+    const tagsRelationalInstance = await tableTagRelational.list(tagsRelationalSqlHandle.toSqlString())
+    if (tagsRelationalInstance.result !== 1) return tagsRelationalInstance
+    const taskIds = ArrayHelper.uniqueDeduplicationByKey({ array: tagsRelationalInstance.data, key: 'taskId' }).map(({ taskId }) => taskId)
 
-    return tableHandle.list(sqlHandle.toSqlString())
+    return consequencer.success(taskIds)
+}
+
+const addByTagName = async function addByTagName(name) {
+    const setTagsInstance = await tableTags.add({ name })
+    if (setTagsInstance.result !== 1) return setTagsInstance
+
+    const getTagsInstance = await this.getTagIdsByNames([ name ])
+    if (getTagsInstance.result !== 1) return getTagsInstance
+    const tagIds = getTagsInstance.data
+
+    if (tagIds.length <= 0) return consequencer.error(`can not add ${name}`)
+
+    return consequencer.success(tagIds[0])
 }
 
 const tag = {
-    findOne,
-    alterTableDescription,
-    findTaskIdsByField
+    getTaskTagsById,
+    listAllTaskTags,
+    getTagIdsByNames,
+    findTaskIdsByField,
+    addByTagName
 }
 
 export default tag

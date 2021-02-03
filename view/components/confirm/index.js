@@ -1,7 +1,5 @@
 /**
- * toast 对外方法:
- * @show 显示
- * @destroy 销毁
+ * Confirm 对外方法
  */
 import style from './style.js'
 import consequencer from './../../../utils/consequencer'

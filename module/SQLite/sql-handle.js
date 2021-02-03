@@ -20,7 +20,10 @@ class SqlHandle {
         const values = []
         Object.keys(data).forEach(key => {
             keys.push(key)
-            values.push(data[key])
+            let value = data[key]
+            if (Object.prototype.toString.call(value) === '[object String]') value = `"${value}"`
+
+            values.push(value)
         })
 
         return `(${keys.join(',')}) VALUES (${values.join(',')})`
@@ -30,7 +33,13 @@ class SqlHandle {
         const sqls = []
 
         Object.keys(newVal).forEach(key => {
-            if (newVal[key] !== oldVal[key]) sqls.push(`${key}=${newVal[key]}`)
+            if (newVal[key] !== oldVal[key]) {
+                const value = newVal[key]
+                let sql = `${key}=${value}`
+                if (Object.prototype.toString.call(value) === '[object String]') sql = `${key}="${value}"`
+
+                sqls.push(sql)
+            }
         })
 
         return sqls.join(',')

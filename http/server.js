@@ -2,7 +2,7 @@ import * as http from 'http'
 
 import config from './../config/index.js'
 import Controller from './../controller/index.js'
-import utils from './utils.js'
+import reqToParameter from './request-parse'
 import Resource from './resource.js'
 import ResponseHandle from './response-handle.js'
 
@@ -10,8 +10,12 @@ async function requestHandle(request, response) {
     const responseHandle = new ResponseHandle(response)
     const controller = new Controller(request)
     const resource = new Resource(request, response, this.isDev)
+
     if (this.isDev && resource.isStatic) return resource.render()
-    const parameter = utils.reqToParameter(request)
+
+    const parseInstance = await reqToParameter(request)
+    if (parseInstance.result !== 1) return responseHandle.failure(`parse parameter error`)
+    const parameter = await parseInstance.data
 
     try {
         controller.request(parameter, responseHandle, request)

@@ -37,11 +37,18 @@ const getAllLongTermTask = async () => await fetch.get({
     isShowError: true
 })
 
+const addTag = async tagName => await fetch.post({
+    url: 'tag/add',
+    body: { tagName },
+    isShowError: true
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
     getAllTaskTagInfor,
-    getAllLongTermTask
+    getAllLongTermTask,
+    addTag
 }
 
 export default service

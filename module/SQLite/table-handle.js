@@ -93,7 +93,6 @@ class TableHandle {
 
             const queryInstance = await self.query(`INSERT INTO ${self.table} ${self.sqlHandle.dataToAddSql(data)}`)
             if (queryInstance.result !== 1) return reject(queryInstance)
-            // const query = queryInstance.data
 
             resolve(consequencer.success(data))
         }).catch(error => error)
@@ -109,7 +108,6 @@ class TableHandle {
 
             const deleteInstance = await self.query(`DELETE FROM ${self.table} WHERE id=${id}`)
             if (deleteInstance.result !== 1) return reject(deleteInstance)
-            // const result = deleteInstance.data
 
             resolve(consequencer.success(find))
         }).catch(error => error)
@@ -125,7 +123,6 @@ class TableHandle {
 
             const updateInstance = await self.query(`UPDATE ${self.table} SET ${self.sqlHandle.dataToUpdateSql({ oldVal: find, newVal: data })} WHERE id=${id}`)
             if (updateInstance.result !== 1) return reject(updateInstance)
-            // const result = updateInstance.data
 
             resolve(consequencer.success(data))
         }).catch(error => error)

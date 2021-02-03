@@ -5,6 +5,8 @@ import jsxStyle from './../../../components/jsx-style'
 import timeTransformers from './../../../../utils/time-transformers'
 import consequencer from './../../../../utils/consequencer'
 import DatePicker from './../../../components/date-picker-sheet'
+import FullscreenIframe from './../../../components/fullscreen-iframe'
+import toast from './../../../components/toast'
 import Confirm from './../../../components/confirm'
 import CONSTS from './../../../../library/consts'
 
@@ -61,7 +63,7 @@ export class FilterEdit extends React.Component {
         if (fetchInstance.result !== 1) return
         const tags = fetchInstance.data
 
-        this.setState({ tagOptions: tags.map(tag => ({ value: tag, label: tag })) })
+        this.setState({ tagOptions: tags.map(({ name }) => ({ value: name, label: name })) })
     }
 
     initTaskFilter() {
@@ -150,6 +152,24 @@ export class FilterEdit extends React.Component {
         this.setState({ priorityMultipleFilter: selectInstance.data })
     }
 
+    tagOptionManage = () => {
+        const self = this
+
+        toast.show()
+        import('./tag-edit').then(async ({ TagEdit }) => {
+            toast.destroy()
+            const selectInstance = await FullscreenIframe({
+                Element: TagEdit,
+                className: 'mobile-device-task-tag-edit',
+                props: { }
+            })
+
+            if (selectInstance.result !== 1) return
+            const tagOptions = selectInstance.data
+            self.setState({ tagOptions })
+        })
+    }
+
     confirmResolveHandle = async () => {
         const { resolve } = this.props
         const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter } = this.state
@@ -170,7 +190,7 @@ export class FilterEdit extends React.Component {
             tagFilter, statusFilter, priorityFilter, statusMultipleFilter, priorityMultipleFilter
         } = this.state
 
-        return <div className='filter-edit-container'>
+        return <div className='filter-edit-container' style={{ padding: '25px 15px 15px 15px' }}>
             <CommonlyListItem key='long-term-task'
                 title={isMultipleFilter ? '是否选择过滤(Long Term Task)项目?' : '此项目是否为(Long Term Task)项目?'}
             >
@@ -225,14 +245,16 @@ export class FilterEdit extends React.Component {
                 title='标签Tag过滤器'
             >
                 <>
-                    <Button key='tag-filter-select'
-                        onClick={this.selectTagFilterHandle}
-                    >
-                        {tagFilter.length > 0 ?
-                            tagFilter.join('、') :
-                            '请选择需要过滤的标签'
-                        }
-                    </Button>
+                    <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                        <Button
+                            style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                            onClick={this.selectTagFilterHandle}
+                        >{tagFilter.length > 0 ? tagFilter.join('、') : '请选择需要过滤的标签'}</Button>
+                        <Button
+                            style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                            onClick={this.tagOptionManage}
+                        >管理</Button>
+                    </div>
                     {tagFilter.length > 0 && <>
                         <div style={{ height: '5px' }}></div>
                         <Button key='tag-filter-cancel'

@@ -8,7 +8,7 @@ import resource from './resource.js'
 import server from './server.js'
 
 const HTTP = {
-    initDev: () => {
+    initDev: async () => {
         resource.buildLibrary()
 
         server.isDev = true

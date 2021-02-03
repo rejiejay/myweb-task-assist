@@ -1,5 +1,11 @@
+import timeTransformers from './../../../../utils/time-transformers'
+
 import CommonlyListItem from './../../../components/mobile/commonly-list-item'
 import CommonlyInputText from './../../../components/mobile/commonly-input-text'
+import CommonlyBottomOperate from './../../../components/mobile/commonly-bottom-operate'
+import Button from './../../../components/button'
+import toast from './../../../components/toast'
+import FullscreenIframe from './../../../components/fullscreen-iframe'
 
 const props = {
     resolve: () => {},
@@ -33,12 +39,55 @@ export class TaskEdit extends React.Component {
         }
     }
 
+    selectFilterHandle = () => {
+        const self = this
+        const { longTerm, tags, status, priority, minEffectTimestamp, maxEffectTimestamp } = this.state
+        const initFilter = { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority }
+
+        toast.show()
+        import('./../common-components/filter-edit').then(async ({ FilterEdit }) => {
+            toast.destroy()
+            const selectInstance = await FullscreenIframe({
+                Element: FilterEdit,
+                className: 'mobile-device-task-filter-edit',
+                props: {
+                    isMultipleFilter: false,
+                    initFilter
+                }
+            })
+
+            if (selectInstance.result !== 1) return
+            const filter = selectInstance.data
+
+            self.setState({
+                longTerm: filter.longTermFilter,
+                tags: filter.tagFilter,
+                minEffectTimestamp: filter.minEffectTimestampFilter,
+                maxEffectTimestamp: filter.maxEffectTimestampFilter,
+                status: filter.statusFilter,
+                priority: filter.priorityFilter
+            })
+        })
+
+    }
+
+    renderEffectTimestamp = () => {
+        const { minEffectTimestamp, maxEffectTimestamp } = this.state
+        const effectTimestampArray = []
+        if (!!minEffectTimestamp) effectTimestampArray.push(`min ${timeTransformers.dateToYYYYmmDDhhMM(new Date(+minEffectTimestamp))}`)
+        if (!!maxEffectTimestamp) effectTimestampArray.push(`max ${timeTransformers.dateToYYYYmmDDhhMM(new Date(+maxEffectTimestamp))}`)
+
+        return effectTimestampArray.join(' - ')
+    }
+
     render() {
         const {
-            title, content, specific, measurable, attainable, relevant, timeBound
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, status, priority
         } = this.state
+        const effectTimestampString = this.renderEffectTimestamp()
 
-        return <div className='task-edit-container'>
+        return <div className='task-edit-container' style={{ padding: '25px 15px 15px 15px' }}>
             <CommonlyListItem key='title'
                 title='简单描述/提问/归纳'
                 isRequiredHighlight
@@ -52,6 +101,7 @@ export class TaskEdit extends React.Component {
             </CommonlyListItem>
             <CommonlyListItem key='content'
                 title='得出什么结论?'
+                isRequiredHighlight
             >
                 <CommonlyInputText key='content'
                     value={content}
@@ -117,8 +167,46 @@ export class TaskEdit extends React.Component {
                     placeholder='期限1： 是什么?为什么设定这个时间?哪个角度?'
                 />
             </CommonlyListItem>
+            <CommonlyListItem key='filter'
+                title='过滤条件?'
+            >
+                <>
+                    {longTerm && longTerm.id && <FilterItem key='longTerm'>
+                        longTerm: {longTerm.title}
+                    </FilterItem>}
+                    {tags && tags.length > 0 && <FilterItem key='tags'>
+                        tags: {tags.join('、')}
+                    </FilterItem>}
+                    {effectTimestampString && <FilterItem key='effectTimestamp'>
+                        effect timestamp: {effectTimestampString}
+                    </FilterItem>}
+                    {status && status.value && <FilterItem key='status'>
+                        status: {status.label}
+                    </FilterItem>}
+                    {priority && priority.value && <FilterItem key='priority'>
+                        priority: {priority.label}
+                    </FilterItem>}
+                    <Button key='filter-select-popup'
+                        onClick={this.selectFilterHandle}
+                    >选择过滤条件</Button>
+                </>
+            </CommonlyListItem>
+
+            <div style={{ height: '425px' }} />
+            <CommonlyBottomOperate
+                leftElement={[{
+                    cilckHandle: () => {},
+                    element: '确认'
+                }]}
+                rightElement={[{
+                    cilckHandle: () => {},
+                    element: '取消'
+                }]}
+            />
         </div>
     }
 }
+
+const FilterItem = ({ children }) => <div style={{ paddingBottom: '5px' }}>{children}</div>
 
 export default TaskEdit

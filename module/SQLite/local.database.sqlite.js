@@ -26,9 +26,14 @@ const table = {
         CREATE TABLE taskTagRelational (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             taskId INT NOT NULL,
-            js TINYTEXT,
-            exam TINYTEXT,
-            love TINYTEXT
+            tagsId INT NOT NULL
+        )
+    `,
+
+    taskTags: `
+        CREATE TABLE taskTags (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TINYTEXT NOT NULL
         )
     `,
 
@@ -62,19 +67,35 @@ function initTask() {
     list.forEach(item => slef.SqliteJs.exec(insertTaskData(item)))
 }
 
+/**
+ * 任务 查询 标签 流程: task.taskTagId = 1 ---> taskTagRelational.taskId = 1 ---> taskTags.id = [1, 2, 3, 4] ---> taskTags.name = ['js', 'exam', 'love', 'gwy']
+ * 标签 查询 任务 流程: taskTags.name = 'js' ---> taskTags.id = 1 = taskTagRelational.tagsId ---> taskTagRelational.id = [ 1 ] ---> taskTagRelational.taskId = [ 1 ]
+ */
 function initTaskTagRelational() {
     const insertTaskData = data => utils.insertTaskData('taskTagRelational', data)
     this.SqliteJs.exec(table.taskTagRelational);
-    this.SqliteJs.exec(insertTaskData({ taskId: 2, js: 1 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 3, exam: 1 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 4, love: 1 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 5, js: 1 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagsId: 1 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagsId: 2 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagsId: 3 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagsId: 4 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 2, tagsId: 2 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 3, tagsId: 3 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 4, tagsId: 4 }));
+}
+
+function initTaskTags() {
+    const insertTaskData = data => utils.insertTaskData('taskTags', data)
+    this.SqliteJs.exec(table.taskTags);
+    this.SqliteJs.exec(insertTaskData({ name: '"js"' }));
+    this.SqliteJs.exec(insertTaskData({ name: '"exam"' }));
+    this.SqliteJs.exec(insertTaskData({ name: '"love"' }));
+    this.SqliteJs.exec(insertTaskData({ name: '"gwy"' }));
 }
 
 function initLongTermTaskRelational() {
     const insertTaskData = data => utils.insertTaskData('longTermTaskRelational', data)
     this.SqliteJs.exec(table.longTermTaskRelational);
-    this.SqliteJs.exec(insertTaskData({ title: '"长期任务"', record: '"长期任务内容"' }));
+    this.SqliteJs.exec(insertTaskData({ title: '"务长期任务"', record: '"长期任务内容"' }));
 }
 
 function init(SqliteJs) {
@@ -82,6 +103,7 @@ function init(SqliteJs) {
 
     this.initTask()
     this.initTaskTagRelational()
+    this.initTaskTags()
     this.initLongTermTaskRelational()
 }
 
@@ -107,6 +129,7 @@ const localDatabaseSqlite = {
     init,
     initTask,
     initTaskTagRelational,
+    initTaskTags,
     initLongTermTaskRelational
 }
 
