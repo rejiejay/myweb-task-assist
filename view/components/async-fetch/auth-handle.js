@@ -7,7 +7,11 @@ import optionalHeaders from './optional-headers.js'
 
 class AuthHandle {
     constructor({ url, optional, response, resolve, reject }) {
-        this = { ...this, url, optional, response, resolve, reject }
+        this.url = url
+        this.optional = optional
+        this.response = response
+        this.resolve = resolve
+        this.reject = reject
     }
 
     verify() {
