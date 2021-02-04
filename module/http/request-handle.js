@@ -1,10 +1,9 @@
-import * as http from 'http'
 
-import config from './../config/index.js'
-import Controller from './../controller/index.js'
+import Controller from './../../controller/index.js'
 import reqToParameter from './request-parse'
 import Resource from './resource.js'
 import ResponseHandle from './response-handle.js'
+import authHandle from './auth-handle'
 
 async function requestHandle(request, response) {
     const responseHandle = new ResponseHandle(response)
@@ -17,6 +16,9 @@ async function requestHandle(request, response) {
     if (parseInstance.result !== 1) return responseHandle.failure(`parse parameter error`)
     const parameter = await parseInstance.data
 
+    const authInstance = await authHandle(request)
+    if (authInstance.result !== 1) return responseHandle.json(authInstance)
+
     try {
         controller.request(parameter, responseHandle, request)
     } catch (error) {
@@ -24,14 +26,4 @@ async function requestHandle(request, response) {
     }
 }
 
-function init() {
-    const server = http.createServer(requestHandle.bind(this))
-    server.listen(config.port, config.host, () => console.log('create http service successful'))
-}
-
-const server = {
-    isDev: false,
-    init
-}
-
-export default server
+export default requestHandle

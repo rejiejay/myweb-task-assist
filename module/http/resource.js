@@ -4,10 +4,10 @@ import less from 'less';
 import webpack from 'webpack';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
-import config from './../config/index.js'
-import { projectRelativePath } from './../utils/path-handle.js';
-import consequencer from './../utils/consequencer.js'
-import copyDirectory from './../utils/node-copy-directory.js'
+import config from './../../config/index.js'
+import { projectRelativePath } from './../../utils/path-handle.js';
+import consequencer from './../../utils/consequencer.js'
+import copyDirectory from './../../utils/node-copy-directory.js'
 
 class ResourcesUtils {
     initUrlCatch() {
@@ -150,8 +150,8 @@ class ResourcesUtils {
 class ResourcesHandle extends ResourcesUtils {
     constructor(request, response, isDev) {
         super()
-        this.isStatic = false // TODO
-        this.isConfigured = false // TODO
+        this.isStatic = false
+        this.isConfigured = false
         this.init(request, response, isDev)
     }
 

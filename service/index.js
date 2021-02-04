@@ -5,8 +5,10 @@
 import task from './task/index.js'
 import tag from './tag/index.js'
 import longTerm from './long-term'
+import auth from './auth'
 
 const service = {
+    auth,
     task,
     tag,
     longTerm

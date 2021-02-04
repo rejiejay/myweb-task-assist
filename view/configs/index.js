@@ -1,12 +1,14 @@
 /**
  * config对外object
  */
+import auth from './../../config/auth'
+import http from './../../config/http'
+
 import development from './development.js'
 import production from './production.js'
-import auth from './../../config/auth'
 
 let config = {
-    origin: 'http://localhost:1938/',
+    origin: `http://${http.host}:${http.port}/`,
     auth
 }
 

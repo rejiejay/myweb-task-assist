@@ -7,10 +7,10 @@
     "name": "rejiejay-jeker-zeng"
   },
   "scripts": {
-    "dev": "SET NODE_ENV=development && babel-node -- ./development.js",
-    "test": "SET NODE_ENV=development && babel-node -- ./tester.js",
-    "start-dev": "SET NODE_ENV=development && babel-core-register.js",
-    "start-pro": "SET NODE_ENV=production && --experimental-modules production.js"
+    "dev": "SET NODE_ENV=development&& babel-node -- ./development.js",
+    "test": "SET NODE_ENV=development&& babel-node -- ./tester.js",
+    "start-dev": "SET NODE_ENV=development&& babel-core-register.js",
+    "start-pro": "SET NODE_ENV=production&& --experimental-modules production.js"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",

@@ -5,7 +5,7 @@
  * 页面Dev渲染
  * API接口
  */
-import HTTP from './http/index.js';
+import HTTP from './module/http/index.js';
 import SQLite from './module/SQLite/index.js';
 
 const init = async () => {

@@ -42,7 +42,7 @@ export class TagEdit extends React.Component {
         if (addInstance.result !== 1) return
         const newTag = addInstance.data
 
-        this.setState({ tagOptions: [ ...tagOptions, newTag ] })
+        this.setState({ tagOptions: [ ...tagOptions, { value: newTag.id, label: newTag.name } ] })
     }
 
     editHandle = async () => {}

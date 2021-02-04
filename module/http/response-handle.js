@@ -1,4 +1,4 @@
-import consequencer from './../utils/consequencer.js'
+import consequencer from './../../utils/consequencer.js'
 
 class ResponseHandle {
     constructor(response) {

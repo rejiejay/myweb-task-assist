@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { projectRelativePath } from './../utils/path-handle.js';
 
 import auth from './auth.js'
+import http from './http.js'
 import development from './development.js'
 import production from './production.js'
 
@@ -12,9 +13,7 @@ import production from './production.js'
 let config = {
     version: JSON.parse(fs.readFileSync(projectRelativePath('./package.json')).toString()).version,
     auth,
-
-    port: 1938,
-    host: 'localhost',
+    http,
     resource: {
         library: {},
         view: {

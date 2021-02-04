@@ -1,9 +1,11 @@
 import config from './../../configs'
+import Storage from './../../components/storage'
 
 const optionalHeaders = () => {
     const headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8' })
+   
     const tokenKey = config.auth.headerToken
-    const tokenVal = localStorage.getItem(tokenKey)
+    const tokenVal = Storage.auth.getToken()
 
     if (!!tokenVal) headers.append(tokenKey, tokenVal)
 

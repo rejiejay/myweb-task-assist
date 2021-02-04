@@ -6,12 +6,12 @@
  */
 import consequencer from './../../../utils/consequencer'
 import config from './../../configs/index.js'
-import toast from './../toast/index.js'
 import Confirm from './../confirm'
 
 import WaitStackInterval from './wait-stack-interval.js'
 import optionalHeaders from './optional-headers.js'
-import authHandle from './auth-handle.js'
+import AuthHandle from './auth-handle.js'
+import fetchHandle from './fetch-handle'
 import utils from './utils.js'
 
 /**
@@ -19,9 +19,7 @@ import utils from './utils.js'
  * @param {url, query, isShowError} parameter 请求参数
  * @param {resolve, reject} promise 返回结果的方法
  */
-function get(parameter, { resolve, reject }) {
-    toast.show()
-
+async function get(parameter, { resolve, reject }) {
     const url = `${config.origin}${parameter.url}${utils.queryToUrl(parameter.query)}`
 
     // reference: https://developer.mozilla.org/en-US/docs/Web/API/Request/Request
@@ -30,40 +28,23 @@ function get(parameter, { resolve, reject }) {
         headers: optionalHeaders()
     }
 
-    /**
-     * @param {awaitStackIntervalResolve, awaitStackIntervalReject} 执行 resolve, reject 函数表示此次请求执行完毕, 因为等待堆栈请求执行需要个信号表示此次请求结束, 所以在最后执行此函数推出此次循环
-     */
-    return new Promise((awaitStackIntervalResolve, awaitStackIntervalReject) => {
-        const resolveHandle = data => {
-            toast.destroy()
-            awaitStackIntervalResolve(data)
-            resolve(data)
-        }
-        const rejectHandle = error => {
-            toast.destroy()
-            awaitStackIntervalReject(error)
-            reject(error)
-        }
-        window.fetch(url, optional)
-            .then(response => response.json())
-            .then(async data => {
-                if (parameter.isShowError && data.result !== 1) {
-                    await Confirm(data.message)
-                    return rejectHandle(data)
-                }
+    const fetchInstance = await fetchHandle(url, optional)
+    if (fetchInstance.result !== 1) return reject(fetchInstance)
+    const data = fetchInstance.data
 
-                resolveHandle(data)
-            }).catch(error => rejectHandle(error))
-    }).catch(error => consequencer.error(`${error}`))
+    if (parameter.isShowError && data.result !== 1) {
+        await Confirm(data.message)
+        return reject(data)
+    }
+
+    resolve(data)
 }
 
 /**
  * @param {url, body} parameter 请求参数
  * @param {resolve, reject} promise 返回结果的方法
  */
-function post(parameter, { resolve, reject }) {
-    toast.show()
-
+async function post(parameter, { resolve, reject }) {
     const url = `${config.origin}${parameter.url}`
 
     // reference: https://developer.mozilla.org/en-US/docs/Web/API/Request/Request
@@ -73,37 +54,18 @@ function post(parameter, { resolve, reject }) {
         body: JSON.stringify(parameter.body)
     }
 
-    /**
-     * @param {awaitStackIntervalResolve, awaitStackIntervalReject} 执行 resolve, reject 函数表示此次请求执行完毕, 因为等待堆栈请求执行需要个信号表示此次请求结束, 所以在最后执行此函数推出此次循环
-     */
-    return new Promise((awaitStackIntervalResolve, awaitStackIntervalReject) => {
-        const resolveHandle = value => {
-            toast.destroy()
-            awaitStackIntervalResolve(value)
-            resolve(value)
-        }
-        const rejectHandle = error => {
-            toast.destroy()
-            awaitStackIntervalReject(error)
-            reject(error)
-        }
-        window.fetch(url, optional)
-            .then(response => response.json())
-            .then(data => {
-                /**
-                 * 这里不自动处理isShowError, 因为post方法还是手动处理错误为好
-                 */
-                authHandle({
-                    url,
-                    optional,
-                    response: data,
-                    resolve: resolveHandle,
-                    reject: rejectHandle
-                })
-            }).catch(error => rejectHandle(error))
-    }).catch(error => consequencer.error(`${error}`))
-}
+    const fetchInstance = await fetchHandle(url, optional)
+    if (fetchInstance.result !== 1) return reject(fetchInstance)
+    const data = fetchInstance.data
 
+    if (data.result === 1) return resolve(data)
+
+    /**
+     * 这里不自动处理isShowError, 因为post方法还是手动处理错误为好
+     */
+    const auth = new AuthHandle({ url, optional, response: data, resolve, reject })
+    auth.verify()
+}
 
 /**
  * 必定要成功的Get请求, 否则一直弹出Error
@@ -112,47 +74,38 @@ function post(parameter, { resolve, reject }) {
  * @param {resolve, reject} promise 返回结果的方法
  */
 function reGetConfirm(parameter, { resolve, reject }) {
-    let awaitStackInterval = { resolve: () => {}, reject: () => {} }
+    let awaitStackInterval = { resolve: () => { }, reject: () => { } }
     const resolveHandle = data => {
-        toast.destroy()
         awaitStackInterval.resolve(data)
         resolve(data)
     }
     const rejectHandle = error => {
-        toast.destroy()
         awaitStackInterval.reject(error)
         reject(error)
     }
     const url = `${config.origin}${parameter.url}${utils.queryToUrl(parameter.query)}`
     const optional = { method: 'GET', headers: optionalHeaders() }
 
-    const fetch = () => {
-        toast.show()
-        window.fetch(url, optional)
-        .then(
-            response => response.json(),
-            error => consequencer.error(error)
-        )
-        .then(async data => {
-            if (data.result !== 1) {
-                toast.destroy()
-                const confirmInstance = await Confirm(`请求错误, 原因: ${data.message} \n 是否重新请求?`)
-                if (confirmInstance.result !== 1) return rejectHandle(confirmInstance.message)
-                fetch()
-            }
+    const fetchInterval = async () => {
+        const fetchInstance = await fetchHandle(url, optional)
+        if (fetchInstance.result !== 1) {
+            const confirmInstance = await await Confirm(`请求错误, 原因: ${fetchInstance.message} \n 是否重新请求?`)
+            if (confirmInstance.result !== 1) return rejectHandle(fetchInstance.message)
+            fetchInterval()
+        }
+        const data = fetchInstance.data
+        if (data.result !== 1) {
+            const confirmInstance = await Confirm(`请求错误, 原因: ${data.message} \n 是否重新请求?`)
+            if (confirmInstance.result !== 1) return rejectHandle(confirmInstance.message)
+            fetchInterval()
+        }
 
-            resolveHandle(data)
-        }).catch(async error => {
-            toast.destroy()
-            const confirmInstance = await await Confirm(`请求错误, 原因: ${error} \n 是否重新请求?`)
-            if (confirmInstance.result !== 1) return rejectHandle(error)
-            fetch()
-        })
+        resolveHandle(data)
     }
 
     return new Promise((awaitStackIntervalResolve, awaitStackIntervalReject) => {
         awaitStackInterval = { resolve: awaitStackIntervalResolve, reject: awaitStackIntervalReject }
-        fetch()
+        fetchInterval()
     }).catch(error => consequencer.error(`${error}`))
 }
 

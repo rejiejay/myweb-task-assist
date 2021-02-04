@@ -3,7 +3,9 @@
  */
 const code = {
     unauthorized: 1642,
-    unpermissions: 1564
+    unpermissions: 1564,
+    expired: 1403,
+    loginFailure: 1987
 }
 
 export default code

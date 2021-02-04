@@ -5,15 +5,19 @@
  */
 import task from './task'
 import tags from './tags'
+import auth from './auth'
+
 import utils from './utils'
 
 const UnitTest = {
     all: utils.methodHelper({
         ...task,
-        ...tags
+        ...tags,
+        ...auth
     }),
     tags: utils.methodHelper({ ...tags }),
-    task: utils.methodHelper({ ...task })
+    task: utils.methodHelper({ ...task }),
+    auth: utils.methodHelper({ ...auth })
 }
 
 export default UnitTest
