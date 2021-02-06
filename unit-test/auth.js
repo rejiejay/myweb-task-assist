@@ -22,7 +22,7 @@ const loginFirst = responseHanle => {
     controller.post_auth_login({ password: passwordFirst }, responseHanle, { headers })
 }
 
-const loginSecond = responseHanle => {
+const loginSecondErrorPassword = responseHanle => {
     let headers = {}
     headers[config.auth.uuid] = uuid
     controller.post_auth_login({ password: passwordSecond }, responseHanle, { headers })
@@ -34,10 +34,25 @@ const loginDifferentUsers = responseHanle => {
     controller.post_auth_login({ password: passwordFirst }, responseHanle, { headers })
 }
 
+const loginDifferentUsersErrorPassword = responseHanle => {
+    let headers = {}
+    headers[config.auth.uuid] = diffUUid
+    controller.post_auth_login({ password: passwordSecond }, responseHanle, { headers })
+}
+
+const loginSecondDifferentUsers = responseHanle => {
+    let headers = {}
+    headers[config.auth.uuid] = diffUUid
+    controller.post_auth_login({ password: passwordFirst }, responseHanle, { headers })
+}
+
 const tags = {
     getPermission: utils.resolveHandle(getPermission, { isShowResult: false }),
     loginFirst: utils.resolveHandle(loginFirst, { isShowResult: false }),
-    loginSecond: utils.resolveHandle(loginSecond, { isShowResult: false, expectedResultsCode: config.auth.loginFailure.code })
+    loginSecondErrorPassword: utils.resolveHandle(loginSecondErrorPassword, { isShowResult: false, expectedResultsCode: config.auth.loginFailure.code }),
+    loginDifferentUsers: utils.resolveHandle(loginDifferentUsers, { isShowResult: false, }),
+    loginDifferentUsersErrorPassword: utils.resolveHandle(loginDifferentUsersErrorPassword, { isShowResult: false, expectedResultsCode: config.auth.loginFailure.code }),
+    loginSecondDifferentUsers: utils.resolveHandle(loginSecondDifferentUsers, { isShowResult: false })
 }
 
 export default tags

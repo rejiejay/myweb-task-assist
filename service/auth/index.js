@@ -10,6 +10,7 @@ import ObjectHelper from './../../utils/object-helper'
  */
 let permissions = [
     // {
+    //     id: '',
     //     token: '',
     //     expirationTimestamp: 1,
     // }
@@ -22,6 +23,7 @@ if (process.env.NODE_ENV === 'development' && config.auth.value) permissions.pus
 
 /**
  * 获取用户权限
+ * For Auth 重复调用
  * @param {string} token 
  */
 const getPermission = async function getPermission({ token }) {
@@ -35,7 +37,7 @@ const getPermission = async function getPermission({ token }) {
     }
 
     /**
-     * 过滤过期超过一天的数据，数据库的过期的时间小于昨天
+     * 废弃过期超过一天的数据 = 数据库的过期的时间小于昨天
      */
     const expirationDay = new Date().getTime() - TimeHelper.dayTimestamp
     permissions = permissions.filter(permission => permission.expirationTimestamp >= expirationDay)
@@ -45,12 +47,31 @@ const getPermission = async function getPermission({ token }) {
      */
     const myPermission = permissions.filter(permission => permission.token === token)
 
+    // 无权限
     if (myPermission.length <= 0) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
     const expirationTimestamp = myPermission[0].expirationTimestamp
 
+    // 过期
     if (new Date().getTime() > expirationTimestamp) return consequencer.error(config.auth.expired.message, config.auth.expired.code)
 
     return consequencer.success(token)
+}
+
+const addPermission = (id = StringHelper.createRandomStr({ length: 17 })) => {
+    const token = buildToken()
+    const expirationTimestamp = new Date().getTime() + TimeHelper.dayTimestamp
+    const permission = { id, token, expirationTimestamp }
+    permissions.push(permission)
+    return permission
+}
+
+const getTokenByPermissionId = permissionId => {
+    const myPermission = permissions.find(permission => permission.id === permissionId)
+    if (!myPermission) {
+        const { token } = addPermission(permissionId)
+        return token
+    }
+    return myPermission.token
 }
 
 const buildToken = () => new Array(5).fill().map(() => StringHelper.createRandomStr({ length: 17 })).join('-')
@@ -58,6 +79,7 @@ const buildToken = () => new Array(5).fill().map(() => StringHelper.createRandom
 let user = {
     // uuid: {
     //     password,
+    //     permissionId, // 关联权限标识
     //     expiration, // 默认一周过期
     //     errorCount // 默认5次不允许
     // }
@@ -65,9 +87,9 @@ let user = {
 const login = async function login({ password, uuid }) {
     // 第一次登陆(必然是我)
     if (JSON.stringify(user) === '{}') {
-        const token = buildToken()
+        const { id, token } = addPermission()
         const expiration = new Date().getTime() + (TimeHelper.dayTimestamp * 7)
-        user[uuid] = { password, expiration, errorCount: 0 }
+        user[uuid] = { password, permissionId: id, expiration, errorCount: 0 }
         return consequencer.success(token)
     }
 
@@ -79,7 +101,8 @@ const login = async function login({ password, uuid }) {
 
         if (!user[uuid]) return consequencer.error('不存在此帐户', config.auth.loginFailure.code)
 
-        return consequencer.success(user[uuid].token)
+        const token = getTokenByPermissionId(user[uuid].permissionId)
+        return consequencer.success(token)
     }
 
     const userInstance = user[uuid]
@@ -90,9 +113,12 @@ const login = async function login({ password, uuid }) {
         userInstance.errorCount++
         return consequencer.error('密码错误', config.auth.loginFailure.code)
     }
+
+    const token = getTokenByPermissionId(userInstance.permissionId)
+    return consequencer.success(token)
 }
 
-const refresh = async function refresh(token) {}
+const refresh = async function refresh(token) { }
 
 const auth = {
     getPermission,
