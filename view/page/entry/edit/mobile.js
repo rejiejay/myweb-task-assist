@@ -1,4 +1,4 @@
-import timeTransformers from './../../../../utils/time-transformers'
+import TimeHelper from './../../../../utils/time-helper'
 
 import CommonlyListItem from './../../../components/mobile/commonly-list-item'
 import CommonlyInputText from './../../../components/mobile/commonly-input-text'
@@ -74,8 +74,8 @@ export class TaskEdit extends React.Component {
     renderEffectTimestamp = () => {
         const { minEffectTimestamp, maxEffectTimestamp } = this.state
         const effectTimestampArray = []
-        if (!!minEffectTimestamp) effectTimestampArray.push(`min ${timeTransformers.dateToYYYYmmDDhhMM(new Date(+minEffectTimestamp))}`)
-        if (!!maxEffectTimestamp) effectTimestampArray.push(`max ${timeTransformers.dateToYYYYmmDDhhMM(new Date(+maxEffectTimestamp))}`)
+        if (!!minEffectTimestamp) effectTimestampArray.push(`min ${TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+minEffectTimestamp))}`)
+        if (!!maxEffectTimestamp) effectTimestampArray.push(`max ${TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+maxEffectTimestamp))}`)
 
         return effectTimestampArray.join(' - ')
     }

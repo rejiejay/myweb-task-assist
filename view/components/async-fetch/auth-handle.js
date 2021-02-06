@@ -57,7 +57,8 @@ class AuthHandle {
 
     refreshAuth = async function refreshAuth() {
         const url = `${config.origin}${config.auth.url.refresh}`
-        const optional = { method: 'POST', body: '' }
+        const token = Storage.auth.getToken()
+        const optional = { method: 'POST', body: JSON.stringify({ token }) }
         const fetchInstance = await fetchHandle(url, optional)
         if (fetchInstance.result !== 1) return this.reject(this.response)
         const data = fetchInstance.data

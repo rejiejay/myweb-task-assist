@@ -1,6 +1,6 @@
 import loadScript from './../../utils/loadScript'
 import consequencer from './../../../utils/consequencer'
-import timeTransformers from './../../../utils/time-transformers'
+import TimeHelper from './../../../utils/time-helper'
 import Confirm from './../confirm'
 
 const DatePicker = ({scriptUrl, options}) => new Promise(async(resolve, reject) => {
@@ -40,7 +40,7 @@ const DatePicker = ({scriptUrl, options}) => new Promise(async(resolve, reject) 
         endYear,
         lang: { title },
         confirm: date => {
-            const timestamp = timeTransformers.YYYYmmDDhhMMToTimestamp(date)
+            const timestamp = TimeHelper.transformers.YYYYmmDDhhMMToTimestamp(date)
             resolve(consequencer.success(timestamp))
             destroy()
         },

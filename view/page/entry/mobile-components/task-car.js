@@ -1,6 +1,6 @@
 import jsxStyle from './../../../components/jsx-style'
 import service from './../service'
-import timeTransformers from './../../../../utils/time-transformers'
+import TimeHelper from './../../../../utils/time-helper'
 import CONSTS from './../../../../library/consts'
 
 const NotRequiredDescription = ({ field, description }) => {
@@ -35,8 +35,8 @@ class CardAttachmentDetail extends React.Component {
         const field = 'Effect Time'
 
         if (!data.minEffectTimestamp && !data.maxEffectTimestamp) return
-        const minEffectTime = !!data.minEffectTimestamp ? timeTransformers.dateToYYYYmmDDhhMM(new Date(+data.minEffectTimestamp)) : ''
-        const maxEffectTime = !!data.maxEffectTimestamp ? timeTransformers.dateToYYYYmmDDhhMM(new Date(+data.maxEffectTimestamp)) : ''
+        const minEffectTime = !!data.minEffectTimestamp ? TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+data.minEffectTimestamp)) : ''
+        const maxEffectTime = !!data.maxEffectTimestamp ? TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+data.maxEffectTimestamp)) : ''
 
         let description = ''
         if (!!data.minEffectTimestamp) description = `${minEffectTime}`

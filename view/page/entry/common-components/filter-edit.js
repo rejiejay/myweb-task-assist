@@ -2,7 +2,7 @@ import CommonlyListItem from './../../../components/mobile/commonly-list-item'
 import Button from './../../../components/button'
 import ActionSheet from './../../../components/action-sheet'
 import jsxStyle from './../../../components/jsx-style'
-import timeTransformers from './../../../../utils/time-transformers'
+import TimeHelper from './../../../../utils/time-helper'
 import consequencer from './../../../../utils/consequencer'
 import DatePicker from './../../../components/date-picker-sheet'
 import FullscreenIframe from './../../../components/fullscreen-iframe'
@@ -219,7 +219,7 @@ export class FilterEdit extends React.Component {
                             style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
                             onClick={() => this.effectTimePickHandle('minEffectTimestampFilter')}
                             isError={minEffectTimestampFilter && maxEffectTimestampFilter && (minEffectTimestampFilter >= maxEffectTimestampFilter)}
-                        >{minEffectTimestampFilter ? timeTransformers.dateToYYYYmmDDhhMM(new Date(minEffectTimestampFilter)) : 'Start Time'}</Button>
+                        >{minEffectTimestampFilter ? TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(minEffectTimestampFilter)) : 'Start Time'}</Button>
                         <Button
                             style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
                             onClick={() => this.setState({ minEffectTimestampFilter: null })}
@@ -232,7 +232,7 @@ export class FilterEdit extends React.Component {
                             style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
                             onClick={() => this.effectTimePickHandle('maxEffectTimestampFilter')}
                             isError={minEffectTimestampFilter && maxEffectTimestampFilter && (maxEffectTimestampFilter <= minEffectTimestampFilter)}
-                        >{maxEffectTimestampFilter ? timeTransformers.dateToYYYYmmDDhhMM(new Date(maxEffectTimestampFilter)) : 'End Time'}</Button>
+                        >{maxEffectTimestampFilter ? TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(maxEffectTimestampFilter)) : 'End Time'}</Button>
                         <Button
                             style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
                             onClick={() => this.setState({ maxEffectTimestampFilter: null })}
