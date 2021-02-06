@@ -1,22 +1,33 @@
 /**
  * controller task 对外方法: 所有方法对外
  */
+import consequencer from './../../utils/consequencer'
 import service from './../../service/index.js'
 import config from './../../config'
 
-const login = async function login({ password }, responseHanle, request) {
+const simpleVerifyUUid = request => {
     const headers = request.headers
+    if (!headers) return consequencer.error('非法登陆')
     const uuid = headers[config.auth.uuid]
-    if (!password) return responseHanle.failure('password 不能为空')
-    if (!uuid) return responseHanle.failure('非法登陆')
-    if (Object.prototype.toString.call(uuid) !== '[object String]') return responseHanle.failure('非法登陆')
+    if (!uuid) return consequencer.error('非法登陆')
+    if (Object.prototype.toString.call(uuid) !== '[object String]') return consequencer.error('非法登陆')
     const simpleVerify = uuid.split('-')
-    if (simpleVerify.length !== 5) return responseHanle.failure('非法登陆')
+    if (simpleVerify.length !== 5) return consequencer.error('非法登陆')
 
     for (let index = 0; index < simpleVerify.length; index++) {
         const uuidElement = simpleVerify[index]
-        if (uuidElement.length !== 17) return responseHanle.failure('非法登陆')
+        if (uuidElement.length !== 17) return consequencer.error('非法登陆')
     }
+
+    return consequencer.success(uuid)
+}
+
+const login = async function login({ password }, responseHanle, request) {
+    if (!password) return responseHanle.failure('password 不能为空')
+
+    const verifyInstance = simpleVerifyUUid(request)
+    if (verifyInstance.result !== 1) return responseHanle.failure(verifyInstance.message)
+    const uuid = verifyInstance.data
 
     const result = await service.auth.login({ password, uuid })
     responseHanle.json(result)
@@ -25,7 +36,11 @@ const login = async function login({ password }, responseHanle, request) {
 const refresh = async function refresh({ token }, responseHanle, request) {
     if (!token) return responseHanle.failure('token 不能为空')
 
-    const result = await service.auth.refresh(token)
+    const verifyInstance = simpleVerifyUUid(request)
+    if (verifyInstance.result !== 1) return responseHanle.failure(verifyInstance.message)
+    const uuid = verifyInstance.data
+
+    const result = await service.auth.refresh({ token, uuid })
     responseHanle.json(result)
 }
 

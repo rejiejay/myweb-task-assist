@@ -21,12 +21,7 @@ let permissions = [
  */
 if (process.env.NODE_ENV === 'development' && config.auth.value) permissions.push({ token: config.auth.value, expirationTimestamp: new Date(2099, 11, 17, 3, 24, 0).getTime() })
 
-/**
- * 获取用户权限
- * For Auth 重复调用
- * @param {string} token 
- */
-const getPermission = async function getPermission({ token }) {
+const simpleVerifyToken = token => {
     if (Object.prototype.toString.call(token) !== '[object String]') return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
     const simpleVerify = token.split('-')
     if (simpleVerify.length !== 5) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
@@ -35,6 +30,18 @@ const getPermission = async function getPermission({ token }) {
         const tokenElement = simpleVerify[index]
         if (tokenElement.length !== 17) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
     }
+
+    return consequencer.success()
+}
+
+/**
+ * 获取用户权限
+ * For Auth 重复调用
+ * @param {string} token 
+ */
+const getPermission = async function getPermission({ token }) {
+    const simpleVerifyInstance = simpleVerifyToken(token)
+    if (simpleVerifyInstance.result !== 1) return simpleVerifyInstance
 
     /**
      * 废弃过期超过一天的数据 = 数据库的过期的时间小于昨天
@@ -118,7 +125,32 @@ const login = async function login({ password, uuid }) {
     return consequencer.success(token)
 }
 
-const refresh = async function refresh(token) { }
+/**
+ * 刷新凭证
+ */
+const refresh = async function refresh({ token, uuid }) {
+    const simpleVerifyInstance = simpleVerifyToken(token)
+    if (simpleVerifyInstance.result !== 1) return simpleVerifyInstance
+
+    let myPermission = permissions.find(permission => permission.token === token)
+    if (!myPermission) {
+        /**
+         * 找不到权限, 说明可能 token 太过于久了, 被删除, 让他重新登录吧
+         */
+        return consequencer.error(config.auth.expired.message, config.auth.expired.code)
+    }
+
+    myPermission.expirationTimestamp = new Date().getTime() + TimeHelper.dayTimestamp
+    const newToken = buildToken()
+    myPermission.token = newToken
+
+    permissions = permissions.map(permission => {
+        if (permission.id === myPermission.id) return myPermission
+        return permission
+    })
+
+    return consequencer.success(newToken)
+}
 
 const auth = {
     getPermission,
