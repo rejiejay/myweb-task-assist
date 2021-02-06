@@ -14,7 +14,7 @@ const setToken = token => window.localStorage.setItem(tokenKey, token)
 
 const getUUID = () => {
     let uuid = window.localStorage.getItem(uuidKey)
-    if (uuid && uuid !== 'null') return uuid
+    if (uuid && uuid !== 'null') return { uuidKey, uuid }
 
     uuid = new Array(5).fill().map(() => StringHelper.createRandomStr({ length: 17 })).join('-')
     window.localStorage.setItem(uuidKey, uuid)
