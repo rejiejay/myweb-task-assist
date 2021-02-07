@@ -17,11 +17,14 @@ const findTaskIdsByField = async responseHanle => {
 
 const addTaskTagByField = responseHanle => controller.post_tag_add({ tagName: 'testAdd' }, responseHanle)
 
+const editTaskTagByField = responseHanle => controller.post_tag_edit({ id: 1, name: 'testEdit' }, responseHanle)
+
 const tags = {
     getTaskTagsById: utils.resolveHandle(getTaskTagsById, { isShowResult: false }),
     listAllTaskTags: utils.resolveHandle(listAllTaskTags, { isShowResult: false }),
     findTaskIdsByField: utils.resolveHandle(findTaskIdsByField, { isShowResult: false }),
-    addTaskTagByField: utils.resolveHandle(addTaskTagByField, { isShowResult: false })
+    addTaskTagByField: utils.resolveHandle(addTaskTagByField, { isShowResult: false }),
+    editTaskTagByField: utils.resolveHandle(editTaskTagByField, { isShowResult: false })
 }
 
 export default tags

@@ -30,10 +30,20 @@ const addTagByName = async function addTagByName({ tagName }, responseHanle) {
     responseHanle.json(result)
 }
 
+const editTag = async function editTag({ id, name }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isId(id, 'tagId')
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+    if (!name) return responseHanle.failure('tagName 不能为空')
+
+    const result = await service.tag.editTag({ id, name })
+    responseHanle.json(result)
+}
+
 const Tag = {
     get_tag_id: getTaskTagsById,
     get_tag_all: listAllTaskTags,
-    post_tag_add: addTagByName
+    post_tag_add: addTagByName,
+    post_tag_edit: editTag
 }
 
 export default Tag

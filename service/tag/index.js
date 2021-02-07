@@ -63,7 +63,7 @@ const addByTagName = async function addByTagName(name) {
     const setTagsInstance = await tableTags.add({ name })
     if (setTagsInstance.result !== 1) return setTagsInstance
 
-    const getTagsInstance = await this.getTagIdsByNames([ name ])
+    const getTagsInstance = await this.getTagIdsByNames([name])
     if (getTagsInstance.result !== 1) return getTagsInstance
     const tagIds = getTagsInstance.data
 
@@ -72,12 +72,19 @@ const addByTagName = async function addByTagName(name) {
     return consequencer.success(tagIds[0])
 }
 
+const editTag = async function editTag({ id, name }) {
+    const tagsUpdateInstance = await tableTags.updata(id, { name })
+    if (tagsUpdateInstance.result !== 1) return tagsUpdateInstance
+    return tagsUpdateInstance
+}
+
 const tag = {
     getTaskTagsById,
     listAllTaskTags,
     getTagIdsByNames,
     findTaskIdsByField,
-    addByTagName
+    addByTagName,
+    editTag
 }
 
 export default tag

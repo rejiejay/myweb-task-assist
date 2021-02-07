@@ -8,8 +8,8 @@ import Button from './../../../components/button'
 import service from './../service'
 
 const props = {
-    resolve: () => {},
-    reject: () => {}
+    resolve: () => { },
+    reject: () => { }
 }
 
 export class TagEdit extends React.Component {
@@ -42,12 +42,28 @@ export class TagEdit extends React.Component {
         if (addInstance.result !== 1) return
         const newTag = addInstance.data
 
-        this.setState({ tagOptions: [ ...tagOptions, { value: newTag.id, label: newTag.name } ] })
+        this.setState({ tagOptions: [...tagOptions, { value: newTag.id, label: newTag.name }] })
     }
 
-    editHandle = async () => {}
+    editHandle = async ({ id, name }) => {
+        const { tagOptions } = this.state
+        const promptInstance = await Prompt({ title: '请输入新增tags名字', placeholder: '请输入新增tags名字', defaultValue: name })
+        if (promptInstance.result !== 1) return
 
-    deleteHandle = async () => {}
+        const tagName = promptInstance.data
+        const addInstance = await service.editTag({ id, name: tagName })
+        if (addInstance.result !== 1) return
+        const newTag = addInstance.data
+
+        this.setState({
+            tagOptions: tagOptions.map(option => {
+                if (option.value === id) return { value: newTag.id, label: newTag.name }
+                return option
+            })
+        })
+    }
+
+    deleteHandle = async () => { }
 
     confirmResolveHandle = async () => {
         const { resolve } = this.props
@@ -64,7 +80,7 @@ export class TagEdit extends React.Component {
         const { tagOptions } = this.state
 
         return <div className='tag-edit-container' style={{ padding: '25px 15px 15px 15px', backgroundColor: '#f1f1f1' }}>
-            <div style={{ paddingBottom: '15px' }}>{tagOptions.map((tag, key) => 
+            <div style={{ paddingBottom: '15px' }}>{tagOptions.map((tag, key) =>
                 <TagEditItem key={key}
                     editHandle={() => this.editHandle({ id: tag.value, name: tag.label })}
                     deleteHandle={() => this.deleteHandle({ id: tag.value })}
@@ -72,7 +88,7 @@ export class TagEdit extends React.Component {
             )}</div>
 
             <Button onClick={this.addTagHandle}>新增标签</Button>
-            
+
             <div style={{ height: jsxStyle.client.heightPx() }} />
             <CommonlyBottomOperate
                 leftElement={[{

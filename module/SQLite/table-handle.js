@@ -119,7 +119,7 @@ class TableHandle {
         return new Promise(async (resolve, reject) => {
             const findInstance = await self.find(id)
             if (findInstance.result !== 1) return reject(findInstance)
-            const find = queryInstance.data
+            const find = findInstance.data
 
             const updateInstance = await self.query(`UPDATE ${self.table} SET ${self.sqlHandle.dataToUpdateSql({ oldVal: find, newVal: data })} WHERE id=${id}`)
             if (updateInstance.result !== 1) return reject(updateInstance)
