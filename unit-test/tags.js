@@ -19,12 +19,15 @@ const addTaskTagByField = responseHanle => controller.post_tag_add({ tagName: 't
 
 const editTaskTagByField = responseHanle => controller.post_tag_edit({ id: 1, name: 'testEdit' }, responseHanle)
 
+const deleteTaskTagByField = responseHanle => controller.post_tag_delete({ id: 1 }, responseHanle)
+
 const tags = {
     getTaskTagsById: utils.resolveHandle(getTaskTagsById, { isShowResult: false }),
     listAllTaskTags: utils.resolveHandle(listAllTaskTags, { isShowResult: false }),
     findTaskIdsByField: utils.resolveHandle(findTaskIdsByField, { isShowResult: false }),
     addTaskTagByField: utils.resolveHandle(addTaskTagByField, { isShowResult: false }),
-    editTaskTagByField: utils.resolveHandle(editTaskTagByField, { isShowResult: false })
+    editTaskTagByField: utils.resolveHandle(editTaskTagByField, { isShowResult: false }),
+    deleteTaskTagByField: utils.resolveHandle(deleteTaskTagByField, { isShowResult: false })
 }
 
 export default tags

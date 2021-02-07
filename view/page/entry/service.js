@@ -49,13 +49,20 @@ const editTag = async ({ id, name }) => await fetch.post({
     isShowError: true
 })
 
+const deleteTag = async ({ id }) => await fetch.post({
+    url: 'tag/delete',
+    body: { id },
+    isShowError: true
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
     getAllTaskTagInfor,
     getAllLongTermTask,
     addTag,
-    editTag
+    editTag,
+    deleteTag
 }
 
 export default service

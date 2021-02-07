@@ -78,13 +78,36 @@ const editTag = async function editTag({ id, name }) {
     return tagsUpdateInstance
 }
 
+const deleteTag = async function deleteTag({ id }) {
+    const findTagInstance = await tableTags.find(id)
+    if (findTagInstance.result !== 1) return findTagInstance
+
+    const deleteTagInstance = await tableTags.del(id)
+    if (deleteTagInstance.result !== 1) return deleteTagInstance
+
+    const sqlHandle = new SQLite.SqlHandle()
+    sqlHandle.addAndFilterSql(`tagsId = ${id}`)
+    const relationalTagInstance = await tableTagRelational.list(sqlHandle.toSqlString())
+    if (relationalTagInstance.result !== 1) return relationalTagInstance
+    const relationalTags = relationalTagInstance.data
+
+    for (let index = 0; index < relationalTags.length; index++) {
+        const relationalElement = relationalTags[index]
+        const deleteRelationalInstance = await tableTagRelational.del(relationalElement.id)
+        if (deleteRelationalInstance.result !== 1) return deleteRelationalInstance
+    }
+
+    return consequencer.success()
+}
+
 const tag = {
     getTaskTagsById,
     listAllTaskTags,
     getTagIdsByNames,
     findTaskIdsByField,
     addByTagName,
-    editTag
+    editTag,
+    deleteTag
 }
 
 export default tag

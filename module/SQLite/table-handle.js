@@ -104,7 +104,7 @@ class TableHandle {
         return new Promise(async (resolve, reject) => {
             const findInstance = await self.find(id)
             if (findInstance.result !== 1) return reject(findInstance)
-            const find = queryInstance.data
+            const find = findInstance.data
 
             const deleteInstance = await self.query(`DELETE FROM ${self.table} WHERE id=${id}`)
             if (deleteInstance.result !== 1) return reject(deleteInstance)

@@ -2,6 +2,7 @@ import consequencer from './../../../../utils/consequencer'
 
 import CommonlyBottomOperate from './../../../components/mobile/commonly-bottom-operate'
 import Prompt from './../../../components/prompt'
+import Confirm from './../../../components/confirm'
 import jsxStyle from './../../../components/jsx-style'
 import Button from './../../../components/button'
 
@@ -24,6 +25,10 @@ export class TagEdit extends React.Component {
     }
 
     async componentDidMount() {
+        this.initAllTaskTagInfor()
+    }
+
+    async initAllTaskTagInfor() {
         const fetchInstance = await service.getAllTaskTagInfor()
         if (fetchInstance.result !== 1) return
         const tags = fetchInstance.data
@@ -32,38 +37,36 @@ export class TagEdit extends React.Component {
     }
 
     addTagHandle = async () => {
-        const { tagOptions } = this.state
-
         const promptInstance = await Prompt({ title: '请输入新增tags名字', placeholder: '请输入新增tags名字' })
         if (promptInstance.result !== 1) return
 
         const tagName = promptInstance.data
         const addInstance = await service.addTag(tagName)
         if (addInstance.result !== 1) return
-        const newTag = addInstance.data
 
-        this.setState({ tagOptions: [...tagOptions, { value: newTag.id, label: newTag.name }] })
+        this.initAllTaskTagInfor()
     }
 
     editHandle = async ({ id, name }) => {
-        const { tagOptions } = this.state
         const promptInstance = await Prompt({ title: '请输入新增tags名字', placeholder: '请输入新增tags名字', defaultValue: name })
         if (promptInstance.result !== 1) return
 
         const tagName = promptInstance.data
         const addInstance = await service.editTag({ id, name: tagName })
         if (addInstance.result !== 1) return
-        const newTag = addInstance.data
 
-        this.setState({
-            tagOptions: tagOptions.map(option => {
-                if (option.value === id) return { value: newTag.id, label: newTag.name }
-                return option
-            })
-        })
+        this.initAllTaskTagInfor()
     }
 
-    deleteHandle = async () => { }
+    deleteHandle = async ({ id }) => {
+        const confirmInstance = await Confirm('确定要删除这个标签吗?')
+        if (confirmInstance.result !== 1) return
+
+        const deleteInstance = await service.deleteTag({ id })
+        if (deleteInstance.result !== 1) return
+
+        this.initAllTaskTagInfor()
+    }
 
     confirmResolveHandle = async () => {
         const { resolve } = this.props

@@ -39,11 +39,20 @@ const editTag = async function editTag({ id, name }, responseHanle) {
     responseHanle.json(result)
 }
 
+const deleteTag = async function deleteTag({ id }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isId(id, 'tagId')
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const result = await service.tag.deleteTag({ id })
+    responseHanle.json(result)
+}
+
 const Tag = {
     get_tag_id: getTaskTagsById,
     get_tag_all: listAllTaskTags,
     post_tag_add: addTagByName,
-    post_tag_edit: editTag
+    post_tag_edit: editTag,
+    post_tag_delete: deleteTag
 }
 
 export default Tag
