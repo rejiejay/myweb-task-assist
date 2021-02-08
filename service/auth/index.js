@@ -3,6 +3,7 @@ import config from './../../config'
 import StringHelper from './../../utils/string-helper'
 import TimeHelper from './../../utils/time-helper'
 import ObjectHelper from './../../utils/object-helper'
+import valuesStructuresVerify from './../../utils/values-structures-verify'
 
 /**
  * 权限
@@ -22,7 +23,9 @@ let permissions = [
 if (process.env.NODE_ENV === 'development' && config.auth.value) permissions.push({ token: config.auth.value, expirationTimestamp: new Date(2099, 11, 17, 3, 24, 0).getTime() })
 
 const simpleVerifyToken = token => {
-    if (Object.prototype.toString.call(token) !== '[object String]') return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
+    const isStringInstance = valuesStructuresVerify.isStringNil(token)
+    if (isStringInstance.result !== 1) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
+
     const simpleVerify = token.split('-')
     if (simpleVerify.length !== 5) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
 

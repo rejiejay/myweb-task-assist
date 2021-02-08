@@ -100,6 +100,11 @@ const deleteTag = async function deleteTag({ id }) {
     return consequencer.success()
 }
 
+const addTagRelational = async function addTagRelational({ taskId, tagsId }) {
+    const relationalTagInstance = await tableTagRelational.add({ taskId, tagsId })
+    return relationalTagInstance
+}
+
 const tag = {
     getTaskTagsById,
     listAllTaskTags,
@@ -107,7 +112,8 @@ const tag = {
     findTaskIdsByField,
     addByTagName,
     editTag,
-    deleteTag
+    deleteTag,
+    addTagRelational
 }
 
 export default tag

@@ -50,8 +50,61 @@ const getTaskList = async function getTaskList({ longTermId, tags, minEffectTime
     responseHanle.success(result)
 }
 
+const addTask = async function addTask({ title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority }, responseHanle) {
+    if (!title) return responseHanle.failure('title can`t Nil')
+    if (!content) return responseHanle.failure('content can`t Nil')
+    const verifys = [
+        { value: title, field: 'title', method: 'isStringNil' },
+        { value: content, field: 'content', method: 'isStringNil' },
+        { value: specific, field: 'specific', method: 'isString' },
+        { value: measurable, field: 'measurable', method: 'isString' },
+        { value: attainable, field: 'attainable', method: 'isString' },
+        { value: relevant, field: 'relevant', method: 'isString' },
+        { value: timeBound, field: 'timeBound', method: 'isString' },
+        { value: longTermId, field: 'longTermId', method: 'isId' },
+        { value: tagsId, field: 'tagsId', method: 'isArray' },
+        { value: minEffectTimestamp, field: 'minEffectTimestamp', method: 'isTimestamp' },
+        { value: maxEffectTimestamp, field: 'maxEffectTimestamp', method: 'isTimestamp' },
+        { value: status, field: 'status', method: 'isId' },
+        { value: priority, field: 'priority', method: 'isId' }
+    ]
+    const verifyInstance = valuesStructuresVerify.group(verifys)
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const addInstance = await service.task.add({ title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority })
+    responseHanle.json(addInstance)
+}
+
+const editTask = async function editTask({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority }, responseHanle) {
+    if (!id) return responseHanle.failure('id can`t Nil')
+    if (!title) return responseHanle.failure('title can`t Nil')
+    if (!content) return responseHanle.failure('content can`t Nil')
+    const verifys = [
+        { value: title, field: 'title', method: 'isStringNil' },
+        { value: content, field: 'content', method: 'isStringNil' },
+        { value: specific, field: 'specific', method: 'isString' },
+        { value: measurable, field: 'measurable', method: 'isString' },
+        { value: attainable, field: 'attainable', method: 'isString' },
+        { value: relevant, field: 'relevant', method: 'isString' },
+        { value: timeBound, field: 'timeBound', method: 'isString' },
+        { value: longTermId, field: 'longTermId', method: 'isId' },
+        { value: tagsId, field: 'tagsId', method: 'isArray' },
+        { value: minEffectTimestamp, field: 'minEffectTimestamp', method: 'isTimestamp' },
+        { value: maxEffectTimestamp, field: 'maxEffectTimestamp', method: 'isTimestamp' },
+        { value: status, field: 'status', method: 'isId' },
+        { value: priority, field: 'priority', method: 'isId' }
+    ]
+    const verifyInstance = valuesStructuresVerify.group(verifys)
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const editInstance = await service.task.edit({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority })
+    responseHanle.json(editInstance)
+}
+
 const Task = {
-    get_task_list: getTaskList
+    get_task_list: getTaskList,
+    post_task_add: addTask,
+    post_task_edit: editTask
 }
 
 export default Task

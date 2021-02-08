@@ -88,6 +88,17 @@ const isBooleanString = function isBooleanString(boolean, fieldName = 'it') {
     return consequencer.error(`${fieldName} is Not boolean string`)
 }
 
+const isStringNil = function isStringNil(str, fieldName = 'it') {
+    if (!str) return consequencer.error(`${fieldName} is Nil`)
+    if (Object.prototype.toString.call(str) !== '[object String]') return consequencer.error(`${fieldName} is Not String`)
+    return consequencer.success(str)
+}
+
+const isString = function isString(str, fieldName = 'it') {
+    if (Object.prototype.toString.call(str) !== '[object String]') return consequencer.error(`${fieldName} is Not String`)
+    return consequencer.success(str)
+}
+
 /**
  * Group verification packaging method
  */
@@ -122,6 +133,8 @@ const valuesStructuresVerify = {
     isArrayNilString,
     isTimestamp,
     isBooleanString,
+    isStringNil,
+    isString,
     group
 }
 

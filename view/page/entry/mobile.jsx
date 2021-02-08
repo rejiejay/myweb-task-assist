@@ -16,7 +16,9 @@ export class MobileComponent extends React.Component {
         this.state = {
             isShowBigCard: false,
 
-            list: [],
+            list: [
+                // service\task\data-access-object.js
+            ],
             count: 0,
             pageNo: 1,
             pageSize: CONSTS.defaultPageSize,
@@ -26,11 +28,17 @@ export class MobileComponent extends React.Component {
         }
 
         this.filter = {
-            tags: [],
+            tags: [
+                // { id, name }
+            ],
             minEffectTimestamp: null,
             maxEffectTimestamp: null,
-            multipleStatus: [],
-            multiplePriority: []
+            multipleStatus: [
+                // library\consts\task.js -> status
+            ],
+            multiplePriority: [
+                // library\consts\task.js -> priority
+            ]
         }
     }
 
@@ -48,14 +56,14 @@ export class MobileComponent extends React.Component {
         let list = fetch.list
 
         if (pageNo > 1 && sort.value !== 2) list = this.state.list.concat(fetch.list)
-        if (sort.value === 2) list = ArrayHelper.uniqueDeduplicationByKey({ array: this.state.list.concat(fetch.list), key: 'id' }) 
+        if (sort.value === 2) list = ArrayHelper.uniqueDeduplicationByKey({ array: this.state.list.concat(fetch.list), key: 'id' })
 
         this.setState({ list, count: fetch.count })
     }
 
     selectSortHandle = async () => {
         const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.sort)
-        const selectInstance = await ActionSheet({  title: '请选择排序', options })
+        const selectInstance = await ActionSheet({ title: '请选择排序', options })
         if (selectInstance.result !== 1) return
         const sort = selectInstance.data
 

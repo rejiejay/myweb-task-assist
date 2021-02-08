@@ -13,12 +13,12 @@ import CONSTS from './../../../../library/consts'
 import service from './../service'
 
 const props = {
-    resolve: () => {},
-    reject: () => {},
+    resolve: () => { },
+    reject: () => { },
     isMultipleFilter: false,
     initFilter: {
         tags: [
-            // "exam", "love"
+            // { id, name }
         ],
         longTerm: { id: null, title: '' },
         minEffectTimestamp: null,
@@ -39,16 +39,26 @@ export class FilterEdit extends React.Component {
         super(props)
 
         this.state = {
-            tagOptions: [],
-            tagFilter: [],
-            longTermOptions: [],
+            tagOptions: [
+                // { value: null, label: null }
+            ],
+            tagFilter: [
+                // { id, name }
+            ],
+            longTermOptions: [
+                // { value: null, label: null }
+            ],
             longTermFilter: { id: null, title: '' },
             minEffectTimestampFilter: null,
             maxEffectTimestampFilter: null,
             statusFilter: { value: null, label: null },
-            statusMultipleFilter: [],
+            statusMultipleFilter: [
+                // 1
+            ],
             priorityFilter: { value: null, label: null },
-            priorityMultipleFilter: []
+            priorityMultipleFilter: [
+                // 1
+            ]
         }
     }
 
@@ -63,7 +73,7 @@ export class FilterEdit extends React.Component {
         if (fetchInstance.result !== 1) return
         const tags = fetchInstance.data
 
-        this.setState({ tagOptions: tags.map(({ name }) => ({ value: name, label: name })) })
+        this.setState({ tagOptions: tags.map(({ id, name }) => ({ value: id, label: name })) })
     }
 
     initTaskFilter() {
@@ -120,7 +130,7 @@ export class FilterEdit extends React.Component {
         const { tagOptions } = this.state
         const selectInstance = await ActionSheet({ title: '请选择需要过滤的标签', options: tagOptions, isMultiple: true })
         if (selectInstance.result !== 1) return
-        const tagFilter = selectInstance.data.map(tags => tags.value)
+        const tagFilter = selectInstance.data.map(tag => ({ id: tag.value, name: tag.label }))
         this.setState({ tagFilter })
     }
 
@@ -161,7 +171,7 @@ export class FilterEdit extends React.Component {
             const selectInstance = await FullscreenIframe({
                 Element: TagEdit,
                 className: 'mobile-device-task-tag-edit',
-                props: { }
+                props: {}
             })
 
             if (selectInstance.result !== 1) return
@@ -249,7 +259,7 @@ export class FilterEdit extends React.Component {
                         <Button
                             style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
                             onClick={this.selectTagFilterHandle}
-                        >{tagFilter.length > 0 ? tagFilter.join('、') : '请选择需要过滤的标签'}</Button>
+                        >{tagFilter.length > 0 ? tagFilter.map(tag => tag.name).join('、') : '请选择需要过滤的标签'}</Button>
                         <Button
                             style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
                             onClick={this.tagOptionManage}

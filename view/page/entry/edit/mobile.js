@@ -1,4 +1,5 @@
 import TimeHelper from './../../../../utils/time-helper'
+import consequencer from './../../../../utils/consequencer'
 
 import CommonlyListItem from './../../../components/mobile/commonly-list-item'
 import CommonlyInputText from './../../../components/mobile/commonly-input-text'
@@ -6,10 +7,13 @@ import CommonlyBottomOperate from './../../../components/mobile/commonly-bottom-
 import Button from './../../../components/button'
 import toast from './../../../components/toast'
 import FullscreenIframe from './../../../components/fullscreen-iframe'
+import Confirm from './../../../components/confirm'
+
+import service from './../service'
 
 const props = {
-    resolve: () => {},
-    reject: () => {},
+    resolve: () => { },
+    reject: () => { },
     id: null,
     longTerm: { id: null, title: '' },
     tags: [
@@ -31,11 +35,13 @@ export class TaskEdit extends React.Component {
             timeBound: '',
 
             longTerm: { id: null, title: '' },
-            tags: [],
+            tags: [
+                // { id, name }
+            ],
             minEffectTimestamp: null,
             maxEffectTimestamp: null,
             status: { value: null, label: null },
-            priority: { value: null, label: null },
+            priority: { value: null, label: null }
         }
     }
 
@@ -68,7 +74,6 @@ export class TaskEdit extends React.Component {
                 priority: filter.priorityFilter
             })
         })
-
     }
 
     renderEffectTimestamp = () => {
@@ -78,6 +83,35 @@ export class TaskEdit extends React.Component {
         if (!!maxEffectTimestamp) effectTimestampArray.push(`max ${TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+maxEffectTimestamp))}`)
 
         return effectTimestampArray.join(' - ')
+    }
+
+    confirmHandle = async () => {
+        const { id, resolve } = this.props
+        const isEdit = !!id
+
+        const {
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
+        } = this.state
+
+        if (!title) return toast.show('标题不能为空')
+        if (!content) return toast.show('内容不能为空')
+
+        const confirmInstance = await Confirm('确认要提交吗?')
+        if (confirmInstance.result !== 1) return
+
+        let submitData = { title, content, specific, measurable, attainable, relevant, timeBound }
+        if (!!longTerm.id) submitData.longTermId = longTerm.id
+        if (!!minEffectTimestamp) submitData.minEffectTimestamp = minEffectTimestamp
+        if (!!maxEffectTimestamp) submitData.maxEffectTimestamp = maxEffectTimestamp
+        if (tags.length > 0) submitData.tagsId = tags.map(tag => tag.id)
+        if (status.length > 0) submitData.status = status
+        if (priority.length > 0) submitData.priority = priority
+
+        const addInstance = await isEdit ? service.editTask({ id, ...submitData }) : service.addTask(submitData)
+        if (addInstance.result !== 1) return Confirm(`${isEdit ? '编辑' : '添加'}任务失败, 原因: ${addInstance.message}`)
+
+        resolve(consequencer.success(addInstance.data))
     }
 
     render() {
@@ -195,11 +229,11 @@ export class TaskEdit extends React.Component {
             <div style={{ height: '425px' }} />
             <CommonlyBottomOperate
                 leftElement={[{
-                    cilckHandle: () => {},
+                    cilckHandle: this.confirmHandle,
                     element: '确认'
                 }]}
                 rightElement={[{
-                    cilckHandle: () => {},
+                    cilckHandle: () => this.props.reject(consequencer.error('取消')),
                     element: '取消'
                 }]}
             />

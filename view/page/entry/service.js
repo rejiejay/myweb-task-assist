@@ -55,6 +55,37 @@ const deleteTag = async ({ id }) => await fetch.post({
     isShowError: true
 })
 
+/**
+ * 新增任务
+ * @param {string} title 
+ * @param {string} content 
+ * @param {string} specific 
+ * @param {string} measurable 
+ * @param {string} attainable 
+ * @param {string} relevant 
+ * @param {string} timeBound 
+ * @param {number} longTermId 
+ * @param {Array} tagsId 
+ * @param {string} status 
+ * @param {string} priority 
+ */
+const addTask = async ({ title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }) => await fetch.post({
+    url: 'task/add',
+    body: { title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority },
+    isShowError: true
+})
+
+/**
+ * 编辑任务
+ * @param {number} id 
+ * @param {other} ...addTask
+ */
+const editTask = async ({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }) => await fetch.post({
+    url: 'task/edit',
+    body: { id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority },
+    isShowError: true
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
@@ -62,7 +93,9 @@ const service = {
     getAllLongTermTask,
     addTag,
     editTag,
-    deleteTag
+    deleteTag,
+    addTask,
+    editTask
 }
 
 export default service

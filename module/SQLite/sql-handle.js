@@ -1,4 +1,5 @@
 import CONST from './../../library/consts'
+import valuesStructuresVerify from './../../utils/values-structures-verify'
 
 class SqlHandle {
     constructor() {
@@ -21,7 +22,9 @@ class SqlHandle {
         Object.keys(data).forEach(key => {
             keys.push(key)
             let value = data[key]
-            if (Object.prototype.toString.call(value) === '[object String]') value = `"${value}"`
+
+            const isStringInstance = valuesStructuresVerify.isString(value)
+            if (isStringInstance.result === 1) value = `"${value}"`
 
             values.push(value)
         })
@@ -36,7 +39,9 @@ class SqlHandle {
             if (newVal[key] !== oldVal[key]) {
                 const value = newVal[key]
                 let sql = `${key}=${value}`
-                if (Object.prototype.toString.call(value) === '[object String]') sql = `${key}="${value}"`
+
+                const isStringInstance = valuesStructuresVerify.isString(value)
+                if (isStringInstance.result === 1) sql = `${key}="${value}"`
 
                 sqls.push(sql)
             }

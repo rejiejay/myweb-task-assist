@@ -35,6 +35,8 @@ const getTaskListWithTimestamp = responseHanle => controller.get_task_list({ min
 const getTaskListWithStatus = responseHanle => controller.get_task_list({ status: JSON.stringify([1]) }, responseHanle)
 const getTaskListWithPriority = responseHanle => controller.get_task_list({ prioritys: JSON.stringify([1]) }, responseHanle)
 
+const addTask = responseHanle => controller.post_task_add({ title: 'post add', content: 'post add' }, responseHanle)
+
 const task = {
     getTaskListWithDefault: utils.resolveHandle(getTaskListWithDefault, { isShowResult: false }),
     getTaskListWithRandom: utils.resolveHandle(getTaskListWithRandom, { isShowResult: false }),
@@ -46,6 +48,7 @@ const task = {
     getTaskListWithTimestamp: utils.resolveHandle(getTaskListWithTimestamp, { isShowResult: false }),
     getTaskListWithStatus: utils.resolveHandle(getTaskListWithStatus, { isShowResult: false }),
     getTaskListWithPriority: utils.resolveHandle(getTaskListWithPriority, { isShowResult: false }),
+    addTask: utils.resolveHandle(addTask, { isShowResult: false }),
 }
 
 export default task

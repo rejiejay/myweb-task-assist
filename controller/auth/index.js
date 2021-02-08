@@ -2,6 +2,7 @@
  * controller task 对外方法: 所有方法对外
  */
 import consequencer from './../../utils/consequencer'
+import valuesStructuresVerify from './../../utils/values-structures-verify'
 import service from './../../service/index.js'
 import config from './../../config'
 
@@ -9,8 +10,10 @@ const simpleVerifyUUid = request => {
     const headers = request.headers
     if (!headers) return consequencer.error('非法登陆')
     const uuid = headers[config.auth.uuid]
-    if (!uuid) return consequencer.error('非法登陆')
-    if (Object.prototype.toString.call(uuid) !== '[object String]') return consequencer.error('非法登陆')
+
+    const isStringInstance = valuesStructuresVerify.isStringNil(uuid)
+    if (isStringInstance.result !== 1) return consequencer.error('非法登陆')
+
     const simpleVerify = uuid.split('-')
     if (simpleVerify.length !== 5) return consequencer.error('非法登陆')
 
