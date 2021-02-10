@@ -56,6 +56,11 @@ const getCount = async function getCount({ longTermId, taskTagIds, minEffectTime
     return consequencer.success(result)
 }
 
+const getById = async function getById(id) {
+    const findInstance = await tableHandle.find(id)
+    return findInstance
+}
+
 const add = async function add({ title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority }) {
     let addData = { title, content, createTimestamp: new Date().getTime() }
     if (specific) addData.specific = specific
@@ -69,33 +74,39 @@ const add = async function add({ title, content, specific, measurable, attainabl
     if (status) addData.status = status
     if (priority) addData.priority = priority
     const addInstance = await tableHandle.add(addData)
-    // if (addInstance.result !== 1) return addInstance
-    // if (!tagsId || tagsId.length === 0) return addInstance
+    if (addInstance.result !== 1) return addInstance
+    if (!tagsId || tagsId.length === 0) return addInstance
 
-    // const sqlHandle = new SQLite.SqlHandle()
-    // sqlHandle.addAndFilterSql(`title = ${title}`)
-    // sqlHandle.addAndFilterSql(`content = ${content}`)
-    // sqlHandle.addAndFilterSql(`createTimestamp = ${addData.createTimestamp}`)
-    // const queryInstance = await tableHandle.list(sqlHandle.toSqlString())
-    // if (queryInstance.result !== 1) return queryInstance
-    // const queryData = queryInstance.data
-    // if (queryData.length <= 0) return consequencer.error('新增失败')
-    // const addData = queryData[0]
+    const sqlHandle = new SQLite.SqlHandle()
+    sqlHandle.addAndFilterSql(`title = "${title}"`)
+    sqlHandle.addAndFilterSql(`content = "${content}"`)
+    sqlHandle.addAndFilterSql(`createTimestamp = ${addData.createTimestamp}`)
+    const queryInstance = await tableHandle.list(sqlHandle.toSqlString())
+    if (queryInstance.result !== 1) return queryInstance
+    const queryData = queryInstance.data
+    if (queryData.length <= 0) return consequencer.error('新增失败')
+    const requestAddData = queryData[0]
+    const taskId = requestAddData.id
 
-    // for (let index = 0; index < tagsId.length; index++) {
-    //     const tagId = array[tagsId];
-    //     const addTagRelationalInstance = await tag.addTagRelational({ taskId: addData.id, tagId })
-    //     if (addTagRelationalInstance.result !== 1) return addTagRelationalInstance
-    // }
+    for (let index = 0; index < tagsId.length; index++) {
+        const tagId = tagsId[index];
+        const addTagRelationalInstance = await tag.addTagRelational({ taskId, tagId })
+        if (addTagRelationalInstance.result !== 1) return addTagRelationalInstance
+    }
 
-    return addInstance
+    const addtaskTagInstance = await this.edit(taskId, { taskTagId: taskId })
+    return addtaskTagInstance
 }
 
-const edit = async function edit({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority }) { }
+const edit = async function edit(id, editUpData) {
+    const editInstance = await tableHandle.updata(id, editUpData)
+    return editInstance
+}
 
 const task = {
     getList,
     getCount,
+    getById,
     add,
     edit
 }

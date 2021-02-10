@@ -26,7 +26,7 @@ const table = {
         CREATE TABLE taskTagRelational (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             taskId INT NOT NULL,
-            tagsId INT NOT NULL
+            tagId INT NOT NULL
         )
     `,
 
@@ -69,18 +69,18 @@ function initTask() {
 
 /**
  * 任务 查询 标签 流程: task.taskTagId = 1 ---> taskTagRelational.taskId = 1 ---> taskTags.id = [1, 2, 3, 4] ---> taskTags.name = ['js', 'exam', 'love', 'gwy']
- * 标签 查询 任务 流程: taskTags.name = 'js' ---> taskTags.id = 1 = taskTagRelational.tagsId ---> taskTagRelational.id = [ 1 ] ---> taskTagRelational.taskId = [ 1 ]
+ * 标签 查询 任务 流程: taskTags.name = 'js' ---> taskTags.id = 1 = taskTagRelational.tagId ---> taskTagRelational.id = [ 1 ] ---> taskTagRelational.taskId = [ 1 ]
  */
 function initTaskTagRelational() {
     const insertTaskData = data => utils.insertTaskData('taskTagRelational', data)
     this.SqliteJs.exec(table.taskTagRelational);
-    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagsId: 1 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagsId: 2 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagsId: 3 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagsId: 4 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 2, tagsId: 2 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 3, tagsId: 3 }));
-    this.SqliteJs.exec(insertTaskData({ taskId: 4, tagsId: 4 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagId: 1 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagId: 2 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagId: 3 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 1, tagId: 4 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 2, tagId: 2 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 3, tagId: 3 }));
+    this.SqliteJs.exec(insertTaskData({ taskId: 4, tagId: 4 }));
 }
 
 function initTaskTags() {

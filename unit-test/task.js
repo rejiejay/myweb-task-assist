@@ -37,6 +37,8 @@ const getTaskListWithPriority = responseHanle => controller.get_task_list({ prio
 
 const addTask = responseHanle => controller.post_task_add({ title: 'post add', content: 'post add' }, responseHanle)
 
+const addTaskByTags = responseHanle => controller.post_task_add({ title: 'post add tags', content: 'post add tags', tagsId: [1, 2, 3] }, responseHanle)
+
 const task = {
     getTaskListWithDefault: utils.resolveHandle(getTaskListWithDefault, { isShowResult: false }),
     getTaskListWithRandom: utils.resolveHandle(getTaskListWithRandom, { isShowResult: false }),
@@ -49,6 +51,7 @@ const task = {
     getTaskListWithStatus: utils.resolveHandle(getTaskListWithStatus, { isShowResult: false }),
     getTaskListWithPriority: utils.resolveHandle(getTaskListWithPriority, { isShowResult: false }),
     addTask: utils.resolveHandle(addTask, { isShowResult: false }),
+    addTaskByTags: utils.resolveHandle(addTaskByTags, { isShowResult: false }),
 }
 
 export default task

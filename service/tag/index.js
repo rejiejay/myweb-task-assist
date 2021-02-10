@@ -14,10 +14,10 @@ const getTaskTagsById = async function getTaskTagsById(id) {
     const tagsRelationalInstance = await tableTagRelational.list(`WHERE taskId = ${id}`)
     if (tagsRelationalInstance.result !== 1) return tagsRelationalInstance
     const tagsRelational = tagsRelationalInstance.data
-    const tagsIds = tagsRelational.map(({ tagsId }) => tagsId)
+    const tagsIds = tagsRelational.map(({ tagId }) => tagId)
 
     const sqlHandle = new SQLite.SqlHandle()
-    tagsIds.forEach(tagsId => sqlHandle.addOrFilterSql(`id = ${tagsId}`))
+    tagsIds.forEach(tagId => sqlHandle.addOrFilterSql(`id = ${tagId}`))
     const tagsListInstance = await tableTags.list(sqlHandle.toSqlString())
     if (tagsListInstance.result !== 1) return tagsListInstance
     const tagsList = tagsListInstance.data
@@ -45,13 +45,25 @@ const getTagIdsByNames = async function getTagIdsByNames(tagFields) {
     return consequencer.success(tagIds)
 }
 
+const getTagIdsByTaskId = async function getTagIdsByTaskId(taskId) {
+    const tagSqlHandle = new SQLite.SqlHandle()
+    tagSqlHandle.addAndFilterSql(`taskId = ${taskId}`)
+
+    const tagsInstance = await tableTagRelational.list(tagSqlHandle.toSqlString())
+    if (tagsInstance.result !== 1) return tagsInstance
+    const tagsList = tagsInstance.data
+    const tagIds = tagsList.map(({ tagId }) => tagId)
+
+    return consequencer.success(tagIds)
+}
+
 const findTaskIdsByField = async function findTaskIdsByField(tagFields) {
     const tagsInstance = await this.getTagIdsByNames(tagFields)
     if (tagsInstance.result !== 1) return tagsInstance
     const tagIds = tagsInstance.data.map(({ id }) => id)
 
     const tagsRelationalSqlHandle = new SQLite.SqlHandle()
-    tagIds.forEach(tagId => tagsRelationalSqlHandle.addOrFilterSql(`tagsId = ${tagId}`))
+    tagIds.forEach(tagId => tagsRelationalSqlHandle.addOrFilterSql(`tagId = ${tagId}`))
     const tagsRelationalInstance = await tableTagRelational.list(tagsRelationalSqlHandle.toSqlString())
     if (tagsRelationalInstance.result !== 1) return tagsRelationalInstance
     const taskIds = ArrayHelper.uniqueDeduplicationByKey({ array: tagsRelationalInstance.data, key: 'taskId' }).map(({ taskId }) => taskId)
@@ -86,7 +98,7 @@ const deleteTag = async function deleteTag({ id }) {
     if (deleteTagInstance.result !== 1) return deleteTagInstance
 
     const sqlHandle = new SQLite.SqlHandle()
-    sqlHandle.addAndFilterSql(`tagsId = ${id}`)
+    sqlHandle.addAndFilterSql(`tagId = ${id}`)
     const relationalTagInstance = await tableTagRelational.list(sqlHandle.toSqlString())
     if (relationalTagInstance.result !== 1) return relationalTagInstance
     const relationalTags = relationalTagInstance.data
@@ -100,8 +112,8 @@ const deleteTag = async function deleteTag({ id }) {
     return consequencer.success()
 }
 
-const addTagRelational = async function addTagRelational({ taskId, tagsId }) {
-    const relationalTagInstance = await tableTagRelational.add({ taskId, tagsId })
+const addTagRelational = async function addTagRelational({ taskId, tagId }) {
+    const relationalTagInstance = await tableTagRelational.add({ taskId, tagId })
     return relationalTagInstance
 }
 
@@ -110,6 +122,7 @@ const tag = {
     listAllTaskTags,
     getTagIdsByNames,
     findTaskIdsByField,
+    getTagIdsByTaskId,
     addByTagName,
     editTag,
     deleteTag,

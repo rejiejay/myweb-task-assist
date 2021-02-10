@@ -4,6 +4,7 @@
 import service from './../../service/index.js'
 import valuesStructuresVerify from './../../utils/values-structures-verify'
 import CONST from './../../library/consts'
+import consequencer from '../../utils/consequencer.js'
 
 const getTaskList = async function getTaskList({ longTermId, tags, minEffectTimestamp, maxEffectTimestamp, status, prioritys, isRandom, pageNo, pageSize }, responseHanle) {
     const verifys = [
@@ -75,6 +76,23 @@ const addTask = async function addTask({ title, content, specific, measurable, a
     responseHanle.json(addInstance)
 }
 
+/**
+ * tag编辑的3钟情况
+ * 1. 新增
+ * 2. 删除
+ * 3. 修改
+ */
+const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
+    const { taskTagId, id } = originTask
+    const originalTagsIdInstance = await service.tag.getTagIdsByTaskId(id)
+    if (originalTagsIdInstance.result !== 1) return originalTagsIdInstance
+
+    const originalTagsId = originalTagsIdInstance.data
+    const addSituation = !taskTagId && tagsId.length > 0
+    const deleteSituation = taskTagId && (!tagsId || tagsId.length === 0)
+    const editSituation = taskTagId && tagsId && JSON.stringify(originalTagsId) !== JSON.stringify(tagsId)
+}
+
 const editTask = async function editTask({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority }, responseHanle) {
     if (!id) return responseHanle.failure('id can`t Nil')
     if (!title) return responseHanle.failure('title can`t Nil')
@@ -97,7 +115,28 @@ const editTask = async function editTask({ id, title, content, specific, measura
     const verifyInstance = valuesStructuresVerify.group(verifys)
     if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
 
-    const editInstance = await service.task.edit({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority })
+    const originTaskInstance = await service.task.getById(id)
+    if (originTaskInstance.result !== 1) return responseHanle.json(originTaskInstance)
+    const originTask = originTaskInstance.data
+    let updateData = {}
+    if (originTask.title !== title) updateData.title = title
+    if (originTask.content !== content) updateData.content = content
+    if ((originTask.specific || specific) && originTask.specific !== specific) updateData.specific = specific
+    if ((originTask.measurable || measurable) && originTask.measurable !== measurable) updateData.measurable = measurable
+    if ((originTask.attainable || attainable) && originTask.attainable !== attainable) updateData.attainable = attainable
+    if ((originTask.relevant || relevant) && originTask.relevant !== relevant) updateData.relevant = relevant
+    if ((originTask.timeBound || timeBound) && originTask.timeBound !== timeBound) updateData.timeBound = timeBound
+    if ((originTask.longTermId || longTermId) && originTask.longTermId !== longTermId) updateData.longTermId = longTermId
+    if ((originTask.minEffectTimestamp || minEffectTimestamp) && originTask.minEffectTimestamp !== minEffectTimestamp) updateData.minEffectTimestamp = minEffectTimestamp
+    if ((originTask.maxEffectTimestamp || maxEffectTimestamp) && originTask.maxEffectTimestamp !== maxEffectTimestamp) updateData.maxEffectTimestamp = maxEffectTimestamp
+    if ((originTask.status || status) && originTask.status !== status) updateData.status = status
+    if ((originTask.priority || priority) && originTask.priority !== priority) updateData.priority = priority
+
+    const editTaskTagInstance = await editTaskTagHandle(originTask, tagsId)
+    if (editTaskTagInstance.result !== 1) return responseHanle.json(editTaskTagInstance)
+    if (editTaskTagInstance.result === 2345) updateData.taskTagId = editTaskTagInstance.data
+
+    const editInstance = await service.task.edit(id, updateData)
     responseHanle.json(editInstance)
 }
 

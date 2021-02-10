@@ -1,7 +1,7 @@
 const taskTagRelational = {
     id: { required: false },
     taskId: { required: true },
-    tagsId: { required: true }
+    tagId: { required: true }
 }
 
 const taskTags = {
