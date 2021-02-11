@@ -42,6 +42,7 @@ class SqlHandle {
 
                 const isStringInstance = valuesStructuresVerify.isString(value)
                 if (isStringInstance.result === 1) sql = `${key}="${value}"`
+                if (value === 'null') sql = `${key}=null`
 
                 sqls.push(sql)
             }

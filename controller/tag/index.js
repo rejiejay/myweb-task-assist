@@ -43,7 +43,7 @@ const deleteTag = async function deleteTag({ id }, responseHanle) {
     const verifyInstance = valuesStructuresVerify.isId(id, 'tagId')
     if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
 
-    const result = await service.tag.deleteTag({ id })
+    const result = await service.tag.deleteRelationalByTagId({ id })
     responseHanle.json(result)
 }
 

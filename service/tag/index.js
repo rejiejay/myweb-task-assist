@@ -8,7 +8,7 @@ const tableTagRelational = new SQLite.TableHandle('taskTagRelational', dataAcces
 const tableTags = new SQLite.TableHandle('taskTags', dataAccessObject.taskTags)
 
 /**
- * 通过任务 taskTagId 查询所有 tags name
+ * TODO: fixed .map(({ name }) => name)
  */
 const getTaskTagsById = async function getTaskTagsById(id) {
     const tagsRelationalInstance = await tableTagRelational.list(`WHERE taskId = ${id}`)
@@ -90,7 +90,7 @@ const editTag = async function editTag({ id, name }) {
     return tagsUpdateInstance
 }
 
-const deleteTag = async function deleteTag({ id }) {
+const deleteRelationalByTagId = async function deleteRelationalByTagId({ id }) {
     const findTagInstance = await tableTags.find(id)
     if (findTagInstance.result !== 1) return findTagInstance
 
@@ -117,6 +117,25 @@ const addTagRelational = async function addTagRelational({ taskId, tagId }) {
     return relationalTagInstance
 }
 
+/**
+ * TODO: Use getTaskTagsById
+ */
+const deleteRelationalByTaskId = async function deleteRelationalByTaskId(taskId) {
+    const sqlHandle = new SQLite.SqlHandle()
+    sqlHandle.addAndFilterSql(`taskId = ${taskId}`)
+    const relationalTagInstance = await tableTagRelational.list(sqlHandle.toSqlString())
+    if (relationalTagInstance.result !== 1) return relationalTagInstance
+    const relationalTags = relationalTagInstance.data
+
+    for (let index = 0; index < relationalTags.length; index++) {
+        const relationalElement = relationalTags[index]
+        const deleteRelationalInstance = await tableTagRelational.del(relationalElement.id)
+        if (deleteRelationalInstance.result !== 1) return deleteRelationalInstance
+    }
+
+    return consequencer.success()
+}
+
 const tag = {
     getTaskTagsById,
     listAllTaskTags,
@@ -125,8 +144,9 @@ const tag = {
     getTagIdsByTaskId,
     addByTagName,
     editTag,
-    deleteTag,
-    addTagRelational
+    deleteRelationalByTagId,
+    addTagRelational,
+    deleteRelationalByTaskId
 }
 
 export default tag

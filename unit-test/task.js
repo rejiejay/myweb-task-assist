@@ -37,7 +37,12 @@ const getTaskListWithPriority = responseHanle => controller.get_task_list({ prio
 
 const addTask = responseHanle => controller.post_task_add({ title: 'post add', content: 'post add' }, responseHanle)
 
+// id = 22
 const addTaskByTags = responseHanle => controller.post_task_add({ title: 'post add tags', content: 'post add tags', tagsId: [1, 2, 3] }, responseHanle)
+
+const editTaskAddTag = responseHanle => controller.post_task_edit({ id: 6, title: 'editTaskAddTag', content: 'editTaskAddTag', tagsId: [1, 2, 3] }, responseHanle)
+const editTaskDelTag = responseHanle => controller.post_task_edit({ id: 2, title: 'editTaskDelTag', content: 'editTaskDelTag' }, responseHanle)
+const editTaskUpdateTag = responseHanle => controller.post_task_edit({ id: 22, title: 'editTaskUpdateTag', content: 'editTaskUpdateTag', tagsId: [1, 2, 4] }, responseHanle)
 
 const task = {
     getTaskListWithDefault: utils.resolveHandle(getTaskListWithDefault, { isShowResult: false }),
@@ -52,6 +57,9 @@ const task = {
     getTaskListWithPriority: utils.resolveHandle(getTaskListWithPriority, { isShowResult: false }),
     addTask: utils.resolveHandle(addTask, { isShowResult: false }),
     addTaskByTags: utils.resolveHandle(addTaskByTags, { isShowResult: false }),
+    editTaskAddTag: utils.resolveHandle(editTaskAddTag, { isShowResult: false }),
+    editTaskDelTag: utils.resolveHandle(editTaskDelTag, { isShowResult: false }),
+    editTaskUpdateTag: utils.resolveHandle(editTaskUpdateTag, { isShowResult: false }),
 }
 
 export default task

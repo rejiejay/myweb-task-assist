@@ -3,6 +3,7 @@
  */
 import service from './../../service/index.js'
 import valuesStructuresVerify from './../../utils/values-structures-verify'
+import ObjectHelper from './../../utils/object-helper'
 import CONST from './../../library/consts'
 import consequencer from '../../utils/consequencer.js'
 
@@ -84,6 +85,29 @@ const addTask = async function addTask({ title, content, specific, measurable, a
  */
 const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
     const { taskTagId, id } = originTask
+
+    const addHandle = async () => {
+        for (let index = 0; index < tagsId.length; index++) {
+            const tagId = tagsId[index];
+            const addTagRelationalInstance = await service.tag.addTagRelational({ taskId: id, tagId })
+            if (addTagRelationalInstance.result !== 1) return addTagRelationalInstance
+        }
+
+        return consequencer.success(id, 'success', 2345)
+    }
+
+    const deleteHandle = async () => {
+        const deleteTagRelationalInstance = await service.tag.deleteTagRelational(id)
+        if (deleteTagRelationalInstance.result !== 1) return addTagRelationalInstance
+        return consequencer.success('', 'success', 2345)
+    }
+
+    const editHandle = async () => {
+        const deleteTagRelationalInstance = await deleteHandle()
+        if (deleteTagRelationalInstance.result !== 1) return addTagRelationalInstance
+        return await addHandle()
+    }
+
     const originalTagsIdInstance = await service.tag.getTagIdsByTaskId(id)
     if (originalTagsIdInstance.result !== 1) return originalTagsIdInstance
 
@@ -91,8 +115,17 @@ const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
     const addSituation = !taskTagId && tagsId.length > 0
     const deleteSituation = taskTagId && (!tagsId || tagsId.length === 0)
     const editSituation = taskTagId && tagsId && JSON.stringify(originalTagsId) !== JSON.stringify(tagsId)
+
+    if (addSituation) return await addHandle()
+    if (deleteSituation) return await deleteHandle()
+    if (editSituation) return await editHandle()
+
+    return consequencer.success()
 }
 
+/**
+ * 策略, 所有值必须传值过来
+ */
 const editTask = async function editTask({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority }, responseHanle) {
     if (!id) return responseHanle.failure('id can`t Nil')
     if (!title) return responseHanle.failure('title can`t Nil')
@@ -118,23 +151,8 @@ const editTask = async function editTask({ id, title, content, specific, measura
     const originTaskInstance = await service.task.getById(id)
     if (originTaskInstance.result !== 1) return responseHanle.json(originTaskInstance)
     const originTask = originTaskInstance.data
-    let updateData = {}
-    if (originTask.title !== title) updateData.title = title
-    if (originTask.content !== content) updateData.content = content
-    if ((originTask.specific || specific) && originTask.specific !== specific) updateData.specific = specific
-    if ((originTask.measurable || measurable) && originTask.measurable !== measurable) updateData.measurable = measurable
-    if ((originTask.attainable || attainable) && originTask.attainable !== attainable) updateData.attainable = attainable
-    if ((originTask.relevant || relevant) && originTask.relevant !== relevant) updateData.relevant = relevant
-    if ((originTask.timeBound || timeBound) && originTask.timeBound !== timeBound) updateData.timeBound = timeBound
-    if ((originTask.longTermId || longTermId) && originTask.longTermId !== longTermId) updateData.longTermId = longTermId
-    if ((originTask.minEffectTimestamp || minEffectTimestamp) && originTask.minEffectTimestamp !== minEffectTimestamp) updateData.minEffectTimestamp = minEffectTimestamp
-    if ((originTask.maxEffectTimestamp || maxEffectTimestamp) && originTask.maxEffectTimestamp !== maxEffectTimestamp) updateData.maxEffectTimestamp = maxEffectTimestamp
-    if ((originTask.status || status) && originTask.status !== status) updateData.status = status
-    if ((originTask.priority || priority) && originTask.priority !== priority) updateData.priority = priority
+    let updateData = ObjectHelper.updataAttachHandle(originTask, { title, content, specific, measurable, attainable, relevant, timeBound, longTermId, minEffectTimestamp, maxEffectTimestamp, status, priority })
 
-    const editTaskTagInstance = await editTaskTagHandle(originTask, tagsId)
-    if (editTaskTagInstance.result !== 1) return responseHanle.json(editTaskTagInstance)
-    if (editTaskTagInstance.result === 2345) updateData.taskTagId = editTaskTagInstance.data
 
     const editInstance = await service.task.edit(id, updateData)
     responseHanle.json(editInstance)
