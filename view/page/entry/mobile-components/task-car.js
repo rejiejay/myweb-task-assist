@@ -72,7 +72,7 @@ class CardAttachmentDetail extends React.Component {
         if (fetchInstance.result !== 1) return
 
         const field = 'Task Tag'
-        const tags = fetchInstance.data
+        const tags = fetchInstance.data.map(({ name }) => name)
         const description = Object.keys(tags).reduce((accumulator, currentValue) => {
             if (currentValue === 'id' || currentValue === 'taskId') return accumulator
             if (+tags[currentValue] === 1) accumulator.push(currentValue)

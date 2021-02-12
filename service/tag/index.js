@@ -8,10 +8,10 @@ const tableTagRelational = new SQLite.TableHandle('taskTagRelational', dataAcces
 const tableTags = new SQLite.TableHandle('taskTags', dataAccessObject.taskTags)
 
 /**
- * TODO: fixed .map(({ name }) => name)
+ * 通过 [关系表] 任务id标识 获取所有 [映射表] 数据 
  */
-const getTaskTagsById = async function getTaskTagsById(id) {
-    const tagsRelationalInstance = await tableTagRelational.list(`WHERE taskId = ${id}`)
+const getTaskTagsById = async function getTaskTagsById(taskId) {
+    const tagsRelationalInstance = await this.getTagRelationalByTaskId(taskId)
     if (tagsRelationalInstance.result !== 1) return tagsRelationalInstance
     const tagsRelational = tagsRelationalInstance.data
     const tagsIds = tagsRelational.map(({ tagId }) => tagId)
@@ -22,10 +22,12 @@ const getTaskTagsById = async function getTaskTagsById(id) {
     if (tagsListInstance.result !== 1) return tagsListInstance
     const tagsList = tagsListInstance.data
 
-    const tagsName = tagsList.map(({ name }) => name)
-    return consequencer.success(tagsName)
+    return consequencer.success(tagsList)
 }
 
+/**
+ * 列出所有[映射表]标签
+ */
 const listAllTaskTags = async function listAllTaskTags() {
     const tagsInstance = await tableTags.list()
     if (tagsInstance.result !== 1) return tagsInstance
@@ -33,6 +35,11 @@ const listAllTaskTags = async function listAllTaskTags() {
     return consequencer.success(tagsList)
 }
 
+/**
+ * 通过 [映射表] 标签名称 获取所有 [映射表] 数据 
+ * 例如: ['gwy', 'js']
+ * 共用方法
+ */
 const getTagIdsByNames = async function getTagIdsByNames(tagFields) {
     const tagSqlHandle = new SQLite.SqlHandle()
 
@@ -40,24 +47,28 @@ const getTagIdsByNames = async function getTagIdsByNames(tagFields) {
     const tagsInstance = await tableTags.list(tagSqlHandle.toSqlString())
     if (tagsInstance.result !== 1) return tagsInstance
     const tagsList = tagsInstance.data
-    const tagIds = tagsList
 
-    return consequencer.success(tagIds)
+    return consequencer.success(tagsList)
 }
 
-const getTagIdsByTaskId = async function getTagIdsByTaskId(taskId) {
+/**
+ * 通过 [关系表] 任务id标识 获取所有 [关系表] 数据 
+ */
+const getTagRelationalByTaskId = async function getTagRelationalByTaskId(taskId) {
     const tagSqlHandle = new SQLite.SqlHandle()
     tagSqlHandle.addAndFilterSql(`taskId = ${taskId}`)
 
     const tagsInstance = await tableTagRelational.list(tagSqlHandle.toSqlString())
     if (tagsInstance.result !== 1) return tagsInstance
     const tagsList = tagsInstance.data
-    const tagIds = tagsList.map(({ tagId }) => tagId)
 
-    return consequencer.success(tagIds)
+    return consequencer.success(tagsList)
 }
 
-const findTaskIdsByField = async function findTaskIdsByField(tagFields) {
+/**
+ * 通过 [映射表] 标签名称 获取所有 [关系表] 数据 
+ */
+const findTagRelationalByField = async function findTagRelationalByField(tagFields) {
     const tagsInstance = await this.getTagIdsByNames(tagFields)
     if (tagsInstance.result !== 1) return tagsInstance
     const tagIds = tagsInstance.data.map(({ id }) => id)
@@ -66,11 +77,15 @@ const findTaskIdsByField = async function findTaskIdsByField(tagFields) {
     tagIds.forEach(tagId => tagsRelationalSqlHandle.addOrFilterSql(`tagId = ${tagId}`))
     const tagsRelationalInstance = await tableTagRelational.list(tagsRelationalSqlHandle.toSqlString())
     if (tagsRelationalInstance.result !== 1) return tagsRelationalInstance
-    const taskIds = ArrayHelper.uniqueDeduplicationByKey({ array: tagsRelationalInstance.data, key: 'taskId' }).map(({ taskId }) => taskId)
+    const tagRelational = ArrayHelper.uniqueDeduplicationByKey({ array: tagsRelationalInstance.data, key: 'taskId' })
 
-    return consequencer.success(taskIds)
+    return consequencer.success(tagRelational)
 }
 
+/**
+ * 通过标签名称新增[关系表] 兼 [映射表]
+ * @param {*} name 映射表 标签名称
+ */
 const addByTagName = async function addByTagName(name) {
     const setTagsInstance = await tableTags.add({ name })
     if (setTagsInstance.result !== 1) return setTagsInstance
@@ -84,12 +99,18 @@ const addByTagName = async function addByTagName(name) {
     return consequencer.success(tagIds[0])
 }
 
+/**
+ * 通过 [映射表] id标识 编辑 [映射表] 数据 
+ */
 const editTag = async function editTag({ id, name }) {
     const tagsUpdateInstance = await tableTags.updata(id, { name })
     if (tagsUpdateInstance.result !== 1) return tagsUpdateInstance
     return tagsUpdateInstance
 }
 
+/**
+ * 通过 [关系表] 任务id标识 删除 [关系表] 数据 
+ */
 const deleteRelationalByTagId = async function deleteRelationalByTagId({ id }) {
     const findTagInstance = await tableTags.find(id)
     if (findTagInstance.result !== 1) return findTagInstance
@@ -112,23 +133,24 @@ const deleteRelationalByTagId = async function deleteRelationalByTagId({ id }) {
     return consequencer.success()
 }
 
+/**
+ * 新增 [关系表] 数据 
+ */
 const addTagRelational = async function addTagRelational({ taskId, tagId }) {
     const relationalTagInstance = await tableTagRelational.add({ taskId, tagId })
     return relationalTagInstance
 }
 
 /**
- * TODO: Use getTaskTagsById
+ * 通过 [关系表] 任务id标识 删除 [关系表] 数据 
  */
 const deleteRelationalByTaskId = async function deleteRelationalByTaskId(taskId) {
-    const sqlHandle = new SQLite.SqlHandle()
-    sqlHandle.addAndFilterSql(`taskId = ${taskId}`)
-    const relationalTagInstance = await tableTagRelational.list(sqlHandle.toSqlString())
-    if (relationalTagInstance.result !== 1) return relationalTagInstance
-    const relationalTags = relationalTagInstance.data
+    const tagsRelationalInstance = await this.getTagRelationalByTaskId(taskId)
+    if (tagsRelationalInstance.result !== 1) return tagsRelationalInstance
+    const tagsRelational = tagsRelationalInstance.data
 
-    for (let index = 0; index < relationalTags.length; index++) {
-        const relationalElement = relationalTags[index]
+    for (let index = 0; index < tagsRelational.length; index++) {
+        const relationalElement = tagsRelational[index]
         const deleteRelationalInstance = await tableTagRelational.del(relationalElement.id)
         if (deleteRelationalInstance.result !== 1) return deleteRelationalInstance
     }
@@ -140,8 +162,8 @@ const tag = {
     getTaskTagsById,
     listAllTaskTags,
     getTagIdsByNames,
-    findTaskIdsByField,
-    getTagIdsByTaskId,
+    findTagRelationalByField,
+    getTagRelationalByTaskId,
     addByTagName,
     editTag,
     deleteRelationalByTagId,

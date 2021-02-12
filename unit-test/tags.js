@@ -11,7 +11,7 @@ const listAllTaskTags = responseHanle => controller.get_tag_all({}, responseHanl
 
 const findTaskIdsByField = async responseHanle => {
     const tagFields = ['love']
-    const taskIdsInstance = await service.findTaskIdsByField(tagFields)
+    const taskIdsInstance = await service.findTagRelationalByField(tagFields)
     responseHanle.json(taskIdsInstance)
 }
 

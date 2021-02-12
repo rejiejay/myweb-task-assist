@@ -26,10 +26,10 @@ const getTaskList = async function getTaskList({ longTermId, tags, minEffectTime
     if ((!!isRandom && !pageSize) || (!!pageNo && !pageSize)) parameter.pageSize = CONST.defaultPageSize
 
     if (!!parameter.tags) {
-        const taskTagyInstance = await service.tag.findTaskIdsByField(parameter.tags)
+        const taskTagyInstance = await service.tag.findTagRelationalByField(parameter.tags)
         if (taskTagyInstance.result !== 1) return taskTagyInstance
-        const taskTags = taskTagyInstance.data
-        parameter.taskTagIds = taskTags
+        const taskTagIds = taskTagyInstance.data.map(({ taskId }) => taskId)
+        parameter.taskTagIds = taskTagIds
     }
 
     const listInstance = await service.task.getList(parameter)
@@ -97,7 +97,7 @@ const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
     }
 
     const deleteHandle = async () => {
-        const deleteTagRelationalInstance = await service.tag.deleteTagRelational(id)
+        const deleteTagRelationalInstance = await service.tag.deleteRelationalByTaskId(id)
         if (deleteTagRelationalInstance.result !== 1) return addTagRelationalInstance
         return consequencer.success('', 'success', 2345)
     }
@@ -108,13 +108,16 @@ const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
         return await addHandle()
     }
 
-    const originalTagsIdInstance = await service.tag.getTagIdsByTaskId(id)
+    const originalTagsIdInstance = await service.tag.getTagRelationalByTaskId(id)
     if (originalTagsIdInstance.result !== 1) return originalTagsIdInstance
 
-    const originalTagsId = originalTagsIdInstance.data
+    const originalTagsId = originalTagsIdInstance.data.map(({ tagId }) => tagId)
     const addSituation = !taskTagId && tagsId.length > 0
-    const deleteSituation = taskTagId && (!tagsId || tagsId.length === 0)
-    const editSituation = taskTagId && tagsId && JSON.stringify(originalTagsId) !== JSON.stringify(tagsId)
+    const deleteSituation = !!taskTagId && (!tagsId || tagsId.length === 0)
+    const editSituation = !!taskTagId && !!tagsId && JSON.stringify(originalTagsId) !== JSON.stringify(tagsId)
+    console.log('addSituation', addSituation)
+    console.log('deleteSituation', deleteSituation)
+    console.log('editSituation', editSituation)
 
     if (addSituation) return await addHandle()
     if (deleteSituation) return await deleteHandle()
@@ -152,7 +155,6 @@ const editTask = async function editTask({ id, title, content, specific, measura
     if (originTaskInstance.result !== 1) return responseHanle.json(originTaskInstance)
     const originTask = originTaskInstance.data
     let updateData = ObjectHelper.updataAttachHandle(originTask, { title, content, specific, measurable, attainable, relevant, timeBound, longTermId, minEffectTimestamp, maxEffectTimestamp, status, priority })
-
 
     const editInstance = await service.task.edit(id, updateData)
     responseHanle.json(editInstance)
