@@ -84,12 +84,12 @@ const addTask = async function addTask({ title, content, specific, measurable, a
  * 3. 修改
  */
 const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
-    const { taskTagId, id } = originTask
+    const { taskTagId } = originTask
 
     const addHandle = async () => {
         for (let index = 0; index < tagsId.length; index++) {
             const tagId = tagsId[index];
-            const addTagRelationalInstance = await service.tag.addTagRelational({ taskId: id, tagId })
+            const addTagRelationalInstance = await service.tag.addTagRelational({ taskId: taskTagId, tagId })
             if (addTagRelationalInstance.result !== 1) return addTagRelationalInstance
         }
 
@@ -97,26 +97,30 @@ const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
     }
 
     const deleteHandle = async () => {
-        const deleteTagRelationalInstance = await service.tag.deleteRelationalByTaskId(id)
-        if (deleteTagRelationalInstance.result !== 1) return addTagRelationalInstance
+        const deleteTagRelationalInstance = await service.tag.deleteRelationalByTaskId(taskTagId)
+        if (deleteTagRelationalInstance.result !== 1) return deleteTagRelationalInstance
         return consequencer.success('', 'success', 2345)
     }
 
     const editHandle = async () => {
         const deleteTagRelationalInstance = await deleteHandle()
-        if (deleteTagRelationalInstance.result !== 1) return addTagRelationalInstance
+        if (deleteTagRelationalInstance.result !== 1) return deleteTagRelationalInstance
         return await addHandle()
     }
 
-    const originalTagsIdInstance = await service.tag.getTagRelationalByTaskId(id)
+    if (!taskTagId) {
+        const addSituation = tagsId.length > 0
+        if (addSituation) return await addHandle()
+        return consequencer.success()
+    }
+
+    const originalTagsIdInstance = await service.tag.getTagRelationalByTaskId(taskTagId)
     if (originalTagsIdInstance.result !== 1) return originalTagsIdInstance
-
     const originalTagsId = originalTagsIdInstance.data.map(({ tagId }) => tagId)
-    const addSituation = !taskTagId && tagsId.length > 0
-    const deleteSituation = !!taskTagId && (!tagsId || tagsId.length === 0)
-    const editSituation = !!taskTagId && !!tagsId && JSON.stringify(originalTagsId) !== JSON.stringify(tagsId)
 
-    if (addSituation) return await addHandle()
+    const deleteSituation = tagsId.length === 0
+    const editSituation = JSON.stringify(originalTagsId) !== JSON.stringify(tagsId)
+
     if (deleteSituation) return await deleteHandle()
     if (editSituation) return await editHandle()
 
@@ -157,8 +161,12 @@ const editTask = async function editTask({ id, title, content, specific, measura
     if (editTaskTagInstance.result === 0) return responseHanle.json(editTaskTagInstance)
     if (editTaskTagInstance.result === 2345) updateData.taskTagId = editTaskTagInstance.data
 
-    const editInstance = await service.task.edit(id, updateData)
-    responseHanle.json(editInstance)
+    if (JSON.stringify(updateData) !== '{}') {
+        const editInstance = await service.task.edit(id, updateData)
+        if (editInstance.result !== 1) return responseHanle.json(editInstance)
+    }
+
+    await getTaskById({ id }, responseHanle)
 }
 
 const getTaskById = async function getTaskById({ id }, responseHanle) {

@@ -7,12 +7,14 @@ import Task from './task/index.js';
 import Tag from './tag/index.js';
 import LongTerm from './long-term';
 import Auth from './auth';
+import SQL from './sql';
 
 const controllerMethod = {
     ...Task,
     ...Tag,
     ...LongTerm,
-    ...Auth
+    ...Auth,
+    ...SQL
 }
 
 /**

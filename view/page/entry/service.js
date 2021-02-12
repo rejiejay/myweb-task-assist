@@ -69,9 +69,9 @@ const deleteTag = async ({ id }) => await fetch.post({
  * @param {string} status 
  * @param {string} priority 
  */
-const addTask = async ({ title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }) => await fetch.post({
+const addTask = async ({ title, content, specific, measurable, attainable, relevant, timeBound, longTermId, minEffectTimestamp, maxEffectTimestamp, tagsId, status, priority }) => await fetch.post({
     url: 'task/add',
-    body: { title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }
+    body: { title, content, specific, measurable, attainable, relevant, timeBound, longTermId, minEffectTimestamp, maxEffectTimestamp, tagsId, status, priority }
 })
 
 /**
@@ -79,9 +79,9 @@ const addTask = async ({ title, content, specific, measurable, attainable, relev
  * @param {number} id 
  * @param {other} ...addTask
  */
-const editTask = async ({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }) => await fetch.post({
+const editTask = async ({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, minEffectTimestamp, maxEffectTimestamp, tagsId, status, priority }) => await fetch.post({
     url: 'task/edit',
-    body: { id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }
+    body: { id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, minEffectTimestamp, maxEffectTimestamp, tagsId, status, priority }
 })
 
 const getTaskById = async id => await fetch.reGetConfirm({
