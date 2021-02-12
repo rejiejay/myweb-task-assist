@@ -71,8 +71,7 @@ const deleteTag = async ({ id }) => await fetch.post({
  */
 const addTask = async ({ title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }) => await fetch.post({
     url: 'task/add',
-    body: { title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority },
-    isShowError: true
+    body: { title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }
 })
 
 /**
@@ -82,7 +81,17 @@ const addTask = async ({ title, content, specific, measurable, attainable, relev
  */
 const editTask = async ({ id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }) => await fetch.post({
     url: 'task/edit',
-    body: { id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority },
+    body: { id, title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, status, priority }
+})
+
+const getTaskById = async id => await fetch.reGetConfirm({
+    url: 'task/id',
+    query: { id }
+})
+
+const getLongTermTask = async id => await fetch.get({
+    url: 'longTerm/id',
+    query: { id },
     isShowError: true
 })
 
@@ -95,7 +104,9 @@ const service = {
     editTag,
     deleteTag,
     addTask,
-    editTask
+    editTask,
+    getTaskById,
+    getLongTermTask
 }
 
 export default service

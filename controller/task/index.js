@@ -161,10 +161,19 @@ const editTask = async function editTask({ id, title, content, specific, measura
     responseHanle.json(editInstance)
 }
 
+const getTaskById = async function getTaskById({ id }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isId(id)
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const getInstance = await service.task.getById(id)
+    responseHanle.json(getInstance)
+}
+
 const Task = {
     get_task_list: getTaskList,
     post_task_add: addTask,
-    post_task_edit: editTask
+    post_task_edit: editTask,
+    get_task_id: getTaskById
 }
 
 export default Task

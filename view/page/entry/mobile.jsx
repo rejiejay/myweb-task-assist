@@ -161,9 +161,10 @@ export class MobileComponent extends React.Component {
             <TaskList
                 list={list}
                 isShowBigCard={isShowBigCard}
+                editHandle={editId => this.showEditHandle({ isAdd: false, editId })}
             />
 
-            <div className='list-operate-load' style={{ padding: '25px 15px 15px 15px' }}>
+            <div className='list-operate-load' style={{ padding: '25px 15px 75px 15px' }}>
                 {sort.value === 2 && <Button onClick={this.loadRandomHandle}>加载更多</Button>}
                 {sort.value !== 2 && <Button onClick={this.loadMoreHandle}>加载更多({count - list.length}/{count})</Button>}
             </div>

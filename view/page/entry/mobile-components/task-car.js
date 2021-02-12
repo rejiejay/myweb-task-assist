@@ -1,7 +1,7 @@
 import jsxStyle from './../../../components/jsx-style'
 import service from './../service'
 import TimeHelper from './../../../../utils/time-helper'
-import CONSTS from './../../../../library/consts'
+import utils from './../utils'
 
 const NotRequiredDescription = ({ field, description }) => {
     if (!description) return null
@@ -51,7 +51,7 @@ class CardAttachmentDetail extends React.Component {
         if (!data.status) return
 
         const field = 'Task Status'
-        const description = CONSTS.utils.serviceValueToViewLable(CONSTS.task.status, data.status)
+        const description = utils.initStatusLable(data.status)
         this.setState({ status: { field, description } })
     }
 
@@ -60,7 +60,7 @@ class CardAttachmentDetail extends React.Component {
         if (!data.priority) return
 
         const field = 'Task Priority'
-        const description = CONSTS.utils.serviceValueToViewLable(CONSTS.task.priority, data.priority)
+        const description = utils.initPriorityLable(data.priority)
         this.setState({ priority: { field, description } })
     }
 
@@ -106,7 +106,7 @@ class TaskCard extends React.Component {
     }
 
     render() {
-        const { data, isShowBigCard } = this.props
+        const { data, isShowBigCard, editHandle } = this.props
         const { isShowAttachInfor } = this.state
         const newText = text => text && text.split('\n').map((item, i) => <p key={i}>{item}</p>)
         let style = {}
@@ -138,7 +138,7 @@ class TaskCard extends React.Component {
                             onClick={() => { }}
                         >Enter Long Term Task</div>}
                         <div className='operate-right-button operate-right-edit flex-center'
-                            onClick={() => { }}
+                            onClick={() => editHandle(data.id)}
                         >Edit</div>
                     </div>
                 </div>
@@ -147,11 +147,12 @@ class TaskCard extends React.Component {
     }
 }
 
-const TaskList = ({ list, isShowBigCard }) => <div className='task-list-container'>{list.map(item =>
+const TaskList = ({ list, isShowBigCard, editHandle }) => <div className='task-list-container'>{list.map(item =>
     <TaskCard
         key={item.id}
         data={item}
         isShowBigCard={isShowBigCard}
+        editHandle={editHandle}
     />
 )}</div>
 

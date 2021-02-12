@@ -10,6 +10,7 @@ import FullscreenIframe from './../../../components/fullscreen-iframe'
 import Confirm from './../../../components/confirm'
 
 import service from './../service'
+import utils from './../utils'
 
 const props = {
     resolve: () => { },
@@ -43,6 +44,54 @@ export class TaskEdit extends React.Component {
             status: { value: null, label: null },
             priority: { value: null, label: null }
         }
+    }
+
+    componentDidMount() {
+        const { id } = this.props
+
+        if (id) this.initPageData()
+    }
+
+    initPageData = async () => {
+        const { id } = this.props
+        const getInstance = await service.getTaskById(id)
+        if (getInstance.result !== 1) return
+        const task = getInstance.data
+        const {
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            taskTagId, longTermId, minEffectTimestamp, maxEffectTimestamp
+        } = task
+
+        let longTerm = { id: null, title: '' }
+        if (longTermId) {
+            const fetchLongTermTaskInstance = await service.getLongTermTask(longTermId)
+            const longTermTask = fetchLongTermTaskInstance.data
+            if (fetchLongTermTaskInstance.result === 1) longTerm = { id: longTermId, title: longTermTask.title }
+        }
+
+        let tags = []
+        if (taskTagId) {
+            const fetchTaskTagInforInstance = await service.getTaskTagInfor(taskTagId)
+            const taskTagInfor = fetchTaskTagInforInstance.data
+            if (fetchTaskTagInforInstance.result === 1) tags = taskTagInfor.map(({ id, name }) => ({ id, name }))
+        }
+
+        let status = { value: null, label: null }
+        if (task.status) {
+            status.value = task.status
+            status.label = utils.initStatusLable(task.status)
+        }
+
+        let priority = { value: null, label: null }
+        if (task.priority) {
+            priority.value = task.priority
+            priority.label = utils.initPriorityLable(task.priority)
+        }
+
+        this.setState({
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
+        })
     }
 
     selectFilterHandle = () => {
@@ -108,7 +157,7 @@ export class TaskEdit extends React.Component {
         if (status.length > 0) submitData.status = status
         if (priority.length > 0) submitData.priority = priority
 
-        const addInstance = await isEdit ? service.editTask({ id, ...submitData }) : service.addTask(submitData)
+        const addInstance = isEdit ? await service.editTask({ id, ...submitData }) : await service.addTask(submitData)
         if (addInstance.result !== 1) return Confirm(`${isEdit ? '编辑' : '添加'}任务失败, 原因: ${addInstance.message}`)
 
         resolve(consequencer.success(addInstance.data))
@@ -127,7 +176,7 @@ export class TaskEdit extends React.Component {
                 isRequiredHighlight
             >
                 <CommonlyInputText key='title'
-                    value={title}
+                    value={title || ''}
                     onChangeHandle={value => this.setState({ title: value })}
                     height={250}
                     placeholder='情景? + Action/冲突/方案'
@@ -138,7 +187,7 @@ export class TaskEdit extends React.Component {
                 isRequiredHighlight
             >
                 <CommonlyInputText key='content'
-                    value={content}
+                    value={content || ''}
                     onChangeHandle={value => this.setState({ content: value })}
                     isMultipleInput
                     isAutoHeight
@@ -150,7 +199,7 @@ export class TaskEdit extends React.Component {
                 title='任务具体内容?'
             >
                 <CommonlyInputText key='specific'
-                    value={specific}
+                    value={specific || ''}
                     onChangeHandle={value => this.setState({ specific: value })}
                     isMultipleInput
                     isAutoHeight
@@ -161,7 +210,7 @@ export class TaskEdit extends React.Component {
                 title='任务完成标识?'
             >
                 <CommonlyInputText key='measurable'
-                    value={measurable}
+                    value={measurable || ''}
                     onChangeHandle={value => this.setState({ measurable: value })}
                     isMultipleInput
                     isAutoHeight
@@ -172,7 +221,7 @@ export class TaskEdit extends React.Component {
                 title='任务是否可以实现?'
             >
                 <CommonlyInputText key='attainable'
-                    value={attainable}
+                    value={attainable || ''}
                     onChangeHandle={value => this.setState({ attainable: value })}
                     isMultipleInput
                     isAutoHeight
@@ -183,7 +232,7 @@ export class TaskEdit extends React.Component {
                 title='任务和哪些需求相关?'
             >
                 <CommonlyInputText key='relevant'
-                    value={relevant}
+                    value={relevant || ''}
                     onChangeHandle={value => this.setState({ relevant: value })}
                     isMultipleInput
                     isAutoHeight
@@ -194,7 +243,7 @@ export class TaskEdit extends React.Component {
                 title='明确的截止期限?'
             >
                 <CommonlyInputText key='timeBound'
-                    value={timeBound}
+                    value={timeBound || ''}
                     onChangeHandle={value => this.setState({ timeBound: value })}
                     isMultipleInput
                     isAutoHeight
@@ -209,7 +258,7 @@ export class TaskEdit extends React.Component {
                         longTerm: {longTerm.title}
                     </FilterItem>}
                     {tags && tags.length > 0 && <FilterItem key='tags'>
-                        tags: {tags.join('、')}
+                        tags: {tags.map(({ name }) => name).join('、')}
                     </FilterItem>}
                     {effectTimestampString && <FilterItem key='effectTimestamp'>
                         effect timestamp: {effectTimestampString}
