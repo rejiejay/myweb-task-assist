@@ -1,6 +1,6 @@
 const consequencer = {
-    success: (data, message) => ({
-        result: 1,
+    success: (data, message, result) => ({
+        result: result || 1,
         data: data || null,
         message: message || 'success'
     }),

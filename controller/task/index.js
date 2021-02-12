@@ -115,9 +115,6 @@ const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
     const addSituation = !taskTagId && tagsId.length > 0
     const deleteSituation = !!taskTagId && (!tagsId || tagsId.length === 0)
     const editSituation = !!taskTagId && !!tagsId && JSON.stringify(originalTagsId) !== JSON.stringify(tagsId)
-    console.log('addSituation', addSituation)
-    console.log('deleteSituation', deleteSituation)
-    console.log('editSituation', editSituation)
 
     if (addSituation) return await addHandle()
     if (deleteSituation) return await deleteHandle()
@@ -155,6 +152,10 @@ const editTask = async function editTask({ id, title, content, specific, measura
     if (originTaskInstance.result !== 1) return responseHanle.json(originTaskInstance)
     const originTask = originTaskInstance.data
     let updateData = ObjectHelper.updataAttachHandle(originTask, { title, content, specific, measurable, attainable, relevant, timeBound, longTermId, minEffectTimestamp, maxEffectTimestamp, status, priority })
+
+    const editTaskTagInstance = await editTaskTagHandle(originTask, tagsId)
+    if (editTaskTagInstance.result === 0) return responseHanle.json(editTaskTagInstance)
+    if (editTaskTagInstance.result === 2345) updateData.taskTagId = editTaskTagInstance.data
 
     const editInstance = await service.task.edit(id, updateData)
     responseHanle.json(editInstance)

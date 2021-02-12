@@ -31,8 +31,15 @@ const updataAttachHandle = (origin, target) => {
 
         if (!!originVal && !targetVal) {
             const isStrInstance = valuesStructuresVerify.isString(originVal)
+            const isIntInstance = valuesStructuresVerify.isIntNumString(originVal)
 
-            updata[key] = isStrInstance.result === 1 ? '' : 'null'
+            /**
+             * SQLHandle 对 'null' 做了特殊化处理
+             */
+            updata[key] = 'null'
+            if (isStrInstance.result === 1) updata[key] = ''
+            if (isIntInstance.result === 1) updata[key] = 'null'
+
             continue
         }
 
