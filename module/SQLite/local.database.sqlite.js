@@ -96,6 +96,7 @@ function initLongTermTaskRelational() {
     const insertTaskData = data => utils.insertTaskData('longTermTaskRelational', data)
     this.SqliteJs.exec(table.longTermTaskRelational);
     this.SqliteJs.exec(insertTaskData({ title: '"务长期任务"', record: '"长期任务内容"' }));
+    this.SqliteJs.exec(insertTaskData({ title: '"务长期任务2"', record: '"长期任务内容2"' }));
 }
 
 function init(SqliteJs) {

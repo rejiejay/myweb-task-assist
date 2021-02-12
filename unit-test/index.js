@@ -6,6 +6,7 @@
 import task from './task'
 import tags from './tags'
 import auth from './auth'
+import longTerm from './long-term'
 
 import utils from './utils'
 
@@ -13,11 +14,13 @@ const UnitTest = {
     all: utils.methodHelper({
         ...task,
         ...tags,
-        ...auth
+        ...auth,
+        ...longTerm
     }),
     tags: utils.methodHelper({ ...tags }),
     task: utils.methodHelper({ ...task }),
-    auth: utils.methodHelper({ ...auth })
+    auth: utils.methodHelper({ ...auth }),
+    longTerm: utils.methodHelper({ ...longTerm })
 }
 
 export default UnitTest
