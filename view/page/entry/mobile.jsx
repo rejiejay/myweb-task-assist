@@ -7,7 +7,7 @@ import CONSTS from './../../../library/consts'
 import ArrayHelper from './../../../utils/array-helper'
 
 import service from './service.js'
-import TaskList from './mobile-components/task-car'
+import TaskList from './mobile-components/task-card'
 
 export class MobileComponent extends React.Component {
     constructor(props) {
