@@ -29,8 +29,20 @@ export class NavigationLink extends React.Component {
         this.setState({ links })
     }
 
+    switchLinkElementHiden = uniquelyIdentify => {
+        let links = JSON.parse(JSON.stringify(this.state.links))
+        const mapperLinkElement = link => {
+            if (link.uniquelyIdentify === uniquelyIdentify) link.isHideChildren = !link.isHideChildren
+
+            link.children.map(mapperLinkElement)
+            return link
+        }
+
+        this.setState({ links: links.map(mapperLinkElement) })
+    }
+
     renderLink = link => {
-        const { topic, isHideChildren } = link
+        const { topic, isHideChildren, uniquelyIdentify } = link
         const children = []
         const BlowUp = () => <svg width="16" height="16" t="1586918632959" className="icon" viewBox="0 0 1024 1024" >
             <path d="M51.501176 1015.265882L8.734118 972.498824 349.063529 632.470588 391.529412 674.936471zM632.651294 349.003294L972.769882 8.914824l42.586353 42.586352L675.237647 391.619765z" fill="#3C22D3" p-id="916"></path>
@@ -49,7 +61,9 @@ export class NavigationLink extends React.Component {
 
                 <div className='flex-rest'>{topic}</div>
 
-                {children.length > 0 && <div>
+                {children.length > 0 && <div
+                    onClick={() => this.switchLinkElementHiden(uniquelyIdentify)}
+                >
                     {isHideChildren ? <BlowUp /> : <Minify />}
                 </div>}
 
