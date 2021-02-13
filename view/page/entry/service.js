@@ -89,7 +89,7 @@ const getTaskById = async id => await fetch.reGetConfirm({
     query: { id }
 })
 
-const getLongTermTask = async id => await fetch.get({
+const getLongTermTask = async id => await fetch.reGetConfirm({
     url: 'longTerm/id',
     query: { id },
     isShowError: true

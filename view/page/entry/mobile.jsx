@@ -8,6 +8,7 @@ import ArrayHelper from './../../../utils/array-helper'
 
 import service from './service.js'
 import TaskList from './mobile-components/task-card'
+import GroupPanel from './mobile-components/group-panel'
 
 export class MobileComponent extends React.Component {
     constructor(props) {
@@ -46,7 +47,7 @@ export class MobileComponent extends React.Component {
         this.initList()
     }
 
-    initList = async () => {
+    initList = async (refresh = false) => {
         const { longTerm, sort, pageNo, pageSize } = this.state
         const filter = { longTerm, pageNo, pageSize, ...this.filter }
 
@@ -55,8 +56,8 @@ export class MobileComponent extends React.Component {
         const fetch = fetchInstance.data
         let list = fetch.list
 
-        if (pageNo > 1 && sort.value !== 2) list = this.state.list.concat(fetch.list)
-        if (sort.value === 2) list = ArrayHelper.uniqueDeduplicationByKey({ array: this.state.list.concat(fetch.list), key: 'id' })
+        if (!refresh && pageNo > 1 && sort.value !== 2) list = this.state.list.concat(fetch.list)
+        if (!refresh && sort.value === 2) list = ArrayHelper.uniqueDeduplicationByKey({ array: this.state.list.concat(fetch.list), key: 'id' })
 
         this.setState({ list, count: fetch.count })
     }
@@ -138,13 +139,13 @@ export class MobileComponent extends React.Component {
                 props
             })
 
-            console.log('editInstance', editInstance)
             if (editInstance.result !== 1) return
+            self.initList(true)
         })
     }
 
     render() {
-        const { list, isShowBigCard, sort, count } = this.state
+        const { list, isShowBigCard, sort, count, longTerm } = this.state
 
         return <>
             <div className='list-top-operate flex-start-center'>
@@ -157,6 +158,9 @@ export class MobileComponent extends React.Component {
                     >{isShowBigCard ? 'Switch Small Car' : 'Switch Big Car'}</div>
                 </div>
             </div>
+            <div style={{ height: '50px' }} />
+
+            <GroupPanel longTermId={longTerm.id} />
 
             <TaskList
                 list={list}
