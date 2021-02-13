@@ -43,6 +43,16 @@ const table = {
             title TEXT NOT NULL,
             record LONGTEXT
         )
+    `,
+
+    navigationLink: `
+        CREATE TABLE navigationLink (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uniquelyIdentify TEXT NOT NULL,
+            parentUniquelyIdentify TEXT NOT NULL,
+            topic TEXT NOT NULL,
+            filterJson TEXT NOT NULL
+        )
     `
 }
 
@@ -99,6 +109,56 @@ function initLongTermTaskRelational() {
     this.SqliteJs.exec(insertTaskData({ title: '"务长期任务2"', record: '"长期任务内容2"' }));
 }
 
+function initNavigationLink() {
+    const insertTaskData = data => utils.insertTaskData('navigationLink', data)
+    this.SqliteJs.exec(table.navigationLink);
+    this.SqliteJs.exec(insertTaskData({
+        uniquelyIdentify: '"e71f41f2864f42ad6eef13a379ff903769ef7ea8"',
+        parentUniquelyIdentify: '"root"',
+        topic: '"root"',
+        filterJson: `'${JSON.stringify({
+            longTerm: { id: 1, title: '务长期任务' },
+            tags: [{ id: 1, name: 'js' }],
+            multipleStatus: [1],
+            multiplePriority: [1],
+            minEffectTimestamp: new Date(2000, 1, 3, 0, 0).getTime(),
+            maxEffectTimestamp: new Date(2000, 1, 5, 0, 0).getTime()
+        })}'`
+    }))
+    this.SqliteJs.exec(insertTaskData({
+        uniquelyIdentify: '"85136c79cbf9fe36bb9d05d0639c70c265c18d37"',
+        parentUniquelyIdentify: '"root"',
+        topic: '"root2"',
+        filterJson: `'${JSON.stringify({
+            longTerm: { id: 1, title: '务长期任务' }
+        })}'`
+    }))
+    this.SqliteJs.exec(insertTaskData({
+        uniquelyIdentify: '"7eaa6f30ea61c7920cacb0363bc0a520f5248e31"',
+        parentUniquelyIdentify: '"e71f41f2864f42ad6eef13a379ff903769ef7ea8"',
+        topic: '"root1 children"',
+        filterJson: `'${JSON.stringify({
+            tags: [{ id: 1, name: 'js' }]
+        })}'`
+    }))
+    this.SqliteJs.exec(insertTaskData({
+        uniquelyIdentify: '"7dd8947d08339e1417268689b9b69d0a34e9d0ab"',
+        parentUniquelyIdentify: '"e71f41f2864f42ad6eef13a379ff903769ef7ea8"',
+        topic: '"root1 children2"',
+        filterJson: `'${JSON.stringify({
+            multipleStatus: [1]
+        })}'`
+    }))
+    this.SqliteJs.exec(insertTaskData({
+        uniquelyIdentify: '"5f5f3dd8fa3aea1dd0e758bf10405ff62b783c5c"',
+        parentUniquelyIdentify: '"7eaa6f30ea61c7920cacb0363bc0a520f5248e31"',
+        topic: '"children1 children"',
+        filterJson: `'${JSON.stringify({
+            multiplePriority: [1]
+        })}'`
+    }))
+}
+
 function init(SqliteJs) {
     this.SqliteJs = SqliteJs
 
@@ -106,6 +166,7 @@ function init(SqliteJs) {
     this.initTaskTagRelational()
     this.initTaskTags()
     this.initLongTermTaskRelational()
+    this.initNavigationLink()
 }
 
 const utils = {
@@ -131,7 +192,8 @@ const localDatabaseSqlite = {
     initTask,
     initTaskTagRelational,
     initTaskTags,
-    initLongTermTaskRelational
+    initLongTermTaskRelational,
+    initNavigationLink
 }
 
 export default localDatabaseSqlite

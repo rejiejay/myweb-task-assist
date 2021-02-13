@@ -8,13 +8,15 @@ import Tag from './tag/index.js';
 import LongTerm from './long-term';
 import Auth from './auth';
 import SQL from './sql';
+import NavigationLink from './navigation-link';
 
 const controllerMethod = {
     ...Task,
     ...Tag,
     ...LongTerm,
     ...Auth,
-    ...SQL
+    ...SQL,
+    ...NavigationLink
 }
 
 /**

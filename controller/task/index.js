@@ -84,12 +84,18 @@ const addTask = async function addTask({ title, content, specific, measurable, a
  * 3. 修改
  */
 const editTaskTagHandle = async function editTaskTagHandle(originTask, tagsId) {
-    const { taskTagId } = originTask
+    /**
+     * if (!tagsId) 目的是防止报错
+     * tagsId是必填项, 因为方便判断增删查改, 所以前端必须传值
+     */
+    if (!tagsId) return consequencer.success()
+
+    const { id, taskTagId } = originTask
 
     const addHandle = async () => {
         for (let index = 0; index < tagsId.length; index++) {
             const tagId = tagsId[index];
-            const addTagRelationalInstance = await service.tag.addTagRelational({ taskId: taskTagId, tagId })
+            const addTagRelationalInstance = await service.tag.addTagRelational({ taskId: id, tagId })
             if (addTagRelationalInstance.result !== 1) return addTagRelationalInstance
         }
 

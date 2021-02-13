@@ -6,12 +6,14 @@ import task from './task/index.js'
 import tag from './tag/index.js'
 import longTerm from './long-term'
 import auth from './auth'
+import link from './navigation-link'
 
 const service = {
     auth,
     task,
     tag,
-    longTerm
+    longTerm,
+    link
 }
 
 export default service

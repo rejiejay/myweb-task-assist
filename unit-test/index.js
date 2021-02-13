@@ -7,6 +7,7 @@ import task from './task'
 import tags from './tags'
 import auth from './auth'
 import longTerm from './long-term'
+import NavigationLink from './navigation-link'
 
 import utils from './utils'
 
@@ -15,12 +16,14 @@ const UnitTest = {
         ...task,
         ...tags,
         ...auth,
-        ...longTerm
+        ...longTerm,
+        ...NavigationLink
     }),
     tags: utils.methodHelper({ ...tags }),
     task: utils.methodHelper({ ...task }),
     auth: utils.methodHelper({ ...auth }),
-    longTerm: utils.methodHelper({ ...longTerm })
+    longTerm: utils.methodHelper({ ...longTerm }),
+    NavigationLink: utils.methodHelper({ ...NavigationLink })
 }
 
 export default UnitTest
