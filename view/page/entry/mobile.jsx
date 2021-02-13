@@ -108,7 +108,7 @@ export class MobileComponent extends React.Component {
                 multipleStatus: filter.statusMultipleFilter,
                 multiplePriority: filter.priorityMultipleFilter
             }
-            self.setState({ longTerm: filter.longTermFilter }, self.initList)
+            self.setState({ longTerm: filter.longTermFilter }, () => self.initList(true))
         })
     }
 
@@ -144,13 +144,42 @@ export class MobileComponent extends React.Component {
         })
     }
 
+    selectNavigationLinkHandle = () => {
+        const self = this
+
+        toast.show()
+        import('./navigation/link').then(async ({ NavigationLink }) => {
+            toast.destroy()
+
+            const selectInstance = await FullscreenIframe({
+                Element: NavigationLink,
+                className: 'mobile-device-navigation-link',
+                props: {}
+            })
+
+            if (selectInstance.result !== 1) return
+            const linkFilter = selectInstance.data
+
+            self.filter = {
+                tags: linkFilter.tagFilter,
+                minEffectTimestamp: linkFilter.minEffectTimestampFilter,
+                maxEffectTimestamp: linkFilter.maxEffectTimestampFilter,
+                multipleStatus: linkFilter.statusMultipleFilter,
+                multiplePriority: linkFilter.priorityMultipleFilter
+            }
+            self.setState({ longTerm: linkFilter.longTermFilter }, () => self.initList(true))
+        })
+    }
+
     render() {
         const { list, isShowBigCard, sort, count, longTerm } = this.state
 
         return <>
             <div className='list-top-operate flex-start-center'>
                 <div className='top-operate-navigation flex-start flex-rest'>
-                    <div className='list-top-button'>Navigation</div>
+                    <div className='list-top-button'
+                        onClick={this.selectNavigationLinkHandle}
+                    >Navigation</div>
                 </div>
                 <div className='switch-car-size'>
                     <div className='list-top-button'
