@@ -49,9 +49,25 @@ const addNavigationLink = async function addNavigationLink({ topic, filterJson }
     return consequencer.success(requestAddData)
 }
 
+const editNavigationLink = async function addNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }) {
+    const addInstance = await tableHandle.updata(id, { uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })
+    if (addInstance.result !== 1) return addInstance
+
+    const sqlHandle = new SQLite.SqlHandle()
+    sqlHandle.addAndFilterSql(`id = ${id}`)
+    const queryInstance = await tableHandle.list(sqlHandle.toSqlString())
+    if (queryInstance.result !== 1) return queryInstance
+    const queryData = queryInstance.data
+    if (queryData.length <= 0) return consequencer.error('编辑失败')
+
+    const requestAddData = queryData[0]
+    return consequencer.success(requestAddData)
+}
+
 const NavigationLink = {
     getAllNavigationLink,
-    addNavigationLink
+    addNavigationLink,
+    editNavigationLink
 }
 
 export default NavigationLink

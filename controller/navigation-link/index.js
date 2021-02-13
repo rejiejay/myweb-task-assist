@@ -21,9 +21,25 @@ const addNavigationLink = async function addNavigationLink({ topic, filterJson }
     responseHanle.json(result)
 }
 
+const editNavigationLink = async function editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }, responseHanle) {
+    const verifys = [
+        { value: id, field: 'id', method: 'isId' },
+        { value: uniquelyIdentify, field: 'uniquelyIdentify', method: 'isStringNil' },
+        { value: parentUniquelyIdentify, field: 'parentUniquelyIdentify', method: 'isStringNil' },
+        { value: topic, field: 'topic', method: 'isStringNil' },
+        { value: filterJson, field: 'filterJson', method: 'isStringNil' }
+    ]
+    const verifyInstance = valuesStructuresVerify.group(verifys)
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const result = await service.link.editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })
+    responseHanle.json(result)
+}
+
 const NavigationLink = {
     get_link_all: getAllNavigationLink,
-    post_link_add: addNavigationLink
+    post_link_add: addNavigationLink,
+    post_link_edit: editNavigationLink
 }
 
 export default NavigationLink

@@ -4,7 +4,7 @@ import utils from './utils'
 
 const listAllNavigationLink = responseHanle => controller.get_link_all({}, responseHanle)
 
-const addNavigationLink = responseHanle => controller.get_link_add({
+const addNavigationLink = responseHanle => controller.post_link_add({
     topic: 'add',
     filterJson: JSON.stringify({
         longTerm: { id: 1, title: '务长期任务' },
@@ -16,9 +16,25 @@ const addNavigationLink = responseHanle => controller.get_link_add({
     })
 }, responseHanle)
 
+const editNavigationLink = responseHanle => controller.post_link_edit({
+    id: 1,
+    uniquelyIdentify: 'e71f41f2864f42ad6eef13a379ff903769ef7ea8',
+    parentUniquelyIdentify: 'root',
+    topic: 'edit',
+    filterJson: JSON.stringify({
+        longTerm: { id: 2, title: '务长期任务2' },
+        tags: [],
+        multipleStatus: [],
+        multiplePriority: [],
+        minEffectTimestamp: null,
+        maxEffectTimestamp: null
+    })
+}, responseHanle)
+
 const NavigationLink = {
     listAllNavigationLink: utils.resolveHandle(listAllNavigationLink, { isShowResult: false }),
-    addNavigationLink: utils.resolveHandle(addNavigationLink, { isShowResult: false })
+    addNavigationLink: utils.resolveHandle(addNavigationLink, { isShowResult: false }),
+    editNavigationLink: utils.resolveHandle(editNavigationLink, { isShowResult: false })
 }
 
 export default NavigationLink

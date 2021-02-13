@@ -106,6 +106,11 @@ const addNavigationLink = async ({ topic, filterJson }) => await fetch.post({
     body: { topic, filterJson }
 })
 
+const editNavigationLink = async ({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }) => await fetch.post({
+    url: 'link/edit',
+    body: { id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
@@ -119,7 +124,8 @@ const service = {
     getTaskById,
     getLongTermTask,
     getAllNavigationLink,
-    addNavigationLink
+    addNavigationLink,
+    editNavigationLink
 }
 
 export default service

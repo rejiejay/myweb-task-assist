@@ -69,7 +69,6 @@ export class NavigationLink extends React.Component {
     addNavigationLink = async () => {
         const promptInstance = await Prompt({ title: '请输入新增导航栏名字', placeholder: '请输入新增导航栏名字' })
         if (promptInstance.result !== 1) return
-
         const topic = promptInstance.data
 
         const isMultipleFilter = true
@@ -83,10 +82,25 @@ export class NavigationLink extends React.Component {
         this.initAllNavigationLink()
     }
 
-    editNavigationLink = async (topic, filterJson) => { }
+    editNavigationLink = async ({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }) => {
+        const promptInstance = await Prompt({ title: '请输入新增导航栏名字', placeholder: '请输入新增导航栏名字', defaultValue: topic })
+        if (promptInstance.result !== 1) return
+        topic = promptInstance.data
+
+        const isMultipleFilter = true
+        const filter = JSON.parse(filterJson)
+        const selectInstance = await utils.showOperateFilterEdit(isMultipleFilter, filter)
+        if (selectInstance.result !== 1) return
+        filterJson = this.initFilterJson(selectInstance.data)
+
+        const addInstance = await service.editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })
+        if (addInstance.result !== 1) return Confirm(addInstance.message)
+
+        this.initAllNavigationLink()
+    }
 
     renderLink = link => {
-        const { topic, isHideChildren, uniquelyIdentify } = link
+        const { id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson, isHideChildren } = link
         const children = []
         const BlowUp = () => <svg width="16" height="16" t="1586918632959" className="icon" viewBox="0 0 1024 1024" >
             <path d="M51.501176 1015.265882L8.734118 972.498824 349.063529 632.470588 391.529412 674.936471zM632.651294 349.003294L972.769882 8.914824l42.586353 42.586352L675.237647 391.619765z" fill="#3C22D3" p-id="916"></path>
@@ -106,7 +120,7 @@ export class NavigationLink extends React.Component {
                 <div className='flex-rest'>{topic}</div>
 
                 <div className='link-splice-operation'>移动</div>
-                <div className='link-splice-operation'>编辑</div>
+                <div className='link-splice-operation' onClick={() => this.editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })}>编辑</div>
                 {children.length === 0 && <div className='link-splice-operation'>删除</div>}
                 {children.length > 0 && <div className='link-switch-operation'
                     onClick={() => this.switchLinkElementHiden(uniquelyIdentify)}
