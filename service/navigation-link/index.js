@@ -1,4 +1,5 @@
 import consequencer from './../../utils/consequencer'
+import StringHelper from './../../utils/string-helper'
 import SQLite from './../../module/SQLite/index.js'
 import dataAccessObject from './data-access-object'
 
@@ -30,8 +31,27 @@ const getAllNavigationLink = async function getAllNavigationLink() {
     return consequencer.success(navigationLink)
 }
 
+const addNavigationLink = async function addNavigationLink({ topic, filterJson }) {
+    const uniquelyIdentify = StringHelper.createRandomStr({ length: 32 })
+    const parentUniquelyIdentify = 'root'
+
+    const addInstance = await tableHandle.add({ uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })
+    if (addInstance.result !== 1) return addInstance
+
+    const sqlHandle = new SQLite.SqlHandle()
+    sqlHandle.addAndFilterSql(`uniquelyIdentify = "${uniquelyIdentify}"`)
+    const queryInstance = await tableHandle.list(sqlHandle.toSqlString())
+    if (queryInstance.result !== 1) return queryInstance
+    const queryData = queryInstance.data
+    if (queryData.length <= 0) return consequencer.error('新增失败')
+
+    const requestAddData = queryData[0]
+    return consequencer.success(requestAddData)
+}
+
 const NavigationLink = {
-    getAllNavigationLink
+    getAllNavigationLink,
+    addNavigationLink
 }
 
 export default NavigationLink

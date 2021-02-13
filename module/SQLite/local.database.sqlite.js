@@ -48,9 +48,9 @@ const table = {
     navigationLink: `
         CREATE TABLE navigationLink (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            uniquelyIdentify TEXT NOT NULL,
-            parentUniquelyIdentify TEXT NOT NULL,
-            topic TEXT NOT NULL,
+            uniquelyIdentify TINYTEXT NOT NULL,
+            parentUniquelyIdentify TINYTEXT NOT NULL,
+            topic TINYTEXT NOT NULL,
             filterJson TEXT NOT NULL
         )
     `

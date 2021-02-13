@@ -7,6 +7,7 @@ import CONSTS from './../../../library/consts'
 import ArrayHelper from './../../../utils/array-helper'
 
 import service from './service.js'
+import utils from './utils.js'
 import TaskList from './mobile-components/task-card'
 import GroupPanel from './mobile-components/group-panel'
 
@@ -79,37 +80,25 @@ export class MobileComponent extends React.Component {
         this.setState({ list, pageNo, sort }, this.initList)
     }
 
-    selectFilterHandle = () => {
-        const self = this
+    selectFilterHandle = async () => {
+        const isMultipleFilter = true
         const initFilter = {
             longTerm: this.state.longTerm,
             ...this.filter
         }
 
-        toast.show()
-        import('./common-components/filter-edit').then(async ({ FilterEdit }) => {
-            toast.destroy()
-            const selectInstance = await FullscreenIframe({
-                Element: FilterEdit,
-                className: 'mobile-device-task-filter-edit',
-                props: {
-                    isMultipleFilter: true,
-                    initFilter
-                }
-            })
+        const selectInstance = await utils.showOperateFilterEdit(isMultipleFilter, initFilter)
+        if (selectInstance.result !== 1) return
+        const filter = selectInstance.data
 
-            if (selectInstance.result !== 1) return
-            const filter = selectInstance.data
-
-            self.filter = {
-                tags: filter.tagFilter,
-                minEffectTimestamp: filter.minEffectTimestampFilter,
-                maxEffectTimestamp: filter.maxEffectTimestampFilter,
-                multipleStatus: filter.statusMultipleFilter,
-                multiplePriority: filter.priorityMultipleFilter
-            }
-            self.setState({ longTerm: filter.longTermFilter }, () => self.initList(true))
-        })
+        this.filter = {
+            tags: filter.tagFilter,
+            minEffectTimestamp: filter.minEffectTimestampFilter,
+            maxEffectTimestamp: filter.maxEffectTimestampFilter,
+            multipleStatus: filter.statusMultipleFilter,
+            multiplePriority: filter.priorityMultipleFilter
+        }
+        this.setState({ longTerm: filter.longTermFilter }, () => this.initList(true))
     }
 
     loadRandomHandle = () => this.setState({ pageNo: 1 }, this.initList)

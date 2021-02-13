@@ -124,7 +124,11 @@
 }
 
 .mobile-device-navigation-link .navigation-link {
-    padding: 15px 0px;
+    padding-bottom: 75px;
+
+    .navigation-link-operation {
+        padding: 15px;
+    }
 
     .navigation-link-elements {
         border-top: 1px solid #ddd;
@@ -134,6 +138,17 @@
             padding-right: 15px;
             padding-left : 15px;
             border-bottom: 1px solid #ddd;
+
+            .link-splice-operation {
+                padding     : 0px 7.5px;
+                border-right: 1px solid #ddd;
+                font-size   : 12px;
+                color       : @black3;
+            }
+
+            .link-switch-operation {
+                padding-left: 7.5px;
+            }
         }
 
         .link-item-children {

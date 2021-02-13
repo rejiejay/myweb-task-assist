@@ -1,4 +1,11 @@
+import Button from './../../../components/button'
+import CommonlyBottomOperate from './../../../components/mobile/commonly-bottom-operate'
+import consequencer from './../../../../utils/consequencer'
+import Prompt from './../../../components/prompt'
+import Confirm from './../../../components/confirm'
+
 import service from './../service'
+import utils from './../utils'
 
 const props = {
     resolve: () => { },
@@ -21,7 +28,11 @@ export class NavigationLink extends React.Component {
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        this.initAllNavigationLink()
+    }
+
+    initAllNavigationLink = async () => {
         const fetchInstance = await service.getAllNavigationLink()
         if (fetchInstance.result !== 1) return
         const links = fetchInstance.data
@@ -40,6 +51,39 @@ export class NavigationLink extends React.Component {
 
         this.setState({ links: links.map(mapperLinkElement) })
     }
+
+    initFilterJson = filter => {
+        const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusMultipleFilter, priorityMultipleFilter } = filter
+
+        const longTerm = longTermFilter
+        const tags = tagFilter
+        const minEffectTimestamp = minEffectTimestampFilter
+        const maxEffectTimestamp = maxEffectTimestampFilter
+        const multipleStatus = statusMultipleFilter
+        const multiplePriority = priorityMultipleFilter
+        const filterJson = JSON.stringify({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority })
+
+        return filterJson
+    }
+
+    addNavigationLink = async () => {
+        const promptInstance = await Prompt({ title: '请输入新增导航栏名字', placeholder: '请输入新增导航栏名字' })
+        if (promptInstance.result !== 1) return
+
+        const topic = promptInstance.data
+
+        const isMultipleFilter = true
+        const selectInstance = await utils.showOperateFilterEdit(isMultipleFilter)
+        if (selectInstance.result !== 1) return
+        const filterJson = this.initFilterJson(selectInstance.data)
+
+        const addInstance = await service.addNavigationLink({ topic, filterJson })
+        if (addInstance.result !== 1) return Confirm(addInstance.message)
+
+        this.initAllNavigationLink()
+    }
+
+    editNavigationLink = async (topic, filterJson) => { }
 
     renderLink = link => {
         const { topic, isHideChildren, uniquelyIdentify } = link
@@ -61,7 +105,10 @@ export class NavigationLink extends React.Component {
 
                 <div className='flex-rest'>{topic}</div>
 
-                {children.length > 0 && <div
+                <div className='link-splice-operation'>移动</div>
+                <div className='link-splice-operation'>编辑</div>
+                {children.length === 0 && <div className='link-splice-operation'>删除</div>}
+                {children.length > 0 && <div className='link-switch-operation'
                     onClick={() => this.switchLinkElementHiden(uniquelyIdentify)}
                 >
                     {isHideChildren ? <BlowUp /> : <Minify />}
@@ -73,6 +120,16 @@ export class NavigationLink extends React.Component {
         </div>
     }
 
+    confirmResolveHandle = () => {
+        const { resolve } = this.props
+        resolve(consequencer.success())
+    }
+
+    cancelRejectHandle = () => {
+        const { reject } = this.props
+        reject(consequencer.error('cancel'))
+    }
+
     render() {
         const { links } = this.state
         const linkElements = []
@@ -80,7 +137,22 @@ export class NavigationLink extends React.Component {
         links.forEach(link => linkElements.push(this.renderLink(link)))
 
         return <div className='navigation-link'>
+            <div className='navigation-link-operation'>
+                <Button onClick={this.addNavigationLink}>新增导航</Button>
+            </div>
+
             <div className='navigation-link-elements'>{linkElements}</div>
+
+            <CommonlyBottomOperate
+                leftElement={[{
+                    cilckHandle: this.confirmResolveHandle,
+                    element: '确认'
+                }]}
+                rightElement={[{
+                    cilckHandle: this.cancelRejectHandle,
+                    element: '取消'
+                }]}
+            />
         </div>
     }
 }

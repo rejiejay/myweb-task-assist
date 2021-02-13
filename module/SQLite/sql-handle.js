@@ -24,7 +24,7 @@ class SqlHandle {
             let value = data[key]
 
             const isStringInstance = valuesStructuresVerify.isString(value)
-            if (isStringInstance.result === 1) value = `"${value}"`
+            if (isStringInstance.result === 1) value = `'${value}'`
 
             values.push(value)
         })
@@ -41,7 +41,7 @@ class SqlHandle {
                 let sql = `${key}=${value}`
 
                 const isStringInstance = valuesStructuresVerify.isString(value)
-                if (isStringInstance.result === 1) sql = `${key}="${value}"`
+                if (isStringInstance.result === 1) sql = `${key}='${value}'`
                 if (value === 'null') sql = `${key}=null`
 
                 sqls.push(sql)

@@ -94,34 +94,22 @@ export class TaskEdit extends React.Component {
         })
     }
 
-    selectFilterHandle = () => {
-        const self = this
+    selectFilterHandle = async () => {
+        const isMultipleFilter = false
         const { longTerm, tags, status, priority, minEffectTimestamp, maxEffectTimestamp } = this.state
         const initFilter = { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority }
 
-        toast.show()
-        import('./../common-components/filter-edit').then(async ({ FilterEdit }) => {
-            toast.destroy()
-            const selectInstance = await FullscreenIframe({
-                Element: FilterEdit,
-                className: 'mobile-device-task-filter-edit',
-                props: {
-                    isMultipleFilter: false,
-                    initFilter
-                }
-            })
+        const selectInstance = await utils.showOperateFilterEdit(isMultipleFilter, initFilter)
+        if (selectInstance.result !== 1) return
+        const filter = selectInstance.data
 
-            if (selectInstance.result !== 1) return
-            const filter = selectInstance.data
-
-            self.setState({
-                longTerm: filter.longTermFilter,
-                tags: filter.tagFilter,
-                minEffectTimestamp: filter.minEffectTimestampFilter,
-                maxEffectTimestamp: filter.maxEffectTimestampFilter,
-                status: filter.statusFilter,
-                priority: filter.priorityFilter
-            })
+        this.setState({
+            longTerm: filter.longTermFilter,
+            tags: filter.tagFilter,
+            minEffectTimestamp: filter.minEffectTimestampFilter,
+            maxEffectTimestamp: filter.maxEffectTimestampFilter,
+            status: filter.statusFilter,
+            priority: filter.priorityFilter
         })
     }
 

@@ -8,7 +8,7 @@ async function getTaskList({ longTerm, tags, minEffectTimestamp, maxEffectTimest
         delete query.pageSize
     }
     if (longTerm && longTerm.id) query.longTermId = longTerm.id
-    if (tags && tags.length > 0) query.tags = JSON.stringify(tags)
+    if (tags && tags.length > 0) query.tags = JSON.stringify(tags.map(({ id }) => id))
     if (!!minEffectTimestamp) query.minEffectTimestamp = minEffectTimestamp
     if (!!maxEffectTimestamp) query.maxEffectTimestamp = maxEffectTimestamp
     if (multipleStatus && multipleStatus.length > 0) query.status = JSON.stringify(multipleStatus.map(({ value }) => value))
@@ -101,6 +101,11 @@ const getAllNavigationLink = async id => await fetch.reGetConfirm({
     isShowError: true
 })
 
+const addNavigationLink = async ({ topic, filterJson }) => await fetch.post({
+    url: 'link/add',
+    body: { topic, filterJson }
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
@@ -113,7 +118,8 @@ const service = {
     editTask,
     getTaskById,
     getLongTermTask,
-    getAllNavigationLink
+    getAllNavigationLink,
+    addNavigationLink
 }
 
 export default service
