@@ -95,6 +95,12 @@ const getLongTermTask = async id => await fetch.reGetConfirm({
     isShowError: true
 })
 
+const getAllNavigationLink = async id => await fetch.reGetConfirm({
+    url: 'link/all',
+    query: {},
+    isShowError: true
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
@@ -106,7 +112,8 @@ const service = {
     addTask,
     editTask,
     getTaskById,
-    getLongTermTask
+    getLongTermTask,
+    getAllNavigationLink
 }
 
 export default service
