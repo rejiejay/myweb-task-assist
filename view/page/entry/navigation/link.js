@@ -9,7 +9,21 @@ import utils from './../utils'
 
 const props = {
     resolve: () => { },
-    reject: () => { }
+    reject: () => { },
+    defaultFilter: {
+        longTerm: { id: null, title: '' }, // 长期的任务不进行多选
+        tags: [
+            // { id, name }
+        ],
+        minEffectTimestamp: null,
+        maxEffectTimestamp: null,
+        multipleStatus: [
+            // library\consts\task.js -> status
+        ],
+        multiplePriority: [
+            // library\consts\task.js -> priority
+        ]
+    }
 }
 
 export class NavigationLink extends React.Component {
@@ -69,12 +83,14 @@ export class NavigationLink extends React.Component {
     }
 
     addNavigationLink = async () => {
+        const { defaultFilter } = this.props
+
         const promptInstance = await Prompt({ title: '请输入新增导航栏名字', placeholder: '请输入新增导航栏名字' })
         if (promptInstance.result !== 1) return
         const topic = promptInstance.data
 
         const isMultipleFilter = true
-        const selectInstance = await utils.showOperateFilterEdit(isMultipleFilter)
+        const selectInstance = await utils.showOperateFilterEdit(isMultipleFilter, defaultFilter)
         if (selectInstance.result !== 1) return
         const filterJson = this.initFilterJson(selectInstance.data)
 

@@ -135,6 +135,9 @@ export class MobileComponent extends React.Component {
 
     selectNavigationLinkHandle = () => {
         const self = this
+        const { longTerm } = this.state
+        const { tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority } = this.filter
+        const defaultFilter = { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }
 
         toast.show()
         import('./navigation/link').then(async ({ NavigationLink }) => {
@@ -143,7 +146,7 @@ export class MobileComponent extends React.Component {
             const selectInstance = await FullscreenIframe({
                 Element: NavigationLink,
                 className: 'mobile-device-navigation-link',
-                props: {}
+                props: { defaultFilter }
             })
 
             if (selectInstance.result !== 1) return
