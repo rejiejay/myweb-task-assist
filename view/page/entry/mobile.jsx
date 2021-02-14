@@ -163,6 +163,28 @@ export class MobileComponent extends React.Component {
         })
     }
 
+    editGroupPanelHandle = () => {
+        const self = this
+        const { longTerm } = this.state
+        const longTermId = longTerm.id
+
+        toast.show()
+        import('./group-panel/record-detail').then(async ({ GroupPanelRecordDetail }) => {
+            toast.destroy()
+
+            const editInstance = await FullscreenIframe({
+                Element: GroupPanelRecordDetail,
+                className: 'group-panel-record-detail',
+                props: { longTermId }
+            })
+
+            if (editInstance.result !== 1) return
+            const groupPanel = editInstance.data
+
+            console.log('groupPanel', groupPanel)
+        })
+    }
+
     render() {
         const { list, isShowBigCard, sort, count, longTerm } = this.state
 
@@ -181,7 +203,10 @@ export class MobileComponent extends React.Component {
             </div>
             <div style={{ height: '50px' }} />
 
-            <GroupPanel longTermId={longTerm.id} />
+            <GroupPanel
+                longTermId={longTerm.id}
+                onEditHandle={this.editGroupPanelHandle}
+            />
 
             <TaskList
                 list={list}

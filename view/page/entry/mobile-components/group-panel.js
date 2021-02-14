@@ -35,7 +35,7 @@ class GroupPanel extends React.Component {
     }
 
     render() {
-        const { longTermId } = this.props
+        const { longTermId, onEditHandle } = this.props
         if (!longTermId) return null
 
         const { title, record } = this.state
@@ -46,8 +46,8 @@ class GroupPanel extends React.Component {
                 <div className='group-panel-content'>{record}</div>
                 <div className='group-panel-operation flex-start'>
                     <div className='flex-rest'></div>
-                    <Button
-                        style={{ minWidth: '45px', width: '45px', minHeight: '35px', fontSize: '12px', backgroundColor: '#fff', color: '#606266' }}
+                    <Button style={{ minWidth: '45px', width: '45px', minHeight: '35px', fontSize: '12px', backgroundColor: '#fff', color: '#606266' }}
+                        onClick={onEditHandle}
                     >编辑</Button>
                 </div>
             </div>

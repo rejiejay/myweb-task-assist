@@ -6,7 +6,6 @@ import CommonlyInputText from './../../../components/mobile/commonly-input-text'
 import CommonlyBottomOperate from './../../../components/mobile/commonly-bottom-operate'
 import Button from './../../../components/button'
 import toast from './../../../components/toast'
-import FullscreenIframe from './../../../components/fullscreen-iframe'
 import Confirm from './../../../components/confirm'
 
 import service from './../service'
