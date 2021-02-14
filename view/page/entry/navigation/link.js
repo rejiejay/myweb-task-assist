@@ -198,9 +198,11 @@ export class NavigationLink extends React.Component {
                         <div className='link-item-container flex-start-center'>
 
                             <div className='flex-rest'>root</div>
-                            <div className='link-operation-move'
-                                onClick={() => this.selectedMoveHandle({ topic: 'root', uniquelyIdentify: 'root' })}
-                            >移动到此</div>
+                            {isSelectedMove.parentUniquelyIdentify !== 'root' &&
+                                <div className='link-operation-move'
+                                    onClick={() => this.selectedMoveHandle({ topic: 'root', uniquelyIdentify: 'root' })}
+                                >移动到此</div>
+                            }
                         </div>
 
                         <div className='link-item-children'>{linkElements}</div>
