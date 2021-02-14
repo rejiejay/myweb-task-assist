@@ -17,6 +17,8 @@ export class NavigationLink extends React.Component {
         super(props)
 
         this.state = {
+            isSelectedMove: false,
+
             links: [
                 // id: 2,
                 // uniquelyIdentify: "85136c79cbf9fe36bb9d05d0639c70c265c18d37",
@@ -99,7 +101,21 @@ export class NavigationLink extends React.Component {
         this.initAllNavigationLink()
     }
 
+    selectedMoveHandle = async link => {
+        const { isSelectedMove } = this.state
+        const { topic } = link
+        const moveConfirmInstance = await Confirm(`确定要移动到: "${topic}"?`)
+        if (moveConfirmInstance.result !== 1) return
+
+        const moveNavigationLinkInstance = await service.editNavigationLink({ ...isSelectedMove, parentUniquelyIdentify: link.uniquelyIdentify })
+        if (moveNavigationLinkInstance.result !== 1) return Confirm(moveNavigationLinkInstance.message)
+
+        this.setState({ isSelectedMove: false })
+        this.initAllNavigationLink()
+    }
+
     renderLink = link => {
+        const { isSelectedMove } = this.state
         const { id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson, isHideChildren } = link
         const children = []
         const BlowUp = () => <svg width="16" height="16" t="1586918632959" className="icon" viewBox="0 0 1024 1024" >
@@ -114,23 +130,44 @@ export class NavigationLink extends React.Component {
 
         link.children.forEach(element => children.push(this.renderLink(element)))
 
+        const isShowChildren = (() => {
+            if (children.length <= 0) return false
+            if (!!isSelectedMove) return true
+
+            return !isHideChildren
+        })()
+
         return <div className='link-item'>
             <div className='link-item-container flex-start-center'>
 
                 <div className='flex-rest'>{topic}</div>
 
-                <div className='link-splice-operation'>移动</div>
-                <div className='link-splice-operation' onClick={() => this.editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })}>编辑</div>
-                {children.length === 0 && <div className='link-splice-operation'>删除</div>}
-                {children.length > 0 && <div className='link-switch-operation'
-                    onClick={() => this.switchLinkElementHiden(uniquelyIdentify)}
-                >
-                    {isHideChildren ? <BlowUp /> : <Minify />}
-                </div>}
+                {!!isSelectedMove && isSelectedMove.uniquelyIdentify !== uniquelyIdentify &&
+                    <div className='link-operation-move'
+                        onClick={() => this.selectedMoveHandle(link)}
+                    >移动到此</div>
+                }
+                {!!isSelectedMove && isSelectedMove.uniquelyIdentify === uniquelyIdentify &&
+                    <div className='link-operation-move'
+                        style={{ color: '#fe4066' }}
+                        onClick={() => this.setState({ isSelectedMove: false })}
+                    >取消移动</div>
+                }
+
+                {!isSelectedMove && <>
+                    <div className='link-splice-operation' onClick={() => this.setState({ isSelectedMove: link })} >移动</div>
+                    <div className='link-splice-operation' onClick={() => this.editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })}>编辑</div>
+                    {children.length === 0 && <div className='link-splice-operation'>删除</div>}
+                    {children.length > 0 && <div className='link-switch-operation'
+                        onClick={() => this.switchLinkElementHiden(uniquelyIdentify)}
+                    >
+                        {isHideChildren ? <BlowUp /> : <Minify />}
+                    </div>}
+                </>}
 
             </div>
 
-            {children.length > 0 && !isHideChildren && <div className='link-item-children'>{children}</div>}
+            {isShowChildren && <div className='link-item-children'>{children}</div>}
         </div>
     }
 
@@ -145,7 +182,7 @@ export class NavigationLink extends React.Component {
     }
 
     render() {
-        const { links } = this.state
+        const { links, isSelectedMove } = this.state
         const linkElements = []
 
         links.forEach(link => linkElements.push(this.renderLink(link)))
@@ -155,7 +192,22 @@ export class NavigationLink extends React.Component {
                 <Button onClick={this.addNavigationLink}>新增导航</Button>
             </div>
 
-            <div className='navigation-link-elements'>{linkElements}</div>
+            <div className='navigation-link-elements'>
+                {!!isSelectedMove &&
+                    <div className='link-item'>
+                        <div className='link-item-container flex-start-center'>
+
+                            <div className='flex-rest'>root</div>
+                            <div className='link-operation-move'
+                                onClick={() => this.selectedMoveHandle({ topic: 'root', uniquelyIdentify: 'root' })}
+                            >移动到此</div>
+                        </div>
+
+                        <div className='link-item-children'>{linkElements}</div>
+                    </div>
+                }
+                {!isSelectedMove && linkElements}
+            </div>
 
             <CommonlyBottomOperate
                 leftElement={[{
