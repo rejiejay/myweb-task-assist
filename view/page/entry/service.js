@@ -95,7 +95,7 @@ const getLongTermTask = async id => await fetch.reGetConfirm({
     isShowError: true
 })
 
-const getAllNavigationLink = async id => await fetch.reGetConfirm({
+const getAllNavigationLink = async () => await fetch.reGetConfirm({
     url: 'link/all',
     query: {},
     isShowError: true
@@ -109,6 +109,11 @@ const addNavigationLink = async ({ topic, filterJson }) => await fetch.post({
 const editNavigationLink = async ({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }) => await fetch.post({
     url: 'link/edit',
     body: { id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }
+})
+
+const deleteNavigationLink = async id => await fetch.post({
+    url: 'link/delete',
+    body: { id }
 })
 
 const service = {
@@ -125,7 +130,8 @@ const service = {
     getLongTermTask,
     getAllNavigationLink,
     addNavigationLink,
-    editNavigationLink
+    editNavigationLink,
+    deleteNavigationLink
 }
 
 export default service

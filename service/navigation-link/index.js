@@ -49,7 +49,7 @@ const addNavigationLink = async function addNavigationLink({ topic, filterJson }
     return consequencer.success(requestAddData)
 }
 
-const editNavigationLink = async function addNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }) {
+const editNavigationLink = async function editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson }) {
     const addInstance = await tableHandle.updata(id, { uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })
     if (addInstance.result !== 1) return addInstance
 
@@ -64,10 +64,16 @@ const editNavigationLink = async function addNavigationLink({ id, uniquelyIdenti
     return consequencer.success(requestAddData)
 }
 
+const deleteNavigationLink = async function deleteNavigationLink(id) {
+    const deleteInstance = await tableHandle.del(id)
+    return deleteInstance
+}
+
 const NavigationLink = {
     getAllNavigationLink,
     addNavigationLink,
-    editNavigationLink
+    editNavigationLink,
+    deleteNavigationLink
 }
 
 export default NavigationLink

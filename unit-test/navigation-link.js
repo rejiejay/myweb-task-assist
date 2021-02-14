@@ -31,10 +31,13 @@ const editNavigationLink = responseHanle => controller.post_link_edit({
     })
 }, responseHanle)
 
+const deleteNavigationLink = responseHanle => controller.post_link_delete({ id: 4 }, responseHanle)
+
 const NavigationLink = {
     listAllNavigationLink: utils.resolveHandle(listAllNavigationLink, { isShowResult: false }),
     addNavigationLink: utils.resolveHandle(addNavigationLink, { isShowResult: false }),
-    editNavigationLink: utils.resolveHandle(editNavigationLink, { isShowResult: false })
+    editNavigationLink: utils.resolveHandle(editNavigationLink, { isShowResult: false }),
+    deleteNavigationLink: utils.resolveHandle(deleteNavigationLink, { isShowResult: false })
 }
 
 export default NavigationLink

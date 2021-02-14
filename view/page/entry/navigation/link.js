@@ -114,6 +114,16 @@ export class NavigationLink extends React.Component {
         this.initAllNavigationLink()
     }
 
+    deleteLinkElement = async (id, topic) => {
+        const deleteConfirmInstance = await Confirm(`确定要删除: "${topic}"?`)
+        if (deleteConfirmInstance.result !== 1) return
+
+        const deleteNavigationLinkInstance = await service.deleteNavigationLink(id)
+        if (deleteNavigationLinkInstance.result !== 1) return Confirm(deleteNavigationLinkInstance.message)
+
+        this.initAllNavigationLink()
+    }
+
     renderLink = link => {
         const { isSelectedMove } = this.state
         const { id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson, isHideChildren } = link
@@ -137,7 +147,7 @@ export class NavigationLink extends React.Component {
             return !isHideChildren
         })()
 
-        return <div className='link-item'>
+        return <div className='link-item' key={uniquelyIdentify}>
             <div className='link-item-container flex-start-center'>
 
                 <div className='flex-rest'>{topic}</div>
@@ -157,7 +167,9 @@ export class NavigationLink extends React.Component {
                 {!isSelectedMove && <>
                     <div className='link-splice-operation' onClick={() => this.setState({ isSelectedMove: link })} >移动</div>
                     <div className='link-splice-operation' onClick={() => this.editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })}>编辑</div>
-                    {children.length === 0 && <div className='link-splice-operation'>删除</div>}
+                    {children.length === 0 && <div className='link-splice-operation'
+                        onClick={() => this.deleteLinkElement(id, topic)}
+                    >删除</div>}
                     {children.length > 0 && <div className='link-switch-operation'
                         onClick={() => this.switchLinkElementHiden(uniquelyIdentify)}
                     >
@@ -182,10 +194,13 @@ export class NavigationLink extends React.Component {
     }
 
     render() {
+        const slef = this
         const { links, isSelectedMove } = this.state
-        const linkElements = []
 
-        links.forEach(link => linkElements.push(this.renderLink(link)))
+        const LinkElements = () => links.reduce((accumulator, link) => {
+            accumulator.push(slef.renderLink(link))
+            return accumulator
+        }, [])
 
         return <div className='navigation-link'>
             <div className='navigation-link-operation'>
@@ -205,10 +220,12 @@ export class NavigationLink extends React.Component {
                             }
                         </div>
 
-                        <div className='link-item-children'>{linkElements}</div>
+                        <div className='link-item-children'>
+                            <LinkElements />
+                        </div>
                     </div>
                 }
-                {!isSelectedMove && linkElements}
+                {!isSelectedMove && <LinkElements />}
             </div>
 
             <CommonlyBottomOperate

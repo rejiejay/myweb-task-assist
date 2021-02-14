@@ -36,10 +36,19 @@ const editNavigationLink = async function editNavigationLink({ id, uniquelyIdent
     responseHanle.json(result)
 }
 
+const deleteNavigationLink = async function deleteNavigationLink({ id }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isId(id)
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const result = await service.link.deleteNavigationLink(id)
+    responseHanle.json(result)
+}
+
 const NavigationLink = {
     get_link_all: getAllNavigationLink,
     post_link_add: addNavigationLink,
-    post_link_edit: editNavigationLink
+    post_link_edit: editNavigationLink,
+    post_link_delete: deleteNavigationLink
 }
 
 export default NavigationLink
