@@ -20,7 +20,7 @@ export default class CommonlyBottomOperate extends React.Component {
             )}</div>
             {rightElement && rightElement.length > 0 && <div style={style.right}>{rightElement.map(({ cilckHandle, element }, key) => 
                 <div key={key}
-                    style={style.rightElement({ haveLine: leftElement.length !== (key + 1) })}
+                    style={style.rightElement({ haveLine: rightElement.length !== (key + 1) })}
                     onClick={cilckHandle}
                 >{element}</div>
             )}</div>}

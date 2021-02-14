@@ -165,6 +165,7 @@ export class NavigationLink extends React.Component {
                 }
 
                 {!isSelectedMove && <>
+                    <div className='link-splice-operation' onClick={() => this.selectNavigationLink(filterJson)} >选择</div>
                     <div className='link-splice-operation' onClick={() => this.setState({ isSelectedMove: link })} >移动</div>
                     <div className='link-splice-operation' onClick={() => this.editNavigationLink({ id, uniquelyIdentify, parentUniquelyIdentify, topic, filterJson })}>编辑</div>
                     {children.length === 0 && <div className='link-splice-operation'
@@ -183,9 +184,10 @@ export class NavigationLink extends React.Component {
         </div>
     }
 
-    confirmResolveHandle = () => {
+    selectNavigationLink = filterJson => {
         const { resolve } = this.props
-        resolve(consequencer.success())
+        const { tags, longTerm, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority } = JSON.parse(filterJson)
+        resolve(consequencer.success({ tags, longTerm, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }))
     }
 
     cancelRejectHandle = () => {
@@ -229,10 +231,6 @@ export class NavigationLink extends React.Component {
             </div>
 
             <CommonlyBottomOperate
-                leftElement={[{
-                    cilckHandle: this.confirmResolveHandle,
-                    element: '确认'
-                }]}
                 rightElement={[{
                     cilckHandle: this.cancelRejectHandle,
                     element: '取消'

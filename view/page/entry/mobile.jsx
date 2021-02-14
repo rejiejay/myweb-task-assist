@@ -147,16 +147,16 @@ export class MobileComponent extends React.Component {
             })
 
             if (selectInstance.result !== 1) return
-            const linkFilter = selectInstance.data
+            const navigationLink = selectInstance.data
 
             self.filter = {
-                tags: linkFilter.tagFilter,
-                minEffectTimestamp: linkFilter.minEffectTimestampFilter,
-                maxEffectTimestamp: linkFilter.maxEffectTimestampFilter,
-                multipleStatus: linkFilter.statusMultipleFilter,
-                multiplePriority: linkFilter.priorityMultipleFilter
+                tags: navigationLink.tags,
+                minEffectTimestamp: navigationLink.minEffectTimestamp,
+                maxEffectTimestamp: navigationLink.maxEffectTimestamp,
+                multipleStatus: navigationLink.multipleStatus,
+                multiplePriority: navigationLink.multiplePriority
             }
-            self.setState({ longTerm: linkFilter.longTermFilter }, () => self.initList(true))
+            self.setState({ longTerm: navigationLink.longTerm }, () => self.initList(true))
         })
     }
 
