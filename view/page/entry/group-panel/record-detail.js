@@ -58,12 +58,16 @@ export class GroupPanelRecordDetail extends React.Component {
         this.props.reject(consequencer.error('取消'))
     }
 
-    verifyInputChange = () => {
-        const isTitleChange = false
-        const isPanelChange = false
-        const isDetailChange = false
+    storageConfirmVerify = ({ id }) => {
+        if (id === 'storage') {
+            const { title, record, spreadZoomIdentify } = this.state
+            const longTermTask = this.longTermTask
+            if (title !== longTermTask.title) return true
+            if (record !== longTermTask.record) return true
+            if (spreadZoomIdentify !== longTermTask.detailCategoryIdentify) return true
+        }
 
-        return isTitleChange || isPanelChange || isDetailChange
+        return false
     }
 
     render() {
@@ -104,9 +108,10 @@ export class GroupPanelRecordDetail extends React.Component {
             <div style={{ height: '425px' }} />
             <CommonlyBottomOperate
                 leftElement={[{
+                    id: 'storage',
                     cilckHandle: this.storageConfirmHandle,
                     element: '暂存'
-                }]}
+                }].filter(this.storageConfirmVerify)}
                 rightElement={[{
                     cilckHandle: this.backtrackHandle,
                     element: '确认'
@@ -176,7 +181,11 @@ class MultipleInputTextarea extends React.Component {
                 onChange={({ target: { value } }) => this.onChangeHandle(value)}
                 placeholder={placeholder}
             />
-            {this.verifyInputChange() && <div className='multiple-input-submit'>提交</div>}
+            {this.verifyInputChange() &&
+                <div className='multiple-input-submit'
+                    onClick={() => this.props.onChangeHandle(content)}
+                >提交</div>
+            }
         </div>
     }
 }
@@ -236,7 +245,6 @@ class RecordDetailElement extends React.Component {
             <div className='node-item-container flex-start-center'>
                 <div className='node-item-input flex-rest'>
                     <MultipleInputTextarea key={uniquelyIdentify}
-                        id={uniquelyIdentify}
                         value={detail || ''}
                         onChangeHandle={value => this.multipleInputChangeHandle(value, id)}
                         placeholder='请输入长期任务面板简介'
