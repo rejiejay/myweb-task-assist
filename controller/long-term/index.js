@@ -5,7 +5,7 @@ import service from './../../service/index.js'
 import valuesStructuresVerify from './../../utils/values-structures-verify'
 
 const listAllLongTermTaskRelational = async function listAllLongTermTaskRelational(parameter, responseHanle) {
-    const result = await service.longTerm.listAll()
+    const result = await service.longTerm.listAllTaskRelational()
     responseHanle.json(result)
 }
 
@@ -13,14 +13,22 @@ const getLongTermTaskRelational = async function getLongTermTaskRelational({ id 
     const verifyInstance = valuesStructuresVerify.isId(id, 'LongTermId')
     if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
 
-    const result = await service.longTerm.getOne(id)
+    const result = await service.longTerm.getOneTaskRelational(id)
     responseHanle.json(result)
 }
 
+const listAllLongTermRecordDetail = async function listAllLongTermRecordDetail({ longTermRecordDetailCategoryId }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isStringNil(longTermRecordDetailCategoryId, 'longTermRecordDetailCategoryId')
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const result = await service.longTerm.listAllLongTermRecordDetail(longTermRecordDetailCategoryId)
+    responseHanle.json(result)
+}
+ 
 const longTerm = {
     get_longTerm_all: listAllLongTermTaskRelational,
-    get_longTerm_id: getLongTermTaskRelational
+    get_longTerm_id: getLongTermTaskRelational,
+    get_longTerm_detail: listAllLongTermRecordDetail
 }
 
 export default longTerm
-

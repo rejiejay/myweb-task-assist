@@ -41,7 +41,20 @@ const table = {
         CREATE TABLE longTermTaskRelational (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            record LONGTEXT
+            record LONGTEXT,
+            spreadZoomIdentify TINYTEXT,
+            spreadZoomDepth INT,
+            detailCategoryIdentify TINYTEXT NOT NULL
+        )
+    `,
+
+    longTermRecordDetail: `
+        CREATE TABLE longTermRecordDetail (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            categoryIdentify TINYTEXT NOT NULL,
+            uniquelyIdentify TINYTEXT NOT NULL,
+            parentUniquelyIdentify TINYTEXT NOT NULL,
+            detail TEXT NOT NULL
         )
     `,
 
@@ -105,8 +118,8 @@ function initTaskTags() {
 function initLongTermTaskRelational() {
     const insertTaskData = data => utils.insertTaskData('longTermTaskRelational', data)
     this.SqliteJs.exec(table.longTermTaskRelational);
-    this.SqliteJs.exec(insertTaskData({ title: '"务长期任务"', record: '"长期任务内容"' }));
-    this.SqliteJs.exec(insertTaskData({ title: '"务长期任务2"', record: '"长期任务内容2"' }));
+    this.SqliteJs.exec(insertTaskData({ title: '"任务长期任务"', record: '"长期任务内容"', detailCategoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"' }));
+    this.SqliteJs.exec(insertTaskData({ title: '"任务长期任务2"', record: '"长期任务内容2"', detailCategoryIdentify: '"8bdf06bdbf9497bc6f69316b8385886388d01c4e"' }));
 }
 
 function initNavigationLink() {
@@ -159,6 +172,41 @@ function initNavigationLink() {
     }))
 }
 
+function longTermRecordDetail() {
+    const insertTaskData = data => utils.insertTaskData('longTermRecordDetail', data)
+    this.SqliteJs.exec(table.longTermRecordDetail);
+    this.SqliteJs.exec(insertTaskData({
+        categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
+        uniquelyIdentify: '"b063cf3b653b3230a7c08a283bef69a4c1b60170"',
+        parentUniquelyIdentify: '"root"',
+        detail: '"root"'
+    }))
+    this.SqliteJs.exec(insertTaskData({
+        categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
+        uniquelyIdentify: '"85136c79cbf9fe36bb9d05d0639c70c265c18d37"',
+        parentUniquelyIdentify: '"root"',
+        detail: '"root2"'
+    }))
+    this.SqliteJs.exec(insertTaskData({
+        categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
+        uniquelyIdentify: '"7eaa6f30ea61c7920cacb0363bc0a520f5248e31"',
+        parentUniquelyIdentify: '"b063cf3b653b3230a7c08a283bef69a4c1b60170"',
+        detail: '"root1 children"'
+    }))
+    this.SqliteJs.exec(insertTaskData({
+        categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
+        uniquelyIdentify: '"7dd8947d08339e1417268689b9b69d0a34e9d0ab"',
+        parentUniquelyIdentify: '"b063cf3b653b3230a7c08a283bef69a4c1b60170"',
+        detail: '"root1 children2"'
+    }))
+    this.SqliteJs.exec(insertTaskData({
+        categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
+        uniquelyIdentify: '"5f5f3dd8fa3aea1dd0e758bf10405ff62b783c5c"',
+        parentUniquelyIdentify: '"7eaa6f30ea61c7920cacb0363bc0a520f5248e31"',
+        detail: '"children1 children"'
+    }))
+}
+
 function init(SqliteJs) {
     this.SqliteJs = SqliteJs
 
@@ -167,6 +215,7 @@ function init(SqliteJs) {
     this.initTaskTags()
     this.initLongTermTaskRelational()
     this.initNavigationLink()
+    this.longTermRecordDetail()
 }
 
 const utils = {
@@ -193,6 +242,7 @@ const localDatabaseSqlite = {
     initTaskTagRelational,
     initTaskTags,
     initLongTermTaskRelational,
+    longTermRecordDetail,
     initNavigationLink
 }
 

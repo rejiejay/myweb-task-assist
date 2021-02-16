@@ -116,6 +116,12 @@ const deleteNavigationLink = async id => await fetch.post({
     body: { id }
 })
 
+const getLongTermRecordDetail = async id => await fetch.reGetConfirm({
+    url: 'longTerm/detail',
+    query: { longTermRecordDetailCategoryId: id },
+    isShowError: true
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
@@ -131,7 +137,8 @@ const service = {
     getAllNavigationLink,
     addNavigationLink,
     editNavigationLink,
-    deleteNavigationLink
+    deleteNavigationLink,
+    getLongTermRecordDetail
 }
 
 export default service

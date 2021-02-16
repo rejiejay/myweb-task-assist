@@ -15,7 +15,24 @@ export class GroupPanelRecordDetail extends React.Component {
         }
     }
 
-    componentDidMount() { }
+    componentDidMount() {
+        this.initRecordDetail()
+    }
+
+    initRecordDetail = async () => {
+        const { longTermId } = this.props
+        const longTermTaskInstance = await service.getLongTermTask(longTermId)
+        if (longTermTaskInstance.result !== 1) return
+        const longTermTask = longTermTaskInstance.data
+        const { detailCategoryIdentify } = longTermTask
+
+        const longTermRecordDetailInstance = await service.getLongTermRecordDetail(detailCategoryIdentify)
+        if (longTermRecordDetailInstance.result !== 1) return
+        const longTermRecordDetail = longTermRecordDetailInstance.data
+
+        this.longTermTask = longTermTask
+        this.longTermRecordDetail = longTermRecordDetail
+    }
 
     render() {
         const { record } = this.state

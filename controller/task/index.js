@@ -43,7 +43,7 @@ const getTaskList = async function getTaskList({ longTermId, tags, minEffectTime
     let result = { list, count }
 
     if (!!parameter.longTermId) {
-        const longTermInstance = await service.longTerm.getOne(parameter.longTermId)
+        const longTermInstance = await service.longTerm.getOneTaskRelational(parameter.longTermId)
         if (longTermInstance.result !== 1) return responseHanle.json(longTermInstance)
         const longTerm = longTermInstance.data
         result.longTerm = longTerm
