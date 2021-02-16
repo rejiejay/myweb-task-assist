@@ -63,7 +63,7 @@ export class GroupPanelRecordDetail extends React.Component {
     render() {
         const { title, record, nodeTree } = this.state
 
-        return <div className='record-detail'>
+        return <>
             <div className='record-detail-title' style={{ padding: '25px 15px 15px 15px' }}>
                 <CommonlyInputText key='title'
                     value={title || ''}
@@ -73,9 +73,9 @@ export class GroupPanelRecordDetail extends React.Component {
                     placeholder='长期任务的标题'
                 />
             </div>
-            <div className='record-detail-panel' style={{ padding: '0px 15px' }}>
+            <div className='record-detail-panel' style={{ padding: '0px 15px 15px 15px' }}>
                 <CommonlyListItem key='record-panel'
-                    title='得出什么结论?'
+                    title='长期任务面板简介'
                     isRequiredHighlight
                 >
                     <CommonlyInputText key='record-panel'
@@ -84,11 +84,14 @@ export class GroupPanelRecordDetail extends React.Component {
                         isMultipleInput
                         isAutoHeight
                         minHeight={120}
-                        placeholder='结论1: (情景是啥?)是什么?为什么?怎么办?'
+                        placeholder='请输入长期任务面板简介'
                     />
                 </CommonlyListItem>
             </div>
             <div className='record-detail-content'>
+                <RecordDetailElement
+                    nodeTree={nodeTree}
+                />
             </div>
 
             <div style={{ height: '425px' }} />
@@ -102,8 +105,71 @@ export class GroupPanelRecordDetail extends React.Component {
                     element: '取消'
                 }]}
             />
+        </>
+    }
+}
+
+const MultipleInputTextarea = ({ value, onChangeHandle, placeholder }) => {
+    let wrapConut = !!value ? 0 : 1
+    // 存在换行按钮 \n， 换一行
+    if (!!value) wrapConut += value.split(/[\n]/).length
+    // 超过24个字自动换一行
+    if (!!value) wrapConut += Math.floor(value.length / 24)
+    const wrapHeight = wrapConut * 16
+
+    return <textarea type="text"
+        className='multiple-input-textarea'
+        style={{ height: `${wrapHeight}px` }}
+        value={value}
+        onChange={({ target: { value } }) => onChangeHandle(value)}
+        placeholder={placeholder}
+    />
+}
+
+class RecordDetailElement extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {}
+    }
+
+    renderNode = node => {
+        const slef = this
+        const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
+
+        const children = node.children.map(node => slef.renderNode(node))
+
+        return <div className='node-item' key={uniquelyIdentify}>
+            <div className='node-item-container flex-start-center'>
+                <div className='node-item-input flex-rest flex-start-center'>
+                    <MultipleInputTextarea key='record-panel'
+                        value={detail || ''}
+                        onChangeHandle={value => { }}
+                        placeholder='请输入长期任务面板简介'
+                    />
+                </div>
+                <div className='node-item-operation'>
+                    <svg t="1613468857817" className="className" viewBox="0 0 1024 1024" width="16" height="16">
+                        <path d="M420.9664 32.8704c-24.576 22.016-36.9664 48.9472-36.9664 80.896 0 32.0512 12.3392 58.9312 36.9664 80.896 24.7296 21.9136 55.04 32.8704 91.0336 32.8704a132.096 132.096 0 0 0 90.9824-32.8704c24.3712-21.248 37.7344-50.5344 36.9664-80.896 0-32-12.288-58.88-36.9664-80.896C578.304 10.9568 547.9424 0 512 0 475.9552 0 445.696 10.9568 420.9664 32.8704z m0 398.2336C396.3904 453.0688 384 480 384 512c0 32 12.3392 58.88 36.9664 80.896 24.7296 21.8624 55.04 32.8704 91.0336 32.8704a132.096 132.096 0 0 0 90.9824-32.8704c24.3712-21.2992 37.7344-50.5856 36.9664-80.896 0-32.0512-12.288-58.9312-36.9664-80.896-24.6784-21.9136-55.04-32.8704-90.9824-32.8704-36.0448 0-66.304 10.9568-91.0336 32.8704z m0 398.1824c-24.576 22.016-36.9664 48.9472-36.9664 80.896 0 32.0512 12.3392 58.9312 36.9664 80.896 24.7296 21.9136 55.04 32.8704 91.0336 32.8704a132.096 132.096 0 0 0 90.9824-32.8704c24.3712-21.248 37.7344-50.5344 36.9664-80.896 0-32-12.288-58.88-36.9664-80.896-24.6784-21.8624-55.04-32.8704-90.9824-32.8704-36.0448 0-66.304 11.008-91.0336 32.8704z" fill="#909399" />
+                    </svg>
+                </div>
+            </div>
+
+            <div className='node-item-children'>{children}</div>
+        </div>
+    }
+
+    render() {
+        const slef = this
+        const { nodeTree } = this.props
+        
+        const NodeElements = () => nodeTree.map(node => slef.renderNode(node))
+
+        return <div className='record-detail-elements'>
+            <NodeElements />
         </div>
     }
 }
+
 
 export default GroupPanelRecordDetail
