@@ -19,9 +19,14 @@ export class GroupPanelRecordDetail extends React.Component {
         this.state = {
             title: '',
             record: '',
+            spreadZoomIdentify: null,
+            recordDetail: [],
             nodeTree: []
         }
 
+        /**
+         * 下面2条数据都是为了作为对比而使用, 所以是不进行改动的
+         */
         this.longTermTask = { id: null, title: null, record: null, spreadZoomIdentify: null, spreadZoomDepth: null, detailCategoryIdentify: null }
         this.longTermRecordDetail = []
     }
@@ -31,7 +36,7 @@ export class GroupPanelRecordDetail extends React.Component {
         if (mountRecordDetailInstance.result !== 1) return
 
         const { detailCategoryIdentify } = this.longTermTask
-        this.initRecordNodeTree(detailCategoryIdentify)
+        this.initRecordNodeTree(this.longTermRecordDetail, detailCategoryIdentify)
     }
 
     initRecordDetail = async () => {
@@ -40,7 +45,7 @@ export class GroupPanelRecordDetail extends React.Component {
         if (longTermTaskInstance.result !== 1) return consequencer.error(longTermTaskInstance.message)
         const longTermTask = longTermTaskInstance.data
         const { title, record, detailCategoryIdentify } = longTermTask
-        this.setState({ title, record })
+        this.setState({ title, record, spreadZoomIdentify: detailCategoryIdentify })
 
         const longTermRecordDetailInstance = await service.getLongTermRecordDetail(detailCategoryIdentify)
         if (longTermRecordDetailInstance.result !== 1) return consequencer.error(longTermRecordDetailInstance.message)
@@ -48,17 +53,44 @@ export class GroupPanelRecordDetail extends React.Component {
 
         this.longTermTask = longTermTask
         this.longTermRecordDetail = longTermRecordDetail
+        this.setState({ recordDetail: longTermRecordDetail })
 
         return consequencer.success()
     }
 
-    initRecordNodeTree = id => {
+    initRecordNodeTree = (recordDetail, id) => {
         const sqlHandle = new SqlHandle()
-        const nodeTree = sqlHandle.tableToNodeTreeConver(this.longTermRecordDetail, id)
+        const nodeTree = sqlHandle.tableToNodeTreeConver(recordDetail, id)
         this.setState({ nodeTree })
     }
 
-    confirmHandle = () => { }
+    storageConfirmHandle = () => { }
+
+    backtrackHandle = () => {
+        this.props.reject(consequencer.error('取消'))
+    }
+
+    verifyInputChange = () => {
+        const isTitleChange = false
+        const isPanelChange = false
+        const isDetailChange = false
+
+        return isTitleChange || isPanelChange || isDetailChange
+    }
+
+    recordDetailChangeHandle = (value, id) => {
+        const { spreadZoomIdentify } = this.state
+
+        let recordDetail = JSON.parse(JSON.stringify(this.state.recordDetail))
+        recordDetail.forEach(element => {
+            if (element.id === id) {
+                element.detail = value
+                element.isChange = true
+            }
+        })
+
+        this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
+    }
 
     render() {
         const { title, record, nodeTree } = this.state
@@ -91,18 +123,19 @@ export class GroupPanelRecordDetail extends React.Component {
             <div className='record-detail-content'>
                 <RecordDetailElement
                     nodeTree={nodeTree}
+                    onChangeHandle={this.recordDetailChangeHandle}
                 />
             </div>
 
             <div style={{ height: '425px' }} />
             <CommonlyBottomOperate
                 leftElement={[{
-                    cilckHandle: this.confirmHandle,
-                    element: '确认'
+                    cilckHandle: this.storageConfirmHandle,
+                    element: '暂存'
                 }]}
                 rightElement={[{
-                    cilckHandle: () => this.props.reject(consequencer.error('取消')),
-                    element: '取消'
+                    cilckHandle: this.backtrackHandle,
+                    element: '确认'
                 }]}
             />
         </>
@@ -130,8 +163,15 @@ class RecordDetailElement extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {}
+        this.state = {
+            recordDetail: [],
+            nodeTree: []
+        }
     }
+
+    componentDidMount() { }
+
+    componentDidUpdate() { }
 
     renderNode = node => {
         const slef = this
@@ -144,7 +184,7 @@ class RecordDetailElement extends React.Component {
                 <div className='node-item-input flex-rest flex-start-center'>
                     <MultipleInputTextarea key='record-panel'
                         value={detail || ''}
-                        onChangeHandle={value => { }}
+                        onChangeHandle={value => this.props.onChangeHandle(value, id)}
                         placeholder='请输入长期任务面板简介'
                     />
                 </div>
@@ -162,7 +202,7 @@ class RecordDetailElement extends React.Component {
     render() {
         const slef = this
         const { nodeTree } = this.props
-        
+
         const NodeElements = () => nodeTree.map(node => slef.renderNode(node))
 
         return <div className='record-detail-elements'>
@@ -170,6 +210,5 @@ class RecordDetailElement extends React.Component {
         </div>
     }
 }
-
 
 export default GroupPanelRecordDetail
