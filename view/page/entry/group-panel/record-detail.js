@@ -20,8 +20,7 @@ export class GroupPanelRecordDetail extends React.Component {
             title: '',
             record: '',
             spreadZoomIdentify: null,
-            recordDetail: [],
-            nodeTree: []
+            recordDetail: []
         }
 
         /**
@@ -31,12 +30,8 @@ export class GroupPanelRecordDetail extends React.Component {
         this.longTermRecordDetail = []
     }
 
-    async componentDidMount() {
-        const mountRecordDetailInstance = await this.initRecordDetail()
-        if (mountRecordDetailInstance.result !== 1) return
-
-        const { detailCategoryIdentify } = this.longTermTask
-        this.initRecordNodeTree(this.longTermRecordDetail, detailCategoryIdentify)
+    componentDidMount() {
+        this.initRecordDetail()
     }
 
     initRecordDetail = async () => {
@@ -45,7 +40,6 @@ export class GroupPanelRecordDetail extends React.Component {
         if (longTermTaskInstance.result !== 1) return consequencer.error(longTermTaskInstance.message)
         const longTermTask = longTermTaskInstance.data
         const { title, record, detailCategoryIdentify } = longTermTask
-        this.setState({ title, record, spreadZoomIdentify: detailCategoryIdentify })
 
         const longTermRecordDetailInstance = await service.getLongTermRecordDetail(detailCategoryIdentify)
         if (longTermRecordDetailInstance.result !== 1) return consequencer.error(longTermRecordDetailInstance.message)
@@ -53,15 +47,9 @@ export class GroupPanelRecordDetail extends React.Component {
 
         this.longTermTask = longTermTask
         this.longTermRecordDetail = longTermRecordDetail
-        this.setState({ recordDetail: longTermRecordDetail })
+        this.setState({ title, record, spreadZoomIdentify: detailCategoryIdentify, recordDetail: longTermRecordDetail })
 
         return consequencer.success()
-    }
-
-    initRecordNodeTree = (recordDetail, id) => {
-        const sqlHandle = new SqlHandle()
-        const nodeTree = sqlHandle.tableToNodeTreeConver(recordDetail, id)
-        this.setState({ nodeTree })
     }
 
     storageConfirmHandle = () => { }
@@ -78,22 +66,8 @@ export class GroupPanelRecordDetail extends React.Component {
         return isTitleChange || isPanelChange || isDetailChange
     }
 
-    recordDetailChangeHandle = (value, id) => {
-        const { spreadZoomIdentify } = this.state
-
-        let recordDetail = JSON.parse(JSON.stringify(this.state.recordDetail))
-        recordDetail.forEach(element => {
-            if (element.id === id) {
-                element.detail = value
-                element.isChange = true
-            }
-        })
-
-        this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
-    }
-
     render() {
-        const { title, record, nodeTree } = this.state
+        const { title, record, recordDetail, spreadZoomIdentify } = this.state
 
         return <>
             <div className='record-detail-title' style={{ padding: '25px 15px 15px 15px' }}>
@@ -122,8 +96,8 @@ export class GroupPanelRecordDetail extends React.Component {
             </div>
             <div className='record-detail-content'>
                 <RecordDetailElement
-                    nodeTree={nodeTree}
-                    onChangeHandle={this.recordDetailChangeHandle}
+                    longTermRecordDetail={recordDetail}
+                    spreadZoomIdentify={spreadZoomIdentify}
                 />
             </div>
 
@@ -142,7 +116,7 @@ export class GroupPanelRecordDetail extends React.Component {
     }
 }
 
-const MultipleInputTextarea = ({ value, onChangeHandle, placeholder }) => {
+const MultipleInputTextarea = ({ id, value, onChangeHandle, placeholder }) => {
     let wrapConut = !!value ? 0 : 1
     // 存在换行按钮 \n， 换一行
     if (!!value) wrapConut += value.split(/[\n]/).length
@@ -151,6 +125,7 @@ const MultipleInputTextarea = ({ value, onChangeHandle, placeholder }) => {
     const wrapHeight = wrapConut * 16
 
     return <textarea type="text"
+        key={id}
         className='multiple-input-textarea'
         style={{ height: `${wrapHeight}px` }}
         value={value}
@@ -169,9 +144,40 @@ class RecordDetailElement extends React.Component {
         }
     }
 
-    componentDidMount() { }
+    componentDidMount() {
+        const { longTermRecordDetail, spreadZoomIdentify } = this.props
+        this.initRecordNodeTree(longTermRecordDetail, spreadZoomIdentify)
+    }
 
-    componentDidUpdate() { }
+    componentDidUpdate(prevProps) {
+        const { longTermRecordDetail, spreadZoomIdentify } = this.props
+
+        if (
+            JSON.stringify(longTermRecordDetail) !== JSON.stringify(prevProps.longTermRecordDetail) ||
+            spreadZoomIdentify !== prevProps.spreadZoomIdentify
+        ) {
+            this.initRecordNodeTree(longTermRecordDetail, spreadZoomIdentify)
+        }
+    }
+
+    initRecordNodeTree = (recordDetail, id) => {
+        const sqlHandle = new SqlHandle()
+        const nodeTree = sqlHandle.tableToNodeTreeConver(recordDetail, id)
+        this.setState({ recordDetail, nodeTree })
+    }
+
+    multipleInputChangeHandle = (value, id) => {
+        const { spreadZoomIdentify } = this.props
+        let recordDetail = JSON.parse(JSON.stringify(this.state.recordDetail))
+        recordDetail.forEach(element => {
+            if (element.id === id) {
+                element.detail = value
+                element.isChange = true
+            }
+        })
+
+        this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
+    }
 
     renderNode = node => {
         const slef = this
@@ -182,9 +188,10 @@ class RecordDetailElement extends React.Component {
         return <div className='node-item' key={uniquelyIdentify}>
             <div className='node-item-container flex-start-center'>
                 <div className='node-item-input flex-rest flex-start-center'>
-                    <MultipleInputTextarea key='record-panel'
+                    <MultipleInputTextarea key={uniquelyIdentify}
+                        id={uniquelyIdentify}
                         value={detail || ''}
-                        onChangeHandle={value => this.props.onChangeHandle(value, id)}
+                        onChangeHandle={value => this.multipleInputChangeHandle(value, id)}
                         placeholder='请输入长期任务面板简介'
                     />
                 </div>
@@ -201,7 +208,7 @@ class RecordDetailElement extends React.Component {
 
     render() {
         const slef = this
-        const { nodeTree } = this.props
+        const { nodeTree } = this.state
 
         const NodeElements = () => nodeTree.map(node => slef.renderNode(node))
 
