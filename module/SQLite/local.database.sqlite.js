@@ -178,13 +178,13 @@ function longTermRecordDetail() {
     this.SqliteJs.exec(insertTaskData({
         categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         uniquelyIdentify: '"b063cf3b653b3230a7c08a283bef69a4c1b60170"',
-        parentUniquelyIdentify: '"root"',
+        parentUniquelyIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         detail: '"root"'
     }))
     this.SqliteJs.exec(insertTaskData({
         categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         uniquelyIdentify: '"85136c79cbf9fe36bb9d05d0639c70c265c18d37"',
-        parentUniquelyIdentify: '"root"',
+        parentUniquelyIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         detail: '"root2"'
     }))
     this.SqliteJs.exec(insertTaskData({

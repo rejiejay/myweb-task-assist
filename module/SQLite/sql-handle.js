@@ -68,6 +68,24 @@ class SqlHandle {
         return object
     }
 
+    tableToNodeTreeConver = (table, rootUniquelyIdentify = 'root') => {
+        const findChildren = element => {
+            element.children = table.reduce((nodes, value) => {
+                if (element.uniquelyIdentify === value.parentUniquelyIdentify) nodes.push(findChildren(value))
+                return nodes
+            }, [])
+
+            return element
+        }
+
+        const nodeTree = table.reduce((nodes, value) => {
+            if (value.parentUniquelyIdentify === rootUniquelyIdentify) nodes.push(findChildren(value))
+            return nodes
+        }, [])
+
+        return nodeTree
+    }
+
     addAndFilterSql(sql) {
         this.isFilter = true
 

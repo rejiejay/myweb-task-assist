@@ -10,23 +10,8 @@ const getAllNavigationLink = async function getAllNavigationLink() {
     if (linkInstance.result !== 1) return linkInstance
     const links = linkInstance.data
 
-    const findChildren = link => {
-        const children = []
-
-        const findLinks = JSON.parse(JSON.stringify(links.filter(link => link.parentUniquelyIdentify !== 'root')))
-        findLinks.forEach(element => {
-            if (link.uniquelyIdentify === element.parentUniquelyIdentify) children.push(findChildren(element))
-        })
-
-        link.children = children
-
-        return link
-    }
-
-    let navigationLink = []
-    links.forEach(link => {
-        if (link.parentUniquelyIdentify === 'root') navigationLink.push(findChildren(link))
-    })
+    const sqlHandle = new SQLite.SqlHandle()
+    const navigationLink = sqlHandle.tableToNodeTreeConver(links)
 
     return consequencer.success(navigationLink)
 }
