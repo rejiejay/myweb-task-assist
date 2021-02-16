@@ -116,22 +116,69 @@ export class GroupPanelRecordDetail extends React.Component {
     }
 }
 
-const MultipleInputTextarea = ({ id, value, onChangeHandle, placeholder }) => {
-    let wrapConut = !!value ? 0 : 1
-    // 存在换行按钮 \n， 换一行
-    if (!!value) wrapConut += value.split(/[\n]/).length
-    // 超过24个字自动换一行
-    if (!!value) wrapConut += Math.floor(value.length / 24)
-    const wrapHeight = wrapConut * 16
+class MultipleInputTextarea extends React.Component {
+    constructor(props) {
+        super(props)
 
-    return <textarea type="text"
-        key={id}
-        className='multiple-input-textarea'
-        style={{ height: `${wrapHeight}px` }}
-        value={value}
-        onChange={({ target: { value } }) => onChangeHandle(value)}
-        placeholder={placeholder}
-    />
+        this.state = {
+            content: ''
+        }
+
+        this.isChange = false
+    }
+
+    componentDidMount() {
+        this.initContent()
+    }
+
+    componentDidUpdate(prevProps) {
+        const { value } = this.props
+        if (value !== prevProps.value) this.initContent()
+    }
+
+    initContent() {
+        const { value } = this.props
+        this.setState({ content: value })
+    }
+
+    onChangeHandle(value) {
+        this.setState({ content: value })
+    }
+
+    initStyle = value => {
+        let wrapConut = !!value ? 0 : 1
+        // 存在换行按钮 \n， 换一行
+        if (!!value) wrapConut += value.split(/[\n]/).length
+        // 超过24个字自动换一行
+        if (!!value) wrapConut += Math.floor(value.length / 24)
+        const wrapHeight = wrapConut * 16
+        return { height: `${wrapHeight}px` }
+    }
+
+    verifyInputChange = () => {
+        const { content } = this.state
+
+        /** 不允许提交空内容 */
+        if (!content) return false
+
+        return this.props.value !== content
+    }
+
+    render() {
+        const { placeholder } = this.props
+        const { content } = this.state
+
+        return <div className='flex-start-center'>
+            <textarea type="text"
+                className='multiple-input-textarea'
+                style={this.initStyle(content)}
+                value={content}
+                onChange={({ target: { value } }) => this.onChangeHandle(value)}
+                placeholder={placeholder}
+            />
+            {this.verifyInputChange() && <div className='multiple-input-submit'>提交</div>}
+        </div>
+    }
 }
 
 class RecordDetailElement extends React.Component {
@@ -187,7 +234,7 @@ class RecordDetailElement extends React.Component {
 
         return <div className='node-item' key={uniquelyIdentify}>
             <div className='node-item-container flex-start-center'>
-                <div className='node-item-input flex-rest flex-start-center'>
+                <div className='node-item-input flex-rest'>
                     <MultipleInputTextarea key={uniquelyIdentify}
                         id={uniquelyIdentify}
                         value={detail || ''}
