@@ -3,6 +3,7 @@
  */
 import service from './../../service/index.js'
 import valuesStructuresVerify from './../../utils/values-structures-verify'
+import ObjectHelper from './../../utils/object-helper'
 
 const listAllLongTermTaskRelational = async function listAllLongTermTaskRelational(parameter, responseHanle) {
     const result = await service.longTerm.listAllTaskRelational()
@@ -24,11 +25,31 @@ const listAllLongTermRecordDetail = async function listAllLongTermRecordDetail({
     const result = await service.longTerm.listAllLongTermRecordDetail(longTermRecordDetailCategoryId)
     responseHanle.json(result)
 }
- 
+
+const editLongTermRecordDetail = async function editLongTermRecordDetail({ id, uniquelyIdentify, parentUniquelyIdentify, detail }, responseHanle) {
+    const verifys = [
+        { value: id, field: 'id', method: 'isId' },
+        { value: uniquelyIdentify, field: 'uniquelyIdentify', method: 'isStringNil' },
+        { value: parentUniquelyIdentify, field: 'parentUniquelyIdentify', method: 'isStringNil' },
+        { value: detail, field: 'detail', method: 'isStringNil' }
+    ]
+    const verifyInstance = valuesStructuresVerify.group(verifys)
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const originRecordDetailInstance = await service.longTerm.getOneLongTermRecordDetail(id)
+    if (originRecordDetailInstance.result !== 1) return responseHanle.json(originRecordDetailInstance)
+    const originRecordDetail = originRecordDetailInstance.data
+    let updateData = ObjectHelper.updataAttachHandle(originRecordDetail, { uniquelyIdentify, parentUniquelyIdentify, detail })
+
+    const result = await service.longTerm.editLongTermRecordDetail(id, updateData)
+    responseHanle.json(result)
+}
+
 const longTerm = {
     get_longTerm_all: listAllLongTermTaskRelational,
     get_longTerm_id: getLongTermTaskRelational,
-    get_longTerm_detail: listAllLongTermRecordDetail
+    get_longTerm_detail: listAllLongTermRecordDetail,
+    post_longTerm_detail_edit: editLongTermRecordDetail
 }
 
 export default longTerm

@@ -17,12 +17,22 @@ const listAllLongTermRecordDetail = function getOneTaskRelational(id) {
     const sqlHandle = new SQLite.SqlHandle()
     sqlHandle.addAndFilterSql(`categoryIdentify = "${id}"`)
     return detailTable.list(sqlHandle.toSqlString())
-} 
+}
+
+const getOneLongTermRecordDetail = function getOneLongTermRecordDetail(id) {
+    return detailTable.find(+id)
+}
+
+const editLongTermRecordDetail = function editLongTermRecordDetail(id, editUpData) {
+    return detailTable.updata(id, editUpData)
+}
 
 const longTerm = {
     listAllTaskRelational,
     getOneTaskRelational,
-    listAllLongTermRecordDetail
+    listAllLongTermRecordDetail,
+    getOneLongTermRecordDetail,
+    editLongTermRecordDetail
 }
 
 export default longTerm
