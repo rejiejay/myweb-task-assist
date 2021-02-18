@@ -3,6 +3,7 @@ import SqlHandle from './../../../../module/SQLite/sql-handle'
 import CommonlyBottomOperate from './../../../components/mobile/commonly-bottom-operate'
 import CommonlyInputText from './../../../components/mobile/commonly-input-text'
 import CommonlyListItem from './../../../components/mobile/commonly-list-item'
+import Confirm from './../../../components/confirm'
 
 import service from './../service'
 
@@ -169,6 +170,11 @@ class MultipleInputTextarea extends React.Component {
         return this.props.value !== content
     }
 
+    multipleInputSubmit = () => {
+        const { content } = this.state
+        this.props.onChangeHandle(content)
+    }
+
     render() {
         const { placeholder } = this.props
         const { content } = this.state
@@ -183,7 +189,7 @@ class MultipleInputTextarea extends React.Component {
             />
             {this.verifyInputChange() &&
                 <div className='multiple-input-submit'
-                    onClick={() => this.props.onChangeHandle(content)}
+                    onClick={this.multipleInputSubmit}
                 >提交</div>
             }
         </div>
@@ -222,7 +228,10 @@ class RecordDetailElement extends React.Component {
         this.setState({ recordDetail, nodeTree })
     }
 
-    multipleInputChangeHandle = (value, id) => {
+    multipleInputChangeHandle = async (value, { id, uniquelyIdentify, parentUniquelyIdentify }) => {
+        const editInstance = await service.editLongTermRecordDetail(id, { uniquelyIdentify, parentUniquelyIdentify, detail: value })
+        if (editInstance.result !== 1) return Confirm(editInstance.message)
+
         const { spreadZoomIdentify } = this.props
         let recordDetail = JSON.parse(JSON.stringify(this.state.recordDetail))
         recordDetail.forEach(element => {
@@ -246,7 +255,7 @@ class RecordDetailElement extends React.Component {
                 <div className='node-item-input flex-rest'>
                     <MultipleInputTextarea key={uniquelyIdentify}
                         value={detail || ''}
-                        onChangeHandle={value => this.multipleInputChangeHandle(value, id)}
+                        onChangeHandle={value => this.multipleInputChangeHandle(value, { id, uniquelyIdentify, parentUniquelyIdentify })}
                         placeholder='请输入长期任务面板简介'
                     />
                 </div>

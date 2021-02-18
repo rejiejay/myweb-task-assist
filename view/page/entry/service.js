@@ -122,6 +122,11 @@ const getLongTermRecordDetail = async id => await fetch.reGetConfirm({
     isShowError: true
 })
 
+const editLongTermRecordDetail = async (id, { uniquelyIdentify, parentUniquelyIdentify, detail }) => await fetch.post({
+    url: 'longTerm/detail/edit',
+    body: { id, uniquelyIdentify, parentUniquelyIdentify, detail }
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
@@ -138,7 +143,8 @@ const service = {
     addNavigationLink,
     editNavigationLink,
     deleteNavigationLink,
-    getLongTermRecordDetail
+    getLongTermRecordDetail,
+    editLongTermRecordDetail
 }
 
 export default service
