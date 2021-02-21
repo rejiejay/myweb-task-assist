@@ -244,6 +244,10 @@ class RecordDetailElement extends React.Component {
         this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
     }
 
+    showOperationAticon = node => {
+        const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
+    }
+
     renderNode = node => {
         const slef = this
         const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
@@ -259,7 +263,9 @@ class RecordDetailElement extends React.Component {
                         placeholder='请输入长期任务面板简介'
                     />
                 </div>
-                <div className='node-item-operation'>
+                <div className='node-item-operation'
+                    onClick={() => this.showOperationAticon(node)}
+                >
                     <svg t="1613468857817" className="className" viewBox="0 0 1024 1024" width="16" height="16">
                         <path d="M420.9664 32.8704c-24.576 22.016-36.9664 48.9472-36.9664 80.896 0 32.0512 12.3392 58.9312 36.9664 80.896 24.7296 21.9136 55.04 32.8704 91.0336 32.8704a132.096 132.096 0 0 0 90.9824-32.8704c24.3712-21.248 37.7344-50.5344 36.9664-80.896 0-32-12.288-58.88-36.9664-80.896C578.304 10.9568 547.9424 0 512 0 475.9552 0 445.696 10.9568 420.9664 32.8704z m0 398.2336C396.3904 453.0688 384 480 384 512c0 32 12.3392 58.88 36.9664 80.896 24.7296 21.8624 55.04 32.8704 91.0336 32.8704a132.096 132.096 0 0 0 90.9824-32.8704c24.3712-21.2992 37.7344-50.5856 36.9664-80.896 0-32.0512-12.288-58.9312-36.9664-80.896-24.6784-21.9136-55.04-32.8704-90.9824-32.8704-36.0448 0-66.304 10.9568-91.0336 32.8704z m0 398.1824c-24.576 22.016-36.9664 48.9472-36.9664 80.896 0 32.0512 12.3392 58.9312 36.9664 80.896 24.7296 21.9136 55.04 32.8704 91.0336 32.8704a132.096 132.096 0 0 0 90.9824-32.8704c24.3712-21.248 37.7344-50.5344 36.9664-80.896 0-32-12.288-58.88-36.9664-80.896-24.6784-21.8624-55.04-32.8704-90.9824-32.8704-36.0448 0-66.304 11.008-91.0336 32.8704z" fill="#909399" />
                     </svg>
