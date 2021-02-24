@@ -246,11 +246,12 @@ class RecordDetailElement extends React.Component {
     }
 
     showOperationAticon = async node => {
-        const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
+        const { id, uniquelyIdentify, parentUniquelyIdentify, detail, children } = node
         const deleteAction = { value: 2176, label: '删除' }
         const setNewAction = { value: 2843, label: '置新' }
         const setMoveAction = { value: 1532, label: '移动' }
-        const aticonOptions = [deleteAction, setNewAction, setMoveAction]
+        const aticonOptions = [setNewAction, setMoveAction]
+        if (children && children.length > 0) aticonOptions.push(deleteAction)
         const selectInstance = await ActionSheet({ title: '请选择操作方式', options: aticonOptions })
         if (selectInstance.result !== 1) return
         const selected = selectInstance.data
