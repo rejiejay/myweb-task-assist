@@ -4,6 +4,7 @@ import CommonlyBottomOperate from './../../../components/mobile/commonly-bottom-
 import CommonlyInputText from './../../../components/mobile/commonly-input-text'
 import CommonlyListItem from './../../../components/mobile/commonly-list-item'
 import Confirm from './../../../components/confirm'
+import ActionSheet from './../../../components/action-sheet'
 
 import service from './../service'
 
@@ -244,8 +245,27 @@ class RecordDetailElement extends React.Component {
         this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
     }
 
-    showOperationAticon = node => {
+    showOperationAticon = async node => {
         const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
+        const deleteAction = { value: 2176, label: '删除' }
+        const setNewAction = { value: 2843, label: '置新' }
+        const setMoveAction = { value: 1532, label: '移动' }
+        const aticonOptions = [deleteAction, setNewAction, setMoveAction]
+        const selectInstance = await ActionSheet({ title: '请选择操作方式', options: aticonOptions })
+        if (selectInstance.result !== 1) return
+        const selected = selectInstance.data
+
+        if (selected === deleteAction.value) {
+            // TODO
+        }
+
+        if (selected === setNewAction.value) {
+            // TODO
+        }
+
+        if (selected === setMoveAction.value) {
+            // TODO
+        }
     }
 
     renderNode = node => {
