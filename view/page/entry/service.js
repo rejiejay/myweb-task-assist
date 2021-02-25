@@ -127,6 +127,11 @@ const editLongTermRecordDetail = async (id, { uniquelyIdentify, parentUniquelyId
     body: { id, uniquelyIdentify, parentUniquelyIdentify, detail }
 })
 
+const deleteLongTermRecordDetail = async id => await fetch.post({
+    url: 'longTerm/detail/delete',
+    body: { id }
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
@@ -144,7 +149,8 @@ const service = {
     editNavigationLink,
     deleteNavigationLink,
     getLongTermRecordDetail,
-    editLongTermRecordDetail
+    editLongTermRecordDetail,
+    deleteLongTermRecordDetail
 }
 
 export default service

@@ -10,11 +10,14 @@ const listAllLongTermRecordDetail = responseHanle => controller.get_longTerm_det
 
 const editLongTermRecordDetail = responseHanle => controller.post_longTerm_detail_edit({ id: 1, detail: 'update root' }, responseHanle)
 
+const deleteLongTermRecordDetail = responseHanle => controller.post_longTerm_detail_delete({ id: 1 }, responseHanle)
+
 const longTerm = {
     listAllLongTermTaskRelational: utils.resolveHandle(listAllLongTermTaskRelational, { isShowResult: false }),
     getLongTermTaskRelational: utils.resolveHandle(getLongTermTaskRelational, { isShowResult: false }),
     listAllLongTermRecordDetail: utils.resolveHandle(listAllLongTermRecordDetail, { isShowResult: false }),
-    editLongTermRecordDetail: utils.resolveHandle(editLongTermRecordDetail, { isShowResult: false })
+    editLongTermRecordDetail: utils.resolveHandle(editLongTermRecordDetail, { isShowResult: false }),
+    deleteLongTermRecordDetail: utils.resolveHandle(deleteLongTermRecordDetail, { isShowResult: false })
 }
 
 export default longTerm

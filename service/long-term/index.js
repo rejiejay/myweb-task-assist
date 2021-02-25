@@ -27,12 +27,17 @@ const editLongTermRecordDetail = function editLongTermRecordDetail(id, editUpDat
     return detailTable.updata(id, editUpData)
 }
 
+const deleteLongTermRecordDetail = function deleteLongTermRecordDetail(id) {
+    return detailTable.del(id)
+}
+
 const longTerm = {
     listAllTaskRelational,
     getOneTaskRelational,
     listAllLongTermRecordDetail,
     getOneLongTermRecordDetail,
-    editLongTermRecordDetail
+    editLongTermRecordDetail,
+    deleteLongTermRecordDetail
 }
 
 export default longTerm

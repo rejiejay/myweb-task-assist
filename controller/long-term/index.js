@@ -45,11 +45,20 @@ const editLongTermRecordDetail = async function editLongTermRecordDetail({ id, u
     responseHanle.json(result)
 }
 
+const deleteLongTermRecordDetail = async function deleteLongTermRecordDetail({ id }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isId(id, 'LongTermId')
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const result = await service.longTerm.deleteLongTermRecordDetail(id)
+    responseHanle.json(result)
+}
+
 const longTerm = {
     get_longTerm_all: listAllLongTermTaskRelational,
     get_longTerm_id: getLongTermTaskRelational,
     get_longTerm_detail: listAllLongTermRecordDetail,
-    post_longTerm_detail_edit: editLongTermRecordDetail
+    post_longTerm_detail_edit: editLongTermRecordDetail,
+    post_longTerm_detail_delete: deleteLongTermRecordDetail
 }
 
 export default longTerm

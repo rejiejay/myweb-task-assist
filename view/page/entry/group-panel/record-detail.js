@@ -245,26 +245,38 @@ class RecordDetailElement extends React.Component {
         this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
     }
 
+    deleteNodeHandle = async node => {
+        const deleteInstance = await service.deleteLongTermRecordDetail(node.id)
+        if (deleteInstance.result !== 1) return Confirm(deleteInstance.message)
+
+        const { spreadZoomIdentify } = this.props
+        const recordDetail = this.state.recordDetail.filter(({ id }) => id !== node.id)
+        this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
+    }
+
     showOperationAticon = async node => {
         const { id, uniquelyIdentify, parentUniquelyIdentify, detail, children } = node
         const deleteAction = { value: 2176, label: '删除' }
         const setNewAction = { value: 2843, label: '置新' }
         const setMoveAction = { value: 1532, label: '移动' }
         const aticonOptions = [setNewAction, setMoveAction]
-        if (children && children.length > 0) aticonOptions.push(deleteAction)
+        if (!children || (children && children.length === 0)) aticonOptions.push(deleteAction)
         const selectInstance = await ActionSheet({ title: '请选择操作方式', options: aticonOptions })
         if (selectInstance.result !== 1) return
         const selected = selectInstance.data
 
-        if (selected === deleteAction.value) {
-            // TODO
+        if (selected.value === deleteAction.value) {
+            const confirmInstance = await Confirm('是否确认删除?')
+            if (confirmInstance.result !== 1) return
+            this.deleteNodeHandle(node)
         }
 
-        if (selected === setNewAction.value) {
-            // TODO
+        if (selected.value === setNewAction.value) {
+            const confirmInstance = await Confirm('是否置为最新?')
+            if (confirmInstance.result !== 1) return
         }
 
-        if (selected === setMoveAction.value) {
+        if (selected.value === setMoveAction.value) {
             // TODO
         }
     }
