@@ -26,12 +26,13 @@ const listAllLongTermRecordDetail = async function listAllLongTermRecordDetail({
     responseHanle.json(result)
 }
 
-const editLongTermRecordDetail = async function editLongTermRecordDetail({ id, uniquelyIdentify, parentUniquelyIdentify, detail }, responseHanle) {
+const editLongTermRecordDetail = async function editLongTermRecordDetail({ id, uniquelyIdentify, parentUniquelyIdentify, detail, createTimestamp }, responseHanle) {
     const verifys = [
         { value: id, field: 'id', method: 'isId' },
         { value: uniquelyIdentify, field: 'uniquelyIdentify', method: 'isStringNil' },
         { value: parentUniquelyIdentify, field: 'parentUniquelyIdentify', method: 'isStringNil' },
-        { value: detail, field: 'detail', method: 'isStringNil' }
+        { value: detail, field: 'detail', method: 'isStringNil' },
+        { value: createTimestamp, field: 'createTimestamp', method: 'isTimestamp' }
     ]
     const verifyInstance = valuesStructuresVerify.group(verifys)
     if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
@@ -39,7 +40,7 @@ const editLongTermRecordDetail = async function editLongTermRecordDetail({ id, u
     const originRecordDetailInstance = await service.longTerm.getOneLongTermRecordDetail(id)
     if (originRecordDetailInstance.result !== 1) return responseHanle.json(originRecordDetailInstance)
     const originRecordDetail = originRecordDetailInstance.data
-    let updateData = ObjectHelper.updataAttachHandle(originRecordDetail, { uniquelyIdentify, parentUniquelyIdentify, detail })
+    let updateData = ObjectHelper.updataAttachHandle(originRecordDetail, { uniquelyIdentify, parentUniquelyIdentify, detail, createTimestamp })
 
     const result = await service.longTerm.editLongTermRecordDetail(id, updateData)
     responseHanle.json(result)

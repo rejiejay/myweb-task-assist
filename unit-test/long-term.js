@@ -8,16 +8,23 @@ const getLongTermTaskRelational = responseHanle => controller.get_longTerm_id({ 
 
 const listAllLongTermRecordDetail = responseHanle => controller.get_longTerm_detail({ longTermRecordDetailCategoryId: 'f9981986834db83f0bb112b1d237611d596de57e' }, responseHanle)
 
-const editLongTermRecordDetail = responseHanle => controller.post_longTerm_detail_edit({ id: 1, detail: 'update root' }, responseHanle)
+const editLongTermRecordDetail = responseHanle => controller.post_longTerm_detail_edit({
+  id: 1,
+  categoryIdentify: 'f9981986834db83f0bb112b1d237611d596de57e',
+  uniquelyIdentify: 'b063cf3b653b3230a7c08a283bef69a4c1b60170',
+  parentUniquelyIdentify: 'f9981986834db83f0bb112b1d237611d596de57e',
+  createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(),
+  detail: 'update root'
+}, responseHanle)
 
 const deleteLongTermRecordDetail = responseHanle => controller.post_longTerm_detail_delete({ id: 1 }, responseHanle)
 
 const longTerm = {
-    listAllLongTermTaskRelational: utils.resolveHandle(listAllLongTermTaskRelational, { isShowResult: false }),
-    getLongTermTaskRelational: utils.resolveHandle(getLongTermTaskRelational, { isShowResult: false }),
-    listAllLongTermRecordDetail: utils.resolveHandle(listAllLongTermRecordDetail, { isShowResult: false }),
-    editLongTermRecordDetail: utils.resolveHandle(editLongTermRecordDetail, { isShowResult: false }),
-    deleteLongTermRecordDetail: utils.resolveHandle(deleteLongTermRecordDetail, { isShowResult: false })
+  listAllLongTermTaskRelational: utils.resolveHandle(listAllLongTermTaskRelational, { isShowResult: false }),
+  getLongTermTaskRelational: utils.resolveHandle(getLongTermTaskRelational, { isShowResult: false }),
+  listAllLongTermRecordDetail: utils.resolveHandle(listAllLongTermRecordDetail, { isShowResult: false }),
+  editLongTermRecordDetail: utils.resolveHandle(editLongTermRecordDetail, { isShowResult: false }),
+  deleteLongTermRecordDetail: utils.resolveHandle(deleteLongTermRecordDetail, { isShowResult: false })
 }
 
 export default longTerm

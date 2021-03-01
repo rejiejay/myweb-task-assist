@@ -54,6 +54,7 @@ const table = {
             categoryIdentify TINYTEXT NOT NULL,
             uniquelyIdentify TINYTEXT NOT NULL,
             parentUniquelyIdentify TINYTEXT NOT NULL,
+            createTimestamp BIGINT NOT NULL,
             detail TEXT NOT NULL
         )
     `,
@@ -179,30 +180,35 @@ function longTermRecordDetail() {
         categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         uniquelyIdentify: '"b063cf3b653b3230a7c08a283bef69a4c1b60170"',
         parentUniquelyIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
+        createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(),
         detail: '"root"'
     }))
     this.SqliteJs.exec(insertTaskData({
         categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         uniquelyIdentify: '"85136c79cbf9fe36bb9d05d0639c70c265c18d37"',
         parentUniquelyIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
+        createTimestamp: new Date(2021, 2, 2, 0, 0).getTime(),
         detail: '"root2"'
     }))
     this.SqliteJs.exec(insertTaskData({
         categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         uniquelyIdentify: '"7eaa6f30ea61c7920cacb0363bc0a520f5248e31"',
         parentUniquelyIdentify: '"b063cf3b653b3230a7c08a283bef69a4c1b60170"',
+        createTimestamp: new Date(2021, 2, 3, 0, 0).getTime(),
         detail: '"root1 children"'
     }))
     this.SqliteJs.exec(insertTaskData({
         categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         uniquelyIdentify: '"7dd8947d08339e1417268689b9b69d0a34e9d0ab"',
         parentUniquelyIdentify: '"b063cf3b653b3230a7c08a283bef69a4c1b60170"',
+        createTimestamp: new Date(2021, 2, 4, 0, 0).getTime(),
         detail: '"root1 children2"'
     }))
     this.SqliteJs.exec(insertTaskData({
         categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         uniquelyIdentify: '"5f5f3dd8fa3aea1dd0e758bf10405ff62b783c5c"',
         parentUniquelyIdentify: '"7eaa6f30ea61c7920cacb0363bc0a520f5248e31"',
+        createTimestamp: new Date(2021, 2, 5, 0, 0).getTime(),
         detail: '"children1 children"'
     }))
 }

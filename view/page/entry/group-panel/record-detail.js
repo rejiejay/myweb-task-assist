@@ -229,20 +229,22 @@ class RecordDetailElement extends React.Component {
         this.setState({ recordDetail, nodeTree })
     }
 
-    multipleInputChangeHandle = async (value, { id, uniquelyIdentify, parentUniquelyIdentify }) => {
-        const editInstance = await service.editLongTermRecordDetail(id, { uniquelyIdentify, parentUniquelyIdentify, detail: value })
-        if (editInstance.result !== 1) return Confirm(editInstance.message)
-
+    setRecordDetail = (id, node) => {
         const { spreadZoomIdentify } = this.props
         let recordDetail = JSON.parse(JSON.stringify(this.state.recordDetail))
-        recordDetail.forEach(element => {
-            if (element.id === id) {
-                element.detail = value
-                element.isChange = true
-            }
+        recordDetail = recordDetail.map(element => {
+            if (element.id === id) element = { ...element, ...node }
+            return element
         })
 
         this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
+    }
+
+    multipleInputChangeHandle = async (value, { id, uniquelyIdentify, parentUniquelyIdentify, createTimestamp }) => {
+        const editInstance = await service.editLongTermRecordDetail(id, { uniquelyIdentify, parentUniquelyIdentify, createTimestamp, detail: value })
+        if (editInstance.result !== 1) return Confirm(editInstance.message)
+
+        this.setRecordDetail(id, { detail: value, isChange: true })
     }
 
     deleteNodeHandle = async node => {
@@ -252,6 +254,16 @@ class RecordDetailElement extends React.Component {
         const { spreadZoomIdentify } = this.props
         const recordDetail = this.state.recordDetail.filter(({ id }) => id !== node.id)
         this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
+    }
+
+    setNodeNewHandle = async node => {
+        const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
+        const createTimestamp = new Date().getTime()
+
+        const editInstance = await service.editLongTermRecordDetail(id, { uniquelyIdentify, parentUniquelyIdentify, detail, createTimestamp })
+        if (editInstance.result !== 1) return Confirm(editInstance.message)
+
+        this.setRecordDetail(id, { createTimestamp })
     }
 
     showOperationAticon = async node => {
@@ -274,6 +286,7 @@ class RecordDetailElement extends React.Component {
         if (selected.value === setNewAction.value) {
             const confirmInstance = await Confirm('是否置为最新?')
             if (confirmInstance.result !== 1) return
+            this.setNodeNewHandle(node)
         }
 
         if (selected.value === setMoveAction.value) {
@@ -283,16 +296,16 @@ class RecordDetailElement extends React.Component {
 
     renderNode = node => {
         const slef = this
-        const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
+        const { id, uniquelyIdentify, parentUniquelyIdentify, detail, createTimestamp } = node
 
-        const children = node.children.map(node => slef.renderNode(node))
+        const children = node.children.sort((a, b) => a.createTimestamp - b.createTimestamp).map(node => slef.renderNode(node))
 
         return <div className='node-item' key={uniquelyIdentify}>
             <div className='node-item-container flex-start-center'>
                 <div className='node-item-input flex-rest'>
                     <MultipleInputTextarea key={uniquelyIdentify}
                         value={detail || ''}
-                        onChangeHandle={value => this.multipleInputChangeHandle(value, { id, uniquelyIdentify, parentUniquelyIdentify })}
+                        onChangeHandle={value => this.multipleInputChangeHandle(value, { id, uniquelyIdentify, parentUniquelyIdentify, createTimestamp})}
                         placeholder='请输入长期任务面板简介'
                     />
                 </div>
@@ -313,7 +326,7 @@ class RecordDetailElement extends React.Component {
         const slef = this
         const { nodeTree } = this.state
 
-        const NodeElements = () => nodeTree.map(node => slef.renderNode(node))
+        const NodeElements = () => nodeTree.sort((a, b) => a.createTimestamp - b.createTimestamp).map(node => slef.renderNode(node))
 
         return <div className='record-detail-elements'>
             <NodeElements />

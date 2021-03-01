@@ -122,9 +122,9 @@ const getLongTermRecordDetail = async id => await fetch.reGetConfirm({
     isShowError: true
 })
 
-const editLongTermRecordDetail = async (id, { uniquelyIdentify, parentUniquelyIdentify, detail }) => await fetch.post({
+const editLongTermRecordDetail = async (id, { uniquelyIdentify, parentUniquelyIdentify, detail, createTimestamp }) => await fetch.post({
     url: 'longTerm/detail/edit',
-    body: { id, uniquelyIdentify, parentUniquelyIdentify, detail }
+    body: { id, uniquelyIdentify, parentUniquelyIdentify, detail, createTimestamp }
 })
 
 const deleteLongTermRecordDetail = async id => await fetch.post({
