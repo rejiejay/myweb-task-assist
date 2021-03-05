@@ -21,6 +21,7 @@ export class GroupPanelRecordDetail extends React.Component {
         this.state = {
             title: '',
             record: '',
+            categoryIdentify: null,
             spreadZoomIdentify: null,
             isSelectedMove: false,
             recordDetail: []
@@ -50,7 +51,7 @@ export class GroupPanelRecordDetail extends React.Component {
 
         this.longTermTask = longTermTask
         this.longTermRecordDetail = longTermRecordDetail
-        this.setState({ title, record, spreadZoomIdentify: detailCategoryIdentify, recordDetail: longTermRecordDetail })
+        this.setState({ title, record, spreadZoomIdentify: detailCategoryIdentify, recordDetail: longTermRecordDetail, categoryIdentify: detailCategoryIdentify })
 
         return consequencer.success()
     }
@@ -74,7 +75,7 @@ export class GroupPanelRecordDetail extends React.Component {
     }
 
     render() {
-        const { title, record, recordDetail, spreadZoomIdentify } = this.state
+        const { title, record, recordDetail, spreadZoomIdentify, categoryIdentify } = this.state
 
         return <>
             <div className='record-detail-title' style={{ padding: '25px 15px 15px 15px' }}>
@@ -103,6 +104,7 @@ export class GroupPanelRecordDetail extends React.Component {
             </div>
             <div className='record-detail-content'>
                 <RecordDetailElement
+                    categoryIdentify={categoryIdentify}
                     longTermRecordDetail={recordDetail}
                     spreadZoomIdentify={spreadZoomIdentify}
                 />
@@ -267,16 +269,30 @@ class RecordDetailElement extends React.Component {
         this.setRecordDetail(id, { createTimestamp })
     }
 
-    setNodeMoveHandle = (node, isMove = true) => {
+    setNodeMoveStatusHandle = (node, isMove = true, setRecordParam = {}) => {
         const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
-        this.setState({ isSelectedMove: isMove }, () => this.setRecordDetail(id, { isMove: isMove }))
+        this.setState({ isSelectedMove: isMove }, () => this.setRecordDetail(id, { isMove: isMove, ...setRecordParam }))
+    }
+
+    setNodeMoveTreeHandle = async uniquelyIdentify => {
+        const moveNode = this.state.recordDetail.find(record => !!record.isMove)
+        const { categoryIdentify } = this.props
+
+        if (categoryIdentify === uniquelyIdentify) return this.setNodeMoveStatusHandle(moveNode, false)
+
+        const editInstance = await service.editLongTermRecordDetail(moveNode.id, { uniquelyIdentify: moveNode.uniquelyIdentify, detail: moveNode.detail, createTimestamp: moveNode.createTimestamp, parentUniquelyIdentify: uniquelyIdentify })
+        if (editInstance.result !== 1) return Confirm(editInstance.message)
+
+        this.setNodeMoveStatusHandle(moveNode, false, { parentUniquelyIdentify: uniquelyIdentify })
     }
 
     showOperationAticon = async node => {
+        const { categoryIdentify } = this.props
         const { id, uniquelyIdentify, parentUniquelyIdentify, detail, children } = node
-        const deleteAction = { value: 2176, label: '删除' }
+
         const setNewAction = { value: 2843, label: '置新' }
         const setMoveAction = { value: 1532, label: '移动' }
+        const deleteAction = { value: 2176, label: '删除' }
         const aticonOptions = [setNewAction, setMoveAction]
         if (!children || (children && children.length === 0)) aticonOptions.push(deleteAction)
         const selectInstance = await ActionSheet({ title: '请选择操作方式', options: aticonOptions })
@@ -296,7 +312,7 @@ class RecordDetailElement extends React.Component {
         }
 
         if (selected.value === setMoveAction.value) {
-            this.setNodeMoveHandle(node)
+            this.setNodeMoveStatusHandle(node)
         }
     }
 
@@ -311,10 +327,10 @@ class RecordDetailElement extends React.Component {
             <div className='node-item-container flex-start-center'>
                 <div className='node-item-input flex-rest'>{detail}</div>
                 {!!isMove && <div className='node-item-operation'
-                    onClick={() => this.setNodeMoveHandle(node, false)}
+                    onClick={() => this.setNodeMoveStatusHandle(node, false)}
                 >取消</div>}
                 {!isMove && <div className='node-item-operation'
-                    onClick={() => {}}
+                    onClick={() => this.setNodeMoveTreeHandle(uniquelyIdentify, false)}
                 >移动到此</div>}
             </div>
 
@@ -346,6 +362,7 @@ class RecordDetailElement extends React.Component {
     render() {
         const slef = this
         const { nodeTree, isSelectedMove } = this.state
+        const { categoryIdentify } = this.props
 
         const NodeElements = () => nodeTree.sort((a, b) => a.createTimestamp - b.createTimestamp).map(node => slef.renderNode(node))
 
@@ -355,7 +372,7 @@ class RecordDetailElement extends React.Component {
             <div className='node-item-container flex-start-center'>
                 <div className='node-item-input flex-rest'>Root</div>
                 <div className='node-item-operation'
-                    onClick={() => {}}
+                    onClick={() => this.setNodeMoveTreeHandle(categoryIdentify)}
                 >移动到此</div>
             </div>
 
