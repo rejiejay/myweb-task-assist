@@ -22,6 +22,7 @@ export class GroupPanelRecordDetail extends React.Component {
             title: '',
             record: '',
             spreadZoomIdentify: null,
+            isSelectedMove: false,
             recordDetail: []
         }
 
@@ -266,6 +267,11 @@ class RecordDetailElement extends React.Component {
         this.setRecordDetail(id, { createTimestamp })
     }
 
+    setNodeMoveHandle = (node, isMove = true) => {
+        const { id, uniquelyIdentify, parentUniquelyIdentify, detail } = node
+        this.setState({ isSelectedMove: isMove }, () => this.setRecordDetail(id, { isMove: isMove }))
+    }
+
     showOperationAticon = async node => {
         const { id, uniquelyIdentify, parentUniquelyIdentify, detail, children } = node
         const deleteAction = { value: 2176, label: '删除' }
@@ -290,15 +296,30 @@ class RecordDetailElement extends React.Component {
         }
 
         if (selected.value === setMoveAction.value) {
-            // TODO
+            this.setNodeMoveHandle(node)
         }
     }
 
     renderNode = node => {
         const slef = this
-        const { id, uniquelyIdentify, parentUniquelyIdentify, detail, createTimestamp } = node
+        const { isSelectedMove } = this.state
+        const { id, uniquelyIdentify, parentUniquelyIdentify, detail, createTimestamp, isMove } = node
 
         const children = node.children.sort((a, b) => a.createTimestamp - b.createTimestamp).map(node => slef.renderNode(node))
+
+        if (!!isSelectedMove) return <div className='record-detail-elements'>
+            <div className='node-item-container flex-start-center'>
+                <div className='node-item-input flex-rest'>{detail}</div>
+                {!!isMove && <div className='node-item-operation'
+                    onClick={() => this.setNodeMoveHandle(node, false)}
+                >取消</div>}
+                {!isMove && <div className='node-item-operation'
+                    onClick={() => {}}
+                >移动到此</div>}
+            </div>
+
+            {!isMove && <div className='node-item-children'>{children}</div>}
+        </div>
 
         return <div className='node-item' key={uniquelyIdentify}>
             <div className='node-item-container flex-start-center'>
@@ -324,12 +345,22 @@ class RecordDetailElement extends React.Component {
 
     render() {
         const slef = this
-        const { nodeTree } = this.state
+        const { nodeTree, isSelectedMove } = this.state
 
         const NodeElements = () => nodeTree.sort((a, b) => a.createTimestamp - b.createTimestamp).map(node => slef.renderNode(node))
 
+        if (!isSelectedMove) return <div className='record-detail-elements'><NodeElements /></div>
+
         return <div className='record-detail-elements'>
-            <NodeElements />
+            <div className='node-item-container flex-start-center'>
+                <div className='node-item-input flex-rest'>Root</div>
+                <div className='node-item-operation'
+                    onClick={() => {}}
+                >移动到此</div>
+            </div>
+
+            <div className='node-item-children'><NodeElements /></div>
+            
         </div>
     }
 }
