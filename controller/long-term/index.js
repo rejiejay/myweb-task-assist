@@ -54,12 +54,25 @@ const deleteLongTermRecordDetail = async function deleteLongTermRecordDetail({ i
     responseHanle.json(result)
 }
 
+const addLongTermRecordDetail = async function addLongTermRecordDetail({ parentUniquelyIdentify, categoryIdentify }, responseHanle) {
+    const verifys = [
+        { value: parentUniquelyIdentify, field: 'parentUniquelyIdentify', method: 'isStringNil' },
+        { value: categoryIdentify, field: 'categoryIdentify', method: 'isStringNil' }
+    ]
+    const verifyInstance = valuesStructuresVerify.group(verifys)
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const result = await service.longTerm.addLongTermRecordDetail({ parentUniquelyIdentify, categoryIdentify })
+    responseHanle.json(result)
+}
+
 const longTerm = {
     get_longTerm_all: listAllLongTermTaskRelational,
     get_longTerm_id: getLongTermTaskRelational,
     get_longTerm_detail: listAllLongTermRecordDetail,
     post_longTerm_detail_edit: editLongTermRecordDetail,
-    post_longTerm_detail_delete: deleteLongTermRecordDetail
+    post_longTerm_detail_delete: deleteLongTermRecordDetail,
+    post_longTerm_detail_add: addLongTermRecordDetail
 }
 
 export default longTerm

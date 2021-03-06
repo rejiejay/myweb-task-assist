@@ -1,4 +1,6 @@
 import SQLite from './../../module/SQLite/index.js'
+import StringHelper from './../../utils/string-helper'
+import consequencer from './../../utils/consequencer'
 
 import dataAccessObject from './data-access-object'
 
@@ -31,13 +33,36 @@ const deleteLongTermRecordDetail = function deleteLongTermRecordDetail(id) {
     return detailTable.del(id)
 }
 
+const addLongTermRecordDetail = async function addLongTermRecordDetail({ parentUniquelyIdentify, categoryIdentify }) {
+    const uniquelyIdentify = StringHelper.createRandomStr({ length: 32 })
+    const createTimestamp = new Date().getTime()
+    const longTermRecordDetail = {
+        uniquelyIdentify,
+        categoryIdentify,
+        parentUniquelyIdentify,
+        createTimestamp,
+        detail: ' '
+    }
+
+    const addInstance = await detailTable.add(longTermRecordDetail)
+    if (addInstance.result !== 1) return addInstance
+
+    const sqlHandle = new SQLite.SqlHandle()
+    sqlHandle.addAndFilterSql(`uniquelyIdentify = "${uniquelyIdentify}"`)
+    const findInstance = await detailTable.list(sqlHandle.toSqlString())
+    if (findInstance.result !== 1) return findInstance
+
+    return consequencer.success(findInstance.data[0])
+}
+
 const longTerm = {
     listAllTaskRelational,
     getOneTaskRelational,
     listAllLongTermRecordDetail,
     getOneLongTermRecordDetail,
     editLongTermRecordDetail,
-    deleteLongTermRecordDetail
+    deleteLongTermRecordDetail,
+    addLongTermRecordDetail
 }
 
 export default longTerm

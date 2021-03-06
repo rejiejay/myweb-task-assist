@@ -286,18 +286,38 @@ class RecordDetailElement extends React.Component {
         this.setNodeMoveStatusHandle(moveNode, false, { parentUniquelyIdentify: uniquelyIdentify })
     }
 
+    addNewNodeHandle = async parentUniquelyIdentify => {
+        const { categoryIdentify, spreadZoomIdentify } = this.props
+        const addInstance = await service.addLongTermRecordDetail({ parentUniquelyIdentify, categoryIdentify })
+        if (addInstance.result !== 1) return Confirm(addInstance.message)
+        const newNode = addInstance.data
+        const recordDetail = [...this.state.recordDetail, newNode]
+
+        this.setState({ recordDetail }, () => this.initRecordNodeTree(recordDetail, spreadZoomIdentify))
+    }
+
     showOperationAticon = async node => {
         const { categoryIdentify } = this.props
         const { id, uniquelyIdentify, parentUniquelyIdentify, detail, children } = node
 
+        const addNewAction = { value: 4528, label: '增同级' }
+        const addChildAction = { value: 7946, label: '增子级' }
         const setNewAction = { value: 2843, label: '置新' }
         const setMoveAction = { value: 1532, label: '移动' }
         const deleteAction = { value: 2176, label: '删除' }
-        const aticonOptions = [setNewAction, setMoveAction]
+        const aticonOptions = [addNewAction, addChildAction, setNewAction, setMoveAction]
         if (!children || (children && children.length === 0)) aticonOptions.push(deleteAction)
         const selectInstance = await ActionSheet({ title: '请选择操作方式', options: aticonOptions })
         if (selectInstance.result !== 1) return
         const selected = selectInstance.data
+
+        if (selected.value === addNewAction.value) {
+            this.addNewNodeHandle(parentUniquelyIdentify)
+        }
+
+        if (selected.value === addChildAction.value) {
+            this.addNewNodeHandle(uniquelyIdentify)
+        }
 
         if (selected.value === deleteAction.value) {
             const confirmInstance = await Confirm('是否确认删除?')
@@ -342,7 +362,7 @@ class RecordDetailElement extends React.Component {
                 <div className='node-item-input flex-rest'>
                     <MultipleInputTextarea key={uniquelyIdentify}
                         value={detail || ''}
-                        onChangeHandle={value => this.multipleInputChangeHandle(value, { id, uniquelyIdentify, parentUniquelyIdentify, createTimestamp})}
+                        onChangeHandle={value => this.multipleInputChangeHandle(value, { id, uniquelyIdentify, parentUniquelyIdentify, createTimestamp })}
                         placeholder='请输入长期任务面板简介'
                     />
                 </div>
@@ -377,7 +397,7 @@ class RecordDetailElement extends React.Component {
             </div>
 
             <div className='node-item-children'><NodeElements /></div>
-            
+
         </div>
     }
 }

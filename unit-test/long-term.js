@@ -19,12 +19,18 @@ const editLongTermRecordDetail = responseHanle => controller.post_longTerm_detai
 
 const deleteLongTermRecordDetail = responseHanle => controller.post_longTerm_detail_delete({ id: 1 }, responseHanle)
 
+const addLongTermRecordDetail = responseHanle => controller.post_longTerm_detail_add({
+  categoryIdentify: 'f9981986834db83f0bb112b1d237611d596de57a',
+  parentUniquelyIdentify: 'f9981986834db83f0bb112b1d237611d596de52e'
+}, responseHanle)
+
 const longTerm = {
   listAllLongTermTaskRelational: utils.resolveHandle(listAllLongTermTaskRelational, { isShowResult: false }),
   getLongTermTaskRelational: utils.resolveHandle(getLongTermTaskRelational, { isShowResult: false }),
   listAllLongTermRecordDetail: utils.resolveHandle(listAllLongTermRecordDetail, { isShowResult: false }),
   editLongTermRecordDetail: utils.resolveHandle(editLongTermRecordDetail, { isShowResult: false }),
-  deleteLongTermRecordDetail: utils.resolveHandle(deleteLongTermRecordDetail, { isShowResult: false })
+  deleteLongTermRecordDetail: utils.resolveHandle(deleteLongTermRecordDetail, { isShowResult: false }),
+  addLongTermRecordDetail: utils.resolveHandle(addLongTermRecordDetail, { isShowResult: true })
 }
 
 export default longTerm
