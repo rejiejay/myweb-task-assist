@@ -55,6 +55,14 @@ const addLongTermRecordDetail = async function addLongTermRecordDetail({ parentU
     return consequencer.success(findInstance.data[0])
 }
 
+const editLongTermTaskRelational = async function editLongTermTaskRelational({ id, title, record }) {
+    const findInstance = await relationalTable.find(+id)
+    if (findInstance.result !== 1) return findInstance
+    const longTermTaskRelational = findInstance.data
+
+    return relationalTable.updata(id, { ...longTermTaskRelational, title, record })
+}
+
 const longTerm = {
     listAllTaskRelational,
     getOneTaskRelational,
@@ -62,7 +70,8 @@ const longTerm = {
     getOneLongTermRecordDetail,
     editLongTermRecordDetail,
     deleteLongTermRecordDetail,
-    addLongTermRecordDetail
+    addLongTermRecordDetail,
+    editLongTermTaskRelational
 }
 
 export default longTerm

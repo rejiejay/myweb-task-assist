@@ -137,6 +137,11 @@ const addLongTermRecordDetail = async ({ parentUniquelyIdentify, categoryIdentif
     body: { parentUniquelyIdentify, categoryIdentify }
 })
 
+const editLongTermTaskRelational = async ({ id, title, record }) => await fetch.post({
+    url: 'longTerm/relational/edit',
+    body: { id, title, record }
+})
+
 const service = {
     getTaskList,
     getTaskTagInfor,
@@ -156,7 +161,8 @@ const service = {
     getLongTermRecordDetail,
     editLongTermRecordDetail,
     deleteLongTermRecordDetail,
-    addLongTermRecordDetail
+    addLongTermRecordDetail,
+    editLongTermTaskRelational
 }
 
 export default service

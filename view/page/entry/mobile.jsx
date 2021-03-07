@@ -42,6 +42,8 @@ export class MobileComponent extends React.Component {
                 // library\consts\task.js -> priority
             ]
         }
+
+        this.longTermRef = React.createRef();
     }
 
     componentDidMount() {
@@ -181,7 +183,8 @@ export class MobileComponent extends React.Component {
             if (editInstance.result !== 1) return
             const groupPanel = editInstance.data
 
-            console.log('groupPanel', groupPanel)
+            const longTermRef = this.longTermRef.current
+            longTermRef.refresh()
         })
     }
 
@@ -204,6 +207,7 @@ export class MobileComponent extends React.Component {
             <div style={{ height: '50px' }} />
 
             <GroupPanel
+                ref={this.longTermRef}
                 longTermId={longTerm.id}
                 onEditHandle={this.editGroupPanelHandle}
             />

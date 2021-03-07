@@ -26,6 +26,10 @@ class GroupPanel extends React.Component {
         if (longTermId && longTermId !== prevProps.longTermId) this.initGroupPanelData(longTermId)
     }
 
+    refresh() {
+        this.initGroupPanelData(this.props.longTermId)
+    }
+
     initGroupPanelData = async longTermId => {
         const fetchInstance = await service.getLongTermTask(longTermId)
         if (fetchInstance.result !== 1) return

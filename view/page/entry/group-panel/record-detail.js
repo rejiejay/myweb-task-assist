@@ -5,6 +5,7 @@ import CommonlyInputText from './../../../components/mobile/commonly-input-text'
 import CommonlyListItem from './../../../components/mobile/commonly-list-item'
 import Confirm from './../../../components/confirm'
 import ActionSheet from './../../../components/action-sheet'
+import Button from './../../../components/button'
 
 import service from './../service'
 
@@ -24,13 +25,17 @@ export class GroupPanelRecordDetail extends React.Component {
             categoryIdentify: null,
             spreadZoomIdentify: null,
             isSelectedMove: false,
-            recordDetail: []
+            recordDetail: [],
+
+            /**
+             * 作为对比使用
+             */
+            longTermTask: { id: null, title: null, record: null, spreadZoomIdentify: null, spreadZoomDepth: null, detailCategoryIdentify: null }
         }
 
         /**
-         * 下面2条数据都是为了作为对比而使用, 所以是不进行改动的
+         * 作为对比使用
          */
-        this.longTermTask = { id: null, title: null, record: null, spreadZoomIdentify: null, spreadZoomDepth: null, detailCategoryIdentify: null }
         this.longTermRecordDetail = []
     }
 
@@ -49,23 +54,32 @@ export class GroupPanelRecordDetail extends React.Component {
         if (longTermRecordDetailInstance.result !== 1) return consequencer.error(longTermRecordDetailInstance.message)
         const longTermRecordDetail = longTermRecordDetailInstance.data
 
-        this.longTermTask = longTermTask
         this.longTermRecordDetail = longTermRecordDetail
-        this.setState({ title, record, spreadZoomIdentify: detailCategoryIdentify, recordDetail: longTermRecordDetail, categoryIdentify: detailCategoryIdentify })
+        this.setState({ longTermTask, title, record, spreadZoomIdentify: detailCategoryIdentify, recordDetail: longTermRecordDetail, categoryIdentify: detailCategoryIdentify })
 
         return consequencer.success()
     }
 
-    storageConfirmHandle = () => { }
+    storageConfirmHandle = async () => {
+        const { title, record, longTermTask } = this.state
+        const editInstance = await service.editLongTermTaskRelational({ id: longTermTask.id, title, record })
+        if (editInstance.result !== 1) return Confirm(editInstance.message)
 
-    backtrackHandle = () => {
-        this.props.reject(consequencer.error('取消'))
+        this.setState({ longTermTask: { ...longTermTask, title, record } })
+    }
+
+    backtrackHandle = async () => {
+        if (this.storageConfirmVerify({ id: 'storage' })) {
+            const confirmInstance = await Confirm('你有数据未提交, 你确定要返回吗?')
+            if (confirmInstance.result !== 1) return
+        }
+
+        this.props.resolve(consequencer.success())
     }
 
     storageConfirmVerify = ({ id }) => {
         if (id === 'storage') {
-            const { title, record, spreadZoomIdentify } = this.state
-            const longTermTask = this.longTermTask
+            const { title, record, spreadZoomIdentify, longTermTask } = this.state
             if (title !== longTermTask.title) return true
             if (record !== longTermTask.record) return true
             if (spreadZoomIdentify !== longTermTask.detailCategoryIdentify) return true
@@ -386,7 +400,15 @@ class RecordDetailElement extends React.Component {
 
         const NodeElements = () => nodeTree.sort((a, b) => a.createTimestamp - b.createTimestamp).map(node => slef.renderNode(node))
 
-        if (!isSelectedMove) return <div className='record-detail-elements'><NodeElements /></div>
+        if (!isSelectedMove) return <>
+            <div className='record-detail-elements'><NodeElements /></div>
+            <div className='record-detail-add'>
+                <Button key='record-detail-add'
+                    onClick={() => this.addNewNodeHandle(categoryIdentify)}
+                >新增</Button>
+            </div>
+
+        </>
 
         return <div className='record-detail-elements'>
             <div className='node-item-container flex-start-center'>
