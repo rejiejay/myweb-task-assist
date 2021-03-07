@@ -27,7 +27,10 @@ const addLongTermRecordDetail = responseHanle => controller.post_longTerm_detail
 const editLongTermTaskRelational = responseHanle => controller.post_longTerm_relational_edit({
   id: 1,
   title: 'update editLongTermTaskRelational',
-  record: 'update editLongTermTaskRelational'
+  record: 'update editLongTermTaskRelational',
+  spreadZoomIdentify: 'f9981986834db83f0bb112b1d237611d596de57a',
+  spreadZoomDepth: 1,
+  detailCategoryIdentify: 'f9981986834db83f0bb112b1d237611d596de57a'
 }, responseHanle)
 
 const longTerm = {

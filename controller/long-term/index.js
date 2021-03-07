@@ -66,16 +66,17 @@ const addLongTermRecordDetail = async function addLongTermRecordDetail({ parentU
     responseHanle.json(result)
 }
 
-const editLongTermTaskRelational = async function editLongTermTaskRelational({ id, title, record }, responseHanle) {
+const editLongTermTaskRelational = async function editLongTermTaskRelational({ id, spreadZoomIdentify, title, record }, responseHanle) {
     const verifys = [
         { value: id, field: 'id', method: 'isId' },
+        { value: spreadZoomIdentify, field: 'spreadZoomIdentify', method: 'isStringNil' },
         { value: title, field: 'title', method: 'isStringNil' },
         { value: record, field: 'record', method: 'isStringNil' }
     ]
     const verifyInstance = valuesStructuresVerify.group(verifys)
     if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
 
-    const result = await service.longTerm.editLongTermTaskRelational({ id, title, record })
+    const result = await service.longTerm.editLongTermTaskRelational({ id, spreadZoomIdentify, title, record })
     responseHanle.json(result)
 }
 

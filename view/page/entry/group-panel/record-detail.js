@@ -30,7 +30,7 @@ export class GroupPanelRecordDetail extends React.Component {
             /**
              * 作为对比使用
              */
-            longTermTask: { id: null, title: null, record: null, spreadZoomIdentify: null, spreadZoomDepth: null, detailCategoryIdentify: null }
+            longTermTask: { id: null, title: null, record: null, spreadZoomIdentify: null, spreadZoomDepth: null, categoryIdentify: null }
         }
 
         /**
@@ -48,24 +48,36 @@ export class GroupPanelRecordDetail extends React.Component {
         const longTermTaskInstance = await service.getLongTermTask(longTermId)
         if (longTermTaskInstance.result !== 1) return consequencer.error(longTermTaskInstance.message)
         const longTermTask = longTermTaskInstance.data
-        const { title, record, detailCategoryIdentify } = longTermTask
+        const { title, record, spreadZoomIdentify, detailCategoryIdentify } = longTermTask
+        const categoryIdentify = detailCategoryIdentify
 
-        const longTermRecordDetailInstance = await service.getLongTermRecordDetail(detailCategoryIdentify)
+        const longTermRecordDetailInstance = await service.getLongTermRecordDetail(categoryIdentify)
         if (longTermRecordDetailInstance.result !== 1) return consequencer.error(longTermRecordDetailInstance.message)
         const longTermRecordDetail = longTermRecordDetailInstance.data
 
         this.longTermRecordDetail = longTermRecordDetail
-        this.setState({ longTermTask, title, record, spreadZoomIdentify: detailCategoryIdentify, recordDetail: longTermRecordDetail, categoryIdentify: detailCategoryIdentify })
+        this.setState({ longTermTask, title, record, categoryIdentify, spreadZoomIdentify, recordDetail: longTermRecordDetail })
 
         return consequencer.success()
     }
 
     storageConfirmHandle = async () => {
         const { title, record, longTermTask } = this.state
-        const editInstance = await service.editLongTermTaskRelational({ id: longTermTask.id, title, record })
+        const editInstance = await service.editLongTermTaskRelational({ ...longTermTask, title, record })
         if (editInstance.result !== 1) return Confirm(editInstance.message)
 
         this.setState({ longTermTask: { ...longTermTask, title, record } })
+    }
+
+    unfoldNodeHandle = async spreadZoomIdentify => {
+
+        const { longTermTask } = this.state
+        const newLongTermTask = { ...longTermTask, spreadZoomIdentify }
+        const editInstance = await service.editLongTermTaskRelational(newLongTermTask)
+        if (editInstance.result !== 1) return Confirm(editInstance.message)
+
+        this.setState({ spreadZoomIdentify, longTermTask: newLongTermTask })
+        this.initRecordDetail()
     }
 
     backtrackHandle = async () => {
@@ -121,6 +133,7 @@ export class GroupPanelRecordDetail extends React.Component {
                     categoryIdentify={categoryIdentify}
                     longTermRecordDetail={recordDetail}
                     spreadZoomIdentify={spreadZoomIdentify}
+                    unfoldNodeHandle={this.unfoldNodeHandle}
                 />
             </div>
 
@@ -166,7 +179,7 @@ class MultipleInputTextarea extends React.Component {
     }
 
     onChangeHandle(value) {
-        this.setState({ content: value })
+        this.setState({ content: value.trim() })
     }
 
     initStyle = value => {
@@ -311,15 +324,24 @@ class RecordDetailElement extends React.Component {
     }
 
     showOperationAticon = async node => {
-        const { categoryIdentify } = this.props
+        const { categoryIdentify, spreadZoomIdentify, unfoldNodeHandle } = this.props
         const { id, uniquelyIdentify, parentUniquelyIdentify, detail, children } = node
+
+        const isCanUnfold = () => {
+            if (children.length === 0) return false
+            if (categoryIdentify === parentUniquelyIdentify) return false
+            if (spreadZoomIdentify === parentUniquelyIdentify) return false
+            return true
+        }
 
         const addNewAction = { value: 4528, label: '增同级' }
         const addChildAction = { value: 7946, label: '增子级' }
+        const unfoldAction = { value: 4563, label: '展开' }
         const setNewAction = { value: 2843, label: '置新' }
         const setMoveAction = { value: 1532, label: '移动' }
         const deleteAction = { value: 2176, label: '删除' }
-        const aticonOptions = [addNewAction, addChildAction, setNewAction, setMoveAction]
+        let aticonOptions = [addNewAction, addChildAction, setNewAction, setMoveAction]
+        if (isCanUnfold()) aticonOptions = [addNewAction, addChildAction, unfoldAction, setNewAction, setMoveAction]
         if (!children || (children && children.length === 0)) aticonOptions.push(deleteAction)
         const selectInstance = await ActionSheet({ title: '请选择操作方式', options: aticonOptions })
         if (selectInstance.result !== 1) return
@@ -347,6 +369,10 @@ class RecordDetailElement extends React.Component {
 
         if (selected.value === setMoveAction.value) {
             this.setNodeMoveStatusHandle(node)
+        }
+
+        if (selected.value === unfoldAction.value) {
+            unfoldNodeHandle(node.parentUniquelyIdentify)
         }
     }
 
@@ -393,6 +419,26 @@ class RecordDetailElement extends React.Component {
         </div>
     }
 
+    isShowUnSpreadZoom = () => {
+        const { recordDetail } = this.state
+        const { categoryIdentify, spreadZoomIdentify } = this.props
+
+        if (!spreadZoomIdentify) return false
+
+        const node = recordDetail.find(node => node.uniquelyIdentify === spreadZoomIdentify)
+        if (!node) return false
+        if (categoryIdentify === node.parentUniquelyIdentify) return false
+        return true
+    }
+
+    unSpreadZoomHandle = () => {
+        const { recordDetail } = this.state
+        const { unfoldNodeHandle, spreadZoomIdentify } = this.props
+
+        const node = recordDetail.find(node => node.uniquelyIdentify === spreadZoomIdentify)
+        unfoldNodeHandle(node.parentUniquelyIdentify)
+    }
+
     render() {
         const slef = this
         const { nodeTree, isSelectedMove } = this.state
@@ -401,6 +447,13 @@ class RecordDetailElement extends React.Component {
         const NodeElements = () => nodeTree.sort((a, b) => a.createTimestamp - b.createTimestamp).map(node => slef.renderNode(node))
 
         if (!isSelectedMove) return <>
+            {this.isShowUnSpreadZoom() &&
+                <div className='record-detail-zoom'>
+                    <Button key='record-detail-zoom'
+                        onClick={this.unSpreadZoomHandle}
+                    >返回上一层级</Button>
+                </div>
+            }
             <div className='record-detail-elements'><NodeElements /></div>
             <div className='record-detail-add'>
                 <Button key='record-detail-add'

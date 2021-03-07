@@ -137,9 +137,9 @@ const addLongTermRecordDetail = async ({ parentUniquelyIdentify, categoryIdentif
     body: { parentUniquelyIdentify, categoryIdentify }
 })
 
-const editLongTermTaskRelational = async ({ id, title, record }) => await fetch.post({
+const editLongTermTaskRelational = async ({ id, spreadZoomIdentify, title, record }) => await fetch.post({
     url: 'longTerm/relational/edit',
-    body: { id, title, record }
+    body: { id, spreadZoomIdentify, title, record }
 })
 
 const service = {
