@@ -1,6 +1,7 @@
 import CommonlyListItem from './../../../components/mobile/commonly-list-item'
 import Button from './../../../components/button'
 import ActionSheet from './../../../components/action-sheet'
+import openMultipleSelect from './../../../components/multiple-selection-sheet'
 import jsxStyle from './../../../components/jsx-style'
 import TimeHelper from './../../../../utils/time-helper'
 import consequencer from './../../../../utils/consequencer'
@@ -128,7 +129,7 @@ export class FilterEdit extends React.Component {
 
     selectTagFilterHandle = async () => {
         const { tagOptions } = this.state
-        const selectInstance = await ActionSheet({ title: '请选择需要过滤的标签', options: tagOptions, isMultiple: true })
+        const selectInstance = await openMultipleSelect(tagOptions)
         if (selectInstance.result !== 1) return
         const tagFilter = selectInstance.data.map(tag => ({ id: tag.value, name: tag.label }))
         this.setState({ tagFilter })
