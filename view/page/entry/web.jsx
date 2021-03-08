@@ -6,14 +6,20 @@ export class WebComponent extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {}
+        this.state = {
+            list: []
+        }
     }
 
     render() {
+        const { list } = this.state
+
         return <>
             <WindowsHeader></WindowsHeader>
 
-            <WindowsContainer></WindowsContainer>
+            <WindowsContainer
+                list={list}
+            ></WindowsContainer>
 
             <WindowsPagination></WindowsPagination>
 
