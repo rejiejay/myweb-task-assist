@@ -1,5 +1,7 @@
 /**
  * SQLite 对外方法:
+ * @doc https://github.com/ryan-codingintrigue/sql-wasm
+ * 
  * @db SQLite的实例
  * @initDev 初始化开发环境方法
  * @initPro 初始化开发环境方法
@@ -10,6 +12,7 @@ import SqliteJs from './sqlitejs.instantiate.js'
 import TableHandle from './table-handle.js'
 import SqlHandle from './sql-handle.js'
 import localDatabaseSqlite from './local.database.sqlite.js'
+import initPro from './initPro.js'
 
 async function initDev() {
     const self = this
@@ -29,7 +32,7 @@ const SQLite = {
 
     initDev,
 
-    initPro: () => { }, // TODO
+    initPro,
 
     SqlHandle,
     TableHandle

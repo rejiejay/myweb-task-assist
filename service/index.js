@@ -7,13 +7,15 @@ import tag from './tag/index.js'
 import longTerm from './long-term'
 import auth from './auth'
 import link from './navigation-link'
+import sql from './sql'
 
 const service = {
     auth,
     task,
     tag,
     longTerm,
-    link
+    link,
+    sql
 }
 
 export default service
