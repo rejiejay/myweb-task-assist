@@ -3,6 +3,7 @@ import FullscreenIframe from './../../components/fullscreen-iframe'
 import Button from './../../components/button'
 import toast from './../../components/toast'
 import CommonlyBottomOperate from './../../components/mobile/commonly-bottom-operate'
+import Storage from './../../components/storage'
 import CONSTS from './../../../library/consts'
 import ArrayHelper from './../../../utils/array-helper'
 
@@ -15,6 +16,8 @@ export class MobileComponent extends React.Component {
     constructor(props) {
         super(props)
 
+        const filter = Storage.filter.getHandle()
+
         this.state = {
             isShowBigCard: false,
 
@@ -26,21 +29,17 @@ export class MobileComponent extends React.Component {
             pageSize: CONSTS.defaultPageSize,
 
             sort: { value: 1, label: 'Sort' },
-            longTerm: { id: null, title: '' } // 长期的任务不进行多选
+            // { id, title }
+            longTerm: filter.longTerm // 长期的任务不进行多选
         }
 
         this.filter = {
-            tags: [
-                // { id, name }
-            ],
-            minEffectTimestamp: null,
-            maxEffectTimestamp: null,
-            multipleStatus: [
-                // library\consts\task.js -> status
-            ],
-            multiplePriority: [
-                // library\consts\task.js -> priority
-            ]
+            tags: filter.tags,
+            minEffectTimestamp: filter.minEffectTimestamp || null,
+            maxEffectTimestamp: filter.maxEffectTimestamp || null,
+            // library\consts\task.js -> status && priority
+            multipleStatus: filter.multipleStatus,
+            multiplePriority: filter.multiplePriority
         }
 
         this.longTermRef = React.createRef();
@@ -93,14 +92,15 @@ export class MobileComponent extends React.Component {
         if (selectInstance.result !== 1) return
         const filter = selectInstance.data
 
-        this.filter = {
-            tags: filter.tagFilter,
-            minEffectTimestamp: filter.minEffectTimestampFilter,
-            maxEffectTimestamp: filter.maxEffectTimestampFilter,
-            multipleStatus: filter.statusMultipleFilter,
-            multiplePriority: filter.priorityMultipleFilter
-        }
-        this.setState({ longTerm: filter.longTermFilter }, () => this.initList(true))
+        const longTerm = filter.longTermFilter
+        const tags = filter.tagFilter
+        const minEffectTimestamp = filter.minEffectTimestampFilter
+        const maxEffectTimestamp = filter.maxEffectTimestampFilter
+        const multipleStatus = filter.statusMultipleFilter
+        const multiplePriority = filter.priorityMultipleFilter
+        this.filter = { tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }
+        Storage.filter.setHandle(tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority, longTerm)
+        this.setState({ longTerm }, () => this.initList(true))
     }
 
     loadRandomHandle = () => this.setState({ pageNo: 1 }, this.initList)
@@ -154,14 +154,15 @@ export class MobileComponent extends React.Component {
             if (selectInstance.result !== 1) return
             const navigationLink = selectInstance.data
 
-            self.filter = {
-                tags: navigationLink.tags,
-                minEffectTimestamp: navigationLink.minEffectTimestamp,
-                maxEffectTimestamp: navigationLink.maxEffectTimestamp,
-                multipleStatus: navigationLink.multipleStatus,
-                multiplePriority: navigationLink.multiplePriority
-            }
-            self.setState({ longTerm: navigationLink.longTerm }, () => self.initList(true))
+            const longTerm = navigationLink.longTerm
+            const tags = navigationLink.tagFilter
+            const minEffectTimestamp = navigationLink.minEffectTimestampFilter
+            const maxEffectTimestamp = navigationLink.maxEffectTimestampFilter
+            const multipleStatus = navigationLink.statusMultipleFilter
+            const multiplePriority = navigationLink.priorityMultipleFilter
+            this.filter = { tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }
+            Storage.filter.setHandle(tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority, longTerm)
+            self.setState({ longTerm }, () => self.initList(true))
         })
     }
 
