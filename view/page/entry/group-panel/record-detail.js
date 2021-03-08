@@ -91,10 +91,9 @@ export class GroupPanelRecordDetail extends React.Component {
 
     storageConfirmVerify = ({ id }) => {
         if (id === 'storage') {
-            const { title, record, spreadZoomIdentify, longTermTask } = this.state
+            const { title, record, longTermTask } = this.state
             if (title !== longTermTask.title) return true
             if (record !== longTermTask.record) return true
-            if (spreadZoomIdentify !== longTermTask.detailCategoryIdentify) return true
         }
 
         return false
@@ -252,10 +251,11 @@ class RecordDetailElement extends React.Component {
             this.initRecordNodeTree(longTermRecordDetail, spreadZoomIdentify)
         }
     }
-
+    
     initRecordNodeTree = (recordDetail, id) => {
+        const { categoryIdentify } = this.props
         const sqlHandle = new SqlHandle()
-        const nodeTree = sqlHandle.tableToNodeTreeConver(recordDetail, id)
+        const nodeTree = sqlHandle.tableToNodeTreeConver(recordDetail, id || categoryIdentify)
         this.setState({ recordDetail, nodeTree })
     }
 
