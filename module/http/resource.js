@@ -12,18 +12,18 @@ import copyDirectory from './../../utils/node-copy-directory.js'
 class ResourcesUtils {
     initUrlCatch() {
         const slef = this
-        const { view } = config.resource
+        const resource = config.resource
         const { url } = this.request
         let isStatic = false
         let isConfigured = false
 
-        Object.keys(view).forEach(page => {
-            if (url === view[page].matchURL) {
+        Object.keys(resource).forEach(page => {
+            if (url === resource[page].matchURL) {
                 isStatic = true // 如果符合配置页面，那么必然 true
                 isConfigured = true
 
-                slef.resourcePath = view[page].resourcePath
-                slef.outputPath = view[page].outputPath
+                slef.resourcePath = resource[page].resourcePath
+                slef.outputPath = resource[page].outputPath
             }
         })
 
@@ -36,6 +36,8 @@ class ResourcesUtils {
     }
 
     responseHandle(parameter) {
+        if (!this.isDev) return false
+
         const { message, code, contentType } = parameter
         this.response.writeHead(code, { 'Content-Type': contentType ? contentType : 'text/plain' })
         this.response.write(message)
@@ -163,6 +165,11 @@ class ResourcesHandle extends ResourcesUtils {
         const { isStatic, isConfigured } = this.initUrlCatch()
         this.isStatic = isStatic
         this.isConfigured = isConfigured
+    }
+
+    initPath(resourcePath, outputPath) {
+        this.resourcePath = resourcePath
+        this.outputPath = outputPath
     }
 
     /**

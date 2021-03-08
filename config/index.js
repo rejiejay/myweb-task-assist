@@ -15,18 +15,15 @@ let config = {
     auth,
     http,
     resource: {
-        library: {},
-        view: {
-            root: {
-                matchURL: '/',
-                resourcePath: './view/page/entry/',
-                outputPath: './view/build/'
-            },
-            SQLiteGUI: {
-                matchURL: '/sql-lite-gui/',
-                resourcePath: './view/page/sql-lite-gui/',
-                outputPath: './view/build/sql-lite-gui/'
-            }
+        root: {
+            matchURL: '/',
+            resourcePath: './view/page/entry/',
+            outputPath: './view/build/'
+        },
+        SQLiteGUI: {
+            matchURL: '/sql-lite-gui/',
+            resourcePath: './view/page/sql-lite-gui/',
+            outputPath: './view/build/sql-lite-gui/'
         }
     }
 }

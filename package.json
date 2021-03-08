@@ -9,8 +9,8 @@
   "scripts": {
     "dev": "SET NODE_ENV=development&& babel-node -- ./development.js",
     "test": "SET NODE_ENV=development&& babel-node -- ./tester.js",
-    "start-dev": "SET NODE_ENV=development&& babel-core-register.js",
-    "start-pro": "SET NODE_ENV=production&& --experimental-modules production.js"
+    "start-dev": "SET NODE_ENV=production&& babel-node -- ./production.js",
+    "start-pro": "export NODE_ENV=production&& babel-node -- ./production.js"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
