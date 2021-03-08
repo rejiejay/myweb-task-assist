@@ -98,8 +98,10 @@ export class WebComponent extends React.Component {
         return filter
     }
 
+    pageNoChangeHandle = pageNo => this.setState({ pageNo }, this.initList)
+
     render() {
-        const { list } = this.state
+        const { list, pageNo, count, pageSize } = this.state
 
         return <>
             <WindowsHeader></WindowsHeader>
@@ -109,7 +111,11 @@ export class WebComponent extends React.Component {
                 resetHandle={this.initList}
             ></WindowsContainer>
 
-            <WindowsPagination></WindowsPagination>
+            <WindowsPagination
+               pageNo={pageNo}
+                pageTotal={Math.ceil(count / pageSize)}
+                handle={this.pageNoChangeHandle}
+            ></WindowsPagination>
 
             <div className="copyright-component"><div className="copyright-describe">粤ICP备17119404号 Copyright © Rejiejay曾杰杰</div></div>
         </>
