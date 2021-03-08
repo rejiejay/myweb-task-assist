@@ -32,7 +32,7 @@ export class WindowsContainer extends React.Component {
         this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
     }
 
-    async selectedDetailHandle(task, key) {
+    async selectedDetailHandle(task) {
         const {
             id,
             title, content, specific, measurable, attainable, relevant, timeBound,
@@ -107,6 +107,13 @@ export class WindowsContainer extends React.Component {
         return ''
     }
 
+    getByRandom = () => {
+        const { list } = this.props
+        const index = Math.floor(Math.random() * list.length)
+
+        this.selectedDetailHandle(list[index])
+    }
+
     render() {
         const { clientHeight } = this
         const minHeight = `${clientHeight - 185}px`
@@ -137,7 +144,9 @@ export class WindowsContainer extends React.Component {
                     <div className="content-detail-container">
 
                         <div className="detail-operate flex-start-center noselect">
-                            <div className="flex-rest flex-center">随机查看</div>
+                            <div className="flex-rest flex-center"
+                                onClick={this.getByRandom}
+                            >随机查看</div>
                             <div className="flex-rest flex-center">时间: {TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+createTimestamp))}</div>
                             <div className="flex-rest flex-center">编辑</div>
                             <div className="flex-rest flex-center">删除</div>
