@@ -32,7 +32,7 @@ const getAllTaskTagInfor = async () => await fetch.get({
 })
 
 const getAllLongTermTask = async () => await fetch.get({
-    url: 'longTerm/all',
+    url: 'longTerm/relational/all',
     query: {},
     isShowError: true
 })
@@ -90,7 +90,7 @@ const getTaskById = async id => await fetch.reGetConfirm({
 })
 
 const getLongTermTask = async id => await fetch.reGetConfirm({
-    url: 'longTerm/id',
+    url: 'longTerm/relational/id',
     query: { id },
     isShowError: true
 })
@@ -137,9 +137,21 @@ const addLongTermRecordDetail = async ({ parentUniquelyIdentify, categoryIdentif
     body: { parentUniquelyIdentify, categoryIdentify }
 })
 
+const addLongTermTaskTaskRelational = async longTermTaskName => await fetch.post({
+    url: 'longTerm/relational/add',
+    body: { longTermTaskName },
+    isShowError: true
+})
+
 const editLongTermTaskRelational = async ({ id, spreadZoomIdentify, title, record }) => await fetch.post({
     url: 'longTerm/relational/edit',
     body: { id, spreadZoomIdentify, title, record }
+})
+
+const deleteLongTermTaskTaskRelational = async ({ id }) => await fetch.post({
+    url: 'longTerm/relational/delete',
+    body: { id },
+    isShowError: true
 })
 
 const service = {
@@ -162,7 +174,9 @@ const service = {
     editLongTermRecordDetail,
     deleteLongTermRecordDetail,
     addLongTermRecordDetail,
-    editLongTermTaskRelational
+    addLongTermTaskTaskRelational,
+    editLongTermTaskRelational,
+    deleteLongTermTaskTaskRelational
 }
 
 export default service

@@ -180,6 +180,24 @@ export class FilterEdit extends React.Component {
         })
     }
 
+    longTermOptionManage = () => {
+        const self = this
+
+        toast.show()
+        import('./long-term-edit').then(async ({ LongTermEdit }) => {
+            toast.destroy()
+            const selectInstance = await FullscreenIframe({
+                Element: LongTermEdit,
+                className: 'mobile-device-task-long-term-edit',
+                props: {}
+            })
+
+            if (selectInstance.result !== 1) return
+            const longTermOptions = selectInstance.data
+            self.setState({ longTermOptions })
+        })
+    }
+
     confirmResolveHandle = async () => {
         const { resolve } = this.props
         const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter } = this.state
@@ -205,14 +223,21 @@ export class FilterEdit extends React.Component {
                 title={isMultipleFilter ? '是否选择过滤(Long Term Task)项目?' : '此项目是否为(Long Term Task)项目?'}
             >
                 <>
-                    <Button style={{ ...jsxStyle.basicFlex.startCenter }}
-                        onClick={this.selectLongTermTaskHandle}
-                    >
-                        {longTermFilter.id ?
-                            `${isMultipleFilter ? '过滤' : ''}长期项目: ${longTermFilter.title}` :
-                            `不${isMultipleFilter ? '过滤' : '属于'}长期任务项目`
-                        }
-                    </Button>
+                    <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                        <Button
+                            style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                            onClick={this.selectLongTermTaskHandle}
+                        >
+                            {longTermFilter.id ?
+                                `${isMultipleFilter ? '过滤' : ''}长期项目: ${longTermFilter.title}` :
+                                `不${isMultipleFilter ? '过滤' : '属于'}长期任务项目`
+                            }
+                        </Button>
+                        <Button
+                            style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                            onClick={this.longTermOptionManage}
+                        >管理</Button>
+                    </div>
                     <div style={{ height: '5px' }}></div>
                     {longTermFilter.id && <Button
                         style={{ backgroundColor: '#F2F2F2', color: '#626675' }}

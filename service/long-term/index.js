@@ -63,6 +63,16 @@ const editLongTermTaskRelational = async function editLongTermTaskRelational({ i
     return relationalTable.updata(id, { ...longTermTaskRelational, spreadZoomIdentify, title, record })
 }
 
+const addLongTermTaskRelational = async function addLongTermTaskRelational(title) {
+    const record = 'Nil'
+    const detailCategoryIdentify = StringHelper.createRandomStr({ length: 32 })
+    return relationalTable.add({ title, record, detailCategoryIdentify })
+}
+
+const deleteLongTermTaskRelational = async function deleteLongTermTaskRelational(id) {
+    return relationalTable.del(id)
+}
+
 const longTerm = {
     listAllTaskRelational,
     getOneTaskRelational,
@@ -71,7 +81,9 @@ const longTerm = {
     editLongTermRecordDetail,
     deleteLongTermRecordDetail,
     addLongTermRecordDetail,
-    editLongTermTaskRelational
+    editLongTermTaskRelational,
+    addLongTermTaskRelational,
+    deleteLongTermTaskRelational
 }
 
 export default longTerm

@@ -13,65 +13,66 @@ const props = {
     reject: () => { }
 }
 
-export class TagEdit extends React.Component {
+export class LongTermEdit extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            tagOptions: [
+            longTermOptions: [
                 // { value: '', label: '' }
             ]
         }
     }
 
     async componentDidMount() {
-        this.initAllTaskTagInfor()
+        this.initAllTaskLongTermInfor()
     }
 
-    async initAllTaskTagInfor() {
-        const fetchInstance = await service.getAllTaskTagInfor()
+    async initAllTaskLongTermInfor() {
+        const fetchInstance = await service.getAllLongTermTask()
         if (fetchInstance.result !== 1) return
-        const tags = fetchInstance.data
+        const allLongTermTask = fetchInstance.data
 
-        this.setState({ tagOptions: tags.map(tag => ({ value: tag.id, label: tag.name })) })
+        const longTermOptions = allLongTermTask.map(longTerm => ({ value: longTerm.id, label: longTerm.title }))
+        this.setState({ longTermOptions })
     }
 
     addTagHandle = async () => {
-        const promptInstance = await Prompt({ title: '请输入新增tags名字', placeholder: '请输入新增tags名字' })
+        const promptInstance = await Prompt({ title: '请输入新增长期任务的名字', placeholder: '请输入新增长期任务的名字' })
         if (promptInstance.result !== 1) return
 
-        const tagName = promptInstance.data
-        const addInstance = await service.addTag(tagName)
+        const longTermTaskName = promptInstance.data
+        const addInstance = await service.addLongTermTaskTaskRelational(longTermTaskName)
         if (addInstance.result !== 1) return Confirm(addInstance.message)
 
-        this.initAllTaskTagInfor()
+        this.initAllTaskLongTermInfor()
     }
 
     editHandle = async ({ id, name }) => {
-        const promptInstance = await Prompt({ title: '请输入新增tags名字', placeholder: '请输入新增tags名字', defaultValue: name })
+        const promptInstance = await Prompt({ title: '请输入编辑长期任务的名字', placeholder: '请输入编辑长期任务的名字', defaultValue: name })
         if (promptInstance.result !== 1) return
 
-        const tagName = promptInstance.data
-        const editInstance = await service.editTag({ id, name: tagName })
+        const longTermTaskName = promptInstance.data
+        const editInstance = await service.editLongTermTaskRelational({ id, title: longTermTaskName })
         if (editInstance.result !== 1) return Confirm(editInstance.message)
 
-        this.initAllTaskTagInfor()
+        this.initAllTaskLongTermInfor()
     }
 
     deleteHandle = async ({ id }) => {
-        const confirmInstance = await Confirm('确定要删除这个标签吗?')
+        const confirmInstance = await Confirm('确定要删除这个长期任务吗?')
         if (confirmInstance.result !== 1) return
 
-        const deleteInstance = await service.deleteTag({ id })
+        const deleteInstance = await service.deleteLongTermTaskTaskRelational({ id })
         if (deleteInstance.result !== 1) return Confirm(deleteInstance.message)
 
-        this.initAllTaskTagInfor()
+        this.initAllTaskLongTermInfor()
     }
 
     confirmResolveHandle = async () => {
         const { resolve } = this.props
-        const { tagOptions } = this.state
-        resolve(consequencer.success(tagOptions))
+        const { longTermOptions } = this.state
+        resolve(consequencer.success(longTermOptions))
     }
 
     cancelRejectHandle = async () => {
@@ -80,17 +81,17 @@ export class TagEdit extends React.Component {
     }
 
     render() {
-        const { tagOptions } = this.state
+        const { longTermOptions } = this.state
 
         return <div className='tag-edit-container' style={{ padding: '25px 15px 15px 15px', backgroundColor: '#f1f1f1' }}>
-            <div style={{ paddingBottom: '15px' }}>{tagOptions.map((tag, key) =>
-                <TagEditItem key={key}
+            <div style={{ paddingBottom: '15px' }}>{longTermOptions.map((tag, key) =>
+                <LongTermEditItem key={key}
                     editHandle={() => this.editHandle({ id: tag.value, name: tag.label })}
                     deleteHandle={() => this.deleteHandle({ id: tag.value })}
-                >{tag.label}</TagEditItem>
+                >{tag.label}</LongTermEditItem>
             )}</div>
 
-            <Button onClick={this.addTagHandle}>新增标签</Button>
+            <Button onClick={this.addTagHandle}>新增长期任务</Button>
 
             <div style={{ height: jsxStyle.client.heightPx() }} />
             <CommonlyBottomOperate
@@ -107,7 +108,7 @@ export class TagEdit extends React.Component {
     }
 }
 
-const TagEditItem = ({ children, editHandle, deleteHandle }) => <div style={{ paddingBottom: '15px' }}>
+const LongTermEditItem = ({ children, editHandle, deleteHandle }) => <div style={{ paddingBottom: '15px' }}>
     <div style={{ backgroundColor: '#fff', minHeight: '45px', ...jsxStyle.basicFlex.startCenter }}>
         <div style={{ ...jsxStyle.basicFlex.rest, padding: '0px 15px' }}>{children}</div>
 
@@ -121,4 +122,4 @@ const TagEditItem = ({ children, editHandle, deleteHandle }) => <div style={{ pa
     </div>
 </div>
 
-export default TagEdit
+export default LongTermEdit

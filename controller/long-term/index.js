@@ -66,28 +66,66 @@ const addLongTermRecordDetail = async function addLongTermRecordDetail({ parentU
     responseHanle.json(result)
 }
 
+const addLongTermTaskRelational = async function addLongTermTaskRelational({ longTermTaskName }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isStringNil(longTermTaskName, 'longTermTaskName')
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const result = await service.longTerm.addLongTermTaskRelational(longTermTaskName)
+    responseHanle.json(result)
+}
+
 const editLongTermTaskRelational = async function editLongTermTaskRelational({ id, spreadZoomIdentify, title, record }, responseHanle) {
     const verifys = [
         { value: id, field: 'id', method: 'isId' },
-        { value: spreadZoomIdentify, field: 'spreadZoomIdentify', method: 'isStringNil' },
-        { value: title, field: 'title', method: 'isStringNil' },
-        { value: record, field: 'record', method: 'isStringNil' }
+        { value: spreadZoomIdentify, field: 'spreadZoomIdentify', method: 'isString' },
+        { value: title, field: 'title', method: 'isString' },
+        { value: record, field: 'record', method: 'isString' }
     ]
     const verifyInstance = valuesStructuresVerify.group(verifys)
     if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
 
-    const result = await service.longTerm.editLongTermTaskRelational({ id, spreadZoomIdentify, title, record })
+    const taskRelationalInstance = await service.longTerm.getOneTaskRelational(id)
+    if (taskRelationalInstance.result !== 1) return responseHanle.json(taskRelationalInstance)
+    const taskRelational = taskRelationalInstance.data
+    const updateRelational = {
+        ...taskRelational,
+        spreadZoomIdentify: spreadZoomIdentify || taskRelational.spreadZoomIdentify,
+        title: title || taskRelational.title,
+        record: record || taskRelational.record
+    }
+
+    const result = await service.longTerm.editLongTermTaskRelational(updateRelational)
+    responseHanle.json(result)
+}
+
+const deleteLongTermTaskRelational = async function deleteLongTermTaskRelational({ id }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isId(id, 'id')
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const taskRelationalInstance = await service.longTerm.getOneTaskRelational(id)
+    if (taskRelationalInstance.result !== 1) return responseHanle.json(taskRelationalInstance)
+    const taskRelational = taskRelationalInstance.data
+
+    const allTaskDetailInstance = await service.longTerm.listAllLongTermRecordDetail(taskRelational.detailCategoryIdentify)
+    if (allTaskDetailInstance.result !== 1) return responseHanle.json(allTaskDetailInstance)
+    const allTaskDetail = allTaskDetailInstance.data
+
+    if (allTaskDetail.length > 0) return responseHanle.failure('必须删除所有TaskDetail才可删除此条长期任务')
+
+    const result = await service.longTerm.deleteLongTermTaskRelational(id)
     responseHanle.json(result)
 }
 
 const longTerm = {
-    get_longTerm_all: listAllLongTermTaskRelational,
-    get_longTerm_id: getLongTermTaskRelational,
+    get_longTerm_relational_all: listAllLongTermTaskRelational,
+    get_longTerm_relational_id: getLongTermTaskRelational,
     get_longTerm_detail: listAllLongTermRecordDetail,
     post_longTerm_detail_edit: editLongTermRecordDetail,
     post_longTerm_detail_delete: deleteLongTermRecordDetail,
     post_longTerm_detail_add: addLongTermRecordDetail,
-    post_longTerm_relational_edit: editLongTermTaskRelational
+    post_longTerm_relational_edit: editLongTermTaskRelational,
+    post_longTerm_relational_add: addLongTermTaskRelational,
+    post_longTerm_relational_delete: deleteLongTermTaskRelational
 }
 
 export default longTerm
