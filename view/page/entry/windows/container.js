@@ -25,7 +25,12 @@ export class WindowsContainer extends React.Component {
                     <div className={`list-item ${selectedId === data.id ? 'list-item-selected' : ''}`} key={key}>
                         <div className="list-item-container"
                             onClick={() => this.selectedDetailHandle(data.id)}
-                        >{data.title}</div>
+                        >
+                            <div style={{ overflow: 'hidden', width: '100%', height: '100%' }}>
+                                <p>{data.title}</p>
+                                {newText(data.content)}
+                            </div>
+                        </div>
                     </div>
                 ))}</div>
             </div>
