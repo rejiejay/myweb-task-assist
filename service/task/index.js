@@ -103,12 +103,17 @@ const edit = async function edit(id, editUpData) {
     return editInstance
 }
 
+const deleteTaskById = function deleteTaskById(id) {
+    return tableHandle.del(id)
+}
+
 const task = {
     getList,
     getCount,
     getById,
     add,
-    edit
+    edit,
+    deleteTaskById
 }
 
 export default task

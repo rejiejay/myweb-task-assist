@@ -150,6 +150,24 @@ export class TaskEdit extends React.Component {
         resolve(consequencer.success(addInstance.data))
     }
 
+    bottomOperateFilter = element => {
+        const { id } = this.props
+        if (!!id) return true
+
+        if (element.key === 'delete') return false
+        return true
+    }
+
+    deleteHandle = async () => {
+        const { id } = this.props
+        const confirmInstance = await Confirm('确认删除吗?')
+        if (confirmInstance.result !== 1) return
+
+        const deleteInstance = await service.deleteTask(id)
+        if (deleteInstance.result !== 1) return Confirm(deleteInstance.message)
+        this.props.resolve(consequencer.success({}, 'delete', 4562))
+    }
+
     render() {
         const {
             title, content, specific, measurable, attainable, relevant, timeBound,
@@ -265,9 +283,14 @@ export class TaskEdit extends React.Component {
             <div style={{ height: '425px' }} />
             <CommonlyBottomOperate
                 leftElement={[{
+                    key: 'confirm',
                     cilckHandle: this.confirmHandle,
                     element: '确认'
-                }]}
+                }, {
+                    key: 'delete',
+                    cilckHandle: this.deleteHandle,
+                    element: '删除'
+                }].filter(this.bottomOperateFilter)}
                 rightElement={[{
                     cilckHandle: () => this.props.reject(consequencer.error('取消')),
                     element: '取消'

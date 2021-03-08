@@ -25,6 +25,12 @@ const getTaskTagInfor = async id => await fetch.get({
     isShowError: true
 })
 
+const deleteTask = async (id) => await fetch.post({
+    url: 'task/delete',
+    body: { id },
+    isShowError: true
+})
+
 const getAllTaskTagInfor = async () => await fetch.get({
     url: 'tag/all',
     query: {},
@@ -157,6 +163,7 @@ const deleteLongTermTaskTaskRelational = async ({ id }) => await fetch.post({
 const service = {
     getTaskList,
     getTaskTagInfor,
+    deleteTask,
     getAllTaskTagInfor,
     getAllLongTermTask,
     addTag,

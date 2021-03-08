@@ -36,7 +36,7 @@ export class WebComponent extends React.Component {
         this.initList()
     }
 
-    async initList() {
+    initList = async () => {
         const { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority } = await this.initPageVar()
         const { sort, pageNo, pageSize } = this.state
 
@@ -106,6 +106,7 @@ export class WebComponent extends React.Component {
 
             <WindowsContainer
                 list={list}
+                resetHandle={this.initList}
             ></WindowsContainer>
 
             <WindowsPagination></WindowsPagination>

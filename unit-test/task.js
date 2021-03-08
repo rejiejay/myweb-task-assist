@@ -46,6 +46,8 @@ const editTaskUpdateTag = responseHanle => controller.post_task_edit({ id: 22, t
 
 const getTaskById = responseHanle => controller.get_task_id({ id: 1 }, responseHanle)
 
+const deleteTaskById = responseHanle => controller.post_task_delete({ id: 1 }, responseHanle)
+
 const task = {
     getTaskListWithDefault: utils.resolveHandle(getTaskListWithDefault, { isShowResult: false }),
     getTaskListWithRandom: utils.resolveHandle(getTaskListWithRandom, { isShowResult: false }),
@@ -62,7 +64,8 @@ const task = {
     editTaskAddTag: utils.resolveHandle(editTaskAddTag, { isShowResult: false }),
     editTaskDelTag: utils.resolveHandle(editTaskDelTag, { isShowResult: false }),
     editTaskUpdateTag: utils.resolveHandle(editTaskUpdateTag, { isShowResult: false }),
-    getTaskById: utils.resolveHandle(getTaskById, { isShowResult: false })
+    getTaskById: utils.resolveHandle(getTaskById, { isShowResult: false }),
+    deleteTaskById: utils.resolveHandle(deleteTaskById, { isShowResult: false })
 }
 
 export default task

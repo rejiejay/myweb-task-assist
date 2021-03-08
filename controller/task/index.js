@@ -183,11 +183,20 @@ const getTaskById = async function getTaskById({ id }, responseHanle) {
     responseHanle.json(getInstance)
 }
 
+const deleteTaskById = async function deleteTaskById({ id }, responseHanle) {
+    const verifyInstance = valuesStructuresVerify.isId(id)
+    if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
+
+    const result = await service.task.deleteTaskById(id)
+    responseHanle.json(result)
+}
+
 const Task = {
     get_task_list: getTaskList,
     post_task_add: addTask,
     post_task_edit: editTask,
-    get_task_id: getTaskById
+    get_task_id: getTaskById,
+    post_task_delete: deleteTaskById
 }
 
 export default Task

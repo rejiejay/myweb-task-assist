@@ -1,4 +1,5 @@
 import TimeHelper from './../../../../utils/time-helper'
+import Confirm from './../../../components/confirm'
 
 import service from './../service'
 import utils from './../utils'
@@ -114,6 +115,18 @@ export class WindowsContainer extends React.Component {
         this.selectedDetailHandle(list[index])
     }
 
+    delTaskHandle = async () => {
+        const { selectedId } = this.state
+        const confirmInstance = await Confirm('确认删除吗?')
+        if (confirmInstance.result !== 1) return
+
+        const deleteInstance = await service.deleteTask(selectedId)
+        if (deleteInstance.result !== 1) return Confirm(deleteInstance.message)
+
+        this.setState({ selectedId: null })
+        this.props.resetHandle()
+    }
+
     render() {
         const { clientHeight } = this
         const minHeight = `${clientHeight - 185}px`
@@ -149,7 +162,9 @@ export class WindowsContainer extends React.Component {
                             >随机查看</div>
                             <div className="flex-rest flex-center">时间: {TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+createTimestamp))}</div>
                             <div className="flex-rest flex-center">编辑</div>
-                            <div className="flex-rest flex-center">删除</div>
+                            <div className="flex-rest flex-center"
+                                onClick={this.delTaskHandle}
+                            >删除</div>
                         </div>
 
                         <div className="detail-preview">

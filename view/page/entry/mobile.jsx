@@ -113,13 +113,15 @@ export class MobileComponent extends React.Component {
 
     showEditHandle = ({ isAdd, editId } = {}) => {
         const self = this
-        const { longTerm } = this.state
+        const { longTerm, list } = this.state
         const { tags } = this.filter
 
         let props = {}
         if (!isAdd) props.id = editId
         if (!!longTerm.id) props.longTerm = longTerm
         if (tags.length > 0) props.tags = tags
+
+        const deleteHandle = () => self.setState({ list: list.filter( ({ id }) => id !== editId) })
 
         toast.show()
         import('./edit/mobile').then(async ({ TaskEdit }) => {
@@ -130,6 +132,7 @@ export class MobileComponent extends React.Component {
                 props
             })
 
+            if (editInstance.result === 4562) return deleteHandle()
             if (editInstance.result !== 1) return
             self.initList(true)
         })
