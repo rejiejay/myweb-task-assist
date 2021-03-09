@@ -1,6 +1,18 @@
+import * as fs from 'fs';
+
 import SqliteJs from './sqlitejs.instantiate.js'
 import SqlHandle from './sql-handle.js'
 import consequencer from './../../utils/consequencer'
+
+const backup = () => {
+    const binaryArray = SqliteJs.db.export()
+    const arrayBuffer = binaryArray.buffer
+    const buffer = Buffer.from(arrayBuffer)
+
+    fs.writeFile('./module/SQLite/temporary.database.sqlite', buffer, {}, err => {
+        if (err) console.error(err)
+    })
+}
 
 class TableHandle {
     constructor(table, dataAccessObject) {
@@ -94,6 +106,7 @@ class TableHandle {
             const queryInstance = await self.query(`INSERT INTO ${self.table} ${self.sqlHandle.dataToAddSql(data)}`)
             if (queryInstance.result !== 1) return reject(queryInstance)
 
+            backup()
             resolve(consequencer.success(data))
         }).catch(error => error)
     }
@@ -109,6 +122,7 @@ class TableHandle {
             const deleteInstance = await self.query(`DELETE FROM ${self.table} WHERE id=${id}`)
             if (deleteInstance.result !== 1) return reject(deleteInstance)
 
+            backup()
             resolve(consequencer.success(find))
         }).catch(error => error)
     }
@@ -124,6 +138,7 @@ class TableHandle {
             const updateInstance = await self.query(`UPDATE ${self.table} SET ${self.sqlHandle.dataToUpdateSql({ oldVal: find, newVal: data })} WHERE id=${id}`)
             if (updateInstance.result !== 1) return reject(updateInstance)
 
+            backup()
             resolve(consequencer.success(data))
         }).catch(error => error)
     }

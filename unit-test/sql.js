@@ -22,7 +22,6 @@ const exportSqliteJsFileBuffer = async responseHanle => {
         const buffer = Buffer.from(arrayBuffer)
         permissionInstance = await service.exportSqliteJsFileBuffer(buffer)
     } catch (error) {
-        console.log('error', error)
         return responseHanle.failure(error)
     }
 

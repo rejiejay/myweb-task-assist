@@ -2,6 +2,7 @@
 node_modules
 bin/
 build/
+module/SQLite/temporary.database.sqlite
 
 # Logs
 logs
