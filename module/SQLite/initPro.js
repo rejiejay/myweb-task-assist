@@ -1,5 +1,5 @@
 import schedule from 'node-schedule'
-import service from './../../service'
+import service from './../../service/sql'
 import SqliteJs from './sqlitejs.instantiate.js'
 import localDatabaseSqlite from './local.database.sqlite.js'
 
@@ -16,9 +16,16 @@ import localDatabaseSqlite from './local.database.sqlite.js'
  * └───────────────────────── second (0 - 59, OPTIONAL)
  */
 const initSchedule = function initSchedule(instantiate) {
-    const cacheExportHandle = async () => {
+    const cacheExportHandle = async() => {
         const binaryArray = instantiate.export()
-        await service.sql.exportSqliteJsFileBuffer(binaryArray)
+        const arrayBuffer = binaryArray.buffer
+        const buffer = Buffer.from(arrayBuffer)
+
+        try {
+            await service.exportSqliteJsFileBuffer(buffer)
+        } catch (error) {
+            consequencer.error(error)
+        }
     }
 
     /**
@@ -31,7 +38,7 @@ const initSchedule = function initSchedule(instantiate) {
 const initPro = async function initPro() {
     let filebuffer = null
 
-    const filebufferInstance = await service.sql.getSqliteJsFileBuffer()
+    const filebufferInstance = await service.getSqliteJsFileBuffer()
     if (filebufferInstance.result === 1) filebuffer = filebufferInstance.data
 
     const initInstance = await SqliteJs.init(filebuffer)

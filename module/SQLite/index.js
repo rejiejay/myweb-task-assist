@@ -35,6 +35,7 @@ const SQLite = {
     initPro,
 
     SqlHandle,
+
     TableHandle
 }
 

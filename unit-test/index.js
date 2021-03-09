@@ -8,6 +8,7 @@ import tags from './tags'
 import auth from './auth'
 import longTerm from './long-term'
 import NavigationLink from './navigation-link'
+import sql from './sql'
 
 import utils from './utils'
 
@@ -17,13 +18,15 @@ const UnitTest = {
         ...tags,
         ...auth,
         ...longTerm,
-        ...NavigationLink
+        ...NavigationLink,
+        ...sql
     }),
     tags: utils.methodHelper({ ...tags }),
     task: utils.methodHelper({ ...task }),
     auth: utils.methodHelper({ ...auth }),
     longTerm: utils.methodHelper({ ...longTerm }),
-    NavigationLink: utils.methodHelper({ ...NavigationLink })
+    NavigationLink: utils.methodHelper({ ...NavigationLink }),
+    sql: utils.methodHelper({ ...sql })
 }
 
 export default UnitTest

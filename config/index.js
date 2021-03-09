@@ -12,8 +12,11 @@ import production from './production.js'
  */
 let config = {
     version: JSON.parse(fs.readFileSync(projectRelativePath('./package.json')).toString()).version,
+
     auth,
+
     http,
+
     resource: {
         root: {
             matchURL: '/',
@@ -25,6 +28,14 @@ let config = {
             resourcePath: './view/page/sql-lite-gui/',
             outputPath: './view/build/sql-lite-gui/'
         }
+    },
+
+    TCOS: {
+        secretId: '',
+        secretKey: '',
+        bucket: 'rejiejay-1251940173',
+        region: 'ap-guangzhou',
+        appId: ''
     }
 }
 

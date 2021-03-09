@@ -241,9 +241,8 @@ function initTable() {
     this.SqliteJs.exec(table.taskTagRelational);
     this.SqliteJs.exec(table.taskTags);
     this.SqliteJs.exec(table.longTermTaskRelational);
-    this.SqliteJs.exec(table.navigationLink);
-    this.SqliteJs.exec(table.longTermTaskRelational);
     this.SqliteJs.exec(table.longTermRecordDetail);
+    this.SqliteJs.exec(table.navigationLink);
 }
 
 const localDatabaseSqlite = {
