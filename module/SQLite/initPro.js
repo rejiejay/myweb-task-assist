@@ -1,5 +1,7 @@
 import schedule from 'node-schedule'
 import service from './../../service'
+import SqliteJs from './sqlitejs.instantiate.js'
+import localDatabaseSqlite from './local.database.sqlite.js'
 
 /**
  * The cron format consists of:
@@ -27,13 +29,16 @@ const initSchedule = function initSchedule(instantiate) {
 }
 
 const initPro = async function initPro() {
+    let filebuffer = null
+
     const filebufferInstance = await service.sql.getSqliteJsFileBuffer()
-    const filebuffer = filebufferInstance.data
+    if (filebufferInstance.result === 1) filebuffer = filebufferInstance.data
 
     const initInstance = await SqliteJs.init(filebuffer)
     const instantiate = initInstance.data
-    this.db = instantiate
+    if (filebufferInstance.result !== 1) localDatabaseSqlite.initTable(instantiate)
 
+    this.db = instantiate
     initSchedule(instantiate)
     console.log('create SQLite service successful')
 }

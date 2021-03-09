@@ -73,7 +73,6 @@ const table = {
 function initTask() {
     const slef = this
     const insertTaskData = data => utils.insertTaskData('task', data)
-    this.SqliteJs.exec(table.task);
     const list = [
         { title: '"最简"', content: '"最简内容"', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime() },
         { title: '"任务1"', content: '"任务内容1 \n taskTagId: 1 \n min-maxEffectTimestamp 2000, 1, 3-5"', createTimestamp: new Date(2021, 2, 1, 0, 0).getTime(), taskTagId: 1, minEffectTimestamp: new Date(2000, 1, 3, 0, 0).getTime(), maxEffectTimestamp: new Date(2000, 1, 5, 0, 0).getTime() },
@@ -97,7 +96,6 @@ function initTask() {
  */
 function initTaskTagRelational() {
     const insertTaskData = data => utils.insertTaskData('taskTagRelational', data)
-    this.SqliteJs.exec(table.taskTagRelational);
     this.SqliteJs.exec(insertTaskData({ taskId: 1, tagId: 1 }));
     this.SqliteJs.exec(insertTaskData({ taskId: 1, tagId: 2 }));
     this.SqliteJs.exec(insertTaskData({ taskId: 1, tagId: 3 }));
@@ -109,7 +107,6 @@ function initTaskTagRelational() {
 
 function initTaskTags() {
     const insertTaskData = data => utils.insertTaskData('taskTags', data)
-    this.SqliteJs.exec(table.taskTags);
     this.SqliteJs.exec(insertTaskData({ name: '"js"' }));
     this.SqliteJs.exec(insertTaskData({ name: '"exam"' }));
     this.SqliteJs.exec(insertTaskData({ name: '"love"' }));
@@ -118,14 +115,12 @@ function initTaskTags() {
 
 function initLongTermTaskRelational() {
     const insertTaskData = data => utils.insertTaskData('longTermTaskRelational', data)
-    this.SqliteJs.exec(table.longTermTaskRelational);
     this.SqliteJs.exec(insertTaskData({ title: '"任务长期任务"', record: '"长期任务内容"', detailCategoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"' }));
     this.SqliteJs.exec(insertTaskData({ title: '"任务长期任务2"', record: '"长期任务内容2"', detailCategoryIdentify: '"8bdf06bdbf9497bc6f69316b8385886388d01c4e"' }));
 }
 
 function initNavigationLink() {
     const insertTaskData = data => utils.insertTaskData('navigationLink', data)
-    this.SqliteJs.exec(table.navigationLink);
     this.SqliteJs.exec(insertTaskData({
         uniquelyIdentify: '"e71f41f2864f42ad6eef13a379ff903769ef7ea8"',
         parentUniquelyIdentify: '"root"',
@@ -175,7 +170,6 @@ function initNavigationLink() {
 
 function longTermRecordDetail() {
     const insertTaskData = data => utils.insertTaskData('longTermRecordDetail', data)
-    this.SqliteJs.exec(table.longTermRecordDetail);
     this.SqliteJs.exec(insertTaskData({
         categoryIdentify: '"f9981986834db83f0bb112b1d237611d596de57e"',
         uniquelyIdentify: '"b063cf3b653b3230a7c08a283bef69a4c1b60170"',
@@ -215,6 +209,7 @@ function longTermRecordDetail() {
 
 function init(SqliteJs) {
     this.SqliteJs = SqliteJs
+    this.initTable()
 
     this.initTask()
     this.initTaskTagRelational()
@@ -241,9 +236,20 @@ const utils = {
     },
 }
 
+function initTable() {
+    this.SqliteJs.exec(table.task);
+    this.SqliteJs.exec(table.taskTagRelational);
+    this.SqliteJs.exec(table.taskTags);
+    this.SqliteJs.exec(table.longTermTaskRelational);
+    this.SqliteJs.exec(table.navigationLink);
+    this.SqliteJs.exec(table.longTermTaskRelational);
+    this.SqliteJs.exec(table.longTermRecordDetail);
+}
 
 const localDatabaseSqlite = {
+    SqliteJs: {},
     init,
+    initTable,
     initTask,
     initTaskTagRelational,
     initTaskTags,
