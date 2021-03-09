@@ -1,16 +1,12 @@
 /**
  * 开发环境
- * TODO:
- * 页面Pro渲染
- * Web代理
- * API接口
  */
 import HTTP from './module/http';
 import SQLite from './module/SQLite/index.js';
+import TencentCloudObjectStorage from './module/tencent-cloud-object-storage/index';
 
 const init = async () => {
-    // 页面Pro渲染
-    await HTTP.renderWebResource()
+    TencentCloudObjectStorage.initPro()
 
     // 启动Web代理API接口
     HTTP.initPro()
