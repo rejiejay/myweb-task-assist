@@ -27,7 +27,12 @@ let config = {
             matchURL: '/sql-lite-gui/',
             resourcePath: './view/page/sql-lite-gui/',
             outputPath: './view/build/sql-lite-gui/'
-        }
+        },
+        windowsEdit: {
+            matchURL: '/windows-edit/',
+            resourcePath: './view/page/windows-edit/',
+            outputPath: './view/build/windows-edit/'
+        },
     },
 
     TCOS: {
