@@ -26,6 +26,8 @@ export class TaskEdit extends React.Component {
         super(props)
 
         this.state = {
+            id: null,
+
             title: '',
             content: '',
             specific: '',
@@ -45,16 +47,19 @@ export class TaskEdit extends React.Component {
 
             inputFocusField: ''
         }
+
+        this.isEdit = false
+        this.task = { id: null, title: '', content: '', specific: '', measurable: '', attainable: '', relevant: '', timeBound: '', longTerm: { id: null, title: '' }, tags: [], minEffectTimestamp: null, maxEffectTimestamp: null, status: { value: null, label: null }, priority: { value: null, label: null } }
     }
 
     componentDidMount() {
         const { id } = this.props
 
-        if (id) this.initPageData()
+        if (id) this.initPageData(id)
     }
 
-    initPageData = async () => {
-        const { id } = this.props
+    initPageData = async id => {
+        this.isEdit = true
         const getInstance = await service.getTaskById(id)
         if (getInstance.result !== 1) return
         const task = getInstance.data
@@ -89,10 +94,12 @@ export class TaskEdit extends React.Component {
             priority.label = utils.initPriorityLable(task.priority)
         }
 
-        this.setState({
+        this.task = {
+            id,
             title, content, specific, measurable, attainable, relevant, timeBound,
             longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
-        })
+        }
+        this.setState(this.task)
     }
 
     selectFilterHandle = async () => {
@@ -123,9 +130,28 @@ export class TaskEdit extends React.Component {
         return effectTimestampArray.join(' - ')
     }
 
+    initSubmitData = () => {
+        const {
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
+        } = this.state
+
+        let submitData = { title, content, specific, measurable, attainable, relevant, timeBound }
+
+        if (!!longTerm.id) submitData.longTermId = longTerm.id
+        if (!!minEffectTimestamp) submitData.minEffectTimestamp = minEffectTimestamp
+        if (!!maxEffectTimestamp) submitData.maxEffectTimestamp = maxEffectTimestamp
+        if (tags.length > 0) submitData.tagsId = tags.map(tag => tag.id)
+        if (status.value) submitData.status = status.value
+        if (priority.value) submitData.priority = priority.value
+
+        return submitData
+    }
+
     confirmHandle = async () => {
-        const { id, resolve } = this.props
-        const isEdit = !!id
+        const { resolve } = this.props
+        const { id } = this.task
+        const isEdit = this.isEdit
 
         const {
             title, content, specific, measurable, attainable, relevant, timeBound,
@@ -138,36 +164,90 @@ export class TaskEdit extends React.Component {
         const confirmInstance = await Confirm('确认要提交吗?')
         if (confirmInstance.result !== 1) return
 
-        let submitData = { title, content, specific, measurable, attainable, relevant, timeBound }
-        if (!!longTerm.id) submitData.longTermId = longTerm.id
-        if (!!minEffectTimestamp) submitData.minEffectTimestamp = minEffectTimestamp
-        if (!!maxEffectTimestamp) submitData.maxEffectTimestamp = maxEffectTimestamp
-        if (tags.length > 0) submitData.tagsId = tags.map(tag => tag.id)
-        if (status.length > 0) submitData.status = status
-        if (priority.length > 0) submitData.priority = priority
+        const submitData = this.initSubmitData()
 
-        const addInstance = isEdit ? await service.editTask({ id, ...submitData }) : await service.addTask(submitData)
-        if (addInstance.result !== 1) return Confirm(`${isEdit ? '编辑' : '添加'}任务失败, 原因: ${addInstance.message}`)
+        const fetchInstance = isEdit ? await service.editTask({ id, ...submitData }) : await service.addTask(submitData)
+        if (fetchInstance.result !== 1) return Confirm(`${isEdit ? '编辑' : '添加'}任务失败, 原因: ${fetchInstance.message}`)
 
-        resolve(consequencer.success(addInstance.data))
+        resolve(consequencer.success(fetchInstance.data))
     }
 
     bottomOperateFilter = element => {
-        const { id } = this.props
-        if (!!id) return true
+        const { id } = this.task
+        const { title, content } = this.state
+        const isEdit = !!id
+        const isDiff = this.verifyTaskDiff()
+        const isCanSubmit = !!title && !!content
 
-        if (element.key === 'delete') return false
+        if (element.key === 'delete') {
+            if (isEdit) return true
+            return false
+        }
+
+        if (!isCanSubmit && (element.key === 'save' || element.key === 'confirm')) return false
+
+        if (element.key === 'save') {
+            if (isDiff) return true
+            return false
+        }
+
+        if (element.key === 'confirm' && isDiff) return false
+
         return true
     }
 
     deleteHandle = async () => {
-        const { id } = this.props
+        const { id } = this.task
         const confirmInstance = await Confirm('确认删除吗?')
         if (confirmInstance.result !== 1) return
 
         const deleteInstance = await service.deleteTask(id)
         if (deleteInstance.result !== 1) return Confirm(deleteInstance.message)
         this.props.resolve(consequencer.success({}, 'delete', 4562))
+    }
+
+    verifyTaskDiff = () => {
+        let isDiff = false
+        const {
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority,
+        } = this.state
+        const task = this.task
+
+        if (title !== task.title) isDiff = true
+        if (content !== task.content) isDiff = true
+        if (specific !== task.specific) isDiff = true
+        if (measurable !== task.measurable) isDiff = true
+        if (attainable !== task.attainable) isDiff = true
+        if (relevant !== task.relevant) isDiff = true
+        if (timeBound !== task.timeBound) isDiff = true
+        if (longTerm.id !== task.longTerm.id) isDiff = true
+        if (JSON.stringify(tags) !== JSON.stringify(task.tags)) isDiff = true
+        if (minEffectTimestamp !== task.minEffectTimestamp) isDiff = true
+        if (maxEffectTimestamp !== task.maxEffectTimestamp) isDiff = true
+        if (status.value !== task.status.value) isDiff = true
+        if (priority.value !== task.priority.value) isDiff = true
+
+        return isDiff
+    }
+
+    temporaryStorageHandle = async () => {
+        const { id } = this.task
+        const isEdit = this.isEdit
+        const submitData = this.initSubmitData()
+
+        const fetchInstance = isEdit ? await service.editTask({ id, ...submitData }) : await service.addTask(submitData)
+        if (fetchInstance.result !== 1) return Confirm(`${isEdit ? '编辑' : '添加'}任务失败, 原因: ${fetchInstance.message}`)
+
+        this.initPageData(fetchInstance.data.id)
+    }
+
+    cancelHandle = async () => {
+        if (this.verifyTaskDiff()) {
+            const confirmInstance = await Confirm('你有东西未保存，你确定要返回吗?')
+            if (confirmInstance.result !== 1) return
+        }
+        this.props.reject(consequencer.error('取消'))
     }
 
     render() {
@@ -304,12 +384,16 @@ export class TaskEdit extends React.Component {
                     cilckHandle: this.confirmHandle,
                     element: '确认'
                 }, {
+                    key: 'save',
+                    cilckHandle: this.temporaryStorageHandle,
+                    element: '暂存'
+                }, {
                     key: 'delete',
                     cilckHandle: this.deleteHandle,
                     element: '删除'
                 }].filter(this.bottomOperateFilter)}
                 rightElement={[{
-                    cilckHandle: () => this.props.reject(consequencer.error('取消')),
+                    cilckHandle: this.cancelHandle,
                     element: '取消'
                 }]}
             />

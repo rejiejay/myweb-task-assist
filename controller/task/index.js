@@ -74,6 +74,7 @@ const addTask = async function addTask({ title, content, specific, measurable, a
     if (verifyInstance.result !== 1) return responseHanle.json(verifyInstance)
 
     const addInstance = await service.task.add({ title, content, specific, measurable, attainable, relevant, timeBound, longTermId, tagsId, minEffectTimestamp, maxEffectTimestamp, status, priority })
+
     responseHanle.json(addInstance)
 }
 

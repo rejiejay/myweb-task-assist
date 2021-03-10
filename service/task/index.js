@@ -78,7 +78,6 @@ const add = async function add({ title, content, specific, measurable, attainabl
     if (priority) addData.priority = priority
     const addInstance = await tableHandle.add(addData)
     if (addInstance.result !== 1) return addInstance
-    if (!tagsId || tagsId.length === 0) return addInstance
 
     const sqlHandle = new SQLite.SqlHandle()
     sqlHandle.addAndFilterSql(`title = "${title}"`)
@@ -87,9 +86,11 @@ const add = async function add({ title, content, specific, measurable, attainabl
     const queryInstance = await tableHandle.list(sqlHandle.toSqlString())
     if (queryInstance.result !== 1) return queryInstance
     const queryData = queryInstance.data
-    if (queryData.length <= 0) return consequencer.error('新增失败')
+    if (queryData.length <= 0) return consequencer.error('新增成功, 但是查询数据失败')
     const requestAddData = queryData[0]
     const taskId = requestAddData.id
+
+    if (!tagsId || tagsId.length === 0) return await this.getById(taskId)
 
     for (let index = 0; index < tagsId.length; index++) {
         const tagId = tagsId[index];
@@ -98,7 +99,9 @@ const add = async function add({ title, content, specific, measurable, attainabl
     }
 
     const addtaskTagInstance = await this.edit(taskId, { taskTagId: taskId })
-    return addtaskTagInstance
+    if (addtaskTagInstance.result !== 1) return addtaskTagInstance
+
+    return await this.getById(taskId)
 }
 
 const edit = async function edit(id, editUpData) {

@@ -66,15 +66,15 @@ class ResourcesUtils {
                         output.css,
                         { encoding: 'utf8' },
                         writeFileError => {
-                            if (writeFileError) return reject(consequencer.error(JSON.stringify(writeFileError)))
-                            resolve(consequencer.success(output.css))
+                            if (writeFileError) return reject(new Error(JSON.stringify(writeFileError)))
+                            resolve(output.css)
                         }
                     ),
-                    error => reject(consequencer.error(error))
+                    error => reject(new Error(`${error}`))
                 )
 
             fs.readFile(resourcePath, 'utf8', (readFileError, lessStr) => {
-                if (readFileError) return reject(consequencer.error(JSON.stringify(readFileError)))
+                if (readFileError) return reject(new Error(JSON.stringify(readFileError)))
                 lessRender(lessStr)
             })
         }).catch(error => error)
@@ -115,10 +115,10 @@ class ResourcesUtils {
                 externals: { react: 'React', 'react-dom': 'ReactDOM' },
                 plugins
             }, (err, stats) => {
-                if (err || stats.hasErrors()) return reject(`${stats}`)
-                return resolve(consequencer.success())
+                if (err || stats.hasErrors()) return reject(new Error(`${stats}`))
+                return resolve()
             })
-        }).catch(error => error)
+        })
     }
 
     renderHyperTextMarkupLanguage(version = '') {
@@ -131,8 +131,8 @@ class ResourcesUtils {
                 content,
                 { encoding: 'utf8' },
                 writeFileError => {
-                    if (writeFileError) return reject(consequencer.error(JSON.stringify(writeFileError)))
-                    resolve(consequencer.success(content))
+                    if (writeFileError) return reject(new Error(JSON.stringify(writeFileError)))
+                    resolve(content)
                 }
             )
 
@@ -142,10 +142,10 @@ class ResourcesUtils {
             }
 
             fs.readFile(entryPath, 'utf8', (readFileError, content) => {
-                if (readFileError) return reject(consequencer.error(JSON.stringify(readFileError)))
+                if (readFileError) return reject(new Error(JSON.stringify(readFileError)))
                 initVersion(content)
             })
-        }).catch(error => error)
+        })
     }
 }
 
@@ -184,28 +184,27 @@ class ResourcesHandle extends ResourcesUtils {
         this.renderStatic()
     }
 
-    buildConfigured() {
-        const self = this
-        // const jsInstance = await this.renderTypedJavaScriptXML()
-        // if (jsInstance.result !== 1) return this.responseHandle({ code: 200, message: jsInstance.message })
+    async buildConfigured() {
+        let html = ''
+        try {
+            await this.renderTypedJavaScriptXML()
+        } catch (error) {
+            return this.responseHandle({ code: 200, message: error.message })
+        }
 
-        // const lessInstance = await this.renderLeanerStyleSheets()
-        // if (lessInstance.result !== 1) return this.responseHandle({ code: 200, message: lessInstance.message })
+        try {
+            await this.renderLeanerStyleSheets()
+        } catch (error) {
+            return this.responseHandle({ code: 200, message: error.message })
+        }
 
-        // const htmlInstance = await this.renderHyperTextMarkupLanguage()
-        // if (htmlInstance.result !== 1) return this.responseHandle({ code: 200, message: htmlInstance.message })
+        try {
+            html = await this.renderHyperTextMarkupLanguage()
+        } catch (error) {
+            return this.responseHandle({ code: 200, message: error.message })
+        }
 
-        // const html = htmlInstance.data
-        // return this.responseHandle({ code: 200, message: html, contentType: 'text/html;charset=utf-8' })
-
-        Promise.all([
-            this.renderTypedJavaScriptXML(),
-            this.renderLeanerStyleSheets(),
-            this.renderHyperTextMarkupLanguage()
-        ]).then(([jsInstance, lessInstance, htmlInstance]) => {
-            const html = htmlInstance.data
-            self.responseHandle({ code: 200, message: html, contentType: 'text/html;charset=utf-8' })
-        }).catch(error => self.responseHandle({ code: 200, message: `${error}` }))
+        return this.responseHandle({ code: 200, message: html, contentType: 'text/html;charset=utf-8' })
     }
 
     renderStatic() {
