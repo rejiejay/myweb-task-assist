@@ -1,3 +1,10 @@
+import DropDownSelect from './../../../components/drop-down-select-tooltip';
+import CONSTS from './../../../../library/consts'
+
+const props = {
+    setSortHandle: () => { }
+}
+
 export class WindowsHeader extends React.Component {
     constructor(props) {
         super(props)
@@ -12,6 +19,10 @@ export class WindowsHeader extends React.Component {
     clearSearch = () => {}
 
     addHandle = () => window.open('./windows-edit/')
+
+    sortSelectedHandle = ({ value, label }) => {
+        this.props.setSortHandle({ value, label })
+    }
 
     render() {
         const { search } = this.state
@@ -47,7 +58,12 @@ export class WindowsHeader extends React.Component {
             </div>
 
             <div className="right-operating flex-start-center">
-                <div className="operat-item hover-item">排序</div>
+                <DropDownSelect
+                    options={CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.sort)}
+                    handle={this.sortSelectedHandle}
+                >
+                    <div className="operat-item hover-item">排序</div>
+                </DropDownSelect>
                 <div className="operat-item hover-item"
                     onClick={this.addHandle}
                 >新增</div>

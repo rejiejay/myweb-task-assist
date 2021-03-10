@@ -8,7 +8,6 @@ import DatePicker from '../date-picker-sheet'
 import FullscreenIframe from '../fullscreen-iframe'
 import toast from '../toast'
 import CONSTS from '../../../library/consts'
-import configs from './../../configs'
 
 import service from '../../service'
 
@@ -117,7 +116,7 @@ export class FilterEdit extends React.Component {
 
     effectTimePickHandle = async field => {
         let state = this.state
-        const pickerInstance = await DatePicker({ scriptUrl: `${configs.libraryProfixUrl}lib/picka-date/rolldate.min.js` })
+        const pickerInstance = await DatePicker()
         if (pickerInstance.result !== 1) return
         const timestamp = pickerInstance.data
         state[field] = timestamp

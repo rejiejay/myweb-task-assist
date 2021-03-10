@@ -1,6 +1,7 @@
 import CONSTS from './../../../library/consts'
 import valuesStructuresVerify from './../../../utils/values-structures-verify'
 import { loadPageVar } from './../../utils/url-helper';
+import ArrayHelper from './../../../utils/array-helper';
 
 import WindowsHeader from './windows/header'
 import WindowsContainer from './windows/container'
@@ -46,6 +47,8 @@ export class WebComponent extends React.Component {
         if (fetchInstance.result !== 1) return
         const fetch = fetchInstance.data
         let list = fetch.list
+
+        if (sort.value === 2) list = ArrayHelper.uniqueDeduplicationByKey({ array: this.state.list.concat(fetch.list), key: 'id' })
 
         this.setState({ list, count: fetch.count })
     }
@@ -100,11 +103,17 @@ export class WebComponent extends React.Component {
 
     pageNoChangeHandle = pageNo => this.setState({ pageNo }, this.initList)
 
+    setSortHandle = sort => {
+        this.setState({ sort }, this.initList)
+    }
+
     render() {
-        const { list, pageNo, count, pageSize } = this.state
+        const { list, sort, pageNo, count, pageSize } = this.state
 
         return <>
-            <WindowsHeader></WindowsHeader>
+            <WindowsHeader
+                setSortHandle={this.setSortHandle}
+            />
 
             <WindowsContainer
                 list={list}
@@ -112,7 +121,11 @@ export class WebComponent extends React.Component {
             ></WindowsContainer>
 
             <WindowsPagination
-               pageNo={pageNo}
+                sort={sort}
+                all={count}
+                count={list.length}
+                loadMoreHandle={this.initList}
+                pageNo={pageNo}
                 pageTotal={Math.ceil(count / pageSize)}
                 handle={this.pageNoChangeHandle}
             ></WindowsPagination>

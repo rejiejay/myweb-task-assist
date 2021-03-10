@@ -1,4 +1,5 @@
 import StringHelper from './../../../../utils/string-helper'
+import Button from './../../../components/button'
 
 export class WindowsPagination extends React.Component {
     constructor(props) {
@@ -46,7 +47,15 @@ export class WindowsPagination extends React.Component {
 
     render() {
         const { jumpPredictPageNo } = this.state
-        const { pageNo, pageTotal } = this.props
+        const { pageNo, pageTotal, sort, all, count, loadMoreHandle } = this.props
+
+        if (sort && sort.value !== 1) return <div className="windows-pagination flex-center">
+            <div className="flex-start-center">
+                <Button 
+                    onClick={loadMoreHandle}
+                >随机加载({all - count}/{all})</Button>
+            </div>
+        </div>
 
         return <div className="windows-pagination flex-center">
             <div className="flex-start-center">

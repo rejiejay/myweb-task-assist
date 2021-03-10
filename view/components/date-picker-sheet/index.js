@@ -3,9 +3,9 @@ import consequencer from './../../../utils/consequencer'
 import TimeHelper from './../../../utils/time-helper'
 import Confirm from './../confirm'
 
-const DatePicker = ({scriptUrl, options}) => new Promise(async(resolve, reject) => {
+const DatePicker = ({ options }) => new Promise(async(resolve, reject) => {
     if (!window.Rolldate) {
-        const loaded = await loadScript(scriptUrl)
+        const loaded = await loadScript(`${configs.libraryProfixUrl}lib/picka-date/rolldate.min.js`)
         if (loaded.result !== 1) {
             await Confirm(loaded.message)
             return reject(loaded)
