@@ -110,7 +110,11 @@ const deleteLongTermTaskRelational = async function deleteLongTermTaskRelational
     if (allTaskDetailInstance.result !== 1) return responseHanle.json(allTaskDetailInstance)
     const allTaskDetail = allTaskDetailInstance.data
 
-    if (allTaskDetail.length > 0) return responseHanle.failure('必须删除所有TaskDetail才可删除此条长期任务')
+    for (let index = 0; index < allTaskDetail.length; index++) {
+        const taskDetail = allTaskDetail[index];
+        const longTermRecordDetailInstance = await service.longTerm.deleteLongTermRecordDetail(taskDetail.id)
+        if (longTermRecordDetailInstance.result !== 1) return responseHanle.json(longTermRecordDetailInstance)
+    }
 
     const result = await service.longTerm.deleteLongTermTaskRelational(id)
     responseHanle.json(result)
