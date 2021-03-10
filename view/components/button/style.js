@@ -14,6 +14,7 @@ const container = {
     overflow: 'hidden',
     WebkitTapHighlightColor: 'rgba(0,0,0,0)',
     backgroundColor: 'rgb(7, 193, 96)',
+    cursor: 'pointer',
     ...jsxStyle.basicFlex.center
 }
 

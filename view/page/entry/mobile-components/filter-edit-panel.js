@@ -2,7 +2,7 @@ import Button from './../../../components/button'
 import consequencer from './../../../../utils/consequencer'
 import Confirm from './../../../components/confirm'
 
-import FilterEdit from './../common-components/filter-edit'
+import FilterEdit from './../../../components/page/filter-edit'
 
 const props = {
     resolve: () => { },

@@ -1,3 +1,5 @@
+import FilterEdit from './../../components/page/filter-edit'
+
 class WindowsEditComponent extends React.Component {
     constructor(props) {
         super(props)
@@ -23,18 +25,36 @@ class WindowsEditComponent extends React.Component {
             priority: { value: null, label: null }
         }
 
+        this.filterEditRef = React.createRef()
+
         this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
         this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
+    }
+
+    onFilterEditChangeHandle = () => {
+        const filterEditRef = this.filterEditRef.current
+        const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter } = filterEditRef.getResult()
+
+        this.setState({
+            longTerm: longTermFilter,
+            tags: tagFilter,
+            minEffectTimestamp: minEffectTimestampFilter,
+            maxEffectTimestamp: maxEffectTimestampFilter,
+            status: statusFilter,
+            priority: priorityFilter
+        })
     }
 
     render() {
         const {
             pageStatus, 
             title, content, specific, measurable, attainable, relevant, timeBound,
-            longTerm, tags, status, priority
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
         } = this.state
         const { clientHeight } = this
         const minHeight = clientHeight - 125
+        const isMultipleFilter = false
+        const initFilter = { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority }
 
         return <div className="windows flex-column-center">
             
@@ -62,6 +82,15 @@ class WindowsEditComponent extends React.Component {
                             onChange={({ target: { value } }) => this.setState({ content: value })}
                         ></textarea>
                     </div>
+
+                    <div className="content-filter-edit">
+                        <FilterEdit
+                            ref={this.filterEditRef}
+                            onChangeHook={this.onFilterEditChangeHandle}
+                            isMultipleFilter={isMultipleFilter}
+                            initFilter={initFilter}
+                        />
+                    </div>
                 </div>
 
                 <div className="windows-separation"></div>
@@ -72,7 +101,6 @@ class WindowsEditComponent extends React.Component {
                         <div className="soft-operate-item flex-center flex-rest">暂存</div>
                         <div className="soft-operate-item flex-center flex-rest">关闭</div>
                     </div>
-                    
 
                     <div className="other-input">
                         <Otherinput

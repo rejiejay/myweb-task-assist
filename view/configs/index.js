@@ -9,7 +9,8 @@ import production from './production.js'
 
 let config = {
     origin: `http://${http.host}:${http.port}/`,
-    auth
+    auth,
+    libraryProfixUrl: '/'
 }
 
 if (process.env === 'development') config = { ...config, ...development }
