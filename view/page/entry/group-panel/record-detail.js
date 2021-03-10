@@ -7,7 +7,7 @@ import Confirm from './../../../components/confirm'
 import ActionSheet from './../../../components/action-sheet'
 import Button from './../../../components/button'
 
-import service from './../service'
+import service from './../../../service'
 
 const props = {
     resolve: () => { },

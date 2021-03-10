@@ -7,7 +7,7 @@ import Storage from './../../components/storage'
 import CONSTS from './../../../library/consts'
 import ArrayHelper from './../../../utils/array-helper'
 
-import service from './service.js'
+import service from './../../service'
 import utils from './utils.js'
 import TaskList from './mobile-components/task-card'
 import GroupPanel from './mobile-components/group-panel'
@@ -157,12 +157,12 @@ export class MobileComponent extends React.Component {
             if (selectInstance.result !== 1) return
             const navigationLink = selectInstance.data
 
-            const longTerm = navigationLink.longTerm
-            const tags = navigationLink.tagFilter
-            const minEffectTimestamp = navigationLink.minEffectTimestampFilter
-            const maxEffectTimestamp = navigationLink.maxEffectTimestampFilter
-            const multipleStatus = navigationLink.statusMultipleFilter
-            const multiplePriority = navigationLink.priorityMultipleFilter
+            const longTerm = navigationLink.longTerm || { id: null, title: '' }
+            const tags = navigationLink.tags || []
+            const minEffectTimestamp = navigationLink.minEffectTimestamp || null
+            const maxEffectTimestamp = navigationLink.maxEffectTimestamp || null
+            const multipleStatus = navigationLink.multipleStatus || []
+            const multiplePriority = navigationLink.multiplePriority || []
             this.filter = { tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }
             Storage.filter.setHandle(tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority, longTerm)
             self.setState({ longTerm }, () => self.initList(true))

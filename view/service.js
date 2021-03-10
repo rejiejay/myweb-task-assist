@@ -1,4 +1,4 @@
-import fetch from './../../components/async-fetch/index.js'
+import fetch from './components/async-fetch/index.js'
 
 async function getTaskList({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority, pageNo, pageSize }, sort) {
     let query = { pageNo, pageSize }

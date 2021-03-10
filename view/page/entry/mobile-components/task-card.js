@@ -1,5 +1,5 @@
 import jsxStyle from './../../../components/jsx-style'
-import service from './../service'
+import service from './../../../service'
 import TimeHelper from './../../../../utils/time-helper'
 import utils from './../utils'
 

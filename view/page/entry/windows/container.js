@@ -1,7 +1,7 @@
 import TimeHelper from './../../../../utils/time-helper'
 import Confirm from './../../../components/confirm'
 
-import service from './../service'
+import service from './../../../service'
 import utils from './../utils'
 
 export class WindowsContainer extends React.Component {

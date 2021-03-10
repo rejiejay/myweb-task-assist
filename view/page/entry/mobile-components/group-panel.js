@@ -1,6 +1,6 @@
 import Button from './../../../components/button'
 
-import service from './../service.js'
+import service from './../../../service'
 
 const props = {
     longTermId: 0

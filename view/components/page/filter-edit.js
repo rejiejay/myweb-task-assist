@@ -10,7 +10,7 @@ import toast from '../toast'
 import CONSTS from '../../../library/consts'
 import configs from './../../configs'
 
-import service from '../../page/entry/service'
+import service from '../../service'
 
 const props = {
     isMultipleFilter: false,

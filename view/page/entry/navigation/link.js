@@ -4,7 +4,7 @@ import consequencer from './../../../../utils/consequencer'
 import Prompt from './../../../components/prompt'
 import Confirm from './../../../components/confirm'
 
-import service from './../service'
+import service from './../../../service'
 import utils from './../utils'
 
 const props = {

@@ -5,7 +5,7 @@ import { loadPageVar } from './../../utils/url-helper';
 import WindowsHeader from './windows/header'
 import WindowsContainer from './windows/container'
 import WindowsPagination from './windows/pagination'
-import service from './service'
+import service from './../../service'
 
 export class WebComponent extends React.Component {
     constructor(props) {

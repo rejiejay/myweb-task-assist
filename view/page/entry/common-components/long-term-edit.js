@@ -6,7 +6,7 @@ import Confirm from './../../../components/confirm'
 import jsxStyle from './../../../components/jsx-style'
 import Button from './../../../components/button'
 
-import service from './../service'
+import service from '../../../service'
 
 const props = {
     resolve: () => { },

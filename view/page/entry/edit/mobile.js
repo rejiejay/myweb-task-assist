@@ -8,7 +8,7 @@ import Button from './../../../components/button'
 import toast from './../../../components/toast'
 import Confirm from './../../../components/confirm'
 
-import service from './../service'
+import service from './../../../service'
 import utils from './../utils'
 
 const props = {

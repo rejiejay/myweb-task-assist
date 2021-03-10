@@ -22,7 +22,9 @@ class WindowsEditComponent extends React.Component {
             minEffectTimestamp: null,
             maxEffectTimestamp: null,
             status: { value: null, label: null },
-            priority: { value: null, label: null }
+            priority: { value: null, label: null },
+
+            inputFocusField: ''
         }
 
         this.filterEditRef = React.createRef()
@@ -49,7 +51,8 @@ class WindowsEditComponent extends React.Component {
         const {
             pageStatus, 
             title, content, specific, measurable, attainable, relevant, timeBound,
-            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority,
+            inputFocusField
         } = this.state
         const { clientHeight } = this
         const minHeight = clientHeight - 125
@@ -71,15 +74,20 @@ class WindowsEditComponent extends React.Component {
                         <input type="text" placeholder="简单描述/提问"
                             value={title}
                             onChange={({ target: { value } }) => this.setState({ title: value })}
+                            onFocus={() => this.setState({ inputFocusField: 'title' })}
+                            onBlur={() => this.setState({ inputFocusField: '' })}
                         />
                     </div>
+                    {inputFocusField === 'title' && <div className='edit-input-tip'>情景? + Action/冲突/方案</div>}
+                    {inputFocusField === 'content' && <div className='edit-input-tip'>结论1: (情景是啥?)是什么?为什么?怎么办?</div>}
                     <div className="content-input">
-
                         <textarea className="content-textarea fiex-rest" type="text"
-                            placeholder='任务内容'
+                            placeholder='任务结论'
                             style={{ height: minHeight / 2 }}
                             value={content}
                             onChange={({ target: { value } }) => this.setState({ content: value })}
+                            onFocus={() => this.setState({ inputFocusField: 'content' })}
+                            onBlur={() => this.setState({ inputFocusField: '' })}
                         ></textarea>
                     </div>
 
@@ -109,6 +117,9 @@ class WindowsEditComponent extends React.Component {
                             placeholder='任务是什么?为什么?啥跨度影响?对啥影响大?'
                             value={specific}
                             onChange={value => this.setState({ specific: value })}
+                            isFocus={inputFocusField === 'specific'}
+                            onFocus={() => this.setState({ inputFocusField: 'specific' })}
+                            onBlur={() => this.setState({ inputFocusField: '' })}
                         />
                         <Otherinput
                             key='measurable'
@@ -116,6 +127,9 @@ class WindowsEditComponent extends React.Component {
                             placeholder='完成的标识是什么?为什么标志完成?核心因素?'
                             value={measurable}
                             onChange={value => this.setState({ measurable: value })}
+                            isFocus={inputFocusField === 'measurable'}
+                            onFocus={() => this.setState({ inputFocusField: 'measurable' })}
+                            onBlur={() => this.setState({ inputFocusField: '' })}
                         />
                         <Otherinput
                             key='attainable'
@@ -123,6 +137,9 @@ class WindowsEditComponent extends React.Component {
                             placeholder='为什么可以实现?未来自己接受呢? 决定因素?'
                             value={attainable}
                             onChange={value => this.setState({ attainable: value })}
+                            isFocus={inputFocusField === 'attainable'}
+                            onFocus={() => this.setState({ inputFocusField: 'attainable' })}
+                            onBlur={() => this.setState({ inputFocusField: '' })}
                         />
                         <Otherinput
                             key='relevant'
@@ -130,6 +147,9 @@ class WindowsEditComponent extends React.Component {
                             placeholder='为什么和这个需求相关?时间跨度?本质?哪个角度?'
                             value={relevant}
                             onChange={value => this.setState({ relevant: value })}
+                            isFocus={inputFocusField === 'relevant'}
+                            onFocus={() => this.setState({ inputFocusField: 'relevant' })}
+                            onBlur={() => this.setState({ inputFocusField: '' })}
                         />
                         <Otherinput
                             key='timeBound'
@@ -137,6 +157,9 @@ class WindowsEditComponent extends React.Component {
                             placeholder='期限1： 是什么?为什么设定这个时间?哪个角度?'
                             value={timeBound}
                             onChange={value => this.setState({ timeBound: value })}
+                            isFocus={inputFocusField === 'timeBound'}
+                            onFocus={() => this.setState({ inputFocusField: 'timeBound' })}
+                            onBlur={() => this.setState({ inputFocusField: '' })}
                         />
                     </div>
                 </div>
@@ -145,14 +168,16 @@ class WindowsEditComponent extends React.Component {
     }
 }
 
-const Otherinput = ({ title, placeholder, value, onChange }) => {
+const Otherinput = ({ title, placeholder, value, onChange, isFocus, onBlur, onFocus }) => {
     return <div className="content-input">
-        <div className="content-input-title">{title}</div>
+        <div className="content-input-title">{isFocus ? placeholder : title}</div>
         <textarea className="content-textarea fiex-rest" type="text"
             placeholder={placeholder}
             style={{ height: '105px' }}
             value={value}
             onChange={({ target: { value } }) => onChange(value)}
+            onBlur={onBlur}
+            onFocus={onFocus}
         ></textarea>
     </div>
 }
