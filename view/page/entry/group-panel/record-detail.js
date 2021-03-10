@@ -420,22 +420,22 @@ class RecordDetailElement extends React.Component {
     }
 
     isShowUnSpreadZoom = () => {
-        const { recordDetail } = this.state
         const { categoryIdentify, spreadZoomIdentify } = this.props
 
         if (!spreadZoomIdentify) return false
-
-        const node = recordDetail.find(node => node.uniquelyIdentify === spreadZoomIdentify)
-        if (!node) return false
-        if (categoryIdentify === node.parentUniquelyIdentify) return false
+        if (spreadZoomIdentify === categoryIdentify) return false
         return true
     }
 
     unSpreadZoomHandle = () => {
         const { recordDetail } = this.state
-        const { unfoldNodeHandle, spreadZoomIdentify } = this.props
+        const { unfoldNodeHandle, spreadZoomIdentify, categoryIdentify } = this.props
+
+        if (spreadZoomIdentify === categoryIdentify) return
 
         const node = recordDetail.find(node => node.uniquelyIdentify === spreadZoomIdentify)
+        if (!node) return unfoldNodeHandle(categoryIdentify)
+
         unfoldNodeHandle(node.parentUniquelyIdentify)
     }
 

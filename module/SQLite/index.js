@@ -11,21 +11,8 @@
 import SqliteJs from './sqlitejs.instantiate.js'
 import TableHandle from './table-handle.js'
 import SqlHandle from './sql-handle.js'
-import localDatabaseSqlite from './local.database.sqlite.js'
 import initPro from './initPro.js'
-
-async function initDev() {
-    const self = this
-
-    const initInstance = await SqliteJs.init()
-    if (initInstance.result !== 1) return initInstance
-    const instantiate = initInstance.data
-    self.db = instantiate
-    localDatabaseSqlite.init(instantiate)
-    console.log('create SQLite service successful')
-
-    return initInstance
-}
+import initDev from './initDev.js'
 
 const SQLite = {
     db: SqliteJs.db,
