@@ -12,7 +12,8 @@ class ResourcesUtils {
     initUrlCatch() {
         const slef = this
         const resource = config.resource
-        const url = this.request.url.split('?')[0].split('#')[0]
+        let url = this.request.url || ''
+        url = url.split('?')[0].split('#')[0]
         let isStatic = false
         let isConfigured = false
 
