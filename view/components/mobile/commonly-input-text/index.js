@@ -11,7 +11,8 @@ export default class CommonlyInputText extends React.Component {
     render() {
         const {
             value, placeholder, onChangeHandle,
-            minHeight, isMultipleInput, isAutoHeight
+            minHeight, isMultipleInput, isAutoHeight,
+            onBlur, onFocus
         } = this.props
 
         return <div className='commonly-input-text' style={style.container}>
@@ -21,6 +22,8 @@ export default class CommonlyInputText extends React.Component {
                     value={value}
                     onChange={({ target: { value } }) => onChangeHandle(value)}
                     placeholder={placeholder}
+                    onBlur={() => onBlur && onBlur()}
+                    onFocus={() => onFocus && onFocus()}
                 />
             }
             {!!isMultipleInput &&
@@ -29,6 +32,8 @@ export default class CommonlyInputText extends React.Component {
                     value={value}
                     onChange={({ target: { value } }) => onChangeHandle(value)}
                     placeholder={placeholder}
+                    onBlur={() => onBlur && onBlur()}
+                    onFocus={() => onFocus && onFocus()}
                 />
             }
         </div>

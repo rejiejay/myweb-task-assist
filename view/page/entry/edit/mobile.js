@@ -41,7 +41,9 @@ export class TaskEdit extends React.Component {
             minEffectTimestamp: null,
             maxEffectTimestamp: null,
             status: { value: null, label: null },
-            priority: { value: null, label: null }
+            priority: { value: null, label: null },
+
+            inputFocusField: ''
         }
     }
 
@@ -171,7 +173,8 @@ export class TaskEdit extends React.Component {
     render() {
         const {
             title, content, specific, measurable, attainable, relevant, timeBound,
-            longTerm, tags, status, priority
+            longTerm, tags, status, priority,
+            inputFocusField
         } = this.state
         const effectTimestampString = this.renderEffectTimestamp()
 
@@ -180,17 +183,20 @@ export class TaskEdit extends React.Component {
                 title='简单描述/提问/归纳'
                 isRequiredHighlight
             >
+                {inputFocusField === 'title' && <div className='edit-input-tip'>情景? + Action/冲突/方案</div>}
                 <CommonlyInputText key='title'
                     value={title || ''}
                     onChangeHandle={value => this.setState({ title: value })}
                     height={250}
                     placeholder='情景? + Action/冲突/方案'
+                    onFocus={() => this.setState({ inputFocusField: 'title' })}
                 />
             </CommonlyListItem>
             <CommonlyListItem key='content'
                 title='得出什么结论?'
                 isRequiredHighlight
             >
+                {inputFocusField === 'content' && <div className='edit-input-tip'>(情景是啥?)是什么?为什么?怎么办?</div>}
                 <CommonlyInputText key='content'
                     value={content || ''}
                     onChangeHandle={value => this.setState({ content: value })}
@@ -198,61 +204,72 @@ export class TaskEdit extends React.Component {
                     isAutoHeight
                     minHeight={250}
                     placeholder='结论1: (情景是啥?)是什么?为什么?怎么办?'
+                    onFocus={() => this.setState({ inputFocusField: 'content' })}
                 />
             </CommonlyListItem>
             <CommonlyListItem key='specific'
                 title='任务具体内容?'
             >
+                {inputFocusField === 'specific' && <div className='edit-input-tip'>任务是什么?为什么?啥跨度影响?对啥影响大?</div>}
                 <CommonlyInputText key='specific'
                     value={specific || ''}
                     onChangeHandle={value => this.setState({ specific: value })}
                     isMultipleInput
                     isAutoHeight
                     placeholder='任务是什么?为什么?啥跨度影响?对啥影响大?'
+                    onFocus={() => this.setState({ inputFocusField: 'specific' })}
                 />
             </CommonlyListItem>
             <CommonlyListItem key='measurable'
                 title='任务完成标识?'
             >
+                {inputFocusField === 'measurable' && <div className='edit-input-tip'>完成的标识是什么?为什么标志完成?核心因素?</div>}
                 <CommonlyInputText key='measurable'
                     value={measurable || ''}
                     onChangeHandle={value => this.setState({ measurable: value })}
                     isMultipleInput
                     isAutoHeight
                     placeholder='完成的标识是什么?为什么标志完成?核心因素?'
+                    onFocus={() => this.setState({ inputFocusField: 'measurable' })}
                 />
             </CommonlyListItem>
             <CommonlyListItem key='attainable'
                 title='任务是否可以实现?'
             >
+                {inputFocusField === 'attainable' && <div className='edit-input-tip'>为什么可以实现?未来自己接受呢? 决定因素?</div>}
                 <CommonlyInputText key='attainable'
                     value={attainable || ''}
                     onChangeHandle={value => this.setState({ attainable: value })}
                     isMultipleInput
                     isAutoHeight
                     placeholder='为什么可以实现?未来自己接受呢? 决定因素?'
+                    onFocus={() => this.setState({ inputFocusField: 'attainable' })}
                 />
             </CommonlyListItem>
             <CommonlyListItem key='relevant'
                 title='任务和哪些需求相关?'
             >
+                {inputFocusField === 'relevant' && <div className='edit-input-tip'>为什么和这个需求相关?时间跨度?本质?哪个角度?</div>}
                 <CommonlyInputText key='relevant'
                     value={relevant || ''}
                     onChangeHandle={value => this.setState({ relevant: value })}
                     isMultipleInput
                     isAutoHeight
                     placeholder='为什么和这个需求相关?时间跨度?本质?哪个角度?'
+                    onFocus={() => this.setState({ inputFocusField: 'relevant' })}
                 />
             </CommonlyListItem>
             <CommonlyListItem key='timeBound'
                 title='明确的截止期限?'
             >
+                {inputFocusField === 'timeBound' && <div className='edit-input-tip'>是什么?为什么设定这个时间?哪个角度?</div>}
                 <CommonlyInputText key='timeBound'
                     value={timeBound || ''}
                     onChangeHandle={value => this.setState({ timeBound: value })}
                     isMultipleInput
                     isAutoHeight
                     placeholder='期限1： 是什么?为什么设定这个时间?哪个角度?'
+                    onFocus={() => this.setState({ inputFocusField: 'timeBound' })}
                 />
             </CommonlyListItem>
             <CommonlyListItem key='filter'

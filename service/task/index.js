@@ -12,7 +12,7 @@ const getList = async function getList({ longTermId, taskTagIds, minEffectTimest
 
     if (!!longTermId) sqlHandle.addAndFilterSql(`longTermId = ${longTermId}`)
 
-    const isASC = true
+    const isASC = false
     sqlHandle.addOrder('createTimestamp', isASC)
     if (!!isRandom) sqlHandle.addOrderByRandom(pageSize ? pageSize : CONST.defaultPageSize)
     if (!!pageNo) sqlHandle.addPagination(pageNo, pageSize)
