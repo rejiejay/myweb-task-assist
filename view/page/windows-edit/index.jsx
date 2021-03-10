@@ -1,11 +1,19 @@
 import FilterEdit from './../../components/page/filter-edit'
 
+import { loadPageVar } from './../../utils/url-helper'
+
+import toast from './../../components/toast'
+import Confirm from './../../components/confirm'
+
+import service from './../../service'
+
 class WindowsEditComponent extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
             pageStatus: 'add',
+            id: null,
 
             title: '',
             content: '',
@@ -29,27 +37,166 @@ class WindowsEditComponent extends React.Component {
 
         this.filterEditRef = React.createRef()
 
+        this.task = { id: null, title: '', content: '', specific: '', measurable: '', attainable: '', relevant: '', timeBound: '', longTerm: { id: null, title: '' }, tags: [], minEffectTimestamp: null, maxEffectTimestamp: null, status: { value: null, label: null }, priority: { value: null, label: null } }
+
         this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
         this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
     }
 
+    componentDidMount() {
+        const id = loadPageVar('id')
+
+        if (id) this.initPageData(id)
+    }
+
+    initPageData = async id => {
+        const getInstance = await service.getTaskById(id)
+        if (getInstance.result !== 1) return
+        const task = getInstance.data
+        const {
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            taskTagId, longTermId, minEffectTimestamp, maxEffectTimestamp
+        } = task
+
+        let longTerm = { id: null, title: '' }
+        if (longTermId) {
+            const fetchLongTermTaskInstance = await service.getLongTermTask(longTermId)
+            const longTermTask = fetchLongTermTaskInstance.data
+            if (fetchLongTermTaskInstance.result === 1) longTerm = { id: longTermId, title: longTermTask.title }
+        }
+
+        let tags = []
+        if (taskTagId) {
+            const fetchTaskTagInforInstance = await service.getTaskTagInfor(taskTagId)
+            const taskTagInfor = fetchTaskTagInforInstance.data
+            if (fetchTaskTagInforInstance.result === 1) tags = taskTagInfor.map(({ id, name }) => ({ id, name }))
+        }
+
+        let status = { value: null, label: null }
+        if (task.status) {
+            status.value = task.status
+            status.label = utils.initStatusLable(task.status)
+        }
+
+        let priority = { value: null, label: null }
+        if (task.priority) {
+            priority.value = task.priority
+            priority.label = utils.initPriorityLable(task.priority)
+        }
+
+        this.task = {
+            id,
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
+        }
+        this.setState(this.task)
+    }
+
     onFilterEditChangeHandle = () => {
         const filterEditRef = this.filterEditRef.current
+        const { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority } = this.state
         const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter } = filterEditRef.getResult()
 
         this.setState({
-            longTerm: longTermFilter,
-            tags: tagFilter,
-            minEffectTimestamp: minEffectTimestampFilter,
-            maxEffectTimestamp: maxEffectTimestampFilter,
-            status: statusFilter,
-            priority: priorityFilter
+            longTerm: longTermFilter.id ? longTermFilter : longTerm,
+            tags: tagFilter.length > 0 ? tagFilter : tags,
+            minEffectTimestamp: minEffectTimestampFilter || minEffectTimestamp,
+            maxEffectTimestamp: maxEffectTimestampFilter || maxEffectTimestamp,
+            status: statusFilter.value ? statusFilter : status,
+            priority: priorityFilter.value ? priorityFilter : priority,
         })
+    }
+
+    verifyTaskDiff = () => {
+        let isDiff = false
+        const {
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority,
+        } = this.state
+        const task = this.task
+
+        if (title !== task.title) isDiff = true
+        if (content !== task.content) isDiff = true
+        if (specific !== task.specific) isDiff = true
+        if (measurable !== task.measurable) isDiff = true
+        if (attainable !== task.attainable) isDiff = true
+        if (relevant !== task.relevant) isDiff = true
+        if (timeBound !== task.timeBound) isDiff = true
+        if (longTerm.id !== task.longTerm.id) isDiff = true
+        if (JSON.stringify(tags) !== JSON.stringify(task.tags)) isDiff = true
+        if (minEffectTimestamp !== task.minEffectTimestamp) isDiff = true
+        if (maxEffectTimestamp !== task.maxEffectTimestamp) isDiff = true
+        if (status.value !== task.status.value) isDiff = true
+        if (priority.value !== task.priority.value) isDiff = true
+
+        return isDiff
+    }
+
+    initSubmitData = () => {
+        const {
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
+        } = this.state
+
+        let submitData = { title, content, specific, measurable, attainable, relevant, timeBound }
+
+        if (!!longTerm.id) submitData.longTermId = longTerm.id
+        if (!!minEffectTimestamp) submitData.minEffectTimestamp = minEffectTimestamp
+        if (!!maxEffectTimestamp) submitData.maxEffectTimestamp = maxEffectTimestamp
+        if (tags.length > 0) submitData.tagsId = tags.map(tag => tag.id)
+        if (status.value) submitData.status = status.value
+        if (priority.value) submitData.priority = priority.value
+
+        return submitData
+    }
+
+    confirmHandle = async () => {
+        const { id } = this.state
+        const isEdit = !!id
+
+        const {
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
+        } = this.state
+
+        if (!title) return toast.show('标题不能为空')
+        if (!content) return toast.show('内容不能为空')
+
+        const confirmInstance = await Confirm('确认要提交吗?')
+        if (confirmInstance.result !== 1) return
+
+        const submitData = this.initSubmitData()
+
+        const fetchInstance = isEdit ? await service.editTask({ id, ...submitData }) : await service.addTask(submitData)
+        if (fetchInstance.result !== 1) return Confirm(`${isEdit ? '编辑' : '添加'}任务失败, 原因: ${fetchInstance.message}`)
+
+        this.initPageData(isEdit ? id : fetchInstance.data.id)
+    }
+
+    locationBackHandle = () => window.location.href = './../'
+
+    deleteHandle = async () => {
+        const { id } = this.state
+        const confirmInstance = await Confirm('确认删除吗?')
+        if (confirmInstance.result !== 1) return
+
+        const deleteInstance = await service.deleteTask(id)
+        if (deleteInstance.result !== 1) return Confirm(deleteInstance.message)
+        this.locationBackHandle()
+    }
+
+    cancelHandle = async () => {
+        if (this.verifyTaskDiff()) {
+            const confirmInstance = await Confirm('你有东西未保存，你确定要关闭吗?')
+            if (confirmInstance.result !== 1) return
+        }
+
+        this.locationBackHandle()
     }
 
     render() {
         const {
-            pageStatus, 
+            id, 
             title, content, specific, measurable, attainable, relevant, timeBound,
             longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority,
             inputFocusField
@@ -58,21 +205,28 @@ class WindowsEditComponent extends React.Component {
         const minHeight = clientHeight - 125
         const isMultipleFilter = false
         const initFilter = { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority }
+        const isEdit = !!id
+        const isDiff = this.verifyTaskDiff()
 
         return <div className="windows flex-column-center">
-            
+
             <div className="windows-operate flex-start">
-                <div className="windows-operate-item flex-center flex-rest">新增</div>
-                <div className="windows-operate-item flex-center flex-rest">暂存</div>
-                <div className="windows-operate-item flex-center flex-rest">删除</div>
-                <div className="windows-operate-item flex-center flex-rest">关闭</div>
+                {!isEdit && <div className="windows-operate-item flex-center flex-rest"
+                    onClick={this.confirmHandle}
+                >新增</div>}
+                {isEdit && <div className="windows-operate-item flex-center flex-rest"
+                    onClick={this.deleteHandle}
+                >删除</div>}
+                <div className="windows-operate-item flex-center flex-rest"
+                    onClick={this.cancelHandle}
+                >关闭</div>
             </div>
 
             <div className="windows-container flex-start-top" style={{ minHeight }}>
                 <div className="windows-container-left flex-rest">
                     <div className="title-input flex-center">
                         <input type="text" placeholder="简单描述/提问"
-                            value={title}
+                            value={title || ''}
                             onChange={({ target: { value } }) => this.setState({ title: value })}
                             onFocus={() => this.setState({ inputFocusField: 'title' })}
                             onBlur={() => this.setState({ inputFocusField: '' })}
@@ -84,7 +238,7 @@ class WindowsEditComponent extends React.Component {
                         <textarea className="content-textarea fiex-rest" type="text"
                             placeholder='任务结论'
                             style={{ height: minHeight / 2 }}
-                            value={content}
+                            value={content || ''}
                             onChange={({ target: { value } }) => this.setState({ content: value })}
                             onFocus={() => this.setState({ inputFocusField: 'content' })}
                             onBlur={() => this.setState({ inputFocusField: '' })}
@@ -106,8 +260,12 @@ class WindowsEditComponent extends React.Component {
                 <div className="windows-container-right flex-rest">
 
                     <div className="soft-operate flex-start">
-                        <div className="soft-operate-item flex-center flex-rest">暂存</div>
-                        <div className="soft-operate-item flex-center flex-rest">关闭</div>
+                        {isDiff && <div className="soft-operate-item flex-center flex-rest"
+                            onClick={this.confirmHandle}
+                        >暂存</div>}
+                        <div className="soft-operate-item flex-center flex-rest"
+                            onClick={this.cancelHandle}
+                        >关闭</div>
                     </div>
 
                     <div className="other-input">
@@ -174,7 +332,7 @@ const Otherinput = ({ title, placeholder, value, onChange, isFocus, onBlur, onFo
         <textarea className="content-textarea fiex-rest" type="text"
             placeholder={placeholder}
             style={{ height: '105px' }}
-            value={value}
+            value={value || ''}
             onChange={({ target: { value } }) => onChange(value)}
             onBlur={onBlur}
             onFocus={onFocus}

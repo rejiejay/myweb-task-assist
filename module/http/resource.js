@@ -6,14 +6,13 @@ import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
 import config from './../../config/index.js'
 import { projectRelativePath } from './../../utils/path-handle.js';
-import consequencer from './../../utils/consequencer.js'
 import copyDirectory from './../../utils/node-copy-directory.js'
 
 class ResourcesUtils {
     initUrlCatch() {
         const slef = this
         const resource = config.resource
-        const { url } = this.request
+        const url = this.request.url.split('?')[0].split('#')[0]
         let isStatic = false
         let isConfigured = false
 

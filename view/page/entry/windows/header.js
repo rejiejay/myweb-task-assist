@@ -11,6 +11,8 @@ export class WindowsHeader extends React.Component {
 
     clearSearch = () => {}
 
+    addHandle = () => window.open('./windows-edit/')
+
     render() {
         const { search } = this.state
 
@@ -46,7 +48,9 @@ export class WindowsHeader extends React.Component {
 
             <div className="right-operating flex-start-center">
                 <div className="operat-item hover-item">排序</div>
-                <div className="operat-item hover-item">新增</div>
+                <div className="operat-item hover-item"
+                    onClick={this.addHandle}
+                >新增</div>
             </div>
         </div>
     }

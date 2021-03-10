@@ -127,6 +127,8 @@ export class WindowsContainer extends React.Component {
         this.props.resetHandle()
     }
 
+    editHandle = id => window.open(`./windows-edit/?id=${id}`)
+
     render() {
         const { clientHeight } = this
         const minHeight = `${clientHeight - 185}px`
@@ -161,7 +163,9 @@ export class WindowsContainer extends React.Component {
                                 onClick={this.getByRandom}
                             >随机查看</div>
                             <div className="flex-rest flex-center">时间: {TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+createTimestamp))}</div>
-                            <div className="flex-rest flex-center">编辑</div>
+                            <div className="flex-rest flex-center"
+                                onClick={() => this.editHandle(selectedId)}
+                            >编辑</div>
                             <div className="flex-rest flex-center"
                                 onClick={this.delTaskHandle}
                             >删除</div>
