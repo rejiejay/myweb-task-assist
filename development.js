@@ -8,9 +8,18 @@
 import HTTP from './module/http/index.js';
 import SQLite from './module/SQLite/index.js';
 
-const init = async () => {
-    await SQLite.initDev()
-    await HTTP.initDev()
+const init = async() => {
+    try {
+        await SQLite.initDev(true)
+    } catch (error) {
+        return console.error(error)
+    }
+
+    try {
+        await HTTP.initDev()
+    } catch (error) {
+        return console.error(error)
+    }
 }
 
 init()

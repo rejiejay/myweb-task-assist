@@ -205,7 +205,7 @@ export class MobileComponent extends React.Component {
                 <div className='switch-car-size'>
                     <div className='list-top-button'
                         onClick={() => this.setState({ isShowBigCard: !isShowBigCard })}
-                    >{isShowBigCard ? 'Switch Small Car' : 'Switch Big Car'}</div>
+                    >{isShowBigCard ? 'Switch Small Card' : 'Switch Big Card'}</div>
                 </div>
             </div>
             <div style={{ height: '50px' }} />

@@ -3,14 +3,16 @@ import * as fs from 'fs';
 import SqliteJs from './sqlitejs.instantiate.js'
 import localDatabaseSqlite from './local.database.sqlite.js'
 
-async function initDev() {
+async function initDev(useLocalData = false) {
     const self = this
     let filebuffer = null
 
-    try {
-        filebuffer = fs.readFileSync('./module/SQLite/temporary.database.sqlite')
-    } catch (error) {
-        console.log('can`t readFile temporary.database.sqlite', error)
+    if (useLocalData) {
+        try {
+            filebuffer = fs.readFileSync('./module/SQLite/temporary.database.sqlite')
+        } catch (error) {
+            console.log('can`t readFile temporary.database.sqlite', error)
+        }
     }
 
     const initInstance = await SqliteJs.init(filebuffer)

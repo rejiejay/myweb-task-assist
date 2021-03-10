@@ -9,8 +9,11 @@ const tableHandle = new SQLite.TableHandle('task', dataAccessObject)
 
 const getList = async function getList({ longTermId, taskTagIds, minEffectTimestamp, maxEffectTimestamp, status, prioritys, isRandom, pageNo, pageSize }) {
     const sqlHandle = new SQLite.SqlHandle()
+
     if (!!longTermId) sqlHandle.addAndFilterSql(`longTermId = ${longTermId}`)
 
+    const isASC = true
+    sqlHandle.addOrder('createTimestamp', isASC)
     if (!!isRandom) sqlHandle.addOrderByRandom(pageSize ? pageSize : CONST.defaultPageSize)
     if (!!pageNo) sqlHandle.addPagination(pageNo, pageSize)
 

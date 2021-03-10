@@ -126,8 +126,8 @@ class SqlHandle {
         if (!!this.isRandom) {
             sql += this.randomSQL
         } else {
-            if (!!this.isPagination) sql += this.paginationSQL
             if (!!this.orderSQL) sql += this.orderSQL
+            if (!!this.isPagination) sql += this.paginationSQL
         }
 
         return sql

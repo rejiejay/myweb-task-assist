@@ -1,6 +1,7 @@
 /**
  * SQLite 对外方法:
  * @doc https://github.com/ryan-codingintrigue/sql-wasm
+ * @viewer 在线测试器 http://inloop.github.io/sqlite-viewer/
  * 
  * @db SQLite的实例
  * @initDev 初始化开发环境方法
