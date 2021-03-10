@@ -4,18 +4,14 @@ import ActionSheet from './../../../components/action-sheet'
 import openMultipleSelect from './../../../components/multiple-selection-sheet'
 import jsxStyle from './../../../components/jsx-style'
 import TimeHelper from './../../../../utils/time-helper'
-import consequencer from './../../../../utils/consequencer'
 import DatePicker from './../../../components/date-picker-sheet'
 import FullscreenIframe from './../../../components/fullscreen-iframe'
 import toast from './../../../components/toast'
-import Confirm from './../../../components/confirm'
 import CONSTS from './../../../../library/consts'
 
 import service from './../service'
 
 const props = {
-    resolve: () => { },
-    reject: () => { },
     isMultipleFilter: false,
     initFilter: {
         tags: [
@@ -199,17 +195,8 @@ export class FilterEdit extends React.Component {
         })
     }
 
-    confirmResolveHandle = async () => {
-        const { resolve } = this.props
-        const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter } = this.state
-        const comfirmInstance = await Confirm('选择确认?')
-        if (comfirmInstance.result !== 1) return
-        resolve(consequencer.success({ tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter }))
-    }
-
-    cancelRejectHandle = async () => {
-        const { reject } = this.props
-        reject()
+    getResult() {
+        return this.state
     }
 
     render() {
@@ -219,7 +206,7 @@ export class FilterEdit extends React.Component {
             tagFilter, statusFilter, priorityFilter, statusMultipleFilter, priorityMultipleFilter
         } = this.state
 
-        return <div className='filter-edit-container' style={{ padding: '25px 15px 15px 15px' }}>
+        return <>
             <CommonlyListItem key='long-term-task'
                 title={isMultipleFilter ? '是否选择过滤(Long Term Task)项目?' : '此项目是否为(Long Term Task)项目?'}
             >
@@ -376,19 +363,7 @@ export class FilterEdit extends React.Component {
                     </>
                 </CommonlyListItem>
             </>}
-            <div style={{ height: '15px' }}></div>
-            <div style={{ borderTop: '1px solid #ddd' }}></div>
-            <div style={{ height: '15px' }}></div>
-            <Button
-                style={{ backgroundColor: '#1890ff' }}
-                onClick={this.confirmResolveHandle}
-            >确认</Button>
-            <div style={{ height: '5px' }}></div>
-            <Button
-                style={{ backgroundColor: '#F2F2F2', color: '#626675' }}
-                onClick={this.cancelRejectHandle}
-            >取消</Button>
-        </div>
+        </>
     }
 }
 

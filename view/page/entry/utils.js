@@ -14,10 +14,10 @@ const initPriorityLable = value => {
 
 const showOperateFilterEdit = (isMultipleFilter = false, filter = null) => new Promise((resolve, reject) => {
     toast.show()
-    import('./common-components/filter-edit').then(async ({ FilterEdit }) => {
+    import('./mobile-components/filter-edit-panel').then(async ({ FilterEditPanel }) => {
         toast.destroy()
         const selectInstance = await FullscreenIframe({
-            Element: FilterEdit,
+            Element: FilterEditPanel,
             className: 'mobile-device-task-filter-edit',
             props: {
                 isMultipleFilter,
