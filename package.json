@@ -10,6 +10,7 @@
     "dev": "SET NODE_ENV=development&& babel-node -- ./development.js",
     "test": "SET NODE_ENV=development&& babel-node -- ./tester.js",
     "build": "SET NODE_ENV=production&& babel-node -- ./build-web-production.js",
+    "pro-start": "export NODE_ENV=production&& babel-node -- ./production.js",
     "pro": "export NODE_ENV=production&& pm2 start babel-node -- ./production.js"
   },
   "dependencies": {

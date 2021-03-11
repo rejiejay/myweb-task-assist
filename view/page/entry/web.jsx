@@ -1,12 +1,14 @@
 import CONSTS from './../../../library/consts'
 import valuesStructuresVerify from './../../../utils/values-structures-verify'
-import { loadPageVar } from './../../utils/url-helper';
+import { loadPageVar, queryToUrl } from './../../utils/url-helper';
 import ArrayHelper from './../../../utils/array-helper';
+import TimeHelper from './../../../utils/time-helper';
 
 import WindowsHeader from './windows/header'
 import WindowsContainer from './windows/container'
 import WindowsPagination from './windows/pagination'
 import service from './../../service'
+import utils from './utils.js'
 
 export class WebComponent extends React.Component {
     constructor(props) {
@@ -50,7 +52,7 @@ export class WebComponent extends React.Component {
 
         if (sort.value === 2) list = ArrayHelper.uniqueDeduplicationByKey({ array: this.state.list.concat(fetch.list), key: 'id' })
 
-        this.setState({ list, count: fetch.count })
+        this.setState({ list, count: fetch.count, filter })
     }
 
     async initPageVar() {
@@ -72,20 +74,16 @@ export class WebComponent extends React.Component {
             return accumulator
         }
 
-        if (longTermId) {
+        if (!!longTermId) {
             const longTermTaskInstance = await service.getLongTermTask(longTermId)
             if (longTermTaskInstance.result === 1) longTerm = longTermTaskInstance.data
         }
 
-        if (tagsPageVar) tags = tagsPageVar.split('-')
+        if (!!tagsPageVar) tags = tagsPageVar.split('-').reduce(reducer, [])
 
-        if (!!multipleStatusPageVar) {
-            multipleStatus = multipleStatusPageVar.split('-').reduce(reducer, [])
-        }
+        if (!!multipleStatusPageVar) multipleStatus = multipleStatusPageVar.split('-').reduce(reducer, [])
 
-        if (!!multiplePriorityPageVar) {
-            multiplePriority = multiplePriorityPageVar.split('-').reduce(reducer, [])
-        }
+        if (!!multiplePriorityPageVar) multiplePriority = multiplePriorityPageVar.split('-').reduce(reducer, [])
 
         const filter = {
             longTerm,
@@ -107,12 +105,54 @@ export class WebComponent extends React.Component {
         this.setState({ sort }, this.initList)
     }
 
+    setFilterHandle = async () => {
+        const isMultipleFilter = true
+        const initFilter = this.state.filter
+
+        const selectInstance = await utils.showOperateFilterEdit(isMultipleFilter, initFilter)
+        if (selectInstance.result !== 1) return
+        const filter = selectInstance.data
+
+        const longTerm = filter.longTermFilter
+        const tags = filter.tagFilter
+        const minEffectTimestamp = filter.minEffectTimestampFilter
+        const maxEffectTimestamp = filter.maxEffectTimestampFilter
+        const multipleStatus = filter.statusMultipleFilter
+        const multiplePriority = filter.priorityMultipleFilter
+        let query = { }
+        
+        const arrayToQueryString = array => array.map(item => JSON.stringify(item)).join('-')
+        if (longTerm && longTerm.id) query.longTermId = longTerm.id
+        if (tags && tags.length > 0) query.tags = arrayToQueryString(tags)
+        if (minEffectTimestamp) query.minEffectTimestamp = minEffectTimestamp
+        if (maxEffectTimestamp) query.maxEffectTimestamp = maxEffectTimestamp
+        if (multipleStatus && multipleStatus.length > 0) query.multipleStatus = arrayToQueryString(multipleStatus)
+        if (multiplePriority && multiplePriority.length > 0) query.multiplePriority = arrayToQueryString(multiplePriority)
+
+        window.location.replace(`./${queryToUrl(query)}`)
+    }
+
+    renderEffectTimestamp = ({ minEffectTimestamp, maxEffectTimestamp }) => {
+        const effectTimestampArray = []
+        if (!!minEffectTimestamp) effectTimestampArray.push(`min ${TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+minEffectTimestamp))}`)
+        if (!!maxEffectTimestamp) effectTimestampArray.push(`max ${TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+maxEffectTimestamp))}`)
+
+        return effectTimestampArray.join(' - ')
+    }
+
     render() {
-        const { list, sort, pageNo, count, pageSize } = this.state
+        const { list, sort, pageNo, count, pageSize, filter } = this.state
+        const { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority } = filter
 
         return <>
             <WindowsHeader
+                longTerm={longTerm && longTerm.title}
+                effectTimes={this.renderEffectTimestamp({ minEffectTimestamp, maxEffectTimestamp })}
+                tags={tags && tags.length > 0 && tags.map(({ name }) => name).join('、')}
+                status={multipleStatus && multipleStatus.length > 0 && multipleStatus.map(({ label }) => label).join('、')}
+                priority={multiplePriority && multiplePriority.length > 0 && multiplePriority.map(({ label }) => label).join('、')}
                 setSortHandle={this.setSortHandle}
+                setFilterHandle={this.setFilterHandle}
             />
 
             <WindowsContainer

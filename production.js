@@ -6,13 +6,25 @@ import SQLite from './module/SQLite/index.js';
 import TencentCloudObjectStorage from './module/tencent-cloud-object-storage/index';
 
 const init = async () => {
-    TencentCloudObjectStorage.initPro()
+    try {
+        await TencentCloudObjectStorage.initPro()
+    } catch (error) {
+        return console.error(error)
+    }
 
     // 启动Web代理API接口
-    HTTP.initPro()
+    try {
+        await HTTP.initPro()
+    } catch (error) {
+        return console.error(error)
+    }
 
     // 初始化SqliteJs
-    SQLite.initPro()
+    try {
+        await SQLite.initPro()
+    } catch (error) {
+        return console.error(error)
+    }
 }
 
 init()

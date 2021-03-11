@@ -26,14 +26,15 @@ export class WindowsHeader extends React.Component {
 
     render() {
         const { search } = this.state
+        const { setFilterHandle, longTerm, effectTimes, tags, status, priority } = this.props
 
         return <div className='windows-header flex-start-center noselect'>
             <div className="left-operating flex-start-center">
-                <div className="operat-item hover-item">长期</div>
-                <div className="operat-item hover-item">时间</div>
-                <div className="operat-item hover-item">标签</div>
-                <div className="operat-item hover-item">状态</div>
-                <div className="operat-item hover-item">优先级</div>
+                <div className="operat-item hover-item" onClick={setFilterHandle}>{longTerm || '长期'}</div>
+                <div className="operat-item hover-item" onClick={setFilterHandle}>{effectTimes || '时间'}</div>
+                <div className="operat-item hover-item" onClick={setFilterHandle}>{tags || '标签'}</div>
+                <div className="operat-item hover-item" onClick={setFilterHandle}>{status || '状态'}</div>
+                <div className="operat-item hover-item" onClick={setFilterHandle}>{priority || '优先级'}</div>
             </div>
 
             <div className="search flex-rest">
