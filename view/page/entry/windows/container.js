@@ -136,13 +136,13 @@ export class WindowsContainer extends React.Component {
         const { 
             selectedId,
             title, content, specific, measurable, attainable, relevant, timeBound, createTimestamp
-         } = this.state
+        } = this.state
 
         return <div className='windows-container flex-start-top' style={{ minHeight }}>
-            <div className="content-list flex-rest">
-                <div className="list-float noselect">{list.map((data, key) => (
+            <div className='content-list flex-rest'>
+                <div className='list-float noselect'>{list.map((data, key) => (
                     <div className={`list-item ${selectedId === data.id ? 'list-item-selected' : ''}`} key={key}>
-                        <div className="list-item-container"
+                        <div className='list-item-container'
                             onClick={() => this.selectedDetailHandle(data, key)}
                         >
                             <div style={{ overflow: 'hidden', width: '100%', height: '100%' }}>
@@ -155,24 +155,24 @@ export class WindowsContainer extends React.Component {
             </div>
 
             {(!!selectedId || selectedId === 0) && 
-                <div className='content-detail' style={{ minHeight }}>
-                    <div className="content-detail-container">
+                <div className='content-detail'>
+                    <div className='content-detail-container' style={{ minHeight }}>
 
-                        <div className="detail-operate flex-start-center noselect">
-                            <div className="flex-rest flex-center"
+                        <div className='detail-operate flex-start-center noselect'>
+                            <div className='flex-rest flex-center'
                                 onClick={this.getByRandom}
                             >随机查看</div>
-                            <div className="flex-rest flex-center">时间: {TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+createTimestamp))}</div>
-                            <div className="flex-rest flex-center"
+                            <div className='flex-rest flex-center'>时间: {TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+createTimestamp))}</div>
+                            <div className='flex-rest flex-center'
                                 onClick={() => this.editHandle(selectedId)}
                             >编辑</div>
-                            <div className="flex-rest flex-center"
+                            <div className='flex-rest flex-center'
                                 onClick={this.delTaskHandle}
                             >删除</div>
                         </div>
 
-                        <div className="detail-preview">
-                            <div className="detail-preview-title">{newText(title)}</div>
+                        <div className='detail-preview'>
+                            <div className='detail-preview-title'>{newText(title)}</div>
                             <NotRequiredDescription field='结论' description={content} />
                             <NotRequiredDescription field='任务具体内容' description={specific} />
                             <NotRequiredDescription field='任务完成标识' description={measurable} />
@@ -198,9 +198,9 @@ const newText = text => text && text.split('\n').map((item, i) => <p key={i}>{it
 const NotRequiredDescription = ({ field, description }) => {
     if (!description) return null
 
-    return <div className="detail-item">
-        <div className="detail-item-title">{field}:</div>
-        <div className="detail-item-description">{newText(description)}</div>
+    return <div className='detail-item'>
+        <div className='detail-item-title'>{field}:</div>
+        <div className='detail-item-description'>{newText(description)}</div>
     </div>
 }
 
