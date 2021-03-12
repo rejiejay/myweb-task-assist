@@ -51,6 +51,7 @@ class WindowsEditComponent extends React.Component {
     }
 
     initPageData = async id => {
+        const filterEditRef = this.filterEditRef.current
         const getInstance = await service.getTaskById(id)
         if (getInstance.result !== 1) return
         const task = getInstance.data
@@ -90,7 +91,7 @@ class WindowsEditComponent extends React.Component {
             title, content, specific, measurable, attainable, relevant, timeBound,
             longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority
         }
-        this.setState(this.task)
+        this.setState(this.task, () => filterEditRef.initTaskFilter())
     }
 
     onFilterEditChangeHandle = () => {
@@ -151,7 +152,7 @@ class WindowsEditComponent extends React.Component {
         return submitData
     }
 
-    confirmHandle = async () => {
+    confirmHandle = async (isDirect = false) => {
         const { id } = this.state
         const isEdit = !!id
 
@@ -163,8 +164,10 @@ class WindowsEditComponent extends React.Component {
         if (!title) return toast.show('标题不能为空')
         if (!content) return toast.show('内容不能为空')
 
-        const confirmInstance = await Confirm('确认要提交吗?')
-        if (confirmInstance.result !== 1) return
+        if (!isDirect) {
+            const confirmInstance = await Confirm('确认要提交吗?')
+            if (confirmInstance.result !== 1) return
+        }
 
         const submitData = this.initSubmitData()
 
@@ -197,7 +200,7 @@ class WindowsEditComponent extends React.Component {
 
     render() {
         const {
-            id, 
+            id,
             title, content, specific, measurable, attainable, relevant, timeBound,
             longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority,
             inputFocusField
@@ -262,7 +265,7 @@ class WindowsEditComponent extends React.Component {
 
                     <div className="soft-operate flex-start">
                         {isDiff && <div className="soft-operate-item flex-center flex-rest"
-                            onClick={this.confirmHandle}
+                            onClick={() => this.confirmHandle(true)}
                         >暂存</div>}
                         <div className="soft-operate-item flex-center flex-rest"
                             onClick={this.cancelHandle}
