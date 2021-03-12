@@ -102,7 +102,7 @@ class ResourcesUtils {
                     publicPath: './',
                     path: outputPath,
                     filename: 'index.js',
-                    chunkFilename: '[name]chunk.js'
+                    chunkFilename: '[name]chunk.[hash:8].js'
                 },
                 resolve: { extensions: ['.js', '.jsx'] },
                 module: {
@@ -199,7 +199,7 @@ class ResourcesHandle extends ResourcesUtils {
         }
 
         try {
-            html = await this.renderHyperTextMarkupLanguage()
+            html = await this.renderHyperTextMarkupLanguage(`?version=${config.version}`)
         } catch (error) {
             return this.responseHandle({ code: 200, message: error.message })
         }
