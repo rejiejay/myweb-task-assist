@@ -6,6 +6,7 @@ import toast from './../../components/toast'
 import Confirm from './../../components/confirm'
 
 import service from './../../service'
+import utils from './utils'
 
 class WindowsEditComponent extends React.Component {
     constructor(props) {

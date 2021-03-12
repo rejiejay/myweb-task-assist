@@ -209,7 +209,8 @@ class ResourcesHandle extends ResourcesUtils {
 
     renderStatic() {
         const mineTypeMap = { html: 'text/html;charset=utf-8', htm: 'text/html;charset=utf-8', xml: "text/xml;charset=utf-8", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", css: "text/css;charset=utf-8", txt: "text/plain;charset=utf-8", mp3: "audio/mpeg", mp4: "video/mp4", ico: "image/x-icon", tif: "image/tiff", svg: "image/svg+xml", zip: "application/zip", ttf: "font/ttf", woff: "font/woff", woff2: "font/woff2" }
-        const { url } = this.request
+        let url = this.request.url 
+        url = url.split('?')[0].split('#')[0]
         const resourcePath = projectRelativePath(`./view/build${url}`)
 
         const extName = Path.extname(resourcePath).substr(1)
