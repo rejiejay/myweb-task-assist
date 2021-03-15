@@ -43,11 +43,12 @@ class GroupPanel extends React.Component {
         if (!longTermId) return null
 
         const { title, record } = this.state
+        const newText = text => text && text.split('\n').map((item, i) => <p key={i}>{item}</p>)
 
         return <div className='group-panel'>
             <div className='group-panel-container'>
                 <div className='group-panel-title'>{title}</div>
-                <div className='group-panel-content'>{record}</div>
+                <div className='group-panel-content'>{newText(record)}</div>
                 <div className='group-panel-operation flex-start'>
                     <div className='flex-rest'></div>
                     <Button style={{ minWidth: '45px', width: '45px', minHeight: '35px', fontSize: '12px', backgroundColor: '#fff', color: '#606266' }}
