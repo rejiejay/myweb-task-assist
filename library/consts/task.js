@@ -1,3 +1,5 @@
+import TimeHelper from './../../utils/time-helper'
+
 const status = {
     notStarted: {
         serviceValue: 1,
@@ -70,10 +72,64 @@ const sort = {
     }
 }
 
+const effectTimestampRange = {
+    default: {
+        serviceValue: null,
+        viewValue: null,
+        viewLable: 'Nil'
+    },
+    halfWeek: {
+        serviceValue: TimeHelper.dayTimestamp * 3.5,
+        viewValue: 1,
+        viewLable: '半周'
+    },
+    oneWeek: {
+        serviceValue: TimeHelper.dayTimestamp * 7,
+        viewValue: 2,
+        viewLable: '一周'
+    },
+    doubleWeek: {
+        serviceValue: TimeHelper.dayTimestamp * 14,
+        viewValue: 3,
+        viewLable: '两周'
+    },
+    oneMonth: {
+        serviceValue: TimeHelper.monthTimestamp,
+        viewValue: 4,
+        viewLable: '一个月'
+    },
+    doubleMonth: {
+        serviceValue: TimeHelper.monthTimestamp * 2,
+        viewValue: 5,
+        viewLable: '二个月'
+    },
+    oneQuarterly: {
+        serviceValue: TimeHelper.monthTimestamp * 3,
+        viewValue: 6,
+        viewLable: '一个季度'
+    },
+    halfYear: {
+        serviceValue: TimeHelper.monthTimestamp * 6,
+        viewValue: 7,
+        viewLable: '半年'
+    },
+    oneYear: {
+        serviceValue: TimeHelper.yearTimestamp,
+        viewValue: 8,
+        viewLable: '一年'
+    },
+    doubleYear: {
+        serviceValue: TimeHelper.yearTimestamp * 2,
+        viewValue: 9,
+        viewLable: '两年'
+    }
+}
+
 const task = {
     status,
     priority,
-    sort
+    sort,
+    effectTimestampRange
 }
 
 export default task

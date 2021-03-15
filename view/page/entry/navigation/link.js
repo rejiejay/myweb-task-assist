@@ -6,6 +6,7 @@ import Confirm from './../../../components/confirm'
 
 import service from './../../../service'
 import utils from './../utils'
+import CONSTS from '../../../../library/consts'
 
 const props = {
     resolve: () => { },
@@ -69,15 +70,16 @@ export class NavigationLink extends React.Component {
     }
 
     initFilterJson = filter => {
-        const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusMultipleFilter, priorityMultipleFilter } = filter
+        const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, effectTimestampRangeFilter, statusMultipleFilter, priorityMultipleFilter } = filter
 
         const longTerm = longTermFilter
         const tags = tagFilter
         const minEffectTimestamp = minEffectTimestampFilter
         const maxEffectTimestamp = maxEffectTimestampFilter
+        const effectTimestampRange = effectTimestampRangeFilter
         const multipleStatus = statusMultipleFilter
         const multiplePriority = priorityMultipleFilter
-        const filterJson = JSON.stringify({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority })
+        const filterJson = JSON.stringify({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, effectTimestampRange, multipleStatus, multiplePriority })
 
         return filterJson
     }
@@ -202,7 +204,14 @@ export class NavigationLink extends React.Component {
 
     selectNavigationLink = filterJson => {
         const { resolve } = this.props
-        const { tags, longTerm, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority } = JSON.parse(filterJson)
+        let { tags, longTerm, minEffectTimestamp, maxEffectTimestamp, effectTimestampRange, multipleStatus, multiplePriority } = JSON.parse(filterJson)
+
+        if (effectTimestampRange) {
+            const effectTimestampRange = CONSTS.utils.viewValueToServiceView(CONSTS.task.effectTimestampRange, effectTimestampRange)
+            minEffectTimestamp = new Date().getTime()
+            maxEffectTimestamp = minEffectTimestamp + effectTimestampRange
+        }
+
         resolve(consequencer.success({ tags, longTerm, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }))
     }
 

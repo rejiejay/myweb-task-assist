@@ -30,6 +30,7 @@ function toDefaultDownSelectFormat(CONST) {
         labelName: 'viewLable',
     })
 }
+
 const toDownSelectFormat = ({ CONST, valueName, labelName }) => Object.keys(CONST).map(key => ({
     value: CONST[key][valueName],
     label: CONST[key][labelName]
@@ -44,11 +45,31 @@ function serviceValueToViewLable(CONST, supportValue) {
     })
 }
 
+function viewValueToViewLable(CONST, supportValue) {
+    return this.findValueByValue({
+        CONST,
+        supportKey: 'viewValue',
+        supportValue,
+        targetKey: 'viewLable',
+    })
+}
+
+function viewValueToServiceView(CONST, supportValue) {
+    return this.findValueByValue({
+        CONST,
+        supportKey: 'viewValue',
+        supportValue,
+        targetKey: 'serviceValue',
+    })
+}
+
 const utils = {
     findValueByValue,
     toDownSelectFormat,
     serviceValueToViewLable,
-    toDefaultDownSelectFormat
+    toDefaultDownSelectFormat,
+    viewValueToViewLable,
+    viewValueToServiceView
 }
 
 export default utils

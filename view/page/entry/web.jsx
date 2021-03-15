@@ -120,12 +120,17 @@ export class WebComponent extends React.Component {
         const multipleStatus = filter.statusMultipleFilter
         const multiplePriority = filter.priorityMultipleFilter
         let query = { }
-        
+
         const arrayToQueryString = array => array.map(item => JSON.stringify(item)).join('-')
         if (longTerm && longTerm.id) query.longTermId = longTerm.id
         if (tags && tags.length > 0) query.tags = arrayToQueryString(tags)
         if (minEffectTimestamp) query.minEffectTimestamp = minEffectTimestamp
         if (maxEffectTimestamp) query.maxEffectTimestamp = maxEffectTimestamp
+        if (filter.effectTimestampRangeFilter) {
+            const effectTimestampRange = CONSTS.utils.viewValueToServiceView(CONSTS.task.effectTimestampRange, filter.effectTimestampRangeFilter)
+            query.minEffectTimestamp = new Date().getTime()
+            query.maxEffectTimestamp = minEffectTimestamp + effectTimestampRange
+        }
         if (multipleStatus && multipleStatus.length > 0) query.multipleStatus = arrayToQueryString(multipleStatus)
         if (multiplePriority && multiplePriority.length > 0) query.multiplePriority = arrayToQueryString(multiplePriority)
 

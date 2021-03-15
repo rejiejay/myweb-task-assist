@@ -15,6 +15,7 @@ const props = {
         longTerm: { id: null, title: '' },
         minEffectTimestamp: null,
         maxEffectTimestamp: null,
+        effectTimestampRange: null,
         status: { value: null, label: null },
         priority: { value: null, label: null },
         multipleStatus: [
@@ -39,10 +40,10 @@ export class FilterEditPanel extends React.Component {
         const { resolve } = this.props
         const filterEditRef = this.filterEditRef.current
 
-        const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter } = filterEditRef.getResult()
+        const { tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, effectTimestampRangeFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter } = filterEditRef.getResult()
         const comfirmInstance = await Confirm('选择确认?')
         if (comfirmInstance.result !== 1) return
-        resolve(consequencer.success({ tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter }))
+        resolve(consequencer.success({ tagFilter, longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, effectTimestampRangeFilter, statusFilter, statusMultipleFilter, priorityFilter, priorityMultipleFilter }))
     }
 
     cancelRejectHandle = async () => {

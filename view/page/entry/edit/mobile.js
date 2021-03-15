@@ -10,6 +10,7 @@ import Confirm from './../../../components/confirm'
 
 import service from './../../../service'
 import utils from './../utils'
+import CONSTS from '../../../../library/consts'
 
 const props = {
     resolve: () => { },
@@ -110,12 +111,19 @@ export class TaskEdit extends React.Component {
         const selectInstance = await utils.showOperateFilterEdit(isMultipleFilter, initFilter)
         if (selectInstance.result !== 1) return
         const filter = selectInstance.data
+        let minEffectTimestampFilter = filter.minEffectTimestampFilter
+        let maxEffectTimestampFilter = filter.maxEffectTimestampFilter
+        if (filter.effectTimestampRangeFilter) {
+            const effectTimestampRange = CONSTS.utils.viewValueToServiceView(CONSTS.task.effectTimestampRange, filter.effectTimestampRangeFilter)
+            minEffectTimestampFilter = new Date().getTime()
+            maxEffectTimestampFilter = minEffectTimestampFilter + effectTimestampRange
+        }
 
         this.setState({
             longTerm: filter.longTermFilter,
             tags: filter.tagFilter,
-            minEffectTimestamp: filter.minEffectTimestampFilter,
-            maxEffectTimestamp: filter.maxEffectTimestampFilter,
+            minEffectTimestamp: minEffectTimestampFilter,
+            maxEffectTimestamp: maxEffectTimestampFilter,
             status: filter.statusFilter,
             priority: filter.priorityFilter
         })

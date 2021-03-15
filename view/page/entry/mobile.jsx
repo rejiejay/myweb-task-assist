@@ -94,8 +94,13 @@ export class MobileComponent extends React.Component {
 
         const longTerm = filter.longTermFilter
         const tags = filter.tagFilter
-        const minEffectTimestamp = filter.minEffectTimestampFilter
-        const maxEffectTimestamp = filter.maxEffectTimestampFilter
+        let minEffectTimestamp = filter.minEffectTimestampFilter
+        let maxEffectTimestamp = filter.maxEffectTimestampFilter
+        if (filter.effectTimestampRangeFilter) {
+            const effectTimestampRange = CONSTS.utils.viewValueToServiceView(CONSTS.task.effectTimestampRange, filter.effectTimestampRangeFilter)
+            minEffectTimestamp = new Date().getTime()
+            maxEffectTimestamp = minEffectTimestamp + effectTimestampRange
+        }
         const multipleStatus = filter.statusMultipleFilter
         const multiplePriority = filter.priorityMultipleFilter
         this.filter = { tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority }

@@ -27,7 +27,8 @@ const props = {
         ],
         multiplePriority: [
             // { value: null, label: null }
-        ]
+        ],
+        effectTimestampRange: CONSTS.task.effectTimestampRange.default.viewValue
     }
 }
 
@@ -48,6 +49,7 @@ export class FilterEdit extends React.Component {
             longTermFilter: { id: null, title: '' },
             minEffectTimestampFilter: null,
             maxEffectTimestampFilter: null,
+            effectTimestampRangeFilter: CONSTS.task.effectTimestampRange.default.viewValue,
             statusFilter: { value: null, label: null },
             statusMultipleFilter: [
                 // 1
@@ -82,6 +84,7 @@ export class FilterEdit extends React.Component {
         if (initFilter.longTerm) state.longTermFilter = initFilter.longTerm
         if (initFilter.minEffectTimestamp) state.minEffectTimestampFilter = initFilter.minEffectTimestamp
         if (initFilter.maxEffectTimestamp) state.maxEffectTimestampFilter = initFilter.maxEffectTimestamp
+        if (initFilter.effectTimestampRange) state.effectTimestampRangeFilter = initFilter.effectTimestampRange
         if (!!isMultipleFilter) {
             if (initFilter.multipleStatus) state.statusMultipleFilter = initFilter.multipleStatus
             if (initFilter.multiplePriority) state.priorityMultipleFilter = initFilter.multiplePriority
@@ -205,10 +208,17 @@ export class FilterEdit extends React.Component {
         onChangeHook()
     }
 
+    selectTimeRangeHandle = async () => {
+        const options = CONSTS.utils.toDefaultDownSelectFormat(CONSTS.task.effectTimestampRange)
+        const selectInstance = await ActionSheet({ title: '请选择任务有效时间', options })
+        if (selectInstance.result !== 1) return
+        this.setState({ effectTimestampRangeFilter: selectInstance.data.value }, this.onChangeHook)
+    }
+
     render() {
         const { isMultipleFilter } = this.props
         const {
-            longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter,
+            longTermFilter, minEffectTimestampFilter, maxEffectTimestampFilter, effectTimestampRangeFilter,
             tagFilter, statusFilter, priorityFilter, statusMultipleFilter, priorityMultipleFilter
         } = this.state
 
@@ -243,31 +253,46 @@ export class FilterEdit extends React.Component {
                 title='时间过滤器'
             >
                 <>
-                    <div style={{ ...jsxStyle.basicFlex.startCenter }}>
-                        <Button
-                            style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
-                            onClick={() => this.effectTimePickHandle('minEffectTimestampFilter')}
-                            isError={minEffectTimestampFilter && maxEffectTimestampFilter && (minEffectTimestampFilter >= maxEffectTimestampFilter)}
-                        >{minEffectTimestampFilter ? TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(minEffectTimestampFilter)) : 'Start Time'}</Button>
-                        <Button
-                            style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
-                            onClick={() => this.setState({ minEffectTimestampFilter: null })}
-                            isDisabled={!minEffectTimestampFilter}
-                        >Cancel</Button>
-                    </div>
-                    <div>-</div>
-                    <div style={{ ...jsxStyle.basicFlex.startCenter }}>
-                        <Button
-                            style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
-                            onClick={() => this.effectTimePickHandle('maxEffectTimestampFilter')}
-                            isError={minEffectTimestampFilter && maxEffectTimestampFilter && (maxEffectTimestampFilter <= minEffectTimestampFilter)}
-                        >{maxEffectTimestampFilter ? TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(maxEffectTimestampFilter)) : 'End Time'}</Button>
-                        <Button
-                            style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
-                            onClick={() => this.setState({ maxEffectTimestampFilter: null })}
-                            isDisabled={!maxEffectTimestampFilter}
-                        >Cancel</Button>
-                    </div>
+                    {!effectTimestampRangeFilter && <>
+                        <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                            <Button
+                                style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                                onClick={() => this.effectTimePickHandle('minEffectTimestampFilter')}
+                                isError={minEffectTimestampFilter && maxEffectTimestampFilter && (minEffectTimestampFilter >= maxEffectTimestampFilter)}
+                            >{minEffectTimestampFilter ? TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(minEffectTimestampFilter)) : 'Start Time'}</Button>
+                            <Button
+                                style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                                onClick={() => this.setState({ minEffectTimestampFilter: null })}
+                                isDisabled={!minEffectTimestampFilter}
+                            >Cancel</Button>
+                        </div>
+                        <div>-</div>
+                        <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                            <Button
+                                style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                                onClick={() => this.effectTimePickHandle('maxEffectTimestampFilter')}
+                                isError={minEffectTimestampFilter && maxEffectTimestampFilter && (maxEffectTimestampFilter <= minEffectTimestampFilter)}
+                            >{maxEffectTimestampFilter ? TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(maxEffectTimestampFilter)) : 'End Time'}</Button>
+                            <Button
+                                style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                                onClick={() => this.setState({ maxEffectTimestampFilter: null })}
+                                isDisabled={!maxEffectTimestampFilter}
+                            >Cancel</Button>
+                        </div>
+                    </>}
+                    {(!minEffectTimestampFilter && !maxEffectTimestampFilter) && <>
+                        <div style={{ height: '15px' }}/>
+                        <div style={{ ...jsxStyle.basicFlex.startCenter }}>
+                            <Button
+                                style={{ ...jsxStyle.basicFlex.rest, borderRadius: '4px 0px 0px 4px' }}
+                                onClick={this.selectTimeRangeHandle}
+                            >{effectTimestampRangeFilter ? CONSTS.utils.viewValueToViewLable(CONSTS.task.effectTimestampRange, effectTimestampRangeFilter) : '请选择过滤的时间段'}</Button>
+                            <Button
+                                style={{ minWidth: '60px', borderRadius: '0px 4px 4px 0px', borderLeft: '1px solid #fff' }}
+                                onClick={() => this.setState({ effectTimestampRangeFilter: null })}
+                            >Cancel</Button>
+                        </div>
+                    </>}
                 </>
             </CommonlyListItem>
             <CommonlyListItem key='tag-filter'
