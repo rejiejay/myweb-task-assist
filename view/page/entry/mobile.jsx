@@ -126,7 +126,7 @@ export class MobileComponent extends React.Component {
         if (!!longTerm.id) props.longTerm = longTerm
         if (tags.length > 0) props.tags = tags
 
-        const deleteHandle = () => self.setState({ list: list.filter( ({ id }) => id !== editId) })
+        const deleteHandle = () => self.setState({ list: list.filter(({ id }) => id !== editId) })
 
         toast.show()
         import('./edit/mobile').then(async ({ TaskEdit }) => {
@@ -197,6 +197,11 @@ export class MobileComponent extends React.Component {
         })
     }
 
+    enterLongTermHandle = longTermId => {
+        const longTerm = { id: longTermId }
+        this.setState({ longTerm }, () => this.initList(true))
+    }
+
     render() {
         const { list, isShowBigCard, sort, count, longTerm } = this.state
 
@@ -224,6 +229,7 @@ export class MobileComponent extends React.Component {
             <TaskList
                 list={list}
                 isShowBigCard={isShowBigCard}
+                enterLongTermHandle={this.enterLongTermHandle}
                 editHandle={editId => this.showEditHandle({ isAdd: false, editId })}
             />
 

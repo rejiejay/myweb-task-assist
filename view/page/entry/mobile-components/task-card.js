@@ -106,7 +106,7 @@ class TaskCard extends React.Component {
     }
 
     render() {
-        const { data, isShowBigCard, editHandle } = this.props
+        const { data, isShowBigCard, editHandle, enterLongTermHandle } = this.props
         const { isShowAttachInfor } = this.state
         const newText = text => text && text.split('\n').map((item, i) => <p key={i}>{item}</p>)
         let style = {}
@@ -135,7 +135,7 @@ class TaskCard extends React.Component {
                     </div>
                     <div className='operate-right flex-start-center'>
                         {data.longTermId && <div className='operate-right-button long-term-task flex-center'
-                            onClick={() => { }}
+                            onClick={() => enterLongTermHandle(data.longTermId)}
                         >Enter Long Term Task</div>}
                         <div className='operate-right-button operate-right-edit flex-center'
                             onClick={() => editHandle(data.id)}
@@ -147,12 +147,13 @@ class TaskCard extends React.Component {
     }
 }
 
-const TaskList = ({ list, isShowBigCard, editHandle }) => <div className='task-list-container'>{list.map(item =>
+const TaskList = ({ list, isShowBigCard, editHandle, enterLongTermHandle }) => <div className='task-list-container'>{list.map(item =>
     <TaskCard
         key={item.id}
         data={item}
         isShowBigCard={isShowBigCard}
         editHandle={editHandle}
+        enterLongTermHandle={enterLongTermHandle}
     />
 )}</div>
 
