@@ -30,7 +30,11 @@ const getList = async function getList({ longTermId, taskTagIds, minEffectTimest
     if (!!minEffectTimestamp) sqlHandle.addAndFilterSql(`maxEffectTimestamp >= ${minEffectTimestamp}`)
     if (!!maxEffectTimestamp) sqlHandle.addAndFilterSql(`minEffectTimestamp <= ${maxEffectTimestamp}`)
 
-    if (!!status) sqlHandle.addAndFilterSql(`(${status.map(val => `status = ${val}`).join(' OR ')})`)
+    if (!!status) {
+        sqlHandle.addAndFilterSql(`(${status.map(val => `status = ${val}`).join(' OR ')})`)
+    } else {
+        sqlHandle.addAndFilterSql(`(status IS NULL OR status != ${CONST.task.status.completed.serviceValue})`)
+    }
     if (!!prioritys) sqlHandle.addAndFilterSql(`(${prioritys.map(val => `priority = ${val}`).join(' OR ')})`)
 
     return tableHandle.list(sqlHandle.toSqlString())
@@ -43,7 +47,11 @@ const getCount = async function getCount({ longTermId, taskTagIds, minEffectTime
     if (!!taskTagIds) sqlHandle.addAndFilterSql(`(${taskTagIds.map(id => `id = ${id}`).join(' OR ')})`)
     if (!!minEffectTimestamp) sqlHandle.addAndFilterSql(`maxEffectTimestamp >= ${minEffectTimestamp}`)
     if (!!maxEffectTimestamp) sqlHandle.addAndFilterSql(`minEffectTimestamp <= ${maxEffectTimestamp}`)
-    if (!!status) sqlHandle.addAndFilterSql(`(${status.map(val => `status = ${val}`).join(' OR ')})`)
+    if (!!status) {
+        sqlHandle.addAndFilterSql(`(${status.map(val => `status = ${val}`).join(' OR ')})`)
+    } else {
+        sqlHandle.addAndFilterSql(`(status IS NULL OR status != ${CONST.task.status.completed.serviceValue})`)
+    }
     if (!!prioritys) sqlHandle.addAndFilterSql(`(${prioritys.map(val => `priority = ${val}`).join(' OR ')})`)
 
     const queryInstance = await tableHandle.query(`SELECT COUNT(id) FROM task ${sqlHandle.toSqlString()}`)

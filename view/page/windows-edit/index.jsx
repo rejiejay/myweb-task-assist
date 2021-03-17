@@ -7,6 +7,7 @@ import Confirm from './../../components/confirm'
 
 import service from './../../service'
 import utils from './utils'
+import CONSTS from '../../../library/consts'
 
 class WindowsEditComponent extends React.Component {
     constructor(props) {
@@ -198,6 +199,19 @@ class WindowsEditComponent extends React.Component {
         this.locationBackHandle()
     }
 
+    completedHandle = async () => {
+        const { id } = this.state
+        let submitData = this.initSubmitData()
+        const confirmInstance = await Confirm('确认完成此任务吗?')
+        if (confirmInstance.result !== 1) return
+
+        submitData.status = CONSTS.task.status.completed.serviceValue
+        const fetchInstance = await service.editTask({ id, ...submitData })
+        if (fetchInstance.result !== 1) return Confirm(`操作失败, 原因: ${fetchInstance.message}`)
+
+        this.locationBackHandle()
+    }
+
     render() {
         const {
             id,
@@ -218,6 +232,9 @@ class WindowsEditComponent extends React.Component {
                 {!isEdit && <div className="windows-operate-item flex-center flex-rest"
                     onClick={this.confirmHandle}
                 >新增</div>}
+                {isEdit && <div className="soft-operate-item flex-center flex-rest"
+                    onClick={this.completedHandle}
+                >完成</div>}
                 {isEdit && <div className="windows-operate-item flex-center flex-rest"
                     onClick={this.deleteHandle}
                 >删除</div>}

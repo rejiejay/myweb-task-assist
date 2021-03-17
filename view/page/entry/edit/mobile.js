@@ -192,7 +192,7 @@ export class TaskEdit extends React.Component {
             return false
         }
 
-        if (!isCanSubmit && (element.key === 'save' || element.key === 'confirm')) return false
+        if (!isCanSubmit && (element.key === 'save' || element.key === 'confirm' || element.key === 'completed')) return false
 
         if (element.key === 'save') {
             if (isDiff) return true
@@ -200,6 +200,8 @@ export class TaskEdit extends React.Component {
         }
 
         if (element.key === 'confirm' && isDiff) return false
+
+        if (element.key === 'completed' && !isEdit) return false
 
         return true
     }
@@ -248,6 +250,18 @@ export class TaskEdit extends React.Component {
         if (fetchInstance.result !== 1) return Confirm(`${isEdit ? '编辑' : '添加'}任务失败, 原因: ${fetchInstance.message}`)
 
         this.initPageData(fetchInstance.data.id)
+    }
+
+    completedHandle = async () => {
+        const { resolve } = this.props
+        const { id } = this.task
+        let submitData = this.initSubmitData()
+        submitData.status = CONSTS.task.status.completed.serviceValue
+
+        const fetchInstance = await service.editTask({ id, ...submitData })
+        if (fetchInstance.result !== 1) return Confirm(`操作失败, 原因: ${fetchInstance.message}`)
+
+        resolve(consequencer.success(fetchInstance.data))
     }
 
     cancelHandle = async () => {
@@ -395,6 +409,10 @@ export class TaskEdit extends React.Component {
                     key: 'save',
                     cilckHandle: this.temporaryStorageHandle,
                     element: '暂存'
+                }, {
+                    key: 'completed',
+                    cilckHandle: this.completedHandle,
+                    element: '完成'
                 }, {
                     key: 'delete',
                     cilckHandle: this.deleteHandle,

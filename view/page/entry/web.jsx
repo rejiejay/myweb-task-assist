@@ -19,7 +19,7 @@ export class WebComponent extends React.Component {
             list: [],
             count: 0,
             pageNo: 1,
-            pageSize: CONSTS.defaultPageSize,
+            pageSize: 25,
 
             filter: {
                 longTerm: { id: null, title: '' },
