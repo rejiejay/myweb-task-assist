@@ -9,7 +9,7 @@ const backup = () => {
     const arrayBuffer = binaryArray.buffer
     const buffer = Buffer.from(arrayBuffer)
 
-    fs.writeFile('./module/SQLite/temporary.database.sqlite', buffer, {}, err => {
+    fs.writeFile(`./output/SQLite/${new Date().getDate()}.database.sqlite`, buffer, {}, err => {
         if (err) console.error(err)
     })
 }
