@@ -49,14 +49,13 @@ const initPro = async function initPro() {
 
     const filebufferInstance = await service.getSqliteJsFileBuffer()
     if (filebufferInstance.result === 1) {
-        Log.error(`获取SqliteJs文件失败, 原因: ${filebufferInstance.message}`)
         filebuffer = filebufferInstance.data
     }
 
     const initInstance = await SqliteJs.init(filebuffer)
     const instantiate = initInstance.data
     if (filebufferInstance.result !== 1) {
-        Log.error('获取SqliteJs文件失败, 使用备选方案 localDatabaseSqlite')
+        Log.error(`获取SqliteJs文件失败使用备选方案 localDatabaseSqlite, 原因: ${filebufferInstance.message}`)
         localDatabaseSqlite.initTable(instantiate)
     }
 

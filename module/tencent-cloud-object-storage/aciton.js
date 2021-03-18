@@ -41,7 +41,7 @@ class Action {
                  *    "StorageClass": "STANDARD"
                  * }
                  */
-                Log.success(`---> \ntcos.instance.getBucket: ${JSON.stringify(data)}`)
+                Log.success(`---> \ntcos.instance.getBucket: ${path}`)
                 resolve(data.Contents.filter(content => +content.Size > 0))
             })
         })
@@ -66,7 +66,7 @@ class Action {
                 /**
                  * 返回的文件内容，默认为 Buffer 形式
                  */
-                Log.success(`---> \ntcos.instance.getObject: ${JSON.stringify(data)}`)
+                Log.success(`---> \ntcos.instance.getObject: ${path}`)
                 resolve(data.Body)
             })
         })
@@ -93,7 +93,7 @@ class Action {
                 /**
                  * 请求成功时返回的对象，如果请求发生错误，则为空
                  */
-                Log.success(`---> \ntcos.instance.putObject: ${JSON.stringify(data)}`)
+                Log.success(`---> \ntcos.instance.putObject: ${path}`)
                 resolve(data)
             })
         })
@@ -109,13 +109,13 @@ class Action {
             tcos.instance.deleteMultipleObject({
                 Bucket: bucket,
                 Region: region,
-                Objects: path
+                Objects: paths
             }, function(err, data) {
                 if (err) {
                     Log.error(`tcos.instance.deleteMultipleObject: ${JSON.stringify(err)}`)
                     return reject(err)
                 }
-                Log.success(`---> \ntcos.instance.deleteMultipleObject: ${JSON.stringify(data)}`)
+                Log.success(`---> \ntcos.instance.deleteMultipleObject: ${JSON.stringify(paths)}`)
                 resolve(data)
             })
         })

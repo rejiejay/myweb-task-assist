@@ -232,7 +232,7 @@ class WindowsEditComponent extends React.Component {
                 {!isEdit && <div className="windows-operate-item flex-center flex-rest"
                     onClick={this.confirmHandle}
                 >新增</div>}
-                {isEdit && <div className="soft-operate-item flex-center flex-rest"
+                {isEdit && <div className="windows-operate-item flex-center flex-rest"
                     onClick={this.completedHandle}
                 >完成</div>}
                 {isEdit && <div className="windows-operate-item flex-center flex-rest"
