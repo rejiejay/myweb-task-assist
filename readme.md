@@ -12,8 +12,5 @@ V3: https://github.com/rejiejay/website-station-system-version-fives
 ## Construct
 cnpm install -d  
 
-## TODO
-新增
-编辑
-过滤
-排序
+git config http.postBuffer 524288000
+git config --global --unset http.proxy

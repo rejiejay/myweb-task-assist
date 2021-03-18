@@ -82,6 +82,21 @@ function dateToYYYYmmDDhhMMss(myDate) {
     return `${yyyy}-${mmstring}-${ddstring} ${hhstring}:${Minstring}:${ssstring}`;
 }
 
+function dateToMMssMilliseconds(myDate) {
+    var hh = myDate.getHours();
+    var hhstring = hh < 10 ? '0' + hh : hh;
+
+    var Min = myDate.getMinutes();
+    var Minstring = Min < 10 ? '0' + Min : Min;
+
+    var ss = myDate.getSeconds();
+    var ssstring = ss < 10 ? '0' + ss : ss;
+
+    var milliseconds = myDate.getMilliseconds();
+
+    return `${hhstring}:${Minstring}:${ssstring}:${milliseconds}`;
+}
+
 function YYYYmmDDhhMMssToTimestamp(YYYYmmDDhhMMss) {
     var YDArray = YYYYmmDDhhMMss.split(' ');
     var YYYYmmDDarray = YDArray[0].split('-');
@@ -134,6 +149,12 @@ const transformers = {
      * @return {string} 日期字符串 2018-05-08 09:15:30
      */
     dateToYYYYmmDDhhMMss,
+    /**
+     * Date 转换 xx:xx:xx:xxx 字符串
+     * @param {Date} myDate 要转换的日期
+     * @return {string} 日期字符串 09:15:30:195
+     */
+    dateToMMssMilliseconds,
     /**
      * xxxx-xx-xx xx:xx:xx 字符串 转换 为时间戳
      * @param {string} YYYYmmDDhhMMss xxxx-xx-xx xx:xx:xx 字符串

@@ -6,7 +6,7 @@ import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
 import config from './../../config/index.js'
 import { projectRelativePath } from './../../utils/path-handle.js';
-import copyDirectory from './../../utils/node-copy-directory.js'
+import FilesHelper from './../../utils/files-helper'
 
 class ResourcesUtils {
     initUrlCatch() {
@@ -222,7 +222,7 @@ class ResourcesHandle extends ResourcesUtils {
         const entryPath = projectRelativePath('./view/library/')
         const outputPath = projectRelativePath('./view/build/lib/')
 
-        copyDirectory(entryPath, outputPath)
+        FilesHelper.copyDirectory(entryPath, outputPath)
             .then(resolve => { }, reject => console.log('reject', reject))
     }
 

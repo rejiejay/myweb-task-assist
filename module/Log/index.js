@@ -1,6 +1,5 @@
 /**
  * Log 对外方法:
- * @doc https://github.com/klaussinani/signale/blob/master/docs/readme.zh_CN.md
  * 
  * @instantiate Log 的实例
  */
@@ -9,7 +8,11 @@ import api from './api.js'
 
 const Log = {
     instantiate,
-    ...api
+    success: api.success,
+    error: api.error,
+    pending: api.pending,
+    debug: api.debug,
+    watch: api.watch
 }
 
 export default Log
