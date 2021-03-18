@@ -29,7 +29,7 @@ class ResourcesUtils {
 
         if (isConfigured) return { isStatic, isConfigured }
 
-        const resourcePath = projectRelativePath(`./view/build${url}`)
+        const resourcePath = projectRelativePath(`./output/build${url}`)
         if (fs.existsSync(resourcePath)) isStatic = true
 
         return { isStatic, isConfigured }
@@ -58,18 +58,21 @@ class ResourcesUtils {
         return new Promise((resolve, reject) => {
             const lessRender = lessStr => less.render(lessStr, options)
                 .then(
-                    output => fs.writeFile(
-                        outputPath,
-                        // output.css = string of css
-                        // output.map = string of sourcemap
-                        // output.imports = array of string filenames of the imports referenced
-                        output.css,
-                        { encoding: 'utf8' },
-                        writeFileError => {
-                            if (writeFileError) return reject(new Error(JSON.stringify(writeFileError)))
+                    async output => {
+                        try {
+                            await FilesHelper.outputFile(
+                                outputPath,
+                                // output.css = string of css
+                                // output.map = string of sourcemap
+                                // output.imports = array of string filenames of the imports referenced
+                                output.css,
+                                { encoding: 'utf8' }
+                            )
                             resolve(output.css)
+                        } catch (error) {
+                            reject(error)
                         }
-                    ),
+                    },
                     error => reject(new Error(`${error}`))
                 )
 
@@ -126,15 +129,18 @@ class ResourcesUtils {
         const outputPath = projectRelativePath(`${this.outputPath}/index.html`)
 
         return new Promise((resolve, reject) => {
-            const writeFile = content => fs.writeFile(
-                outputPath,
-                content,
-                { encoding: 'utf8' },
-                writeFileError => {
-                    if (writeFileError) return reject(new Error(JSON.stringify(writeFileError)))
+            const writeFile = async content => {
+                try {
+                    await FilesHelper.outputFile(
+                        outputPath,
+                        content,
+                        { encoding: 'utf8' }
+                    )
                     resolve(content)
+                } catch (error) {
+                    reject(error)
                 }
-            )
+            }
 
             const initVersion = content => {
                 const contentVersion = content.replace(/<%=version%>/g, version)
@@ -211,7 +217,7 @@ class ResourcesHandle extends ResourcesUtils {
         const mineTypeMap = { html: 'text/html;charset=utf-8', htm: 'text/html;charset=utf-8', xml: "text/xml;charset=utf-8", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", css: "text/css;charset=utf-8", txt: "text/plain;charset=utf-8", mp3: "audio/mpeg", mp4: "video/mp4", ico: "image/x-icon", tif: "image/tiff", svg: "image/svg+xml", zip: "application/zip", ttf: "font/ttf", woff: "font/woff", woff2: "font/woff2" }
         let url = this.request.url 
         url = url.split('?')[0].split('#')[0]
-        const resourcePath = projectRelativePath(`./view/build${url}`)
+        const resourcePath = projectRelativePath(`./output/build${url}`)
 
         const extName = Path.extname(resourcePath).substr(1)
         if (mineTypeMap[extName]) this.response.writeHead(200, { 'Content-Type': mineTypeMap[extName] })
@@ -220,7 +226,7 @@ class ResourcesHandle extends ResourcesUtils {
 
     static buildLibrary() {
         const entryPath = projectRelativePath('./view/library/')
-        const outputPath = projectRelativePath('./view/build/lib/')
+        const outputPath = projectRelativePath('./output/build/lib/')
 
         FilesHelper.copyDirectory(entryPath, outputPath)
             .then(resolve => { }, reject => console.log('reject', reject))

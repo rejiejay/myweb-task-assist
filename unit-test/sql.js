@@ -29,8 +29,8 @@ const exportSqliteJsFileBuffer = async responseHanle => {
 }
 
 const sql = {
-    exportSqliteJsFileBuffer: utils.resolveHandle(exportSqliteJsFileBuffer, { isShowResult: false }),
-    getSqliteJsFileBuffer: utils.resolveHandle(getSqliteJsFileBuffer, { isShowResult: false })
+    getSqliteJsFileBuffer: utils.resolveHandle(getSqliteJsFileBuffer, { isShowResult: false }),
+    exportSqliteJsFileBuffer: utils.resolveHandle(exportSqliteJsFileBuffer, { isShowResult: false })
 }
 
 export default sql

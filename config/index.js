@@ -21,23 +21,23 @@ let config = {
         root: {
             matchURL: '/',
             resourcePath: './view/page/entry/',
-            outputPath: './view/build/'
+            outputPath: './output/build/'
         },
         SQLiteGUI: {
             matchURL: '/sql-lite-gui/',
             resourcePath: './view/page/sql-lite-gui/',
-            outputPath: './view/build/sql-lite-gui/'
+            outputPath: './output/build/sql-lite-gui/'
         },
         windowsEdit: {
             matchURL: '/windows-edit/',
             resourcePath: './view/page/windows-edit/',
-            outputPath: './view/build/windows-edit/'
+            outputPath: './output/build/windows-edit/'
         },
     },
 
     TCOS: {
         // Warning: Can`t submit
-        secretId: ' ',
+        secretId: '',
         secretKey: '',
         bucket: 'rejiejay-1251940173',
         region: 'ap-guangzhou',

@@ -1,15 +1,15 @@
-import * as fs from 'fs';
-
 import SqliteJs from './sqlitejs.instantiate.js'
 import SqlHandle from './sql-handle.js'
 import consequencer from './../../utils/consequencer'
+import FilesHelper from './../../utils/files-helper'
+import { projectRelativePath } from './../../utils/path-handle.js';
 
 const backup = () => {
     const binaryArray = SqliteJs.db.export()
     const arrayBuffer = binaryArray.buffer
     const buffer = Buffer.from(arrayBuffer)
 
-    fs.writeFile(`./output/SQLite/${new Date().getDate()}.database.sqlite`, buffer, {}, err => {
+    FilesHelper.outputFile(projectRelativePath(`./output/SQLite/${new Date().getDate()}.database.sqlite`), buffer, {}, err => {
         if (err) console.error(err)
     })
 }

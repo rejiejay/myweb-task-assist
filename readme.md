@@ -12,5 +12,6 @@ V3: https://github.com/rejiejay/website-station-system-version-fives
 ## Construct
 cnpm install -d  
 
+git config --add remote.origin.proxy ""
+git config --unset http.proxy
 git config http.postBuffer 524288000
-git config --global --unset http.proxy

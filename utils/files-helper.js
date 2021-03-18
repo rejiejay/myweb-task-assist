@@ -1,3 +1,4 @@
+// https://github.com/jprichardson/node-fs-extra
 import fse from 'fs-extra';
 
 /**
