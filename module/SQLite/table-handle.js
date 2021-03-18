@@ -1,5 +1,6 @@
 import SqliteJs from './sqlitejs.instantiate.js'
 import SqlHandle from './sql-handle.js'
+import Log from './../Log'
 import consequencer from './../../utils/consequencer'
 import FilesHelper from './../../utils/files-helper'
 import { projectRelativePath } from './../../utils/path-handle.js';
@@ -10,7 +11,7 @@ const backup = () => {
     const buffer = Buffer.from(arrayBuffer)
 
     FilesHelper.outputFile(projectRelativePath(`./output/SQLite/${new Date().getDate()}.database.sqlite`), buffer, {}, err => {
-        if (err) console.error(err)
+        if (error) Log.error(`SqliteJs.db.backup: ${JSON.stringify(error)}`)
     })
 }
 
@@ -22,14 +23,16 @@ class TableHandle {
     }
 
     query = sql => new Promise((resolve, reject) => {
+        Log.pending(`SqliteJs.db.exec: ${sql}`)
         let result = {}
         try {
             result = SqliteJs.db.exec(sql)
         } catch (error) {
-            console.error(`SqliteJs execute ${sql} error: `, error)
+            Log.error(`SqliteJs.db.error: ${JSON.stringify(error)}`)
             return reject(consequencer.error(`${error}`))
         }
 
+        Log.success(`${sql}: ${result}`)
         resolve(consequencer.success(result))
     }).catch(error => error)
 

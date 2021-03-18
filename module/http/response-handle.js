@@ -1,4 +1,5 @@
 import consequencer from './../../utils/consequencer.js'
+import Log from './../Log'
 
 class ResponseHandle {
     constructor(response) {
@@ -11,6 +12,7 @@ class ResponseHandle {
     }
 
     json(data) {
+        Log.success(data)
         return this.responseJsonHandle(data)
     }
 

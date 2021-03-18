@@ -5,15 +5,14 @@ import TimeHelper from './../../utils/time-helper'
 const outPutHandle = (message, logType) => {
     const now = new Date()
     const nowDate = now.getDate()
-    const fileName = `./output/log/${nowDate}.${logType}.json`
+    const fileName = `./output/log/${nowDate}.${logType}.text`
+    const time = TimeHelper.transformers.dateToMMssMilliseconds(now)
+    const text = `${time}: ${message}`
 
     try {
-        const key = TimeHelper.transformers.dateToMMssMilliseconds(now)
-        let data = {}
-        data[key] = message
-        FilesHelper.accumulateJSON(fileName, data)
+        FilesHelper.accumulateText(fileName, text)
     } catch (error) {
-        FilesHelper.outputFile(`./output/log/${now.getTime()}.log-failure.json`, message)
+        FilesHelper.outputFile(`./output/log/${now.getTime()}.log-failure.text`, text)
     }
 }
 

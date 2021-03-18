@@ -1,5 +1,6 @@
 import tcos from './index'
 import config from './../../config'
+import Log from './../Log'
 
 const {
     secretId,
@@ -17,12 +18,16 @@ class Action {
      */
     getBucket = path =>
         new Promise((resolve, reject) => {
+            Log.pending('tcos.instance.getBucket: 查询存储桶下的部分或者全部对象')
             tcos.instance.getBucket({
                 Bucket: bucket,
                 Region: region,
                 Prefix: path
             }, function(err, data) {
-                if (err) return reject(err)
+                if (err) {
+                    Log.error(`tcos.instance.getBucket: ${JSON.stringify(err)}`)
+                    return reject(err)
+                }
                 /**
                  * {
                  *    "Key": "a/3mb.zip",
@@ -36,6 +41,7 @@ class Action {
                  *    "StorageClass": "STANDARD"
                  * }
                  */
+                Log.success(`---> \ntcos.instance.getBucket: ${JSON.stringify(data)}`)
                 resolve(data.Contents.filter(content => +content.Size > 0))
             })
         })
@@ -47,15 +53,20 @@ class Action {
      */
     getObject = path =>
         new Promise((resolve, reject) => {
+            Log.pending('tcos.instance.getObject: 下载对象')
             tcos.instance.getObject({
                 Bucket: bucket,
                 Region: region,
                 Key: path
             }, function(err, data) {
-                if (err) return reject(err)
+                if (err) {
+                    Log.error(`tcos.instance.getObject: ${JSON.stringify(err)}`)
+                    return reject(err)
+                }
                 /**
                  * 返回的文件内容，默认为 Buffer 形式
                  */
+                Log.success(`---> \ntcos.instance.getObject: ${JSON.stringify(data)}`)
                 resolve(data.Body)
             })
         })
@@ -68,20 +79,25 @@ class Action {
      */
     putObject = (path, Body) =>
         new Promise((resolve, reject) => {
+            Log.pending('tcos.instance.putObject: 简单上传对象')
             tcos.instance.putObject({
                 Bucket: bucket,
                 Region: region,
                 Key: path,
                 Body
             }, function(err, data) {
-                if (err) return reject(err)
+                if (err) {
+                    Log.error(`tcos.instance.putObject: ${JSON.stringify(err)}`)
+                    return reject(err)
+                }
                 /**
                  * 请求成功时返回的对象，如果请求发生错误，则为空
                  */
+                Log.success(`---> \ntcos.instance.putObject: ${JSON.stringify(data)}`)
                 resolve(data)
             })
         })
-    
+
     /**
      * 删除多个对象
      * @param {string} paths 删除的路径 例如: [{ Key: 'website-station-system/diary-record/temporary/test.png' }]
@@ -89,12 +105,17 @@ class Action {
      */
     deleteMultipleObject = paths =>
         new Promise((resolve, reject) => {
+            Log.pending('tcos.instance.deleteMultipleObject: 删除多个对象')
             tcos.instance.deleteMultipleObject({
                 Bucket: bucket,
                 Region: region,
                 Objects: path
             }, function(err, data) {
-                if (err) return reject(err)
+                if (err) {
+                    Log.error(`tcos.instance.deleteMultipleObject: ${JSON.stringify(err)}`)
+                    return reject(err)
+                }
+                Log.success(`---> \ntcos.instance.deleteMultipleObject: ${JSON.stringify(data)}`)
                 resolve(data)
             })
         })

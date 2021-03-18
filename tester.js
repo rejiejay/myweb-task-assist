@@ -1,4 +1,5 @@
 import SQLite from './module/SQLite/index.js';
+// import Log from './module/Log';
 import TencentCloudObjectStorage from './module/tencent-cloud-object-storage/index';
 import UnitTest from './unit-test/index.js';
 

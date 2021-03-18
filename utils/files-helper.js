@@ -1,4 +1,5 @@
 // https://github.com/jprichardson/node-fs-extra
+import * as fs from 'fs';
 import fse from 'fs-extra';
 
 /**
@@ -23,31 +24,30 @@ const outputFile = (file, data, options = {}) => new Promise((resolve, reject) =
 }))
 
 /**
- * 异步新增文件JSON数据, 不管文件是否存在
+ * 异步新增文件数据, 不管文件是否存在
  * @param {String} file
  * @param {object} data
  */
-const accumulateJSON = (file, data = {}, options = {}) => new Promise(async (resolve, reject) => {
+const accumulateText = (file, data = '', options = {}) => new Promise(async(resolve, reject) => {
     const exists = await fse.pathExists(file)
 
     if (!exists) {
-        await fse.outputFile(file, JSON.stringify(data), options)
+        fse.outputFile(file, `${data}`, options)
         return resolve()
     }
 
-    const current = await fse.readJson(file, options)
-    const accumulate = {
-        ...current,
-        ...data
-    }
+    const render = content => fse.outputFile(file, `${content}\n${data}`, options)
 
-    await fse.writeJson(file, accumulate, options)
+    fs.readFile(file, 'utf8', (readFileError, content) => {
+        if (readFileError) return reject(new Error(JSON.stringify(readFileError)))
+        render(content)
+    })
 })
 
 const FilesHelper = {
     copyDirectory,
     outputFile,
-    accumulateJSON
+    accumulateText
 }
 
 export default FilesHelper
