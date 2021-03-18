@@ -7,12 +7,15 @@ class ResponseHandle {
     }
 
     responseJsonHandle(data) {
+        let writeContent = JSON.stringify(data)
         this.response.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
-        this.response.end(JSON.stringify(data))
+        this.response.end(`${writeContent}`)
+
+        if (writeContent.length > 400) writeContent = `${writeContent.substr(0, 400)}......`
+        Log.success(`response: ${writeContent}\nresponse end ------------------>`)
     }
 
     json(data) {
-        Log.success(data)
         return this.responseJsonHandle(data)
     }
 

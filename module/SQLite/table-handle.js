@@ -23,7 +23,6 @@ class TableHandle {
     }
 
     query = sql => new Promise((resolve, reject) => {
-        Log.pending(`SqliteJs.db.exec: ${sql}`)
         let result = {}
         try {
             result = SqliteJs.db.exec(sql)
@@ -32,7 +31,7 @@ class TableHandle {
             return reject(consequencer.error(`${error}`))
         }
 
-        Log.success(`${sql}: ${result}`)
+        Log.success(`SqliteJs.db.success: ${sql}`)
         resolve(consequencer.success(result))
     }).catch(error => error)
 

@@ -32,14 +32,21 @@ const accumulateText = (file, data = '', options = {}) => new Promise(async(reso
     const exists = await fse.pathExists(file)
 
     if (!exists) {
-        fse.outputFile(file, `${data}`, options)
+        await outputFile(file, `${data}`, options)
         return resolve()
     }
 
-    const render = content => fse.outputFile(file, `${content}\n${data}`, options)
+    const render = async content => {
+        try {
+            await outputFile(file, `${content}\n${data}`, options)
+            return resolve()
+        } catch (error) {
+            reject(new Error(error))
+        }
+    }
 
     fs.readFile(file, 'utf8', (readFileError, content) => {
-        if (readFileError) return reject(new Error(JSON.stringify(readFileError)))
+        if (readFileError) return reject(new Error(readFileError))
         render(content)
     })
 })

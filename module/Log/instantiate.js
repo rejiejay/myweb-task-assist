@@ -1,19 +1,34 @@
 import signale from 'signale'
 import FilesHelper from './../../utils/files-helper'
 import TimeHelper from './../../utils/time-helper'
+import WaitStackInterval from './wait-stack-interval.js'
 
-const outPutHandle = (message, logType) => {
+const outPutHandle = (message, logType, { resolve, reject }) => {
     const now = new Date()
     const nowDate = now.getDate()
     const fileName = `./output/log/${nowDate}.${logType}.text`
     const time = TimeHelper.transformers.dateToMMssMilliseconds(now)
     const text = `${time}: ${message}`
 
-    try {
-        FilesHelper.accumulateText(fileName, text)
-    } catch (error) {
-        FilesHelper.outputFile(`./output/log/${now.getTime()}.log-failure.text`, text)
-    }
+    return new Promise(async(resolveHandle, rejectHandle) => {
+        try {
+            await FilesHelper.accumulateText(fileName, text)
+            resolveHandle()
+            return resolve()
+        } catch (error) {
+            console.error('accumulateText', error)
+        }
+
+        try {
+            await FilesHelper.outputFile(`./output/log/${now.getTime()}.log-failure.text`, text)
+            resolveHandle()
+            resolve()
+        } catch (error) {
+            console.error('outputFile', error)
+            rejectHandle()
+            reject()
+        }
+    })
 }
 
 const logHandle = (message, logType) => {
@@ -36,7 +51,12 @@ const messageConver = (message = '') => {
 const instantiate = (message, logType = 'success') => {
     const msg = messageConver(message)
     logHandle(msg, logType)
-    outPutHandle(msg, logType)
+
+    try {
+        WaitStackInterval({ message: msg, logType, method: outPutHandle })
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 export default instantiate
