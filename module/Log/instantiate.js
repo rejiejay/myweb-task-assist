@@ -5,8 +5,9 @@ import WaitStackInterval from './wait-stack-interval.js'
 
 const outPutHandle = (message, logType, { resolve, reject }) => {
     const now = new Date()
+    const nowMonth = now.getMonth() + 1
     const nowDate = now.getDate()
-    const fileName = `./output/log/${nowDate}.${logType}.text`
+    const fileName = `./output/log/${nowMonth}-${nowDate}.${logType}.text`
     const time = TimeHelper.transformers.dateToMMssMilliseconds(now)
     const text = `${time}: ${message}`
 
