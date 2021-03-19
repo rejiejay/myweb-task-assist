@@ -1,6 +1,3 @@
-import CONSTS from './../../../library/consts'
-import valuesStructuresVerify from './../../../utils/values-structures-verify'
-import { loadPageVar, queryToUrl } from './../../utils/url-helper';
 import ArrayHelper from './../../../utils/array-helper';
 import TimeHelper from './../../../utils/time-helper';
 
@@ -9,6 +6,7 @@ import WindowsContainer from './windows/container'
 import WindowsPagination from './windows/pagination'
 import service from './../../service'
 import utils from './utils.js'
+import PageCommonUtils from './../../utils/page-common'
 
 export class WebComponent extends React.Component {
     constructor(props) {
@@ -56,46 +54,9 @@ export class WebComponent extends React.Component {
     }
 
     async initPageVar() {
-        let longTerm = { id: null, title: '' }
-        let tags = []
-        let multipleStatus = []
-        let multiplePriority = []
-
-        const longTermId = loadPageVar('longTermId')
-        const tagsPageVar = loadPageVar('tags')
-        const minEffectTimestamp = loadPageVar('minEffectTimestamp')
-        const maxEffectTimestamp = loadPageVar('maxEffectTimestamp')
-        const multipleStatusPageVar = loadPageVar('multipleStatus')
-        const multiplePriorityPageVar = loadPageVar('multiplePriority')
-
-        const reducer = (accumulator, currentValue) => {
-            const verifyInstance = valuesStructuresVerify.isJSONString(currentValue)
-            if (verifyInstance.result === 1) accumulator.push(verifyInstance.data)
-            return accumulator
-        }
-
-        if (!!longTermId) {
-            const longTermTaskInstance = await service.getLongTermTask(longTermId)
-            if (longTermTaskInstance.result === 1) longTerm = longTermTaskInstance.data
-        }
-
-        if (!!tagsPageVar) tags = tagsPageVar.split('-').reduce(reducer, [])
-
-        if (!!multipleStatusPageVar) multipleStatus = multipleStatusPageVar.split('-').reduce(reducer, [])
-
-        if (!!multiplePriorityPageVar) multiplePriority = multiplePriorityPageVar.split('-').reduce(reducer, [])
-
-        const filter = {
-            longTerm,
-            tags,
-            minEffectTimestamp: minEffectTimestamp || null,
-            maxEffectTimestamp: maxEffectTimestamp || null,
-            multipleStatus,
-            multiplePriority
-        }
+        const filter = await PageCommonUtils.pageVarToFilter()
 
         this.setState({ filter })
-
         return filter
     }
 
@@ -117,24 +78,10 @@ export class WebComponent extends React.Component {
         const tags = filter.tagFilter
         const minEffectTimestamp = filter.minEffectTimestampFilter
         const maxEffectTimestamp = filter.maxEffectTimestampFilter
+        const effectTimestampRange = filter.effectTimestampRangeFilter
         const multipleStatus = filter.statusMultipleFilter
         const multiplePriority = filter.priorityMultipleFilter
-        let query = { }
-
-        const arrayToQueryString = array => array.map(item => JSON.stringify(item)).join('-')
-        if (longTerm && longTerm.id) query.longTermId = longTerm.id
-        if (tags && tags.length > 0) query.tags = arrayToQueryString(tags)
-        if (minEffectTimestamp) query.minEffectTimestamp = minEffectTimestamp
-        if (maxEffectTimestamp) query.maxEffectTimestamp = maxEffectTimestamp
-        if (filter.effectTimestampRangeFilter) {
-            const effectTimestampRange = CONSTS.utils.viewValueToServiceView(CONSTS.task.effectTimestampRange, filter.effectTimestampRangeFilter)
-            query.minEffectTimestamp = new Date().getTime()
-            query.maxEffectTimestamp = minEffectTimestamp + effectTimestampRange
-        }
-        if (multipleStatus && multipleStatus.length > 0) query.multipleStatus = arrayToQueryString(multipleStatus)
-        if (multiplePriority && multiplePriority.length > 0) query.multiplePriority = arrayToQueryString(multiplePriority)
-
-        window.location.replace(`./${queryToUrl(query)}`)
+        window.location.replace(`./${PageCommonUtils.filterToUrlQuery({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, effectTimestampRange, multipleStatus, multiplePriority })}`)
     }
 
     renderEffectTimestamp = ({ minEffectTimestamp, maxEffectTimestamp }) => {
@@ -143,6 +90,16 @@ export class WebComponent extends React.Component {
         if (!!maxEffectTimestamp) effectTimestampArray.push(`max ${TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(+maxEffectTimestamp))}`)
 
         return effectTimestampArray.join(' - ')
+    }
+
+    addHandle = () => {
+        const { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority } = this.state.filter
+        let status = null
+        let priority = null
+        if (multipleStatus.length > 0) status = multipleStatus[0]
+        if (multiplePriority.length > 0) priority = multiplePriority[0]
+
+        window.open(`./windows-edit/${PageCommonUtils.filterToUrlQuery({ longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority })}`)
     }
 
     render() {
@@ -158,6 +115,7 @@ export class WebComponent extends React.Component {
                 priority={multiplePriority && multiplePriority.length > 0 && multiplePriority.map(({ label }) => label).join('、')}
                 setSortHandle={this.setSortHandle}
                 setFilterHandle={this.setFilterHandle}
+                addHandle={this.addHandle}
             />
 
             <WindowsContainer

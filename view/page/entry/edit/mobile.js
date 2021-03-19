@@ -10,6 +10,7 @@ import Confirm from './../../../components/confirm'
 
 import service from './../../../service'
 import utils from './../utils'
+import PageCommonUtils from './../../../utils/page-common'
 import CONSTS from '../../../../library/consts'
 
 const props = {
@@ -56,7 +57,21 @@ export class TaskEdit extends React.Component {
     componentDidMount() {
         const { id } = this.props
 
+        this.initFilter()
         if (id) this.initPageData(id)
+    }
+
+    initFilter = () => {
+        const { longTerm, tags, minEffectTimestamp, maxEffectTimestamp, status, priority } = this.props
+        let state = {}
+        if (longTerm) state.longTerm = longTerm
+        if (tags) state.tags = tags
+        if (minEffectTimestamp) state.minEffectTimestamp = minEffectTimestamp
+        if (maxEffectTimestamp) state.maxEffectTimestamp = maxEffectTimestamp
+        if (status) state.status = status
+        if (priority) state.priority = priority
+
+        this.setState(state)
     }
 
     initPageData = async id => {
@@ -86,13 +101,13 @@ export class TaskEdit extends React.Component {
         let status = { value: null, label: null }
         if (task.status) {
             status.value = task.status
-            status.label = utils.initStatusLable(task.status)
+            status.label = PageCommonUtils.initStatusLable(task.status)
         }
 
         let priority = { value: null, label: null }
         if (task.priority) {
             priority.value = task.priority
-            priority.label = utils.initPriorityLable(task.priority)
+            priority.label = PageCommonUtils.initPriorityLable(task.priority)
         }
 
         this.task = {

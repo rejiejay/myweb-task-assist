@@ -1,7 +1,7 @@
 import jsxStyle from './../../../components/jsx-style'
 import service from './../../../service'
 import TimeHelper from './../../../../utils/time-helper'
-import utils from './../utils'
+import PageCommonUtils from './../../../utils/page-common'
 
 const NotRequiredDescription = ({ field, description }) => {
     if (!description) return null
@@ -51,7 +51,7 @@ class CardAttachmentDetail extends React.Component {
         if (!data.status) return
 
         const field = 'Task Status'
-        const description = utils.initStatusLable(data.status)
+        const description = PageCommonUtils.initStatusLable(data.status)
         this.setState({ status: { field, description } })
     }
 
@@ -60,7 +60,7 @@ class CardAttachmentDetail extends React.Component {
         if (!data.priority) return
 
         const field = 'Task Priority'
-        const description = utils.initPriorityLable(data.priority)
+        const description = PageCommonUtils.initPriorityLable(data.priority)
         this.setState({ priority: { field, description } })
     }
 

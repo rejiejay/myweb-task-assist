@@ -2,7 +2,7 @@ import TimeHelper from './../../../../utils/time-helper'
 import Confirm from './../../../components/confirm'
 
 import service from './../../../service'
-import utils from './../utils'
+import PageCommonUtils from './../../../utils/page-common'
 
 export class WindowsContainer extends React.Component {
     constructor(props) {
@@ -50,13 +50,13 @@ export class WindowsContainer extends React.Component {
         let status = { value: null, label: null }
         if (task.status) {
             status.value = task.status
-            status.label = utils.initStatusLable(task.status)
+            status.label = PageCommonUtils.initStatusLable(task.status)
         }
 
         let priority = { value: null, label: null }
         if (task.priority) {
             priority.value = task.priority
-            priority.label = utils.initPriorityLable(task.priority)
+            priority.label = PageCommonUtils.initPriorityLable(task.priority)
         }
 
         let tags = []

@@ -18,15 +18,13 @@ export class WindowsHeader extends React.Component {
 
     clearSearch = () => {}
 
-    addHandle = () => window.open('./windows-edit/')
-
     sortSelectedHandle = ({ value, label }) => {
         this.props.setSortHandle({ value, label })
     }
 
     render() {
         const { search } = this.state
-        const { setFilterHandle, longTerm, effectTimes, tags, status, priority } = this.props
+        const { setFilterHandle, addHandle, longTerm, effectTimes, tags, status, priority } = this.props
 
         return <div className='windows-header flex-start-center noselect'>
             <div className="left-operating flex-start-center">
@@ -66,7 +64,7 @@ export class WindowsHeader extends React.Component {
                     <div className="operat-item hover-item">排序</div>
                 </DropDownSelect>
                 <div className="operat-item hover-item"
-                    onClick={this.addHandle}
+                    onClick={addHandle}
                 >新增</div>
             </div>
         </div>

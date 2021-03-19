@@ -119,12 +119,16 @@ export class MobileComponent extends React.Component {
     showEditHandle = ({ isAdd, editId } = {}) => {
         const self = this
         const { longTerm, list } = this.state
-        const { tags } = this.filter
+        const { tags, minEffectTimestamp, maxEffectTimestamp, multipleStatus, multiplePriority } = this.filter
 
         let props = {}
         if (!isAdd) props.id = editId
         if (!!longTerm.id) props.longTerm = longTerm
         if (tags.length > 0) props.tags = tags
+        if (minEffectTimestamp) props.minEffectTimestamp = minEffectTimestamp
+        if (maxEffectTimestamp) props.maxEffectTimestamp = maxEffectTimestamp
+        if (multipleStatus.length > 0) props.status = multipleStatus[0]
+        if (multiplePriority.length > 0) props.priority = multiplePriority[0]
 
         const deleteHandle = () => self.setState({ list: list.filter(({ id }) => id !== editId) })
 

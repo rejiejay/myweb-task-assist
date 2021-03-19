@@ -6,7 +6,7 @@ import toast from './../../components/toast'
 import Confirm from './../../components/confirm'
 
 import service from './../../service'
-import utils from './utils'
+import PageCommonUtils from './../../utils/page-common'
 import CONSTS from '../../../library/consts'
 
 class WindowsEditComponent extends React.Component {
@@ -45,10 +45,22 @@ class WindowsEditComponent extends React.Component {
         this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const id = loadPageVar('id')
 
+        await this.initFilter()
         if (id) this.initPageData(id)
+    }
+
+    initFilter = async () => {
+        const filterEditRef = this.filterEditRef.current
+        const filter = await PageCommonUtils.pageVarToFilter()
+        console.log('filter', filter)
+
+        return new Promise(resolve => this.setState(filter, () => {
+            filterEditRef.initTaskFilter()
+            resolve()
+        }))
     }
 
     initPageData = async id => {
@@ -78,13 +90,13 @@ class WindowsEditComponent extends React.Component {
         let status = { value: null, label: null }
         if (task.status) {
             status.value = task.status
-            status.label = utils.initStatusLable(task.status)
+            status.label = PageCommonUtils.initStatusLable(task.status)
         }
 
         let priority = { value: null, label: null }
         if (task.priority) {
             priority.value = task.priority
-            priority.label = utils.initPriorityLable(task.priority)
+            priority.label = PageCommonUtils.initPriorityLable(task.priority)
         }
 
         this.task = {
