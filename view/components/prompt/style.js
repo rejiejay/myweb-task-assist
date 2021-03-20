@@ -12,6 +12,7 @@ const mask = {
 }
 
 const container = {
+    border: '1px solid #ddd',
     position: 'relative',
     background: '#fff',
     borderRadius: '5px',
