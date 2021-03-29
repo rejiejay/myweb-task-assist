@@ -16,6 +16,8 @@ const initPriorityLable = value => {
     return description
 }
 
+const pageSplitVarString = '|[-]|'
+
 const pageVarToFilter = async() => {
     let longTerm = { id: null, title: '' }
     let tags = []
@@ -31,22 +33,22 @@ const pageVarToFilter = async() => {
     const statusPageVar = loadPageVar('status')
     const priorityPageVar = loadPageVar('priority')
 
-    const reducer = (accumulator, currentValue) => {
+    const pageVarToQueryArray = pageVar => pageVar.split(pageSplitVarString).reduce((accumulator, currentValue) => {
         const verifyInstance = valuesStructuresVerify.isJSONString(currentValue)
         if (verifyInstance.result === 1) accumulator.push(verifyInstance.data)
         return accumulator
-    }
+    }, [])
 
     if (!!longTermId) {
         const longTermTaskInstance = await service.getLongTermTask(longTermId)
         if (longTermTaskInstance.result === 1) longTerm = longTermTaskInstance.data
     }
 
-    if (!!tagsPageVar) tags = tagsPageVar.split('-').reduce(reducer, [])
+    if (!!tagsPageVar) tags = pageVarToQueryArray(tagsPageVar)
 
-    if (!!multipleStatusPageVar) multipleStatus = multipleStatusPageVar.split('-').reduce(reducer, [])
+    if (!!multipleStatusPageVar) multipleStatus = pageVarToQueryArray(multipleStatusPageVar)
 
-    if (!!multiplePriorityPageVar) multiplePriority = multiplePriorityPageVar.split('-').reduce(reducer, [])
+    if (!!multiplePriorityPageVar) multiplePriority = pageVarToQueryArray(multiplePriorityPageVar)
 
     let status = { value: null, label: null }
     if (!!statusPageVar && statusPageVar !== 'null') {
@@ -77,7 +79,7 @@ const pageVarToFilter = async() => {
 const filterToUrlQuery = ({ longTerm, tags, minEffectTimestamp, effectTimestampRange, maxEffectTimestamp, multipleStatus, multiplePriority, status, priority }) => {
     let query = {}
 
-    const arrayToQueryString = array => array.map(item => JSON.stringify(item)).join('-')
+    const arrayToQueryString = array => array.map(item => JSON.stringify(item)).join(pageSplitVarString)
     if (longTerm && longTerm.id) query.longTermId = longTerm.id
     if (tags && tags.length > 0) query.tags = arrayToQueryString(tags)
     if (minEffectTimestamp) query.minEffectTimestamp = minEffectTimestamp
