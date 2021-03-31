@@ -144,11 +144,11 @@ export default class DropDownSelect extends React.Component {
 
     render() {
         const { componentReferId } = this
-        const { name, children } = this.props
+        const { name, children, containerStyle } = this.props
 
         return (
             <div className="drop-down-select-component flex-center"
-                style={style.container}
+                style={containerStyle || style.container}
                 id={`tippy${componentReferId}`}
                 onClick={this.showDropDownSelectTippy}
             >{children ? children : name}</div>

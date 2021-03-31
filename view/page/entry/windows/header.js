@@ -3,6 +3,40 @@ import CONSTS from './../../../../library/consts'
 import PageCommonUtils from './../../../utils/page-common'
 import service from './../../../service'
 import { queryToUrl } from './../../../utils/url-helper'
+import DatePicker from './../../../components/date-picker-sheet'
+
+const SelectEffectTimes = ({ children }) => {
+    const clearHandle = async () => {
+        let filter = await PageCommonUtils.pageVarToFilter()
+        delete filter.minEffectTimestamp
+        delete filter.maxEffectTimestamp
+        window.location.replace(`./${queryToUrl(filter)}`)
+    }
+
+    const selectAllEffectTimesHandle = async () => {
+        let filter = await PageCommonUtils.pageVarToFilter()
+
+        const minDatePickerInstance = await DatePicker()
+        if (minDatePickerInstance.result !== 1) {
+            delete filter.minEffectTimestamp
+        }
+        filter.minEffectTimestamp = minDatePickerInstance.data
+
+        const maxDatePickerInstance = await DatePicker()
+        if (maxDatePickerInstance.result !== 1) {
+            delete filter.maxEffectTimestamp
+        }
+        filter.maxEffectTimestamp = maxDatePickerInstance.data
+
+        window.location.replace(`./${queryToUrl(filter)}`)
+    }
+
+    if (children) {
+        return <div className="operat-item hover-item" onClick={clearHandle}>{children}</div>
+    }
+
+    return <div className="operat-item hover-item" onClick={selectAllEffectTimesHandle}>时间</div>
+}
 
 const props = {
     setSortHandle: () => { }
@@ -64,11 +98,14 @@ export class WindowsHeader extends React.Component {
                 {/* <div className="operat-item hover-item" onClick={setFilterHandle}>未分类</div> */}
                 <DropDownSelect
                     options={longTermOptions}
+                    containerStyle={{ padding: 0 }}
                     handle={this.selectLongTermTaskHandle}
                 >
                     <div className="operat-item hover-item">{longTerm || '长期'}</div>
                 </DropDownSelect>
-                <div className="operat-item hover-item" onClick={setFilterHandle}>{effectTimes || '时间'}</div>
+
+                <SelectEffectTimes>{effectTimes || '时间'}</SelectEffectTimes>
+
                 <div className="operat-item hover-item" onClick={setFilterHandle}>{tags || '标签'}</div>
                 <div className="operat-item hover-item" onClick={setFilterHandle}>{status || '状态'}</div>
                 <div className="operat-item hover-item" onClick={setFilterHandle}>{priority || '优先级'}</div>

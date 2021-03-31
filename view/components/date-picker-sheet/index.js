@@ -25,7 +25,6 @@ const DatePicker = options => new Promise(async(resolve, reject) => {
     div.setAttribute('placeholder', title)
     div.readOnly = true
     document.body.appendChild(div)
-    const destroy = () => setTimeout(() => document.body.removeChild(div), 1000)
 
     /**
      * Rolldate 3.1.2
@@ -42,12 +41,16 @@ const DatePicker = options => new Promise(async(resolve, reject) => {
         lang: { title },
         confirm: date => {
             const timestamp = TimeHelper.transformers.YYYYmmDDhhMMToTimestamp(date)
-            resolve(consequencer.success(timestamp))
-            destroy()
+            setTimeout(() => {
+                document.body.removeChild(div)
+                resolve(consequencer.success(timestamp))
+            }, 1000)
         },
         cancel: () => {
-            resolve(consequencer.error('cancel', 2))
-            destroy()
+            setTimeout(() => {
+                document.body.removeChild(div)
+                resolve(consequencer.error('cancel', 2))
+            }, 1000)
         }
     })
 
