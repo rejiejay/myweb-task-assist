@@ -1,5 +1,8 @@
 import DropDownSelect from './../../../components/drop-down-select-tooltip';
 import CONSTS from './../../../../library/consts'
+import PageCommonUtils from './../../../utils/page-common'
+import service from './../../../service'
+import { queryToUrl } from './../../../utils/url-helper'
 
 const props = {
     setSortHandle: () => { }
@@ -10,8 +13,15 @@ export class WindowsHeader extends React.Component {
         super(props)
 
         this.state = {
+            longTermOptions: [
+                // { value: null, label: null }
+            ],
             search: ''
         }
+    }
+
+    componentDidMount() {
+        this.initTaskLongTermInfor()
     }
 
     searchHandle = () => {}
@@ -22,13 +32,42 @@ export class WindowsHeader extends React.Component {
         this.props.setSortHandle({ value, label })
     }
 
+    async initTaskLongTermInfor() {
+        const fetchInstance = await service.getAllLongTermTask()
+        if (fetchInstance.result !== 1) return
+        const allLongTermTask = fetchInstance.data
+
+        const longTermOptions = allLongTermTask.map(longTerm => ({ value: longTerm.id, label: longTerm.title }))
+
+        longTermOptions.push({ value: null, label: '清空' })
+        this.setState({ longTermOptions })
+    }
+
+    selectLongTermTaskHandle = async ({ value, label }) => {
+        let filter = await PageCommonUtils.pageVarToFilter()
+        filter.longTermId = value
+
+        if (!value) {
+            delete filter.longTermId
+        }
+
+        window.location.replace(`./${queryToUrl(filter)}`)
+    }
+
     render() {
-        const { search } = this.state
+        const { search, longTermOptions } = this.state
         const { setFilterHandle, addHandle, longTerm, effectTimes, tags, status, priority } = this.props
 
         return <div className='windows-header flex-start-center noselect'>
             <div className="left-operating flex-start-center">
-                <div className="operat-item hover-item" onClick={setFilterHandle}>{longTerm || '长期'}</div>
+                <div className="operat-item hover-item" onClick={setFilterHandle}>管理</div>
+                {/* <div className="operat-item hover-item" onClick={setFilterHandle}>未分类</div> */}
+                <DropDownSelect
+                    options={longTermOptions}
+                    handle={this.selectLongTermTaskHandle}
+                >
+                    <div className="operat-item hover-item">{longTerm || '长期'}</div>
+                </DropDownSelect>
                 <div className="operat-item hover-item" onClick={setFilterHandle}>{effectTimes || '时间'}</div>
                 <div className="operat-item hover-item" onClick={setFilterHandle}>{tags || '标签'}</div>
                 <div className="operat-item hover-item" onClick={setFilterHandle}>{status || '状态'}</div>
