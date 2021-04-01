@@ -50,12 +50,20 @@ export class WindowsHeader extends React.Component {
             longTermOptions: [
                 // { value: null, label: null }
             ],
+            statusOptions: [
+                // { value: null, label: null }
+            ],
+            priorityOptions: [
+                // { value: null, label: null }
+            ],
             search: ''
         }
     }
 
     componentDidMount() {
         this.initTaskLongTermInfor()
+        this.initStatusOptions()
+        this.initPriorityOptions()
     }
 
     searchHandle = () => {}
@@ -76,6 +84,10 @@ export class WindowsHeader extends React.Component {
         longTermOptions.push({ value: null, label: '清空' })
         this.setState({ longTermOptions })
     }
+
+    initStatusOptions() {}
+
+    initPriorityOptions() {}
 
     selectLongTermTaskHandle = async ({ value, label }) => {
         let filter = await PageCommonUtils.pageVarToFilter()
