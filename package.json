@@ -1,7 +1,7 @@
 {
   "name": "myweb-task-assist",
-  "version": "2.1.52",
-  "description": "My Web Task Assist Version 2",
+  "version": "5.0.0",
+  "description": "My Web Task Assist Version 5",
   "main": "development.js",
   "author": {
     "name": "rejiejay-jeker-zeng"
