@@ -32,3 +32,59 @@ export const loadPageVar = sVar => decodeURI(
         ), '$1'
     )
 )
+
+export const queryToHash = query => {
+    if (!query) return ''
+
+    let hash = ''
+    try {
+        hash = encodeURIComponent(JSON.stringify(query));
+    } catch (error) {
+        console.warn('query to hash failure');
+        console.error(error);
+    }
+
+    return hash
+}
+
+export const addQueryToPageHash = (query = {}) => {
+    const pageQuery = loadPageHash()
+
+    if (pageQuery) {
+        query = {
+            ...pageQuery,
+            ...query
+        }
+    }
+
+    return queryToHash(query);
+}
+
+export const loadPageHash = () => {
+    const locationHash = window.location.hash.replace('#', '');
+    if (!locationHash) return null
+
+    let query = {}
+    try {
+        query = JSON.parse(decodeURIComponent(locationHash));
+    } catch (error) {
+        console.warn('load page hash failure')
+        console.error(error);
+        return null
+    }
+
+    return query
+}
+
+export const loadPageHashVar = sVar => {
+    if (!sVar) return null
+
+    const query = loadPageHash()
+
+    if (!query) return null
+
+    const value = query[sVar]
+    if (!value) return null
+
+    return value
+}

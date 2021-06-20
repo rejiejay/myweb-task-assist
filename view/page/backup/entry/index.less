@@ -1,0 +1,466 @@
+@import './base.less';
+@import './flex.less';
+
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.web-device-container,
+.mobile-device-container {
+    position        : relative;
+    width           : 100%;
+    min-height      : 100%;
+    padding         : 0px;
+    margin          : 0px;
+    font-size       : 14px;
+    color           : @black2;
+    background-color: #f1f1f1;
+}
+
+.mobile-device-container .list-top-operate {
+    position: fixed;
+    top     : 0px;
+    left    : 0px;
+    height  : 45px;
+    width   : 100%;
+
+    >div {
+        padding: 0px 7.5px;
+    }
+
+    .list-top-button {
+        padding         : 0px 12px;
+        line-height     : 32px;
+        border-radius   : 5px;
+        background-color: #fff;
+    }
+}
+
+.mobile-device-task-edit {
+    .edit-input-tip {
+        font-size: 12px;
+        padding-bottom: 5px;
+    }
+}
+
+.mobile-device-container .group-panel {
+    padding: 15px;
+
+    .group-panel-container {
+        padding: 15px;
+        border : 1px solid #ddd;
+    }
+
+    .group-panel-title {
+        font-weight   : bold;
+        color         : @black1;
+        padding-bottom: 5px;
+        border-bottom : 1px solid #ddd;
+    }
+
+    .group-panel-content {
+        font-size: 12px;
+        padding  : 5px 0px;
+    }
+
+    .group-panel-operation {
+        padding-top: 5px;
+    }
+}
+
+.mobile-device-container .task-list-container {
+    .task-card {
+        border-top: 1px solid #ddd;
+        padding   : 15px 15px 0px 15px;
+
+        .task-card-title {
+            font-weight   : bold;
+            padding-bottom: 5px;
+        }
+
+        .other-content-description {
+            font-size: 12px;
+
+            >div {
+                padding-top: 5px;
+            }
+        }
+    }
+
+    .task-card:last-child {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .task-attachment-information {
+        padding-top   : 10px;
+        padding-bottom: 5px;
+    }
+
+    .task-card-operate {
+        padding-top: 15px;
+        font-size  : 12px;
+        font-weight: bold;
+        color      : @black3;
+
+        .card-operate-container {
+            border-top: 1px solid #ddd;
+            height    : 32px;
+        }
+
+        .switch-attach-infor {
+            padding-right: 12px;
+            border-right : 1px solid #ddd;
+        }
+
+        .operate-right-button {
+            padding     : 0px 12px;
+            border-right: 1px solid #ddd;
+        }
+
+        .operate-right-button:last-child {
+            padding     : 0px 0px 0px 12px;
+            border-right: none;
+        }
+
+    }
+
+    .operate-show-attach {
+        padding-top: 0px;
+    }
+}
+
+.mobile-device-navigation-link .navigation-link {
+    padding-bottom: 75px;
+
+    .navigation-link-operation {
+        padding: 15px;
+    }
+
+    .navigation-link-elements {
+        border-top: 1px solid #ddd;
+
+        .link-item-container {
+            height       : 45px;
+            padding-right: 15px;
+            padding-left : 15px;
+            border-bottom: 1px solid #ddd;
+
+            .link-splice-operation {
+                padding     : 0px 7.5px;
+                border-right: 1px solid #ddd;
+                font-size   : 12px;
+                color       : @black3;
+            }
+
+            .link-operation-move {
+                font-size: 12px;
+            }
+
+            .link-switch-operation {
+                padding-left: 7.5px;
+            }
+        }
+
+        .link-item-children {
+            padding-left: 15px;
+        }
+    }
+}
+
+.group-panel-record-detail {
+    .record-detail-content {
+        .record-detail-elements {
+            border-top: 1px solid #ddd;
+
+            .node-item-container {
+                min-height   : 45px;
+                padding-right: 15px;
+                padding-left : 15px;
+                border-bottom: 1px solid #ddd;
+
+                .node-item-input {
+                    padding: 7.5px 0px;
+
+                    .multiple-input-textarea {
+                        width  : 100%;
+                        height : 100%;
+                        padding: 0px;
+                    }
+
+                    .multiple-input-submit {
+                        width     : 22px;
+                        font-size : 12px;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .node-item-children {
+                padding-left: 15px;
+            }
+        }
+
+        .record-detail-zoom {
+            padding: 0px 15px 15px;
+        }
+
+        .record-detail-add {
+            padding: 15px;
+        }
+    }
+}
+
+.web-device-container .windows-header {
+    width        : 100%;
+    height       : 46px;
+    background   : #fff;
+    border-bottom: 1px solid #ddd;
+
+    .header-tag {
+        padding: 0px 15px;
+    }
+
+    .left-operating {
+        padding-left : 7.5px;
+        padding-right: 25px;
+
+        .drop-down-select-component {
+            padding: 0;
+        }
+
+        .operat-item {
+            padding: 7.5px;
+        }
+    }
+
+    .right-operating {
+        padding-left : 25px;
+        padding-right: 7.5px;
+
+        .operat-item {
+            padding: 7.5px;
+        }
+    }
+
+    .hover-item {
+        cursor            : pointer;
+        transition        : color 0.25s;
+        -moz-transition   : color 0.25s;
+        /* Firefox 4 */
+        -webkit-transition: color 0.25s;
+        /* Safari 和 Chrome */
+        -o-transition     : color 0.25s;
+        /* Opera */
+        transition        : background-color 1s;
+        -moz-transition   : background-color 1s;
+        /* Firefox 4 */
+        -webkit-transition: background-color 1s;
+        /* Safari 和 Chrome */
+        -o-transition     : background-color 1s;
+        /* Opera */
+    }
+
+    .hover-item:hover {
+        color           : @black1;
+        background-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .search {
+        height : 32px;
+        padding: 0px 15px;
+
+        .search-container {
+            height          : 32px;
+            border-radius   : 16px;
+            overflow        : hidden;
+            background-color: #f1f1f1;
+        }
+
+        .search-input input {
+            padding: 0px;
+        }
+
+        .cancel-icon,
+        .search-icon {
+            padding: 0px 15px;
+            cursor : pointer;
+
+            path {
+                fill: @black3;
+            }
+        }
+
+        .cancel-icon:hover path,
+        .search-icon:hover path {
+            fill: #ff4d4f;
+        }
+
+    }
+}
+
+.web-device-container .windows-container {
+    padding: 25px;
+
+    .content-list {
+        .list-float {
+            overflow: hidden;
+
+            >div {
+                float: left;
+            }
+        }
+
+        .list-item {
+            width  : 176px;
+            padding: 0px 7.5px 15px 7.5px;
+
+            .list-item-container {
+                border          : 1px solid #fff;
+                padding         : 15px;
+                height          : 90px;
+                background-color: #fff;
+                border-radius   : 4px;
+                word-wrap       : break-word;
+                overflow        : hidden;
+                cursor          : pointer;
+            }
+        }
+
+        .list-item-selected .list-item-container {
+            border: 1px solid #1890ff;
+        }
+    }
+
+    .content-detail {
+        padding-left: 25px;
+
+        .content-detail-container {
+            position        : relative;
+            padding         : 15px;
+            width           : 640px;
+            background-color: #fff;
+        }
+
+        .detail-preview {
+            padding-top: 45px;
+
+            .detail-preview-title {
+                padding-bottom: 7.5px;
+                font-size     : 16px;
+                border-bottom : 1px solid #ddd;
+                text-overflow : ellipsis;
+                white-space   : nowrap;
+                overflow      : hidden;
+            }
+
+            .detail-record-content {
+                padding: 15px 0px;
+            }
+
+            .detail-item {
+                padding-top   : 15px;
+                padding-bottom: 10px;
+
+                .detail-title {
+                    font-size: 12px;
+                    color    : @black3;
+                }
+
+                .detail-description {
+                    padding-top: 2.5px;
+                    color      : @black1;
+                }
+            }
+        }
+
+        .detail-operate {
+            position        : absolute;
+            left            : 0px;
+            top             : 0px;
+            width           : 100%;
+            height          : 45px;
+            border-bottom   : 1px solid #ddd;
+            background-color: #fbfbfb;
+
+
+            .flex-rest {
+                height      : 45px;
+                border-right: 1px solid #ddd;
+                cursor      : pointer;
+            }
+        }
+    }
+}
+
+.web-device-container .windows-pagination {
+    padding: 0 15px;
+    padding: 0px 15px;
+
+    .list-pagination-item {
+        height: 30px;
+        min-width: 30px;
+        text-align: center;
+        line-height: 30px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 10px;
+        cursor: pointer;
+        -webkit-touch-callout: none;
+        /* iOS Safari */
+        -webkit-user-select: none;
+        /* Chrome/Safari/Opera */
+        -khtml-user-select: none;
+        /* Konqueror */
+        -moz-user-select: none;
+        /* Firefox */
+        -ms-user-select: none;
+        /* Internet Explorer/Edge */
+        user-select: none;
+        /* Non-prefixed version, currently not supported by any browser */
+    }
+
+    // 省略号
+    .list-pagination-point {
+        margin-right: 10px;
+    }
+
+    .list-pagination-input {
+        .pagination-input-container {
+            margin-right: 15px;
+            width: 45px;
+            line-height: 30px;
+            border-radius: 2px;
+            border: 1px solid #ddd;
+
+            input {
+                text-align: center;
+            }
+        }
+
+        .pagination-input-submit {
+            padding: 0px 10px;
+            line-height: 30px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+    }
+
+    .pagination-item-selected,
+    .list-pagination-item:hover,
+    .pagination-input-submit:hover {
+        border: 1px solid #1890ff;
+        color: #1890ff;
+    }
+}
+
+.web-device-container .copyright-component {
+    padding-top   : 25px;
+    padding-bottom: 5px;
+
+    .copyright-describe {
+        text-align: center;
+        font-size : 14px;
+    }
+}

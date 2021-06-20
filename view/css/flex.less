@@ -2,6 +2,7 @@
 .flex-start-top,
 .flex-start-center,
 .flex-start-bottom,
+.flex-column,
 .flex-column-center,
 .flex-center {
     display  : -webkit-box;
@@ -38,6 +39,12 @@
 .flex-start-bottom {
     justify-content: flex-start;
     align-items    : flex-end;
+}
+
+// 主轴水平向下 主轴水平向左边对齐
+.flex-column {
+    flex-direction: column;
+    align-items   : flex-start;
 }
 
 // 主轴水平向下 居中对齐

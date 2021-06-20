@@ -23,16 +23,11 @@ let config = {
             resourcePath: './view/page/entry/',
             outputPath: './output/build/'
         },
-        SQLiteGUI: {
-            matchURL: '/sql-lite-gui/',
-            resourcePath: './view/page/sql-lite-gui/',
-            outputPath: './output/build/sql-lite-gui/'
-        },
-        windowsEdit: {
-            matchURL: '/windows-edit/',
-            resourcePath: './view/page/windows-edit/',
-            outputPath: './output/build/windows-edit/'
-        },
+        root: {
+            matchURL: '/windows-detail',
+            resourcePath: './view/page/windows-detail/',
+            outputPath: './output/build/windows-detail/'
+        }
     },
 
     TCOS: {

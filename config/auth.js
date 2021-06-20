@@ -1,7 +1,7 @@
 import consts from './../library/consts'
 
 const auth = {
-    headerToken: 'task-assist-v4-token',
+    headerToken: 'task-assist-v5-token',
     uuid: 'universally-unique-identifier',
     url: {
        login: 'auth/login',
