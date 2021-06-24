@@ -1,11 +1,11 @@
 const ListRow = ({ row }) => {
-    return <div className="windows-list-row flex-start-center flex-rest">{row.map((item, key) =>
+    return <div className="windows-list-row flex-rest">{row.map((item, key) =>
         <ListItem key={key} item={item} />
     )}</div>
 }
 
 const ListItem = ({ item }) => {
-    return <div className="windows-list-item flex-center flex-rest">item</div>
+    return <div className="windows-list-item flex-rest">item</div>
 }
 
 export default class ListComponent extends React.Component {

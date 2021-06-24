@@ -1,6 +1,7 @@
 import {
     default_display_style,
-    getDisplayStyleByLoadPageHash
+    getDisplayStyleByLoadPageHash,
+    list
 } from './../../const/display-style';
 import {
     default_category_options,
@@ -51,7 +52,7 @@ export default class List extends React.Component {
         const { displayStyle } = this.state
 
         return <div className="windows-list flex-column flex-rest">
-            <QuadrantComponent />
+            {displayStyle.value === list.value ? <ListComponent /> : <QuadrantComponent />}
         </div>
     }
 }

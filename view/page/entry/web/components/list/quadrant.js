@@ -1,5 +1,5 @@
 const ListRow = ({ left, right }) => {
-    return <div className="windows-list-row flex-start flex-rest">
+    return <div className="windows-list-row flex-rest">
         <div className="windows-list-left flex-column flex-rest">{left.map((item, key) =>
             <ListItem key={key} item={item} />
         )}</div>
@@ -10,7 +10,11 @@ const ListRow = ({ left, right }) => {
 }
 
 const ListItem = ({ item }) => {
-    return <div className="windows-list-item flex-rest">item</div>
+    return <div className="windows-list-item">
+        <div className="windows-item-container">
+            item
+        </div>
+    </div>
 }
 
 export default class QuadrantComponent extends React.Component {
