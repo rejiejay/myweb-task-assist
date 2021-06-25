@@ -1,6 +1,9 @@
+import { header_height } from './../../const/fixed-size';
+import toast from './../../../../../components/toast';
+import Modal from './../../../../../components/modal';
+
 import CategoryFilter from './category-filter';
 import DisplayStyle from './display-style';
-import { header_height } from './../../const/fixed-size';
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -11,6 +14,19 @@ export default class Header extends React.Component {
     searchHandle() { }
 
     clearSearch() { }
+
+    addTask = () => {
+        toast.show()
+        import('./../../add-task/index.js').then(async ({ WebAddTask }) => {
+            toast.destroy()
+
+            const webAddTask = new Modal(WebAddTask);
+            const result = await webAddTask.show();
+
+            if (result instanceof Error) return
+            console.log('result', result);
+        })
+    }
 
     render() {
         const height = `${header_height}px`
@@ -46,7 +62,7 @@ export default class Header extends React.Component {
             </div>
 
             <div className="right-operating flex-start-center">
-                <div className="operat-item hover-item">新增</div>
+                <div className="operat-item hover-item" onClick={this.addTask}>新增</div>
             </div>
         </div>
     }
