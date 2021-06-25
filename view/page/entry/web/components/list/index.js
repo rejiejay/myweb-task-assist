@@ -9,12 +9,15 @@ import {
 } from './../../const/category-options';
 import ListComponent from './list';
 import QuadrantComponent from './quadrant';
+import Pagination from './pagination';
 
 export default class List extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             list: [],
+            pageNo: 1,
+            pageTotal: 1,
             displayStyle: default_display_style,
             category: default_category_options,
         }
@@ -49,10 +52,11 @@ export default class List extends React.Component {
     }
 
     render() {
-        const { displayStyle } = this.state
+        const { displayStyle, pageNo, pageTotal } = this.state
 
-        return <div className="windows-list flex-column flex-rest">
+        return <div className="windows-list flex-column-center flex-rest">
             {displayStyle.value === list.value ? <ListComponent /> : <QuadrantComponent />}
+            <Pagination pageNo={pageNo} pageTotal={pageTotal} />
         </div>
     }
 }
