@@ -58,12 +58,12 @@ const accumulateText = (file, data = '', options = {}) => new Promise(async (res
 const isFilePath = path => new Promise(async (resolve, reject) => {
     const lstat = fse.lstatSync(path)
 
-    if (lstat) {
+    if (lstat.isDirectory()) {
         return reject(new Error(`path: "${path}" is not file path`))
     }
-    const exists = await fse.pathExists(resourcePath)
+    const exists = await fse.pathExists(path)
 
-    if (!exists) {
+    if (!exists && !lstat.isFile()) {
         return reject(new Error(`path: "${path}" is not exists`))
     }
 
