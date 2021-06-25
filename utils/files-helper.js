@@ -28,7 +28,7 @@ const outputFile = (file, data, options = {}) => new Promise((resolve, reject) =
  * @param {String} file
  * @param {object} data
  */
-const accumulateText = (file, data = '', options = {}) => new Promise(async(resolve, reject) => {
+const accumulateText = (file, data = '', options = {}) => new Promise(async (resolve, reject) => {
     const exists = await fse.pathExists(file)
 
     if (!exists) {
@@ -51,10 +51,30 @@ const accumulateText = (file, data = '', options = {}) => new Promise(async(reso
     })
 })
 
+/**
+ * 判断是否是文件
+ * @param {String} path
+ */
+const isFilePath = path => new Promise(async (resolve, reject) => {
+    const lstat = fse.lstatSync(path)
+
+    if (lstat) {
+        return reject(new Error(`path: "${path}" is not file path`))
+    }
+    const exists = await fse.pathExists(resourcePath)
+
+    if (!exists) {
+        return reject(new Error(`path: "${path}" is not exists`))
+    }
+
+    resolve();
+})
+
 const FilesHelper = {
     copyDirectory,
     outputFile,
-    accumulateText
+    accumulateText,
+    isFilePath
 }
 
 export default FilesHelper
