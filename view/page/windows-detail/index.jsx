@@ -1,6 +1,7 @@
 import Header from './components/header';
 import SideOperation from './components/side-operation';
 import ProjectPlan from './components/project-plan';
+import NoteRecord from './components/note-record';
 
 class WindowsDetailComponent extends React.Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class WindowsDetailComponent extends React.Component {
             >
                 <Header />
                 <ProjectPlan />
+                <NoteRecord />
             </div>
             <SideOperation width={`${sideWidth}px`} />
         </div>
