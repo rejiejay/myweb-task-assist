@@ -1,9 +1,67 @@
+@import './mind.less';
+
 @black1: #303133;
 @black2: #606266;
 @black3: #909399;
 @black4: #C0C4CC;
 
 .note-record {
-    width     : 100%;
-    min-height: 460px;
+    width   : 100%;
+    position: relative;
+    overflow: hidden;
+
+    .operation {
+        position: absolute;
+        right   : 0px;
+        top     : 0px;
+        z-index : 2;
+
+        .operation-container {
+            padding: 15px 25px;
+        }
+
+        .operation-item {
+            padding-left: 15px;
+        }
+
+        .operation-item-container {
+            height          : 32px;
+            padding         : 0px 15px;
+            background-color: #fff;
+            cursor          : pointer;
+        }
+    }
+
+    .note-record-mind {
+
+
+
+        .theme-primary {
+            z-index: 1;
+        }
+
+        .jsmind-inner::-webkit-scrollbar-track {
+            box-shadow        : inset 0 0 6px rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color  : #F5F5F5;
+        }
+
+        .jsmind-inner::-webkit-scrollbar {
+            height          : 8px;
+            width           : 8px;
+            background-color: #F5F5F5;
+        }
+
+        .jsmind-inner::-webkit-scrollbar-thumb {
+            background-color: #8c8c8c;
+            background-image: -webkit-linear-gradient(45deg,
+                    rgba(255, 255, 255, .2) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, .2) 50%,
+                    rgba(255, 255, 255, .2) 75%,
+                    transparent 75%,
+                    transparent)
+        }
+    }
 }

@@ -8,21 +8,29 @@ class WindowsDetailComponent extends React.Component {
         super(props)
 
         this.state = {}
+        this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
         this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
     }
 
     render() {
-        const { clientWidth } = this
+        const { clientWidth, clientHeight } = this
         const sideWidth = 450
-        const mainWidth = `${clientWidth - sideWidth}px`
+        const mainWidth = `${clientWidth - sideWidth - 1}px`
+        const mainHeight = clientHeight - 46
+        const mainOffsetHeight = mainHeight - 180
 
         return <div className="windows-container flex-start">
             <div className="main-windows flex-column"
                 style={{ width: mainWidth }}
             >
                 <Header />
-                <ProjectPlan />
-                <NoteRecord />
+                <ProjectPlan
+                    height={Math.floor(mainOffsetHeight / 3)}
+                />
+                <NoteRecord
+                    height={Math.floor(mainOffsetHeight * (2 / 3))}
+                    width={mainWidth}
+                />
             </div>
             <SideOperation width={`${sideWidth}px`} />
         </div>

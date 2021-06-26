@@ -44,7 +44,9 @@ export default class ProjectPlan extends React.Component {
     }
 
     render() {
-        return <div className='project-plan noselect'>
+        const { height } = this.props;
+
+        return <div className='project-plan noselect' style={{ height: `${height}px` }}>
             <div className='project-plan-container flex-start'>
                 <PlanColumnItem mainName='整体目标' isMain />
                 <PlanColumnItem mainName='第一目标' />
