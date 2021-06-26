@@ -10,10 +10,37 @@ class ContentInputItem extends React.Component {
 
     render() {
         const { value, type, index, onChange, id, onFocus, onBlur } = this.props;
+        let className = 'content-input-item flex-start-center'
+        let splitWidth = 15
+        let menu = ''
 
-        return <div className="content-input-item flex-start-center">
+        switch (type) {
+            case 'normal':
+                break;
+            case 'h1':
+                className += ' input-item-h1'
+                break;
+            case 'h2':
+                className += ' input-item-h2'
+                break;
+            case 'h3':
+                splitWidth = 20
+                className += ' input-item-h3'
+                break;
+            case 'h4':
+                splitWidth = 20
+                className += ' input-item-h4'
+                break;
+            default:
+                break;
+        }
+
+        return <div className={className}>
             <label>{index}</label>
-            <div style={{ width: '15px' }} />
+            <div
+                className='flex-center'
+                style={{ width: `${splitWidth}px` }}
+            >{menu}</div>
             <input type="text"
                 id={id}
                 ref='input'
@@ -166,7 +193,7 @@ export default class NoteRecordEdit extends React.Component {
         let focusWrapId = '';
         for (let index = 0; index < contentInputList.length; index++) {
             const element = contentInputList[index];
-            
+
             if (inputFocusField === element.id) {
                 if (direction === 'up' && index > 0) {
                     focusWrapId = contentInputList[index - 1].id

@@ -119,15 +119,18 @@
     }
 
     .record-edit-content .edit-content-input {
+        border-bottom: 1px solid #ddd;
+
         .title-input {
             padding-top   : 15px;
-            padding-bottom: 5px;
-            padding-left  : 42px;
+            padding-bottom: 15px;
+            padding-left  : 15px;
+            border-bottom : 1px solid #ddd;
 
             input {
                 width    : 100%;
                 padding  : 0px;
-                font-size: 16px;
+                font-size: 18px;
             }
         }
     }
@@ -148,6 +151,32 @@
             height     : 32px;
             line-height: 32px;
             color      : @black2;
+        }
+    }
+
+    .input-item-h1 {
+        input {
+            font-size  : 16px;
+            font-weight: bold;
+        }
+    }
+
+    .input-item-h2 {
+        input {
+            font-size: 16px;
+        }
+    }
+
+    .input-item-h3 {
+        input {
+            font-size  : 14px;
+            font-weight: bold;
+        }
+    }
+
+    .input-item-h4 {
+        input {
+            font-size: 14px;
         }
     }
 }
