@@ -12,7 +12,7 @@ class Modal {
         />
     }
 
-    destroy() {
+    destroy = () => {
         document.body.removeChild(this.div);
     }
 

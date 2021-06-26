@@ -21,8 +21,13 @@ export class WebAddTask extends React.Component {
         }
     }
 
+    confirmHandle = () => {
+        const { resolve } = this.props
+        resolve();
+    }
+
     render() {
-        const { resolve, reject } = this.props
+        const { reject } = this.props
         const {
             title, inputFocusField, content,
             specific, measurable, attainable, relevant, timeBound
@@ -99,6 +104,14 @@ export class WebAddTask extends React.Component {
                     onFocus={() => this.setState({ inputFocusField: 'timeBound' })}
                     onBlur={() => this.setState({ inputFocusField: '' })}
                 />
+            </div>
+            <div className="windows-operate flex-start">
+                <div className="windows-operate-item flex-center flex-rest"
+                    onClick={this.confirmHandle}
+                >新增</div>
+                <div className="windows-operate-item flex-center flex-rest"
+                    onClick={() => reject('关闭')}
+                >关闭</div>
             </div>
         </div>
     }
