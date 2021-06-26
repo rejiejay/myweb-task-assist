@@ -1,5 +1,6 @@
 import Header from './components/header';
 import SideOperation from './components/side-operation';
+import ProjectPlan from './components/project-plan';
 
 class WindowsDetailComponent extends React.Component {
     constructor(props) {
@@ -12,6 +13,7 @@ class WindowsDetailComponent extends React.Component {
         return <div className="windows-container flex-start">
             <div className="main-windows flex-column flex-rest">
                 <Header />
+                <ProjectPlan />
             </div>
             <SideOperation />
         </div>
