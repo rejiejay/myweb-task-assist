@@ -12,21 +12,29 @@
 
     .project-plan-container {
         padding  : 15px;
-        min-width: 100%;
     }
 
     .column-main-item {
-        position : relative;
-        padding  : 0px 15px;
-        font-size: 12px;
-        height   : 35px;
-        border   : 1px solid #ddd;
+        position   : relative;
+        padding    : 0px 25px;
+        font-size  : 14px;
+        height     : 40px;
+        font-weight: bold;
+        border     : 1px solid #ddd;
 
         label:hover {
             color : #1890ff;
             cursor: pointer;
         }
 
+        .move-left {
+            position: absolute;
+            left    : -6px;
+            z-index : 1;
+            cursor  : pointer;
+        }
+
+        .move-right,
         .add-main-plan {
             position: absolute;
             right   : -6px;
@@ -41,25 +49,28 @@
             cursor  : pointer;
         }
 
+        .move-left,
+        .move-right,
         .add-main-plan,
         .add-sub-plan,
         .add-icon {
-            fill: #303133;
+            fill: #606266;
         }
 
+        .move-left:hover,
+        .move-right:hover,
         .add-main-plan:hover,
         .add-sub-plan:hover,
         .add-icon:hover {
             fill: #1890ff;
         }
-
     }
 
     .project-plan-column {
         .column-line {
             position        : relative;
-            top             : 17.5px;
-            width           : 25px;
+            top             : 20.5px;
+            width           : 35px;
             height          : 1px;
             background-color: #ddd;
         }

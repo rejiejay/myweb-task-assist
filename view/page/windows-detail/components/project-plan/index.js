@@ -1,9 +1,11 @@
-import { AddIcon } from './svg';
+import { AddIcon, MoveLeft, MoveRight } from './svg';
 
-const ColumnMainItem = ({ name }) => {
+const ColumnMainItem = ({ name, addMain, moveLeft, moveRight }) => {
     return <div className='column-main-item flex-center'>
         <label>{name}</label>
-        <AddIcon className='add-main-plan' />
+        {moveLeft && <MoveLeft />}
+        {moveRight && <MoveRight />}
+        {addMain && <AddIcon className='add-main-plan' />}
         <AddIcon className='add-sub-plan' />
     </div>
 }
@@ -11,8 +13,13 @@ const ColumnMainItem = ({ name }) => {
 const PlanColumnItem = ({ mainName, isMain }) => {
     return <div className='project-plan-column flex-start'>
         {!isMain && <div className='column-line' />}
-        <div className='column-main flex-column'>
-            <ColumnMainItem name={mainName} />
+        <div className='column-main flex-column-center'>
+            <ColumnMainItem
+                name={mainName}
+                addMain={isMain}
+                moveLeft={!isMain}
+                moveRight={!isMain}
+            />
         </div>
     </div>
 }
