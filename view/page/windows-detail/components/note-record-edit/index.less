@@ -13,10 +13,11 @@
         border-top      : 1px solid #ddd;
         border-right    : 1px solid #ddd;
         border-bottom   : 1px solid #ddd;
-        background-color: #fff;
+        background-color: #606266;
 
         .edit-navigation-container {
             padding: 15px;
+            color  : #fff;
 
             >div {
                 padding-bottom: 10px;
@@ -31,6 +32,10 @@
 
             >div:hover {
                 color: #1890ff;
+            }
+
+            >div:active {
+                color: #fff;
             }
         }
 
@@ -53,6 +58,96 @@
             padding-left: 15px;
             font-size   : 12px;
             font-weight : bold;
+        }
+    }
+
+    .record-edit-content {
+        border-right    : 1px solid #ddd;
+        border-bottom   : 1px solid #ddd;
+        background-color: #fff;
+    }
+
+    .record-edit-content .edit-content-header {
+        height          : 45px;
+        border-top      : 1px solid #ddd;
+        border-bottom   : 1px solid #ddd;
+        background-color: #fff;
+
+        .left-operating {
+            padding-left : 7.5px;
+            padding-right: 25px;
+
+            .drop-down-select-component {
+                padding: 0;
+            }
+
+            .operat-item {
+                padding: 7.5px;
+            }
+        }
+
+        .right-operating {
+            padding-left : 25px;
+            padding-right: 7.5px;
+
+            .operat-item {
+                padding: 7.5px;
+            }
+        }
+
+        .hover-item {
+            cursor            : pointer;
+            transition        : color 0.25s;
+            -moz-transition   : color 0.25s;
+            -webkit-transition: color 0.25s;
+            -o-transition     : color 0.25s;
+            transition        : background-color 1s;
+            -moz-transition   : background-color 1s;
+            -webkit-transition: background-color 1s;
+            -o-transition     : background-color 1s;
+        }
+
+        .hover-item:hover {
+            color           : @black1;
+            background-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .hover-item:active {
+            color           : #fff;
+            background-color: #1890ff;
+        }
+    }
+
+    .record-edit-content .edit-content-input {
+        .title-input {
+            padding-top   : 15px;
+            padding-bottom: 5px;
+            padding-left  : 42px;
+
+            input {
+                width    : 100%;
+                padding  : 0px;
+                font-size: 16px;
+            }
+        }
+    }
+
+    .content-input-item {
+        label {
+            width           : 24px;
+            height          : 32px;
+            line-height     : 32px;
+            padding-right   : 5px;
+            text-align      : right;
+            background-color: #f0f0f0;
+        }
+
+        input {
+            width      : 100%;
+            padding    : 0px;
+            height     : 32px;
+            line-height: 32px;
+            color      : @black2;
         }
     }
 }
