@@ -1,4 +1,16 @@
-import { AddIcon, MoveLeft, MoveRight } from './svg';
+import { AddIcon, MoveLeft, MoveRight, MoveTop, MoveBottom, MoveToMain } from './svg';
+
+const ColumnSubItem = ({ name }) => {
+    return <>
+        <div className='column-sub-line' />
+        <div className='column-sub-item flex-center'>
+            <label>{name}</label>
+            <MoveTop />
+            <MoveBottom />
+            <MoveToMain />
+        </div>
+    </>
+}
 
 const ColumnMainItem = ({ name, addMain, moveLeft, moveRight }) => {
     return <div className='column-main-item flex-center'>
@@ -20,6 +32,7 @@ const PlanColumnItem = ({ mainName, isMain }) => {
                 moveLeft={!isMain}
                 moveRight={!isMain}
             />
+            <ColumnSubItem name='未分類' />
         </div>
     </div>
 }
