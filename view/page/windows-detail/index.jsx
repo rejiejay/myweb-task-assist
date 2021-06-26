@@ -7,15 +7,22 @@ class WindowsDetailComponent extends React.Component {
         super(props)
 
         this.state = {}
+        this.clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
     }
 
     render() {
+        const { clientWidth } = this
+        const sideWidth = 450
+        const mainWidth = `${clientWidth - sideWidth}px`
+
         return <div className="windows-container flex-start">
-            <div className="main-windows flex-column flex-rest">
+            <div className="main-windows flex-column"
+                style={{ width: mainWidth }}
+            >
                 <Header />
                 <ProjectPlan />
             </div>
-            <SideOperation />
+            <SideOperation width={`${sideWidth}px`} />
         </div>
     }
 }

@@ -20,8 +20,9 @@ export default class SideOperation extends React.Component {
             title, inputFocusField, content,
             specific, measurable, attainable, relevant, timeBound
         } = this.state
+        const { width } = this.props
 
-        return <div className='side-operation'>
+        return <div className='side-operation' style={{ width: width || '450px' }}>
             <div className="side-operation-header noselect flex-start">
                 <div className="operation-header-item header-item-button flex-center flex-rest">完成</div>
             </div>

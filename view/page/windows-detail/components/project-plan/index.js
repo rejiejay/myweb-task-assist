@@ -1,3 +1,5 @@
+import { AddIcon } from './svg';
+
 export default class ProjectPlan extends React.Component {
     constructor(props) {
         super(props)
@@ -5,6 +7,13 @@ export default class ProjectPlan extends React.Component {
     }
 
     render() {
-        return <div className='project-plan'>project-plan</div>
+        return <div className='project-plan noselect'>
+            <div className='project-plan-container flex-start'>
+                <div className='project-plan-main'>
+                    <label>整体目标</label>
+                    <AddIcon size='12' />
+                </div>
+            </div>
+        </div>
     }
 }
