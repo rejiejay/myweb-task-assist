@@ -1,3 +1,5 @@
+import TaskDetail from './../../../../components/page/task-detail';
+
 const Otherinput = ({ title, placeholder, value, onChange, isFocus, onBlur, onFocus }) => {
     return <div className="content-input">
         <div className="content-input-title">{isFocus ? placeholder : title}</div>
@@ -17,7 +19,12 @@ export class WebAddTask extends React.Component {
         this.state = {
             title: '',
             inputFocusField: '',
-            content: ''
+            content: '',
+            specific: '',
+            measurable: '',
+            attainable: '',
+            relevant: '',
+            timeBound: ''
         }
     }
 
@@ -34,77 +41,16 @@ export class WebAddTask extends React.Component {
         } = this.state
 
         return <div className='windows-add-task'>
-            <div className="title-input flex-center">
-                <input type="text" placeholder="简单描述/提问"
-                    value={title || ''}
-                    onChange={({ target: { value } }) => this.setState({ title: value })}
-                    onFocus={() => this.setState({ inputFocusField: 'title' })}
-                    onBlur={() => this.setState({ inputFocusField: '' })}
-                />
-            </div>
-            {inputFocusField === 'title' && <div className='edit-input-tip'>情景? + Action/冲突/方案</div>}
-            {inputFocusField === 'content' && <div className='edit-input-tip'>结论1: (情景是啥?)是什么?为什么?怎么办?</div>}
-            <div className="content-input">
-                <textarea className="content-textarea fiex-rest" type="text"
-                    placeholder='任务结论'
-                    value={content || ''}
-                    onChange={({ target: { value } }) => this.setState({ content: value })}
-                    onFocus={() => this.setState({ inputFocusField: 'content' })}
-                    onBlur={() => this.setState({ inputFocusField: '' })}
-                ></textarea>
-            </div>
-            <div className="other-input">
-                <Otherinput
-                    key='specific'
-                    title='任务具体内容?'
-                    placeholder='任务是什么?为什么?啥跨度影响?对啥影响大?'
-                    value={specific}
-                    onChange={value => this.setState({ specific: value })}
-                    isFocus={inputFocusField === 'specific'}
-                    onFocus={() => this.setState({ inputFocusField: 'specific' })}
-                    onBlur={() => this.setState({ inputFocusField: '' })}
-                />
-                <Otherinput
-                    key='measurable'
-                    title='任务完成标识?'
-                    placeholder='完成的标识是什么?为什么标志完成?核心因素?'
-                    value={measurable}
-                    onChange={value => this.setState({ measurable: value })}
-                    isFocus={inputFocusField === 'measurable'}
-                    onFocus={() => this.setState({ inputFocusField: 'measurable' })}
-                    onBlur={() => this.setState({ inputFocusField: '' })}
-                />
-                <Otherinput
-                    key='attainable'
-                    title='任务是否可以实现?'
-                    placeholder='为什么可以实现?未来自己接受呢? 决定因素?'
-                    value={attainable}
-                    onChange={value => this.setState({ attainable: value })}
-                    isFocus={inputFocusField === 'attainable'}
-                    onFocus={() => this.setState({ inputFocusField: 'attainable' })}
-                    onBlur={() => this.setState({ inputFocusField: '' })}
-                />
-                <Otherinput
-                    key='relevant'
-                    title='任务和哪些需求相关?'
-                    placeholder='为什么和这个需求相关?时间跨度?本质?哪个角度?'
-                    value={relevant}
-                    onChange={value => this.setState({ relevant: value })}
-                    isFocus={inputFocusField === 'relevant'}
-                    onFocus={() => this.setState({ inputFocusField: 'relevant' })}
-                    onBlur={() => this.setState({ inputFocusField: '' })}
-                />
-                <Otherinput
-                    key='timeBound'
-                    title='明确的截止期限?'
-                    placeholder='期限1： 是什么?为什么设定这个时间?哪个角度?'
-                    value={timeBound}
-                    onChange={value => this.setState({ timeBound: value })}
-                    isFocus={inputFocusField === 'timeBound'}
-                    onFocus={() => this.setState({ inputFocusField: 'timeBound' })}
-                    onBlur={() => this.setState({ inputFocusField: '' })}
-                />
-            </div>
+            <TaskDetail
+                title={title}
+                inputFocusField={inputFocusField}
+                content={content}
+                specific={specific}
+                measurable={measurable}
+                attainable={attainable}
+                relevant={relevant}
+                timeBound={timeBound}
+            />
             <div className="windows-operate flex-start">
                 <div className="windows-operate-item flex-center flex-rest"
                     onClick={this.confirmHandle}
