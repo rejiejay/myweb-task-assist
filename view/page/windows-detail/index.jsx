@@ -1,3 +1,6 @@
+import Header from './components/header';
+import SideOperation from './components/side-operation';
+
 class WindowsDetailComponent extends React.Component {
     constructor(props) {
         super(props)
@@ -6,7 +9,12 @@ class WindowsDetailComponent extends React.Component {
     }
 
     render() {
-        return <div className="windows-container">task detail</div>
+        return <div className="windows-container flex-start">
+            <div className="main-windows flex-column flex-rest">
+                <Header />
+            </div>
+            <SideOperation />
+        </div>
     }
 }
 
