@@ -5,7 +5,6 @@ export default class SideOperation extends React.Component {
         super(props)
         this.state = {
             title: '',
-            inputFocusField: '',
             content: '',
             specific: '',
             measurable: '',
@@ -15,10 +14,15 @@ export default class SideOperation extends React.Component {
         }
     }
 
+    onChangeHandle = (value, field) => {
+        let newState = {};
+        newState[field] = value;
+        this.setState(newState);
+    }
+
     render() {
         const {
-            title, inputFocusField, content,
-            specific, measurable, attainable, relevant, timeBound
+            title, content, specific, measurable, attainable, relevant, timeBound
         } = this.state
         const { width } = this.props
 
@@ -28,13 +32,13 @@ export default class SideOperation extends React.Component {
             </div>
             <TaskDetail
                 title={title}
-                inputFocusField={inputFocusField}
                 content={content}
                 specific={specific}
                 measurable={measurable}
                 attainable={attainable}
                 relevant={relevant}
                 timeBound={timeBound}
+                onChangeHandle={this.onChangeHandle}
             />
         </div>
     }

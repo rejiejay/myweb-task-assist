@@ -18,7 +18,6 @@ export class WebAddTask extends React.Component {
         super(props)
         this.state = {
             title: '',
-            inputFocusField: '',
             content: '',
             specific: '',
             measurable: '',
@@ -33,23 +32,28 @@ export class WebAddTask extends React.Component {
         resolve();
     }
 
+    onChangeHandle = (value, field) => {
+        let newState = {};
+        newState[field] = value;
+        this.setState(newState);
+    }
+
     render() {
         const { reject } = this.props
         const {
-            title, inputFocusField, content,
-            specific, measurable, attainable, relevant, timeBound
+            title, content, specific, measurable, attainable, relevant, timeBound
         } = this.state
 
         return <div className='windows-add-task'>
             <TaskDetail
                 title={title}
-                inputFocusField={inputFocusField}
                 content={content}
                 specific={specific}
                 measurable={measurable}
                 attainable={attainable}
                 relevant={relevant}
                 timeBound={timeBound}
+                onChangeHandle={this.onChangeHandle}
             />
             <div className="windows-operate flex-start">
                 <div className="windows-operate-item flex-center flex-rest"

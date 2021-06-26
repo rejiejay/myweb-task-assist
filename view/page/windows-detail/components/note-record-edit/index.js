@@ -1,15 +1,30 @@
-const ContentInputItem = ({ value, index, onChange, id, onFocus, onBlur }) => {
-    return <div className="content-input-item flex-start-center">
-        <label>{index}</label>
-        <div style={{ width: '15px' }} />
-        <input type="text"
-            value={value || ''}
-            onChange={({ target: { value } }) => onChange(value, id)}
-            onFocus={onFocus}
-            onBlur={onBlur}
-        />
-        <div style={{ width: '15px' }} />
-    </div>
+class ContentInputItem extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {}
+    }
+
+    focusHandle() {
+        this.refs.input.focus()
+    }
+
+    render() {
+        const { value, type, index, onChange, id, onFocus, onBlur } = this.props;
+
+        return <div className="content-input-item flex-start-center">
+            <label>{index}</label>
+            <div style={{ width: '15px' }} />
+            <input type="text"
+                id={id}
+                ref='input'
+                value={value || ''}
+                onChange={({ target: { value } }) => onChange(value, id)}
+                onFocus={onFocus}
+                onBlur={onBlur}
+            />
+            <div style={{ width: '15px' }} />
+        </div>
+    }
 }
 
 export default class NoteRecordEdit extends React.Component {
@@ -19,31 +34,109 @@ export default class NoteRecordEdit extends React.Component {
             title: '',
             inputFocusField: '',
             contentInputList: [{
-                tyep: 'normal',
+                type: 'normal',
                 id: 'key-1',
                 value: '内容',
             }, {
-                tyep: 'normal',
+                type: 'normal',
                 id: 'key-2',
                 value: '内容',
             }, {
-                tyep: 'h1',
+                type: 'h1',
                 id: 'key-3',
                 value: '标题1',
             }, {
-                tyep: 'h2',
+                type: 'h2',
                 id: 'key-4',
                 value: '标题2',
             }, {
-                tyep: 'h3',
+                type: 'h3',
                 id: 'key-5',
                 value: '标题3',
             }, {
-                tyep: 'h4',
+                type: 'h4',
                 id: 'key-6',
                 value: '标题4',
             }],
         }
+    }
+
+    componentDidMount() {
+        window.document.addEventListener('keydown', this.keydownEventListener)
+    }
+
+    componentWillUnmount() {
+        window.document.removeEventListener('keydown', this.keydownEventListener)
+    }
+
+    keydownEventListener = e => {
+        let currKey = 0
+        e = e || event
+        currKey = e.keyCode || e.which || e.charCode // 支持IE、FF
+        if (currKey === 13) {
+            this.onWrapHandle()
+        }
+        if (currKey === 8) {
+            this.onDeleteHandle()
+        }
+    }
+
+    onWrapHandle() {
+        let newWrapId = '';
+
+        const focusNewWrap = () => {
+            if (!newWrapId) return
+            if (!this.refs[newWrapId]) return
+            this.refs[newWrapId].focusHandle()
+        }
+
+        const { inputFocusField, contentInputList } = this.state
+        if (!inputFocusField) return
+        const newContentInputList = contentInputList.reduce((accumulator, currentValue, currentIndex) => {
+            const id = `${new Date().getTime() + currentIndex}${currentIndex}`
+            const isWrapContentInput = currentValue.id === inputFocusField;
+            currentValue.id = id
+            accumulator.push(currentValue);
+
+            if (isWrapContentInput) {
+                newWrapId = id + 'inputFocusField'
+                accumulator.push({
+                    type: 'normal',
+                    id: newWrapId,
+                    value: '',
+                });
+            }
+
+            return accumulator
+        }, [])
+        this.setState({
+            contentInputList: newContentInputList
+        }, () => focusNewWrap())
+    }
+
+    onDeleteHandle() {
+        const { inputFocusField } = this.state
+        if (!inputFocusField) return
+    }
+
+    setInputFocusField = id => {
+        this.setState({ inputFocusField: id })
+    }
+
+    clearInputFocusField = () => {
+        this.setState({ inputFocusField: '' })
+    }
+
+    setContentInputItemValue = (value, id) => {
+        this.setState({
+            contentInputList: this.state.contentInputList.map((item, key) => {
+                if (item.id === id) {
+                    return { ...item, value }
+                }
+
+                return item
+            })
+        })
     }
 
     render() {
@@ -94,11 +187,15 @@ export default class NoteRecordEdit extends React.Component {
 
                     {contentInputList.map((item, key) =>
                         <ContentInputItem
-                            key={key}
+                            ref={item.id}
+                            key={item.id}
                             index={key + 1}
                             id={item.id}
-                            tyep={item.tyep}
+                            type={item.type}
                             value={item.value}
+                            onChange={this.setContentInputItemValue}
+                            onFocus={() => this.setInputFocusField(item.id)}
+                            onBlur={this.clearInputFocusField}
                         />
                     )}
                 </div>
