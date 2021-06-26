@@ -9,9 +9,10 @@ export default class ProjectPlan extends React.Component {
     render() {
         return <div className='project-plan noselect'>
             <div className='project-plan-container flex-start'>
-                <div className='project-plan-main'>
+                <div className='project-plan-main flex-center'>
                     <label>整体目标</label>
-                    <AddIcon size='12' />
+                    <AddIcon className='add-main-plan' />
+                    <AddIcon className='add-sub-plan' />
                 </div>
             </div>
         </div>

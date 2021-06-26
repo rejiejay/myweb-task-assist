@@ -17,14 +17,46 @@
 
     .project-plan-main {
         position : relative;
-        padding  : 10px 15px;
+        padding  : 0px 15px;
         font-size: 12px;
+        height   : 35px;
         border   : 1px solid #ddd;
-        cursor   : pointer;
+
+        label:hover {
+            color : #1890ff;
+            cursor: pointer;
+        }
+
+        .add-main-plan {
+            position: absolute;
+            right   : -6px;
+            z-index : 1;
+            cursor  : pointer;
+        }
+
+        .add-sub-plan {
+            position: absolute;
+            bottom  : -6px;
+            z-index : 1;
+            cursor  : pointer;
+        }
+    }
+
+    .add-main-plan,
+    .add-sub-plan,
+    .add-icon {
+        fill: #303133;
+    }
+
+    .add-main-plan:hover,
+    .add-sub-plan:hover,
+    .add-icon:hover {
+        fill: #1890ff;
     }
 }
 
 .project-plan::-webkit-scrollbar-track {
+    box-shadow        : inset 0 0 6px rgba(0, 0, 0, 0.3);
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color  : #F5F5F5;
 }
