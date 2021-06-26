@@ -1,7 +1,8 @@
 import Header from './components/header';
 import SideOperation from './components/side-operation';
 import ProjectPlan from './components/project-plan';
-import NoteRecord from './components/note-record';
+import NoteRecordMind from './components/note-record-mind';
+import NoteRecordEdit from './components/note-record-edit';
 
 class WindowsDetailComponent extends React.Component {
     constructor(props) {
@@ -27,9 +28,12 @@ class WindowsDetailComponent extends React.Component {
                 <ProjectPlan
                     height={Math.floor(mainOffsetHeight / 3)}
                 />
-                <NoteRecord
+                <NoteRecordMind
                     height={Math.floor(mainOffsetHeight * (2 / 3))}
                     width={mainWidth}
+                />
+                <NoteRecordEdit
+                    height={Math.floor(mainHeight * (2 / 3))}
                 />
             </div>
             <SideOperation width={`${sideWidth}px`} />

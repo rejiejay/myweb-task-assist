@@ -5,7 +5,7 @@ import configs from './../../../../configs'
 import mockData from './mock-data'
 
 
-export default class NoteRecord extends React.Component {
+export default class NoteRecordMind extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
@@ -38,7 +38,7 @@ export default class NoteRecord extends React.Component {
     render() {
         const { height, width } = this.props;
 
-        return <div className='note-record noselect' style={{ height: `${height}px` }}>
+        return <div className='note-record-mind noselect' style={{ height: `${height}px` }}>
             <div className="operation">
                 <div className="operation-container flex-start">
                     <div className="operation-item">
@@ -47,7 +47,7 @@ export default class NoteRecord extends React.Component {
                 </div>
             </div>
 
-            <div className="note-record-mind"
+            <div className="record-mind-container"
                 id="jsmind_container"
                 style={{
                     height: `${height}px`,
