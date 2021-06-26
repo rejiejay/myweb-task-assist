@@ -115,8 +115,41 @@ export default class NoteRecordEdit extends React.Component {
     }
 
     onDeleteHandle() {
-        const { inputFocusField } = this.state
+        let lastWrapId = '';
+
+        const focusNewWrap = () => {
+            if (!lastWrapId) return
+            if (!this.refs[lastWrapId]) return
+            this.refs[lastWrapId].focusHandle()
+        }
+
+        const { inputFocusField, contentInputList } = this.state
+        if (contentInputList.length <= 1) return
         if (!inputFocusField) return
+        const item = contentInputList.find(i => i.id === inputFocusField)
+        if (!item) return
+        if (item.value) return
+
+        const newContentInputList = contentInputList.reduce((accumulator, currentValue, currentIndex) => {
+            const isDeleteContentInput = currentValue.id === inputFocusField;
+            const id = `${new Date().getTime() + currentIndex}${currentIndex}`
+            currentValue.id = id
+
+            if (isDeleteContentInput) {
+                accumulator.isDel = true
+            } else {
+                accumulator.list.push(currentValue);
+            }
+
+            if (!accumulator.isDel) {
+                lastWrapId = id
+            }
+
+            return accumulator
+        }, { list: [], isDel: false }).list
+        this.setState({
+            contentInputList: newContentInputList
+        }, () => focusNewWrap())
     }
 
     setInputFocusField = id => {
