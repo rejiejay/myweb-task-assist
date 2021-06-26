@@ -4,7 +4,55 @@
 @black4: #C0C4CC;
 
 .note-record-edit {
-    position  : relative;
-    border-top: 1px solid #ddd;
-    width     : 100%;
+    position      : relative;
+    width         : 100%;
+    padding-bottom: 35px;
+
+    .record-edit-navigation {
+        width           : 230px;
+        border-top      : 1px solid #ddd;
+        border-right    : 1px solid #ddd;
+        border-bottom   : 1px solid #ddd;
+        background-color: #fff;
+
+        .edit-navigation-container {
+            padding: 15px;
+
+            >div {
+                padding-bottom: 10px;
+                cursor        : pointer;
+            }
+
+            >div:before {
+                content    : '· ';
+                font-size  : 16px;
+                font-weight: bold;
+            }
+
+            >div:hover {
+                color: #1890ff;
+            }
+        }
+
+        .edit-navigation-h1 {
+            font-size: 16px;
+        }
+
+        .edit-navigation-h2 {
+            padding-left: 10px;
+            font-size   : 14px;
+            font-weight : bold;
+        }
+
+        .edit-navigation-h3 {
+            padding-left: 10px;
+            font-size   : 14px;
+        }
+
+        .edit-navigation-h4 {
+            padding-left: 15px;
+            font-size   : 12px;
+            font-weight : bold;
+        }
+    }
 }
