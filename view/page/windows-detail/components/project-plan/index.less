@@ -15,7 +15,7 @@
         min-width: 100%;
     }
 
-    .project-plan-main {
+    .column-main-item {
         position : relative;
         padding  : 0px 15px;
         font-size: 12px;
@@ -40,18 +40,29 @@
             z-index : 1;
             cursor  : pointer;
         }
+
+        .add-main-plan,
+        .add-sub-plan,
+        .add-icon {
+            fill: #303133;
+        }
+
+        .add-main-plan:hover,
+        .add-sub-plan:hover,
+        .add-icon:hover {
+            fill: #1890ff;
+        }
+
     }
 
-    .add-main-plan,
-    .add-sub-plan,
-    .add-icon {
-        fill: #303133;
-    }
-
-    .add-main-plan:hover,
-    .add-sub-plan:hover,
-    .add-icon:hover {
-        fill: #1890ff;
+    .project-plan-column {
+        .column-line {
+            position        : relative;
+            top             : 17.5px;
+            width           : 25px;
+            height          : 1px;
+            background-color: #ddd;
+        }
     }
 }
 
