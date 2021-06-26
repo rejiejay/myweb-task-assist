@@ -79,6 +79,12 @@ export default class NoteRecordEdit extends React.Component {
         if (currKey === 8) {
             this.onDeleteHandle()
         }
+        if (currKey === 38) {
+            this.onMoveFocusHandle('up')
+        }
+        if (currKey === 40) {
+            this.onMoveFocusHandle('dowm')
+        }
     }
 
     onWrapHandle() {
@@ -150,6 +156,29 @@ export default class NoteRecordEdit extends React.Component {
         this.setState({
             contentInputList: newContentInputList
         }, () => focusNewWrap())
+    }
+
+    onMoveFocusHandle(direction) {
+        const { inputFocusField, contentInputList } = this.state
+        if (contentInputList.length <= 1) return
+        if (!inputFocusField) return
+
+        let focusWrapId = '';
+        for (let index = 0; index < contentInputList.length; index++) {
+            const element = contentInputList[index];
+            
+            if (inputFocusField === element.id) {
+                if (direction === 'up' && index > 0) {
+                    focusWrapId = contentInputList[index - 1].id
+                }
+                if (direction === 'dowm' && index < (contentInputList.length - 1)) {
+                    focusWrapId = contentInputList[index + 1].id
+                }
+            }
+        }
+
+        if (!focusWrapId) return
+        this.refs[focusWrapId].focusHandle()
     }
 
     setInputFocusField = id => {
