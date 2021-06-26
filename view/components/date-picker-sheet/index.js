@@ -55,6 +55,6 @@ const DatePicker = options => new Promise(async(resolve, reject) => {
     })
 
     datepicker.show()
-})
+}).catch(error => error);
 
 export default DatePicker

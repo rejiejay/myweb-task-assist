@@ -13,5 +13,5 @@ class WindowsDetailComponent extends React.Component {
 window.onload = () => {
     const root = document.getElementById('jeker-task-assist-system')
     root.className = 'windows'
-    ReactDOM.render(<WindowsEditComponent />, root)
+    ReactDOM.render(<WindowsDetailComponent />, root)
 }

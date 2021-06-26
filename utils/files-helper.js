@@ -11,7 +11,7 @@ import fse from 'fs-extra';
 const copyDirectory = (targetFolderPath, renderFolderPath) => new Promise((resolve, reject) => fse.copy(targetFolderPath, renderFolderPath, error => {
     if (error) return reject(new Error(error))
     resolve()
-}))
+})).catch(error => error);
 
 /**
  * 异步渲染文件, 不管文件是否存在
@@ -21,7 +21,7 @@ const copyDirectory = (targetFolderPath, renderFolderPath) => new Promise((resol
 const outputFile = (file, data, options = {}) => new Promise((resolve, reject) => fse.outputFile(file, data, options, error => {
     if (error) return reject(new Error(error))
     resolve()
-}))
+})).catch(error => error);
 
 /**
  * 异步新增文件数据, 不管文件是否存在
@@ -49,7 +49,7 @@ const accumulateText = (file, data = '', options = {}) => new Promise(async (res
         if (readFileError) return reject(new Error(readFileError))
         render(content)
     })
-})
+}).catch(error => error);
 
 /**
  * 判断是否是文件
@@ -68,7 +68,7 @@ const isFilePath = path => new Promise(async (resolve, reject) => {
     }
 
     resolve();
-})
+}).catch(error => error);
 
 const FilesHelper = {
     copyDirectory,

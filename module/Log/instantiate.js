@@ -29,7 +29,7 @@ const outPutHandle = (message, logType, { resolve, reject }) => {
             rejectHandle()
             reject()
         }
-    })
+    }).catch(error => error);
 }
 
 const logHandle = (message, logType) => {

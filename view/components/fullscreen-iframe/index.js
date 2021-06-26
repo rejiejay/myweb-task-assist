@@ -39,7 +39,7 @@ const FullscreenIframe = ({ Element, zIndex, props, className }) => {
     return new Promise((resolve, reject) => {
         resolveHandle = resolve
         rejectHandle = reject
-    })
+    }).catch(error => error);
 }
 
 export default FullscreenIframe

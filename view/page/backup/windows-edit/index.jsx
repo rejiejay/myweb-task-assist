@@ -60,7 +60,7 @@ class WindowsEditComponent extends React.Component {
         return new Promise(resolve => this.setState(filter, () => {
             filterEditRef.initTaskFilter()
             resolve()
-        }))
+        })).catch(error => error);
     }
 
     initPageData = async id => {

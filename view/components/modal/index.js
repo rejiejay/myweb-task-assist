@@ -33,6 +33,7 @@ class Modal {
             document.body.appendChild(div)
             ReactDOM.render(renderElement(resolveHandle, rejectHandle), div);
         })
+            .catch(error => error);
     }
 }
 

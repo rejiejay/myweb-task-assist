@@ -3,6 +3,7 @@ import * as Path from 'path'
 import less from 'less';
 import webpack from 'webpack';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import fse from 'fs-extra';
 
 import config from './../../config/index.js'
 import { projectRelativePath } from './../../utils/path-handle.js';
@@ -121,7 +122,7 @@ class ResourcesUtils {
                 if (err || stats.hasErrors()) return reject(new Error(`${stats}`))
                 return resolve()
             })
-        })
+        }).catch(error => error);
     }
 
     renderHyperTextMarkupLanguage(version = '') {
@@ -151,7 +152,7 @@ class ResourcesUtils {
                 if (readFileError) return reject(new Error(JSON.stringify(readFileError)))
                 initVersion(content)
             })
-        })
+        }).catch(error => error);
     }
 }
 
@@ -217,9 +218,14 @@ class ResourcesHandle extends ResourcesUtils {
         const mineTypeMap = { html: 'text/html;charset=utf-8', htm: 'text/html;charset=utf-8', xml: "text/xml;charset=utf-8", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", css: "text/css;charset=utf-8", txt: "text/plain;charset=utf-8", mp3: "audio/mpeg", mp4: "video/mp4", ico: "image/x-icon", tif: "image/tiff", svg: "image/svg+xml", zip: "application/zip", ttf: "font/ttf", woff: "font/woff", woff2: "font/woff2" }
         let url = this.request.url
         url = url.split('?')[0].split('#')[0]
-        const resourcePath = projectRelativePath(`./output/build${url}`)
+        let resourcePath = projectRelativePath(`./output/build${url}`)
 
-        const isFilePath = FilesHelper.isFilePath(resourcePath)
+        const lstat = fse.lstatSync(resourcePath)
+        if (lstat.isDirectory()) {
+            resourcePath += '/index.html'
+        }
+
+        const isFilePath = await FilesHelper.isFilePath(resourcePath)
         if (isFilePath instanceof Error) {
             return this.responseHandle({ code: 200, message: isFilePath.message, contentType: 'text/html;charset=utf-8' })
         }

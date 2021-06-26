@@ -57,6 +57,6 @@ const WaitStackInterval = ({ message, logType, method }) => new Promise((resolve
         reject
     })
     verifyStackEffective()
-})
+}).catch(error => error);
 
 export default WaitStackInterval

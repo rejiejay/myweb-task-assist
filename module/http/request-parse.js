@@ -37,7 +37,7 @@ const reqToParameter = async request => {
             })
             .on('error', error => reject(consequencer.error(`${error}`)))
 
-    }).catch(error => error)
+    }).catch(error => error);
 }
 
 export default reqToParameter

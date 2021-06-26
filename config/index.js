@@ -24,7 +24,7 @@ let config = {
             outputPath: './output/build/'
         },
         windows_detail: {
-            matchURL: '/windows-detail',
+            matchURL: '/windows-detail/',
             resourcePath: './view/page/windows-detail/',
             outputPath: './output/build/windows-detail/'
         }

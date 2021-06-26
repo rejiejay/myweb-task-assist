@@ -16,7 +16,7 @@ const showOperateFilterEdit = (isMultipleFilter = false, filter = null) => new P
 
         resolve(selectInstance)
     })
-})
+}).catch(error => error);
 
 const utils = {
     showOperateFilterEdit

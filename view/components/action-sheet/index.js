@@ -98,7 +98,7 @@ const ActionSheet = ({ title, options, isMultiple }) => {
     return new Promise((resolve, reject) => {
         resolveHandle = resolve
         rejectHandle = reject
-    })
+    }).catch(error => error);
 }
 
 export default ActionSheet
