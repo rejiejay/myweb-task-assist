@@ -60,6 +60,7 @@ export default class NoteRecordEdit extends React.Component {
         this.state = {
             title: '',
             inputFocusField: '',
+            reInputFocusField: '',
             contentInputList: [{
                 type: 'normal',
                 id: 'key-1',
@@ -209,7 +210,7 @@ export default class NoteRecordEdit extends React.Component {
     }
 
     setInputFocusField = id => {
-        this.setState({ inputFocusField: id })
+        this.setState({ inputFocusField: id, reInputFocusField: id })
     }
 
     clearInputFocusField = () => {
@@ -221,6 +222,23 @@ export default class NoteRecordEdit extends React.Component {
             contentInputList: this.state.contentInputList.map((item, key) => {
                 if (item.id === id) {
                     return { ...item, value }
+                }
+
+                return item
+            })
+        })
+    }
+
+    setContentInputItemType = type => {
+        const { reInputFocusField, contentInputList } = this.state
+        if (!reInputFocusField) return
+        const item = contentInputList.find(i => i.id === reInputFocusField)
+        if (!item) return
+        this.refs[reInputFocusField].focusHandle()
+        this.setState({
+            contentInputList: contentInputList.map((item, key) => {
+                if (item.id === reInputFocusField) {
+                    return { ...item, type }
                 }
 
                 return item
@@ -251,11 +269,21 @@ export default class NoteRecordEdit extends React.Component {
             <div className='record-edit-content flex-rest' style={{ minHeight: `${height}px` }}>
                 <div className='edit-content-header flex-start-center noselect'>
                     <div className="left-operating flex-start-center flex-rest">
-                        <div className="operat-item hover-item">内容</div>
-                        <div className="operat-item hover-item">标题1</div>
-                        <div className="operat-item hover-item">标题2</div>
-                        <div className="operat-item hover-item">标题3</div>
-                        <div className="operat-item hover-item">标题4</div>
+                        <div className="operat-item hover-item"
+                            onClick={() => this.setContentInputItemType('normal')}
+                        >内容</div>
+                        <div className="operat-item hover-item"
+                            onClick={() => this.setContentInputItemType('h1')}
+                        >标题1</div>
+                        <div className="operat-item hover-item"
+                            onClick={() => this.setContentInputItemType('h2')}
+                        >标题2</div>
+                        <div className="operat-item hover-item"
+                            onClick={() => this.setContentInputItemType('h3')}
+                        >标题3</div>
+                        <div className="operat-item hover-item"
+                            onClick={() => this.setContentInputItemType('h4')}
+                        >标题4</div>
                     </div>
 
                     <div className="right-operating flex-start-center">
