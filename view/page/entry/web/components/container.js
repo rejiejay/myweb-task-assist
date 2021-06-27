@@ -16,7 +16,7 @@ export default class Container extends React.Component {
                 >
                     {children}
                 </div>
-                <OperationComponent />
+                {OperationComponent}
             </div>
             <div className="copyright">粤ICP备17119404号 Copyright © Rejiejay曾杰杰</div>
         </>

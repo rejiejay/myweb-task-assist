@@ -1,14 +1,17 @@
-const ListRow = ({ row }) => {
+const ListRow = ({ row, clickTaskHandle }) => {
     return <div className="windows-list-row flex-rest">{row.map((item, key) =>
-        <ListItem key={key} item={item} />
+        <ListItem key={key}
+            item={item}
+            clickTaskHandle={clickTaskHandle}
+        />
     )}</div>
 }
 
-const ListItem = ({ item }) => {
+const ListItem = ({ item, clickTaskHandle }) => {
     if (item.isEmpty) {
         return <div className="windows-list-item flex-rest" />
     }
-    const { title, content, specific, measurable, attainable, relevant, timeBound } = item
+    const { id, title, content, specific, measurable, attainable, relevant, timeBound } = item
 
     const ItemDescription = ({ field, value }) => {
         if (!value) return <></>
@@ -37,7 +40,9 @@ const ListItem = ({ item }) => {
                 break;
         }
 
-        return <div className={`list-item-${field}`}>
+        return <div className={`list-item-${field}`}
+            onClick={() => clickTaskHandle(id)}
+        >
             <p key={field}>{description}:</p>
             {
                 value
@@ -94,9 +99,13 @@ export default class ListComponent extends React.Component {
 
     render() {
         const list = this.initList();
+        const { clickTaskHandle } = this.props
 
         return <div className="windows-list-content flex-column flex-rest">{list.map((row, key) =>
-            <ListRow key={key} row={row} />
+            <ListRow key={key}
+                row={row}
+                clickTaskHandle={clickTaskHandle}
+            />
         )}</div>
     }
 }

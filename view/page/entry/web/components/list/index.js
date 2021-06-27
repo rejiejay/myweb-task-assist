@@ -82,6 +82,7 @@ export default class List extends React.Component {
 
     render() {
         const { displayStyle, pageNo, pageTotal, data } = this.state
+        const { clickTaskHandle } = this.props
 
         let MainComponent = () => { }
 
@@ -97,7 +98,10 @@ export default class List extends React.Component {
         }
 
         return <div className="windows-list flex-column-center flex-rest noselect">
-            <MainComponent data={data} />
+            <MainComponent
+                data={data}
+                clickTaskHandle={clickTaskHandle}
+            />
             <Pagination pageNo={pageNo} pageTotal={pageTotal} />
         </div>
     }

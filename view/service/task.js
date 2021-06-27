@@ -42,11 +42,16 @@ const completeTask = async (id) => {
     return consequencer.success()
 }
 
+const getTaskById = async (id) => {
+    return consequencer.success(createItem())
+}
+
 const task = {
     getTaskList,
     addTask,
     getTaskByRandom,
-    completeTask
+    completeTask,
+    getTaskById
 }
 
 export default task

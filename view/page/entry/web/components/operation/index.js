@@ -38,6 +38,11 @@ export default class Operation extends React.Component {
             return toast.show(fetchInstance.message);
         }
         const data = fetchInstance.data
+        this.initTaskByData(data)
+    }
+
+
+    initTaskByData = (data) => {
         const {
             timestamp, category, id,
             title, content, specific, measurable, attainable, relevant, timeBound
@@ -67,6 +72,17 @@ export default class Operation extends React.Component {
         if (fetchInstance.result !== 1) return
         const notes = fetchInstance.data
         this.setState({ notes })
+    }
+
+    initTaskById = async id => {
+        if (id === this.state.id) return
+
+        const fetchInstance = await service.task.getTaskById(id)
+        if (fetchInstance.result !== 1) {
+            return toast.show(fetchInstance.message);
+        }
+        const data = fetchInstance.data
+        this.initTaskByData(data)
     }
 
     completeTaskHandle = async () => {

@@ -26,12 +26,19 @@ export class WebComponent extends React.Component {
         })
     }
 
+    clickTaskHandle = id => {
+        if (!id) return
+        this.refs.operation.initTaskById(id);
+    }
+
     render() {
         return <Container
-            OperationComponent={Operation}
+            OperationComponent={
+                <Operation ref='operation' />
+            }
         >
             <Header addTaskHandle={this.addTaskHandle} />
-            <List ref="list" />
+            <List ref="list" clickTaskHandle={this.clickTaskHandle} />
         </Container>
     }
 }
