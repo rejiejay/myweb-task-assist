@@ -1,4 +1,5 @@
 import service from './../../../../../service';
+import Pagination from './../../../../../components/pagination';
 
 import {
     default_display_style,
@@ -13,7 +14,6 @@ import {
 
 import ListComponent from './list';
 import QuadrantComponent from './quadrant';
-import Pagination from './pagination';
 
 export default class List extends React.Component {
     constructor(props) {
@@ -71,7 +71,7 @@ export default class List extends React.Component {
         }, this.initPageData);
     }
 
-    async initPageData() {
+    initPageData = async () => {
         const { category } = this.state
         const fetchInstance = await service.task.getTaskList(this.state.pageNo, category.value)
         if (fetchInstance.result !== 1) return

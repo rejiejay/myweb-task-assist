@@ -1,6 +1,7 @@
-import StringHelper from './../../../../../../utils/string-helper'
+import StringHelper from './../../../utils/string-helper'
+import toast from './../toast'
 
-export class WindowsPagination extends React.Component {
+export class Pagination extends React.Component {
     constructor(props) {
         super(props)
 
@@ -48,9 +49,9 @@ export class WindowsPagination extends React.Component {
 
     render() {
         const { jumpPredictPageNo } = this.state
-        const { pageNo, pageTotal } = this.props
+        const { pageNo, pageTotal, randomHandle } = this.props
 
-        return <div className="windows-pagination flex-center noselect">
+        return <div className="pagination flex-center noselect">
             <div className="flex-start-center">
                 <div className="list-pagination-item list-pagination-left flex-center"
                     onClick={this.previousPageHandle/** 上一页 */}
@@ -78,8 +79,11 @@ export class WindowsPagination extends React.Component {
                         />
                     </div>
                     <div className="pagination-input-submit" onClick={this.jumpPageNoInputConfirm}>跳转</div>
-                    <div style={{ width: '15px' }} />
-                    <div className="pagination-input-submit" onClick={this.loadingRandomConfirm}>随机</div>
+                    {randomHandle && <>
+                        <div style={{ width: '15px' }} />
+                        <div className="pagination-input-submit" onClick={this.loadingRandomConfirm}>随机</div>
+
+                    </>}
                 </div>
             </div>
         </div>
@@ -139,4 +143,4 @@ const PaginationSelected = ({ self, pageNo, pageTotal }) => {
     }
 }
 
-export default WindowsPagination
+export default Pagination

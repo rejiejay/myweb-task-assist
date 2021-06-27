@@ -313,6 +313,7 @@ export default class NoteRecordEdit extends React.Component {
                     </div>
 
                     <div className="right-operating flex-start-center">
+                        <div className="operat-item hover-item">取消分类</div>
                         <div className="operat-item hover-item">移动</div>
                         <div className="operat-item hover-item">删除</div>
                         <div className="operat-item hover-item">暂存</div>

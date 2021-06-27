@@ -1,3 +1,5 @@
+import Pagination from './../../../../components/pagination';
+
 const Item = () => <div className='uncategorized-notes-item noselect'>
     <div className='notes-item-container'>item</div>
 </div>
@@ -12,11 +14,17 @@ export default class TaskUncategorizedNotes extends React.Component {
                 {},
                 {},
             ],
+            pageNo: 1,
+            pageTotal: 1,
         }
     }
 
+    initPageData = () => { }
+
+    pageNoChangeHandle = pageNo => this.setState({ pageNo }, this.initPageData)
+
     render() {
-        const { notes } = this.state
+        const { pageNo, pageTotal, notes } = this.state
 
         if (notes.length <= 0) return <></>;
 
@@ -25,6 +33,11 @@ export default class TaskUncategorizedNotes extends React.Component {
             {notes.map((item, key) =>
                 <Item key={key} />
             )}
+            <Pagination
+                pageNo={pageNo}
+                pageTotal={pageTotal}
+                pageNoChangeHandle={this.pageNoChangeHandle}
+            />
         </div>
     }
 }
