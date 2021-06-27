@@ -20,7 +20,7 @@ class WindowsDetailComponent extends React.Component {
         const mainHeight = clientHeight - 46
         const mainOffsetHeight = mainHeight - 180
 
-        return <div className="windows-container flex-start">
+        return <>
             <div className="main-windows flex-column"
                 style={{ width: `${mainWidth}px` }}
             >
@@ -38,12 +38,12 @@ class WindowsDetailComponent extends React.Component {
                 />
             </div>
             <SideOperation width={`${sideWidth}px`} />
-        </div>
+        </>
     }
 }
 
 window.onload = () => {
     const root = document.getElementById('jeker-task-assist-system')
-    root.className = 'windows'
+    root.className = 'windows flex-start'
     ReactDOM.render(<WindowsDetailComponent />, root)
 }

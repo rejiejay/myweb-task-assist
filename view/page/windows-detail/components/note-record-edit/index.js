@@ -263,7 +263,10 @@ export default class NoteRecordEdit extends React.Component {
 
         return <div className='note-record-edit flex-start'
             ref="note-record-edit"
-            style={{ minHeight: `${height}px` }}
+            style={{
+                minHeight: `${height}px`,
+                width: `${width}px`
+            }}
         >
             <div className='record-edit-navigation noselect'
                 ref="record-edit-navigation"
@@ -283,7 +286,10 @@ export default class NoteRecordEdit extends React.Component {
                     <div className='edit-navigation-h4'>标题4</div>
                 </div>
             </div>
-            <div className='record-edit-content flex-rest' style={{ minHeight: `${height}px` }}>
+            <div className='record-edit-content flex-rest' style={{
+                minHeight: `${height}px`,
+                width: `${width - 230}px`
+            }}>
                 <div className='edit-content-header flex-start-center noselect'
                     ref="edit-content-header"
                     style={{ width: `${width - 231}px` }}

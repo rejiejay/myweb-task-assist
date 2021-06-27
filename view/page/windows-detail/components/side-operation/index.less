@@ -6,9 +6,7 @@
 .side-operation {
     .side-operation-header {
         height          : 45px;
-        width           : 100%;
-        height          : 45px;
-        border-bottom   : 1px solid #ddd;
+        border-left     : 1px solid #ddd;
         background-color: #fff;
         border-bottom   : 1px solid #ddd;
 
@@ -36,6 +34,27 @@
     }
 
     .side-uncategorized-notes {
-        padding: 15px;
+        .uncategorized-notes-title {
+            padding-top: 15px;
+            font-size  : 16px;
+        }
+
+        .uncategorized-notes-item {
+            padding-top: 15px;
+        }
+
+        .notes-item-container {
+            padding         : 15px;
+            background-color: #fff;
+            border-top      : 1px solid #ddd;
+            border-left     : 1px solid #ddd;
+            border-bottom   : 1px solid #ddd;
+            cursor          : pointer;
+        }
+
+        .notes-item-container:hover {
+            color           : #fff;
+            background-color: #1890ff;
+        }
     }
 }
