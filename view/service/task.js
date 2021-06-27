@@ -13,6 +13,8 @@ const getTaskList = async (pageNo) => {
             attainable: 'attainable' + StringHelper.createRandomStr({ length: 12 }),
             relevant: 'relevant' + StringHelper.createRandomStr({ length: 12 }),
             timeBound: 'timeBound' + StringHelper.createRandomStr({ length: 12 }),
+            isUrgent: Math.ceil(Math.random() * 10) > 7,
+            isImportant: Math.ceil(Math.random() * 10) > 7,
         }
     })
 

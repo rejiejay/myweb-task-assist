@@ -28,7 +28,7 @@ export default class List extends React.Component {
     }
 
     componentDidMount() {
-        this.initPageData();
+        this.initLoadPageHash();
         window.addEventListener("hashchange", this.initLoadPageHash.bind(this));
     }
 
@@ -80,7 +80,7 @@ export default class List extends React.Component {
                 break;
         }
 
-        return <div className="windows-list flex-column-center flex-rest">
+        return <div className="windows-list flex-column-center flex-rest noselect">
             <MainComponent data={data} />
             <Pagination pageNo={pageNo} pageTotal={pageTotal} />
         </div>
