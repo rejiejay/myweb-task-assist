@@ -1,5 +1,7 @@
 import TaskDetail from './../../../../components/page/task-detail';
 
+import TaskUncategorizedNotes from './task-notes';
+
 export default class SideOperation extends React.Component {
     constructor(props) {
         super(props)
@@ -30,6 +32,7 @@ export default class SideOperation extends React.Component {
             <div className="side-operation-header noselect flex-start">
                 <div className="operation-header-item header-item-button flex-center flex-rest">完成</div>
             </div>
+
             <TaskDetail
                 title={title}
                 content={content}
@@ -40,6 +43,8 @@ export default class SideOperation extends React.Component {
                 timeBound={timeBound}
                 onChangeHandle={this.onChangeHandle}
             />
+
+            <TaskUncategorizedNotes />
         </div>
     }
 }
