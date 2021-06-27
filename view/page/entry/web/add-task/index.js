@@ -1,17 +1,5 @@
 import TaskDetail from './../../../../components/page/task-detail';
-
-const Otherinput = ({ title, placeholder, value, onChange, isFocus, onBlur, onFocus }) => {
-    return <div className="content-input">
-        <div className="content-input-title">{isFocus ? placeholder : title}</div>
-        <textarea className="content-textarea fiex-rest" type="text"
-            placeholder={placeholder}
-            value={value || ''}
-            onChange={({ target: { value } }) => onChange(value)}
-            onBlur={onBlur}
-            onFocus={onFocus}
-        ></textarea>
-    </div>
-}
+import toast from './../../../../components/toast';
 
 export class WebAddTask extends React.Component {
     constructor(props) {
@@ -29,7 +17,11 @@ export class WebAddTask extends React.Component {
 
     confirmHandle = () => {
         const { resolve } = this.props
-        resolve();
+        const { title, content, specific, measurable, attainable, relevant, timeBound } = this.state
+        if (!title) return toast.show('标题不能为空');
+        if (!content) return toast.show('内容不能为空');
+
+        resolve({ title, content, specific, measurable, attainable, relevant, timeBound });
     }
 
     onChangeHandle = (value, field) => {
@@ -40,9 +32,7 @@ export class WebAddTask extends React.Component {
 
     render() {
         const { reject } = this.props
-        const {
-            title, content, specific, measurable, attainable, relevant, timeBound
-        } = this.state
+        const { title, content, specific, measurable, attainable, relevant, timeBound } = this.state
 
         return <div className='windows-add-task'>
             <TaskDetail

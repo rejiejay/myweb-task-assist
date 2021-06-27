@@ -1,9 +1,8 @@
 import consequencer from './../../utils/consequencer'
 import StringHelper from './../../utils/string-helper'
 
-const getTaskList = async (pageNo) => {
+const getTaskList = async (pageNo, category) => {
     const list = new Array(9).fill('').map((i, k) => {
-
         return {
             id: StringHelper.createRandomStr({ length: 16 }),
             title: '标题' + StringHelper.createRandomStr({ length: 4 }),
@@ -27,8 +26,13 @@ const getTaskList = async (pageNo) => {
     return consequencer.success(result)
 }
 
+const addTask = async () => {
+    return consequencer.success()
+}
+
 const task = {
-    getTaskList
+    getTaskList,
+    addTask
 }
 
 export default task
