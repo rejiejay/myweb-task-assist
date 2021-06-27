@@ -17,20 +17,34 @@
             display       : flex;
             flex-direction: row;
             border-bottom : 1px solid #ddd;
+        }
 
-            .windows-list-item {
-                padding     : 15px;
-                border-right: 1px solid #ddd;
-                cursor      : pointer;
-            }
+        .windows-list-item {
+            padding     : 15px;
+            border-right: 1px solid #ddd;
+            cursor      : pointer;
+        }
 
-            .windows-list-item:hover {
-                background-color: #fff;
-            }
+        .windows-list-item:hover {
+            background-color: #fff;
+        }
 
-            .windows-list-item:last-child {
-                border-right: none;
-            }
+        .windows-list-item:last-child {
+            border-right: none;
+        }
+
+        .list-item-container {
+            overflow: hidden;
+        }
+
+        .list-item-container>div {
+            padding-bottom: 10px;
+            word-break    : break-all;
+        }
+
+        .list-item-title {
+            font-size  : 16px;
+            font-weight: bold;
         }
     }
 

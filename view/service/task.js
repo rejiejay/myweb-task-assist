@@ -7,7 +7,7 @@ const getTaskList = async (pageNo) => {
         return {
             id: StringHelper.createRandomStr({ length: 16 }),
             title: '标题' + StringHelper.createRandomStr({ length: 4 }),
-            content: '内容' + StringHelper.createRandomStr({ length: 36 }),
+            content: '内容' + StringHelper.createRandomStr({ length: 32 }),
             specific: 'specific' + StringHelper.createRandomStr({ length: 12 }),
             measurable: 'measurable' + StringHelper.createRandomStr({ length: 12 }),
             attainable: 'attainable' + StringHelper.createRandomStr({ length: 12 }),
@@ -22,7 +22,7 @@ const getTaskList = async (pageNo) => {
         list
     }
 
-    consequencer.success(result)
+    return consequencer.success(result)
 }
 
 const task = {
