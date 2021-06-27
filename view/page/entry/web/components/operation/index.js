@@ -1,4 +1,7 @@
 import { operation_width } from './../../const/fixed-size';
+import service from './../../../../../service';
+import toast from './../../../../../components/toast';
+import TimeHelper from './../../../../../../utils/time-helper';
 
 export default class Operation extends React.Component {
     constructor(props) {
@@ -10,6 +13,22 @@ export default class Operation extends React.Component {
         this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
     }
 
+    componentDidMount() {
+        this.getTaskByRandom()
+    }
+
+    getTaskByRandom = async () => {
+        const fetchInstance = await service.task.getTaskByRandom()
+        if (fetchInstance.result !== 1) {
+            return toast.show(fetchInstance.message);
+        }
+        const data = fetchInstance.data
+        const { timestamp, category } = data
+        const date = TimeHelper.transformers.dateToFormat(new Date(timestamp))
+
+        this.setState({ date, category })
+    }
+
     render() {
         const { clientHeight } = this
         const { date, category } = this.state
@@ -18,7 +37,9 @@ export default class Operation extends React.Component {
 
         return <div className="main-operation" style={{ minHeight, width }}>
             <div className="main-operation-header noselect flex-start">
-                <div className="operation-header-item header-item-button flex-center flex-rest">随机</div>
+                <div className="operation-header-item header-item-button flex-center flex-rest"
+                    onClick={this.getTaskByRandom}
+                >随机</div>
                 <div className="operation-header-item header-item-button flex-center flex-rest">完成</div>
                 <div className="operation-header-item flex-center flex-rest">{category}</div>
                 <div className="operation-header-item flex-center flex-rest">{date}</div>
