@@ -80,6 +80,16 @@ export default class List extends React.Component {
         this.setState({ data: list, pageNo, pageTotal: count })
     }
 
+    pageNoChangeHandle = pageNo => this.setState({ pageNo }, this.initPageData)
+
+    randomHandle = async () => {
+        const { category } = this.state
+        const fetchInstance = await service.task.getTaskRandom(category.value)
+        if (fetchInstance.result !== 1) return
+
+        this.setState({ data: fetchInstance.data })
+    }
+
     render() {
         const { displayStyle, pageNo, pageTotal, data } = this.state
         const { clickTaskHandle } = this.props
@@ -102,7 +112,12 @@ export default class List extends React.Component {
                 data={data}
                 clickTaskHandle={clickTaskHandle}
             />
-            <Pagination pageNo={pageNo} pageTotal={pageTotal} />
+            <Pagination
+                pageNo={pageNo}
+                pageTotal={pageTotal}
+                pageNoChangeHandle={this.pageNoChangeHandle}
+                randomHandle={this.randomHandle}
+            />
         </div>
     }
 }

@@ -1,5 +1,4 @@
 import StringHelper from './../../../../../../utils/string-helper'
-import Button from './../../../../../components/button'
 
 export class WindowsPagination extends React.Component {
     constructor(props) {
@@ -9,8 +8,8 @@ export class WindowsPagination extends React.Component {
     }
 
     pageNoChangeHandle(newPageNo) {
-        const { handle } = this.props
-        handle && handle(newPageNo)
+        const { pageNoChangeHandle } = this.props
+        pageNoChangeHandle && pageNoChangeHandle(newPageNo)
     }
 
     previousPageHandle = () => {
@@ -45,8 +44,7 @@ export class WindowsPagination extends React.Component {
         }
     }
 
-    // TODO
-    loadingRandomConfirm = () => { }
+    loadingRandomConfirm = () => this.props.randomHandle()
 
     render() {
         const { jumpPredictPageNo } = this.state
