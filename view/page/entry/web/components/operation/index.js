@@ -5,6 +5,7 @@ import Confirm from './../../../../../components/confirm';
 import TimeHelper from './../../../../../../utils/time-helper';
 
 import Task from './task';
+import Progress from './progress';
 
 export default class Operation extends React.Component {
     constructor(props) {
@@ -19,7 +20,8 @@ export default class Operation extends React.Component {
             relevant: '',
             timeBound: '',
             date: '',
-            category: '标签'
+            category: '',
+            progress: [],
         }
         this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
     }
@@ -43,7 +45,15 @@ export default class Operation extends React.Component {
         this.setState({
             date, category, id,
             title, content, specific, measurable, attainable, relevant, timeBound
-        })
+        }, this.getProgressPlanByTask)
+    }
+
+    getProgressPlanByTask = async () => {
+        const { id } = this.state
+        const fetchInstance = await service.progress.getProgressPlanByTask(id);
+        if (fetchInstance.result !== 1) return
+        const progress = fetchInstance.data
+        this.setState({ progress })
     }
 
     completeTaskHandle = async () => {
@@ -57,11 +67,14 @@ export default class Operation extends React.Component {
         this.getTaskByRandom();
     }
 
+    editHandle = id => window.open(`./windows-detail/?id=${id}`)
+
     render() {
         const { clientHeight } = this
         const {
-            date, category,
-            title, content, specific, measurable, attainable, relevant, timeBound
+            date, category, id,
+            title, content, specific, measurable, attainable, relevant, timeBound,
+            progress
         } = this.state
         const minHeight = `${clientHeight - 40}px`
         const width = `${operation_width}px`
@@ -72,24 +85,27 @@ export default class Operation extends React.Component {
                     onClick={this.getTaskByRandom}
                 >随机</div>
                 <div className="operation-header-item header-item-button flex-center flex-rest"
+                    onClick={() => this.editHandle(id)}
+                >编辑</div>
+                <div className="operation-header-item header-item-button flex-center flex-rest"
                     onClick={this.completeTaskHandle}
                 >完成</div>
-                <div className="operation-header-item flex-center flex-rest">{category || '未分类'}</div>
+                <div className="operation-header-item flex-center flex-rest">{category || '标签(未分类)'}</div>
                 <div className="operation-header-item flex-center flex-rest">{date}</div>
             </div>
 
-            <div className="main-operation-block">
-                <Task
-                    title={title}
-                    content={content}
-                    specific={specific}
-                    measurable={measurable}
-                    attainable={attainable}
-                    relevant={relevant}
-                    timeBound={timeBound}
-                />
-            </div>
-            <div className="main-operation-block">任务进度</div>
+            <Task
+                title={title}
+                content={content}
+                specific={specific}
+                measurable={measurable}
+                attainable={attainable}
+                relevant={relevant}
+                timeBound={timeBound}
+            />
+
+            <Progress data={progress} />
+
             <div className="main-operation-block">任务笔记列表</div>
         </div>
     }

@@ -1,7 +1,9 @@
 import task from './task'
+import progress from './progress'
 
 const service = {
-    task
+    task,
+    progress
 }
 
 export default service

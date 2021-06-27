@@ -42,14 +42,16 @@ export default class Task extends React.Component {
     render() {
         const { title, content, specific, measurable, attainable, relevant, timeBound } = this.props
 
-        return <div className="operation-taks">
-            <div className="operation-taks-title">{title}</div>
-            <Item field="content" value={content} />
-            <Item field="specific" value={specific} />
-            <Item field="measurable" value={measurable} />
-            <Item field="attainable" value={attainable} />
-            <Item field="relevant" value={relevant} />
-            <Item field="timeBound" value={timeBound} />
+        return <div className="main-operation-block">
+            <div className="operation-taks">
+                <div className="operation-taks-title">{title}</div>
+                <Item field="content" value={content} />
+                <Item field="specific" value={specific} />
+                <Item field="measurable" value={measurable} />
+                <Item field="attainable" value={attainable} />
+                <Item field="relevant" value={relevant} />
+                <Item field="timeBound" value={timeBound} />
+            </div>
         </div>
     }
 }
