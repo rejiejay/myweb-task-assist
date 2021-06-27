@@ -38,10 +38,15 @@ const getTaskByRandom = async () => {
     return consequencer.success(createItem())
 }
 
+const completeTask = async (id) => {
+    return consequencer.success()
+}
+
 const task = {
     getTaskList,
     addTask,
-    getTaskByRandom
+    getTaskByRandom,
+    completeTask
 }
 
 export default task
