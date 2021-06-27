@@ -61,40 +61,24 @@ export default class NoteRecordEdit extends React.Component {
             title: '',
             inputFocusField: '',
             reInputFocusField: '',
-            contentInputList: [{
+            contentInputList: new Array(55).fill('').map((i, k) => ({
                 type: 'normal',
-                id: 'key-1',
-                value: '内容',
-            }, {
-                type: 'normal',
-                id: 'key-2',
-                value: '内容',
-            }, {
-                type: 'h1',
-                id: 'key-3',
-                value: '标题1',
-            }, {
-                type: 'h2',
-                id: 'key-4',
-                value: '标题2',
-            }, {
-                type: 'h3',
-                id: 'key-5',
-                value: '标题3',
-            }, {
-                type: 'h4',
-                id: 'key-6',
-                value: '标题4',
-            }],
+                id: `${new Date().getTime()}${k}`,
+                value: `${new Date().getTime()}${k}`,
+            })),
         }
+
+        this.isFixed = false
     }
 
     componentDidMount() {
         window.document.addEventListener('keydown', this.keydownEventListener)
+        window.document.addEventListener('scroll', this.scrollEventListener)
     }
 
     componentWillUnmount() {
         window.document.removeEventListener('keydown', this.keydownEventListener)
+        window.document.removeEventListener('scroll', this.scrollEventListener)
     }
 
     keydownEventListener = e => {
@@ -113,6 +97,33 @@ export default class NoteRecordEdit extends React.Component {
         if (currKey === 40) {
             this.onMoveFocusHandle('dowm')
         }
+    }
+
+    scrollEventListener = e => {
+        const container = this.refs['note-record-edit'];
+        const navigation = this.refs['record-edit-navigation'];
+        const header = this.refs['edit-content-header'];
+        const input = this.refs['edit-content-input'];
+
+        if (!container || !navigation || !header || !input) return
+
+        const offsetTop = container.offsetTop
+        const scrollheight = document.body.scrollTop == 0 ? document.documentElement.scrollTop : document.body.scrollTop;
+
+        if (scrollheight > offsetTop) {
+            if (this.isFixed) return
+            this.isFixed = true
+            navigation.className = 'record-edit-navigation noselect edit-navigation-fixed'
+            header.className = 'edit-content-header flex-start-center noselect edit-header-fixed'
+            input.className = 'edit-content-input edit-input-fixed'
+            return
+        };
+
+        if (!this.isFixed) return
+        navigation.className = 'record-edit-navigation noselect'
+        header.className = 'edit-content-header flex-start-center noselect'
+        input.className = 'edit-content-input'
+        this.isFixed = false
     }
 
     onWrapHandle() {
@@ -247,11 +258,17 @@ export default class NoteRecordEdit extends React.Component {
     }
 
     render() {
-        const { height } = this.props;
+        const { height, width } = this.props;
         const { title, contentInputList } = this.state
 
-        return <div className='note-record-edit flex-start' style={{ minHeight: `${height}px` }}>
-            <div className='record-edit-navigation noselect' style={{ height: `${height}px` }}>
+        return <div className='note-record-edit flex-start'
+            ref="note-record-edit"
+            style={{ minHeight: `${height}px` }}
+        >
+            <div className='record-edit-navigation noselect'
+                ref="record-edit-navigation"
+                style={{ height: `${height}px` }}
+            >
                 <div className='edit-navigation-container'>
                     <div className='edit-navigation-h1'>标题1</div>
                     <div className='edit-navigation-h2'>标题2</div>
@@ -267,7 +284,10 @@ export default class NoteRecordEdit extends React.Component {
                 </div>
             </div>
             <div className='record-edit-content flex-rest' style={{ minHeight: `${height}px` }}>
-                <div className='edit-content-header flex-start-center noselect'>
+                <div className='edit-content-header flex-start-center noselect'
+                    ref="edit-content-header"
+                    style={{ width: `${width - 231}px` }}
+                >
                     <div className="left-operating flex-start-center flex-rest">
                         <div className="operat-item hover-item"
                             onClick={() => this.setContentInputItemType('normal')}
@@ -292,7 +312,10 @@ export default class NoteRecordEdit extends React.Component {
                         <div className="operat-item hover-item">暂存</div>
                     </div>
                 </div>
-                <div className='edit-content-input'>
+                <div className='edit-content-input'
+                    ref="edit-content-input"
+                    style={{ width: `${width - 231}px` }}
+                >
                     <div className="title-input flex-center">
                         <input type="text" placeholder="请输入标题(简单描述/提问)"
                             value={title || ''}

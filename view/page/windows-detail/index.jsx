@@ -16,13 +16,13 @@ class WindowsDetailComponent extends React.Component {
     render() {
         const { clientWidth, clientHeight } = this
         const sideWidth = 450
-        const mainWidth = `${clientWidth - sideWidth - 1}px`
+        const mainWidth = clientWidth - sideWidth - 1
         const mainHeight = clientHeight - 46
         const mainOffsetHeight = mainHeight - 180
 
         return <div className="windows-container flex-start">
             <div className="main-windows flex-column"
-                style={{ width: mainWidth }}
+                style={{ width: `${mainWidth}px` }}
             >
                 <Header />
                 <ProjectPlan
@@ -30,10 +30,11 @@ class WindowsDetailComponent extends React.Component {
                 />
                 <NoteRecordMind
                     height={Math.floor(mainOffsetHeight * (2 / 3))}
-                    width={mainWidth}
+                    width={`${mainWidth}px`}
                 />
                 <NoteRecordEdit
                     height={Math.floor(mainHeight * (2 / 3))}
+                    width={mainWidth}
                 />
             </div>
             <SideOperation width={`${sideWidth}px`} />
