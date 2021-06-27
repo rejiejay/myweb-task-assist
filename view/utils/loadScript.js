@@ -34,6 +34,6 @@ const loadScript = (source, beforeEl, async = true, defer = true) => new Promise
 
     script.src = source;
     prior.parentNode.insertBefore(script, prior);
-});
+}).catch(error => error);
 
 export default loadScript

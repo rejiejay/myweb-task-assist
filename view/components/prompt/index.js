@@ -55,7 +55,7 @@ function Prompt({ title, defaultValue, placeholder } = {}) {
     return new Promise((resolve, reject) => {
         resolveHandle = resolve
         rejectHandle = reject
-    })
+    }).catch(error => error);
 }
 
 export default Prompt

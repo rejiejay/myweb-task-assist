@@ -1,0 +1,120 @@
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.project-plan {
+    width        : 100%;
+    border-bottom: 1px solid #ddd;
+    overflow     : auto;
+
+    .project-plan-container {
+        padding: 15px;
+    }
+
+    .project-plan-column {
+        .column-line {
+            position        : relative;
+            top             : 20.5px;
+            width           : 35px;
+            height          : 1px;
+            background-color: #ddd;
+        }
+    }
+
+    .column-main-item {
+        position        : relative;
+        padding         : 0px 25px;
+        font-size       : 14px;
+        min-height      : 40px;
+        min-width       : 65px;
+        font-weight     : bold;
+        border          : 1px solid #ddd;
+        background-color: #fff;
+
+        label:hover {
+            color : #1890ff;
+            cursor: pointer;
+        }
+
+        .move-left {
+            left: -6px;
+        }
+
+        .move-right,
+        .add-main-plan {
+            right: -6px;
+        }
+
+        .add-sub-plan {
+            bottom: -6px;
+        }
+    }
+
+    .column-sub-line {
+        height          : 25px;
+        width           : 1px;
+        background-color: #ddd;
+    }
+
+    .column-sub-item {
+        position        : relative;
+        padding         : 5px 25px;
+        font-size       : 12px;
+        max-width       : 65px;
+        min-height      : 35px;
+        border          : 1px solid #ddd;
+        background-color: #fff;
+
+        label:hover {
+            color : #1890ff;
+            cursor: pointer;
+        }
+
+        .move-top {
+            top: -6px;
+        }
+
+        .move-bottom {
+            bottom: -6px;
+        }
+
+        .move-main {
+            right: -6px;
+        }
+    }
+
+    .project-plan-icon {
+        fill    : #606266;
+        position: absolute;
+        z-index : 1;
+        cursor  : pointer;
+    }
+
+    .project-plan-icon:hover {
+        fill: #1890ff;
+    }
+}
+
+.project-plan::-webkit-scrollbar-track {
+    box-shadow        : inset 0 0 6px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color  : #F5F5F5;
+}
+
+.project-plan::-webkit-scrollbar {
+    height          : 8px;
+    background-color: #F5F5F5;
+}
+
+.project-plan::-webkit-scrollbar-thumb {
+    background-color: #8c8c8c;
+    background-image: -webkit-linear-gradient(45deg,
+            rgba(255, 255, 255, .2) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, .2) 50%,
+            rgba(255, 255, 255, .2) 75%,
+            transparent 75%,
+            transparent)
+}

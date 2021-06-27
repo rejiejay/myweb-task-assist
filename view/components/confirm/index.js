@@ -39,7 +39,7 @@ function Confirm(message) {
     return new Promise((resolve, reject) => {
         resolveHandle = resolve
         rejectHandle = reject
-    })
+    }).catch(error => error);
 }
 
 export default Confirm

@@ -226,6 +226,6 @@ const openMultipleSelect = selectedList => new Promise(resolve => {
         ,
         div
     )
-})
+}).catch(error => error);
 
 export default openMultipleSelect

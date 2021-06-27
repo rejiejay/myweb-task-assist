@@ -1,5 +1,5 @@
 const ListRow = ({ left, right }) => {
-    return <div className="windows-list-row flex-start flex-rest">
+    return <div className="windows-list-row flex-rest">
         <div className="windows-list-left flex-column flex-rest">{left.map((item, key) =>
             <ListItem key={key} item={item} />
         )}</div>
@@ -10,29 +10,55 @@ const ListRow = ({ left, right }) => {
 }
 
 const ListItem = ({ item }) => {
-    return <div className="windows-list-item flex-rest">item</div>
+    return <div className="windows-list-item">
+        <div className="windows-item-container">
+            <div className='windows-item-title'>{item.title}</div>
+            {item.content && <div className='list-item-content'>任务具体内容: {item.content}</div>}
+            {item.measurable && <div className='list-item-measurable'>任务完成标识: {item.measurable}</div>}
+        </div>
+    </div>
 }
 
 export default class QuadrantComponent extends React.Component {
     constructor(props) {
         super(props)
-        const item = {}
-        this.state = {
-            quadrant: {
-                // urgent + important
-                upXupY: [item, item, item, item],
-                // urgent + unimportant
-                upXdowmY: [item, item, item, item],
-                // not urgent + important
-                dowmXupY: [item, item, item, item],
-                // not urgent + unimportant
-                dowmXdowmY: [item, item, item, item],
+        this.state = {}
+    }
+
+    initQuadrant() {
+        const { data } = this.props
+        const quadrant = {
+            // urgent + important
+            upXupY: [],
+            // urgent + unimportant
+            upXdowmY: [],
+            // not urgent + important
+            dowmXupY: [],
+            // not urgent + unimportant
+            dowmXdowmY: [],
+        }
+
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            if (element.isUrgent && element.isImportant) {
+                quadrant.upXupY.push(element);
+            }
+            if (element.isUrgent && !element.isImportant) {
+                quadrant.upXdowmY.push(element);
+            }
+            if (!element.isUrgent && element.isImportant) {
+                quadrant.dowmXupY.push(element);
+            }
+            if (!element.isUrgent && !element.isImportant) {
+                quadrant.dowmXdowmY.push(element);
             }
         }
+
+        return quadrant
     }
 
     render() {
-        const { quadrant } = this.state;
+        const quadrant = this.initQuadrant();
         return <div className="windows-list-quadrant flex-column flex-rest">
             <ListRow left={quadrant.dowmXupY} right={quadrant.upXupY} />
             <ListRow left={quadrant.dowmXdowmY} right={quadrant.upXdowmY} />

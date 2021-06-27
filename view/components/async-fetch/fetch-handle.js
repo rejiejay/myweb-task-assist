@@ -14,6 +14,6 @@ const fetchHandle = (url, optional) => new Promise((resolve, reject) => {
             toast.destroy()
             reject(consequencer.error(`${error}`))
         })
-})
+}).catch(error => error);
 
 export default fetchHandle

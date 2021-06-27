@@ -1,4 +1,4 @@
-import initSqlJs from 'sql-wasm'
+import initSqlJs from 'sql.js'
 import consequencer from './../../utils/consequencer'
 
 function init(filebuffer) {

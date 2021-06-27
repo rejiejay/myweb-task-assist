@@ -12,22 +12,39 @@
         width : 100%;
 
         .windows-list-row {
-            width        : 100%;
-            height       : 100%;
-            border-bottom: 1px solid #ddd;
-
-            .windows-list-item {
-                height      : 100%;
-                border-right: 1px solid #ddd;
-            }
-
-            .windows-list-item:last-child {
-                border-right: none;
-            }
+            width         : 100%;
+            height        : 100%;
+            display       : flex;
+            flex-direction: row;
+            border-bottom : 1px solid #ddd;
         }
 
-        .windows-list-row:last-child {
-            border-bottom: none;
+        .windows-list-item {
+            padding     : 15px;
+            border-right: 1px solid #ddd;
+            cursor      : pointer;
+        }
+
+        .windows-list-item:hover {
+            background-color: #fff;
+        }
+
+        .windows-list-item:last-child {
+            border-right: none;
+        }
+
+        .list-item-container {
+            overflow: hidden;
+        }
+
+        .list-item-container>div {
+            padding-bottom: 10px;
+            word-break    : break-all;
+        }
+
+        .list-item-title {
+            font-size  : 16px;
+            font-weight: bold;
         }
     }
 
@@ -36,25 +53,97 @@
         width : 100%;
 
         .windows-list-row {
-            width        : 100%;
-            height       : 100%;
-            border-bottom: 1px solid #ddd;
+            width         : 100%;
+            height        : 100%;
+            display       : flex;
+            flex-direction: row;
+            border-bottom : 1px solid #f5222d;
 
             .windows-list-left {
                 width       : 100%;
-                border-right: 1px solid #ddd;
+                border-right: 1px solid #f5222d;
             }
 
             .windows-list-item {
                 width        : 100%;
                 height       : 100%;
-                padding      : 15px;
                 border-bottom: 1px solid #ddd;
+                cursor       : pointer;
+
+                .windows-item-container {
+                    padding: 15px;
+                }
+            }
+
+            .windows-list-item:hover {
+                background-color: #fff;
+            }
+
+            .windows-list-item:last-child {
+                border-bottom: none;
+            }
+
+            .windows-item-title {
+                font-size: 16px;
+            }
+
+            .windows-item-container>div {
+                padding-bottom: 10px;
+                word-break    : break-all;
             }
         }
 
         .windows-list-row:last-child {
             border-bottom: none;
+        }
+    }
+
+    .windows-pagination {
+        padding-top: 5px;
+
+        .list-pagination-item {
+            height       : 30px;
+            min-width    : 30px;
+            text-align   : center;
+            line-height  : 30px;
+            border       : 1px solid #ddd;
+            border-radius: 4px;
+            margin-right : 10px;
+            cursor       : pointer;
+        }
+
+        // 省略号
+        .list-pagination-point {
+            margin-right: 10px;
+        }
+
+        .list-pagination-input {
+            .pagination-input-container {
+                margin-right : 15px;
+                width        : 45px;
+                line-height  : 30px;
+                border-radius: 2px;
+                border       : 1px solid #ddd;
+
+                input {
+                    text-align: center;
+                }
+            }
+
+            .pagination-input-submit {
+                padding      : 0px 10px;
+                line-height  : 30px;
+                border-radius: 4px;
+                border       : 1px solid #ddd;
+                cursor       : pointer;
+            }
+        }
+
+        .pagination-item-selected,
+        .list-pagination-item:hover,
+        .pagination-input-submit:hover {
+            border: 1px solid #1890ff;
+            color : #1890ff;
         }
     }
 }

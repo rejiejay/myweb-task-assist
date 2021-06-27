@@ -24,7 +24,6 @@
     "react-dom": "^16.13.1",
     "request": "^2.88.2",
     "signale": "^1.4.0",
-    "sql-wasm": "^1.1.4",
     "sql.js": "^1.4.0"
   },
   "devDependencies": {

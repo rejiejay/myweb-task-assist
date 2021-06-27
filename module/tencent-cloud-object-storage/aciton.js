@@ -23,7 +23,7 @@ class Action {
                 Bucket: bucket,
                 Region: region,
                 Prefix: path
-            }, function(err, data) {
+            }, function (err, data) {
                 if (err) {
                     Log.error(`tcos.instance.getBucket: ${JSON.stringify(err)}`)
                     return reject(err)
@@ -44,7 +44,7 @@ class Action {
                 Log.success(`---> \ntcos.instance.getBucket: ${path}`)
                 resolve(data.Contents.filter(content => +content.Size > 0))
             })
-        })
+        }).catch(error => error);
 
     /**
      * 下载对象
@@ -58,7 +58,7 @@ class Action {
                 Bucket: bucket,
                 Region: region,
                 Key: path
-            }, function(err, data) {
+            }, function (err, data) {
                 if (err) {
                     Log.error(`tcos.instance.getObject: ${JSON.stringify(err)}`)
                     return reject(err)
@@ -69,7 +69,7 @@ class Action {
                 Log.success(`---> \ntcos.instance.getObject: ${path}`)
                 resolve(data.Body)
             })
-        })
+        }).catch(error => error);
 
     /**
      * 简单上传对象
@@ -85,7 +85,7 @@ class Action {
                 Region: region,
                 Key: path,
                 Body
-            }, function(err, data) {
+            }, function (err, data) {
                 if (err) {
                     Log.error(`tcos.instance.putObject: ${JSON.stringify(err)}`)
                     return reject(err)
@@ -96,7 +96,7 @@ class Action {
                 Log.success(`---> \ntcos.instance.putObject: ${path}`)
                 resolve(data)
             })
-        })
+        }).catch(error => error);
 
     /**
      * 删除多个对象
@@ -110,7 +110,7 @@ class Action {
                 Bucket: bucket,
                 Region: region,
                 Objects: paths
-            }, function(err, data) {
+            }, function (err, data) {
                 if (err) {
                     Log.error(`tcos.instance.deleteMultipleObject: ${JSON.stringify(err)}`)
                     return reject(err)
@@ -118,7 +118,7 @@ class Action {
                 Log.success(`---> \ntcos.instance.deleteMultipleObject: ${JSON.stringify(paths)}`)
                 resolve(data)
             })
-        })
+        }).catch(error => error);
 }
 
 export default new Action()

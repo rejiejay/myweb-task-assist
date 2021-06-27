@@ -1,6 +1,7 @@
+import { header_height } from './../../const/fixed-size';
+
 import CategoryFilter from './category-filter';
 import DisplayStyle from './display-style';
-import { header_height } from './../../const/fixed-size';
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -14,6 +15,7 @@ export default class Header extends React.Component {
 
     render() {
         const height = `${header_height}px`
+        const { addTaskHandle } = this.props
 
         return <div className='windows-header flex-start-center noselect'
             style={{ height }}
@@ -46,7 +48,7 @@ export default class Header extends React.Component {
             </div>
 
             <div className="right-operating flex-start-center">
-                <div className="operat-item hover-item">新增</div>
+                <div className="operat-item hover-item" onClick={addTaskHandle}>新增</div>
             </div>
         </div>
     }

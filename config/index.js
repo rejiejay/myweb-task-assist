@@ -23,8 +23,8 @@ let config = {
             resourcePath: './view/page/entry/',
             outputPath: './output/build/'
         },
-        root: {
-            matchURL: '/windows-detail',
+        windows_detail: {
+            matchURL: '/windows-detail/',
             resourcePath: './view/page/windows-detail/',
             outputPath: './output/build/windows-detail/'
         }
