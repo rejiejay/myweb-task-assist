@@ -1,19 +1,14 @@
 import Pagination from './../../../../components/pagination';
 
-const Item = () => <div className='uncategorized-notes-item noselect'>
-    <div className='notes-item-container'>item</div>
+const Item = ({ data }) => <div className='uncategorized-notes-item noselect'>
+    <div className='notes-item-container'>{data.title}</div>
 </div>
 
 export default class TaskUncategorizedNotes extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            notes: [
-                {},
-                {},
-                {},
-                {},
-            ],
+            notes: [],
             pageNo: 1,
             pageTotal: 1,
         }
@@ -31,7 +26,7 @@ export default class TaskUncategorizedNotes extends React.Component {
         return <div className='side-uncategorized-notes'>
             <div className='uncategorized-notes-title noselect'>未分类笔记</div>
             {notes.map((item, key) =>
-                <Item key={key} />
+                <Item key={key} data={item} />
             )}
             <Pagination
                 pageNo={pageNo}
