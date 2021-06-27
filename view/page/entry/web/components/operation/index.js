@@ -4,11 +4,20 @@ import toast from './../../../../../components/toast';
 import Confirm from './../../../../../components/confirm';
 import TimeHelper from './../../../../../../utils/time-helper';
 
+import Task from './task';
+
 export default class Operation extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             id: '',
+            title: '',
+            content: '',
+            specific: '',
+            measurable: '',
+            attainable: '',
+            relevant: '',
+            timeBound: '',
             date: '',
             category: '标签'
         }
@@ -25,10 +34,16 @@ export default class Operation extends React.Component {
             return toast.show(fetchInstance.message);
         }
         const data = fetchInstance.data
-        const { timestamp, category, id } = data
+        const {
+            timestamp, category, id,
+            title, content, specific, measurable, attainable, relevant, timeBound
+        } = data
         const date = TimeHelper.transformers.dateToFormat(new Date(timestamp))
 
-        this.setState({ date, category, id })
+        this.setState({
+            date, category, id,
+            title, content, specific, measurable, attainable, relevant, timeBound
+        })
     }
 
     completeTaskHandle = async () => {
@@ -44,7 +59,10 @@ export default class Operation extends React.Component {
 
     render() {
         const { clientHeight } = this
-        const { date, category } = this.state
+        const {
+            date, category,
+            title, content, specific, measurable, attainable, relevant, timeBound
+        } = this.state
         const minHeight = `${clientHeight - 40}px`
         const width = `${operation_width}px`
 
@@ -60,7 +78,17 @@ export default class Operation extends React.Component {
                 <div className="operation-header-item flex-center flex-rest">{date}</div>
             </div>
 
-            <div className="main-operation-block">任务内容</div>
+            <div className="main-operation-block">
+                <Task
+                    title={title}
+                    content={content}
+                    specific={specific}
+                    measurable={measurable}
+                    attainable={attainable}
+                    relevant={relevant}
+                    timeBound={timeBound}
+                />
+            </div>
             <div className="main-operation-block">任务进度</div>
             <div className="main-operation-block">任务笔记列表</div>
         </div>

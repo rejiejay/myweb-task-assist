@@ -16,7 +16,7 @@ const ListItem = ({ item }) => {
 
         switch (field) {
             case 'content':
-                description = '任务结论:';
+                description = '任务结论';
                 break;
             case 'specific':
                 description = '任务具体内容';
