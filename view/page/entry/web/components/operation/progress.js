@@ -11,9 +11,11 @@ export default class Progress extends React.Component {
         return <div className="main-operation-block">
             <div className="operation-progress">
                 <div className="operation-progress-title">任务进度</div>
-                {data.map((item, key) => {
-                    return <div className="operation-progress-item">{key + 1}. {item.title}</div>
-                })}
+                {data.map((item, key) =>
+                    <div key={key} className="operation-progress-item">
+                        {key + 1}. {item.title}
+                    </div>
+                )}
             </div>
         </div>
     }

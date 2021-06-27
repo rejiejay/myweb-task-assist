@@ -6,6 +6,7 @@ import TimeHelper from './../../../../../../utils/time-helper';
 
 import Task from './task';
 import Progress from './progress';
+import Notes from './notes';
 
 export default class Operation extends React.Component {
     constructor(props) {
@@ -22,6 +23,7 @@ export default class Operation extends React.Component {
             date: '',
             category: '',
             progress: [],
+            notes: [],
         }
         this.clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
     }
@@ -45,7 +47,10 @@ export default class Operation extends React.Component {
         this.setState({
             date, category, id,
             title, content, specific, measurable, attainable, relevant, timeBound
-        }, this.getProgressPlanByTask)
+        }, () => {
+            this.getProgressPlanByTask()
+            this.getNotesRandomByTask()
+        })
     }
 
     getProgressPlanByTask = async () => {
@@ -54,6 +59,14 @@ export default class Operation extends React.Component {
         if (fetchInstance.result !== 1) return
         const progress = fetchInstance.data
         this.setState({ progress })
+    }
+
+    getNotesRandomByTask = async () => {
+        const { id } = this.state
+        const fetchInstance = await service.notes.getNotesRandomByTask(id);
+        if (fetchInstance.result !== 1) return
+        const notes = fetchInstance.data
+        this.setState({ notes })
     }
 
     completeTaskHandle = async () => {
@@ -74,7 +87,7 @@ export default class Operation extends React.Component {
         const {
             date, category, id,
             title, content, specific, measurable, attainable, relevant, timeBound,
-            progress
+            progress, notes
         } = this.state
         const minHeight = `${clientHeight - 40}px`
         const width = `${operation_width}px`
@@ -106,7 +119,7 @@ export default class Operation extends React.Component {
 
             <Progress data={progress} />
 
-            <div className="main-operation-block">任务笔记列表</div>
+            <Notes data={notes} />
         </div>
     }
 }
