@@ -98,6 +98,11 @@ export default class Operation extends React.Component {
 
     editHandle = id => window.open(`./windows-detail/?id=${id}`)
 
+    showTaskNotesDetailHandle = noteId => {
+        const { id } = this.state
+        window.open(`./windows-detail/?id=${id}&&noteId=${noteId}`)
+    }
+
     render() {
         const { clientHeight } = this
         const {
@@ -135,7 +140,10 @@ export default class Operation extends React.Component {
 
             <Progress data={progress} />
 
-            <Notes data={notes} />
+            <Notes
+                data={notes}
+                showTaskNotesDetailHandle={this.showTaskNotesDetailHandle}
+            />
         </div>
     }
 }
