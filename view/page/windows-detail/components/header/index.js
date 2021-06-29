@@ -25,6 +25,21 @@ export default class Header extends React.Component {
         })
     }
 
+    addPlanTask = () => {
+        const { taskId, addTaskProgressPlanHandle } = this.props
+        toast.show()
+        import('./add-progress-plan.js').then(async ({ AddTaskProgressPlan }) => {
+            toast.destroy()
+
+            const addTaskProgressPlan = new Modal(AddTaskProgressPlan, { taskId });
+            const result = await addTaskProgressPlan.show();
+
+            if (result instanceof Error) return
+
+            addTaskProgressPlanHandle();
+        })
+    }
+
     render() {
         const { taskId, isUrgent, isImportant } = this.props
 
@@ -41,7 +56,9 @@ export default class Header extends React.Component {
             </div>
 
             <div className="right-operating flex-start-center">
-                <div className="operat-item hover-item">新增计划</div>
+                <div className="operat-item hover-item"
+                    onClick={this.addPlanTask}
+                >新增计划</div>
             </div>
         </div>
     }

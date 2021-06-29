@@ -58,10 +58,15 @@ const getProgressSubPlanByPlan = planId => {
     ])
 }
 
+const addProgressPlanByTask = (taskId, task) => {
+    return consequencer.success()
+}
+
 const progress = {
     getAllProgressPlanByTask,
     getMainProgressPlanByTask,
     getProgressSubPlanByPlan,
+    addProgressPlanByTask,
 }
 
 export default progress

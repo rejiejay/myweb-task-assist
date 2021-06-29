@@ -30,6 +30,8 @@ class WindowsDetailComponent extends React.Component {
         this.setState({ task })
     }
 
+    addTaskProgressPlanHandle = () => this.refs.projectPlan.initProgressPlan()
+
     render() {
         const { task } = this.state
 
@@ -49,9 +51,11 @@ class WindowsDetailComponent extends React.Component {
                     taskId={task.id}
                     isUrgent={task.isUrgent || null}
                     isImportant={task.isImportant || null}
+                    addTaskProgressPlanHandle={this.addTaskProgressPlanHandle}
                 />
 
                 <ProjectPlan
+                    ref='projectPlan'
                     taskId={task.id}
                     height={Math.floor(mainOffsetHeight / 3)}
                 />
