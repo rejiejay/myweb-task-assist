@@ -1,0 +1,108 @@
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.task-category-tag {
+    background-color: #fff;
+    width           : 620px;
+    overflow        : auto;
+}
+
+.task-category-tag .category-tag-container {
+    min-height: 350px;
+
+    .category-tag-left {
+        overflow: hidden;
+    }
+
+    .category-tag-right {
+        border-left: 1px solid #ddd;
+        min-height : 350px;
+    }
+
+    .category-select-all {
+        line-height  : 45px;
+        text-align   : center;
+        border-bottom: 1px solid #ddd;
+        cursor       : pointer;
+    }
+
+    .category-select-item {
+        float  : left;
+        padding: 5px 2.5px;
+
+        .select-item-container {
+            font-size: 12px;
+
+            label {
+                padding      : 5px 7.5px;
+                border-radius: 5px 0px 0px 5px;
+                border       : 1px solid #ddd;
+                cursor       : pointer;
+                overflow     : hidden;
+            }
+
+            .select-item-delete {
+                padding      : 5px 7.5px;
+                border-radius: 0px 5px 5px 0px;
+                border-top   : 1px solid #ddd;
+                border-right : 1px solid #ddd;
+                border-bottom: 1px solid #ddd;
+                cursor       : pointer;
+            }
+        }
+
+        .select-item-select label {
+            color           : #fff;
+            background-color: #1890ff;
+        }
+
+        .select-item-disable {
+            label {
+                color           : #fff;
+                background-color: #606266;
+            }
+
+            .select-item-delete {
+                color           : #fff;
+                background-color: #606266;
+            }
+        }
+    }
+
+    .category-tag-right .category-select-item {
+
+        .select-item-container {
+            padding      : 5px 7.5px;
+            border-radius: 5px;
+            border       : 1px solid #ddd;
+            cursor       : pointer;
+        }
+    }
+
+    .select-item-container label:hover,
+    .select-item-container .select-item-delete:hover,
+    .category-tag-right .category-select-item .select-item-container:hover,
+    .category-select-all:hover {
+        color           : #fff;
+        background-color: #1890ff;
+    }
+}
+
+.task-category-tag .windows-operate {
+    width : 100%;
+    color : #fff;
+    cursor: pointer;
+
+    .windows-operate-item {
+        height          : 45px;
+        border-right    : 1px solid #ddd;
+        background-color: #1890ff;
+    }
+
+    .windows-operate-item:hover {
+        color           : #fff;
+        background-color: #52c41a;
+    }
+}

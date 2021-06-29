@@ -1,3 +1,6 @@
+import Modal from './../../../../../components/modal';
+import toast from './../../../../../components/toast';
+
 import { header_height } from './../../const/fixed-size';
 
 import CategoryFilter from './category-filter';
@@ -13,6 +16,20 @@ export default class Header extends React.Component {
 
     clearSearch() { }
 
+    selectCategoryTag = () => {
+        toast.show()
+        import('./../../category-tag/index.js').then(async ({ TaskCategoryTag }) => {
+            toast.destroy()
+
+            const taskCategoryTag = new Modal(TaskCategoryTag);
+            const result = await taskCategoryTag.show();
+
+            if (result instanceof Error) return
+
+            console.log('result', result)
+        })
+    }
+
     render() {
         const height = `${header_height}px`
         const { addTaskHandle } = this.props
@@ -22,6 +39,9 @@ export default class Header extends React.Component {
         >
             <div className="left-operating flex-start-center">
                 <DisplayStyle />
+                <div className="operat-item hover-item"
+                    onClick={this.selectCategoryTag}
+                >标签分类</div>
                 <div className="operat-item hover-item">过滤器</div>
                 <CategoryFilter />
             </div>

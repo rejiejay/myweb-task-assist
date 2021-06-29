@@ -92,11 +92,12 @@ export default class DropDownSelect extends React.Component {
             const loadTippy = await loadScript(`${configs.libraryProfixUrl}lib/tippy/tippy-bundle.umd.min.js`)
             if (loadTippy.result !== 1) return loadTippy
         }
-    
+
         return consequencer.success()
     }
 
     showDropDownSelectTippy = async () => {
+        const { zIndex } = this.props
         const loaded = await this.loadTippy()
         if (loaded.result !== 1) {
             return await Confirm(loaded.message)
@@ -115,10 +116,10 @@ export default class DropDownSelect extends React.Component {
         ReactDOM.render(
             <div className='tooltip-select-container'
                 style={style.tooltip}
-            >{options.map(({ value, label }, key) => 
-               <div key={key} className='tooltip-select-item flex-start-center' style={style.item}>
-                   {label}
-               </div>
+            >{options.map(({ value, label }, key) =>
+                <div key={key} className='tooltip-select-item flex-start-center' style={style.item}>
+                    {label}
+                </div>
             )}</div>
             ,
             node
@@ -131,7 +132,7 @@ export default class DropDownSelect extends React.Component {
                 interactive: true,
                 trigger: 'click',
                 hideOnClick: 'toggle',
-                zIndex: 1,
+                zIndex: zIndex || 1,
                 placement: direction ? direction : CONSTS.direction.bottom_end,
                 onShown(instance) {
                     self.bindDropDownSelectOnclick()

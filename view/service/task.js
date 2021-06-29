@@ -12,6 +12,7 @@ const createItem = () => ({
     timeBound: 'timeBound' + StringHelper.createRandomStr({ length: 12 }),
     timestamp: new Date().getTime(),
     category: StringHelper.createRandomStr({ length: 12 }),
+    categoryId: StringHelper.createRandomStr({ length: 12 }),
     isUrgent: Math.ceil(Math.random() * 10) > 7,
     isImportant: Math.ceil(Math.random() * 10) > 7,
 })
@@ -54,13 +55,23 @@ const getTaskRandom = category => {
     return consequencer.success(list)
 }
 
+const setTaskCategoryTagById = async (id, categoryId) => {
+    return consequencer.success(createItem())
+}
+
+const setTaskStatusById = async (id, isUrgent, isImportant) => {
+    return consequencer.success(createItem())
+}
+
 const task = {
     getTaskList,
     addTask,
     getTaskByRandom,
     completeTask,
     getTaskById,
-    getTaskRandom
+    getTaskRandom,
+    setTaskCategoryTagById,
+    setTaskStatusById
 }
 
 export default task
