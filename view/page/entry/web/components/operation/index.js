@@ -53,14 +53,14 @@ export default class Operation extends React.Component {
             date, category, id,
             title, content, specific, measurable, attainable, relevant, timeBound
         }, () => {
-            this.getProgressPlanByTask()
+            this.getMainProgressPlanByTask()
             this.getNotesRandomByTask()
         })
     }
 
-    getProgressPlanByTask = async () => {
+    getMainProgressPlanByTask = async () => {
         const { id } = this.state
-        const fetchInstance = await service.progress.getProgressPlanByTask(id);
+        const fetchInstance = await service.progress.getMainProgressPlanByTask(id);
         if (fetchInstance.result !== 1) return
         const progress = fetchInstance.data
         this.setState({ progress })

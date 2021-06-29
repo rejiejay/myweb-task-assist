@@ -8,7 +8,7 @@ export default class ColumnItem extends React.Component {
     }
 
     render() {
-        const { mainName, isMain } = this.props;
+        const { mainName, isMain, list } = this.props;
 
         return <div className='project-plan-column flex-start'>
             {!isMain && <div className='column-line' />}
@@ -19,7 +19,12 @@ export default class ColumnItem extends React.Component {
                     moveLeft={!isMain}
                     moveRight={!isMain}
                 />
-                <RowSubItem name='未分類' />
+                {list.map((item, key) =>
+                    <RowSubItem
+                        key={key}
+                        name={item.title}
+                    />
+                )}
             </div>
         </div>
     }

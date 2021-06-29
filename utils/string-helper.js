@@ -1,3 +1,5 @@
+import NumberHelper from './number-helper'
+
 /**
  * 含义: 根据length大小生成随机字符串
  */
@@ -7,7 +9,7 @@ const createRandomStr = ({ length, excludeUpperCase }) => {
     if (!excludeUpperCase) stringArray = stringArray.concat(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'])
 
     for (let i = 0; i < length; i++) {
-        let index = Math.round(Math.random() * (stringArray.length - 1)); // 随机下标
+        let index = NumberHelper.createRandomNum(stringArray.length - 1); // 随机下标
         resultStr += stringArray[index]; // 赋值进去
     }
 

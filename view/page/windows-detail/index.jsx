@@ -52,6 +52,7 @@ class WindowsDetailComponent extends React.Component {
                 />
 
                 <ProjectPlan
+                    taskId={task.id}
                     height={Math.floor(mainOffsetHeight / 3)}
                 />
 
