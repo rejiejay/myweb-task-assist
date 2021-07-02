@@ -12,8 +12,17 @@ export const onlyShowCategorized = {
     value: 'onlyShowCategorized',
     label: '仅显示已分类',
 }
+export const onlyShowCompleted = {
+    value: 'onlyShowCompleted',
+    label: '仅显示已完成',
+}
 
-const category_options = [showAllCategorized, onlyShowUncategorized, onlyShowCategorized]
+const category_options = [
+    showAllCategorized,
+    onlyShowUncategorized,
+    onlyShowCategorized,
+    onlyShowCompleted
+]
 
 export const default_category_options = showAllCategorized;
 

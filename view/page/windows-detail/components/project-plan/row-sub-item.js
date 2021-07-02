@@ -7,15 +7,29 @@ export default class RowSubItem extends React.Component {
     }
 
     render() {
-        const { name } = this.props;
+        const {
+            name,
+            thisId, preId, nextId,
+            switchProgressPlanPositionHandle,
+            moveToMainProgressPlanHandle,
+            editProgressPlanHandle,
+        } = this.props;
 
         return <>
             <div className='column-sub-line' />
             <div className='column-sub-item flex-center'>
-                <label>{name}</label>
-                <MoveTop />
-                <MoveBottom />
-                <MoveToMain />
+                <label
+                    onClick={() => editProgressPlanHandle(thisId)}
+                >{name}</label>
+                {preId && <MoveTop
+                    onClick={() => switchProgressPlanPositionHandle(thisId, preId)}
+                />}
+                {nextId && <MoveBottom
+                    onClick={() => switchProgressPlanPositionHandle(thisId, nextId)}
+                />}
+                <MoveToMain
+                    onClick={() => moveToMainProgressPlanHandle(thisId)}
+                />
             </div>
         </>
     }

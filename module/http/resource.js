@@ -81,7 +81,7 @@ class ResourcesUtils {
                 if (readFileError) return reject(new Error(JSON.stringify(readFileError)))
                 lessRender(lessStr)
             })
-        }).catch(error => error)
+        });
     }
 
     renderTypedJavaScriptXML() {
@@ -122,7 +122,7 @@ class ResourcesUtils {
                 if (err || stats.hasErrors()) return reject(new Error(`${stats}`))
                 return resolve()
             })
-        }).catch(error => error);
+        });
     }
 
     renderHyperTextMarkupLanguage(version = '') {
@@ -152,7 +152,7 @@ class ResourcesUtils {
                 if (readFileError) return reject(new Error(JSON.stringify(readFileError)))
                 initVersion(content)
             })
-        }).catch(error => error);
+        });
     }
 }
 
@@ -196,19 +196,19 @@ class ResourcesHandle extends ResourcesUtils {
         try {
             await this.renderTypedJavaScriptXML()
         } catch (error) {
-            return this.responseHandle({ code: 200, message: error.message })
+            return this.responseHandle({ code: 200, message: error.toString() })
         }
 
         try {
             await this.renderLeanerStyleSheets()
         } catch (error) {
-            return this.responseHandle({ code: 200, message: error.message })
+            return this.responseHandle({ code: 200, message: error.toString() })
         }
 
         try {
             html = await this.renderHyperTextMarkupLanguage(`?version=${config.version}`)
         } catch (error) {
-            return this.responseHandle({ code: 200, message: error.message })
+            return this.responseHandle({ code: 200, message: error.toString() })
         }
 
         return this.responseHandle({ code: 200, message: html, contentType: 'text/html;charset=utf-8' })

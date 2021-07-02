@@ -11,8 +11,13 @@ const getAllCategory = () => {
     return consequencer.success(list);
 }
 
+const delCategoryById = id => {
+    return consequencer.success();
+}
+
 const category = {
-    getAllCategory
+    getAllCategory,
+    delCategoryById
 }
 
 export default category

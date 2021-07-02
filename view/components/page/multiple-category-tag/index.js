@@ -1,4 +1,4 @@
-import service from './../../../../service';
+import service from './../../../service';
 
 const SelectItem = ({
     selectHandle,
@@ -30,7 +30,7 @@ const ResulItem = ({ unSelectHandle, children }) => {
     </div>
 }
 
-export class TaskCategoryTag extends React.Component {
+export class MultipleTaskCategoryTag extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -110,7 +110,7 @@ export class TaskCategoryTag extends React.Component {
         const { reject } = this.props
         const { list } = this.state
 
-        return <div className='task-category-tag noselect'>
+        return <div className='multiple-category-tag noselect'>
             <div className="category-tag-container flex-start">
                 <div className="category-tag-left flex-rest">
                     <div className="category-select-all"

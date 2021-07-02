@@ -1,231 +1,94 @@
-class ContentInputItem extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {}
-    }
+import service from './../../../../service'
+import FunctionHelper from './../../../../../utils/function-helper'
+import Confirm from './../../../../components/confirm';
 
-    focusHandle() {
-        this.refs.input.focus()
-    }
-
-    render() {
-        const { value, type, index, onChange, id, onFocus, onBlur } = this.props;
-        let className = 'content-input-item flex-start-center'
-        let splitWidth = 15
-        let menu = ''
-
-        switch (type) {
-            case 'normal':
-                break;
-            case 'h1':
-                className += ' input-item-h1'
-                break;
-            case 'h2':
-                className += ' input-item-h2'
-                break;
-            case 'h3':
-                splitWidth = 20
-                className += ' input-item-h3'
-                break;
-            case 'h4':
-                splitWidth = 20
-                className += ' input-item-h4'
-                break;
-            default:
-                break;
-        }
-
-        return <div className={className}>
-            <label>{index}</label>
-            <div
-                className='flex-center'
-                style={{ width: `${splitWidth}px` }}
-            >{menu}</div>
-            <input type="text"
-                id={id}
-                ref='input'
-                value={value || ''}
-                onChange={({ target: { value } }) => onChange(value, id)}
-                onFocus={onFocus}
-                onBlur={onBlur}
-            />
-            <div style={{ width: '15px' }} />
-        </div>
-    }
-}
+import {
+    notesDataToContentInputList,
+    contentInputListToNotesData
+} from './data-conversion';
+import Navigation from './navigation';
+import Operate from './operate';
+import Container from './container';
+import ContentInputContainer from './content-input-container';
 
 export default class NoteRecordEdit extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             title: '',
-            inputFocusField: '',
-            reInputFocusField: '',
-            contentInputList: new Array(55).fill('').map((i, k) => ({
+            isEditDiff: false,
+            contentInputList: new Array(5).fill('').map((i, k) => ({
                 type: 'normal',
                 id: `${new Date().getTime()}${k}`,
-                value: `${new Date().getTime()}${k}`,
+                value: '',
             })),
         }
 
-        this.isFixed = false
+        this.notesContent = '';
+        this.notesTitle = '';
+        this.verifyEditDiff = this.verifyEditDiffHandle();
     }
 
     componentDidMount() {
-        window.document.addEventListener('keydown', this.keydownEventListener)
-        window.document.addEventListener('scroll', this.scrollEventListener)
+        this.initNotesRandom()
     }
 
-    componentWillUnmount() {
-        window.document.removeEventListener('keydown', this.keydownEventListener)
-        window.document.removeEventListener('scroll', this.scrollEventListener)
+    componentDidUpdate() {
+        this.verifyEditDiff()
     }
 
-    keydownEventListener = e => {
-        let currKey = 0
-        e = e || event
-        currKey = e.keyCode || e.which || e.charCode // 支持IE、FF
-        if (currKey === 13) {
-            this.onWrapHandle()
+    verifyEditDiffHandle = () => {
+        const handle = () => {
+            const { contentInputList, title } = this.state
+            const { notesContent, notesTitle } = this
+            const data = contentInputListToNotesData(contentInputList);
+            let isEditDiff = false
+
+            if (data !== notesContent) isEditDiff = true
+            if (title !== notesTitle) isEditDiff = true
+
+            this.setState({ isEditDiff })
         }
-        if (currKey === 8) {
-            this.onDeleteHandle()
-        }
-        if (currKey === 38) {
-            this.onMoveFocusHandle('up')
-        }
-        if (currKey === 40) {
-            this.onMoveFocusHandle('dowm')
-        }
+        return FunctionHelper.debounce(handle, 500);
     }
 
-    scrollEventListener = e => {
-        const container = this.refs['note-record-edit'];
-        const navigation = this.refs['record-edit-navigation'];
-        const header = this.refs['edit-content-header'];
-        const input = this.refs['edit-content-input'];
+    async initRecordHandle(noteId) {
+        const { taskId } = this.props
+        const { isEditDiff } = this.state
 
-        if (!container || !navigation || !header || !input) return
+        const isRoot = noteId === taskId
+        if (isRoot) return
 
-        const offsetTop = container.offsetTop
-        const scrollheight = document.body.scrollTop == 0 ? document.documentElement.scrollTop : document.body.scrollTop;
-
-        if (scrollheight > offsetTop) {
-            if (this.isFixed) return
-            this.isFixed = true
-            navigation.className = 'record-edit-navigation noselect edit-navigation-fixed'
-            header.className = 'edit-content-header flex-start-center noselect edit-header-fixed'
-            input.className = 'edit-content-input edit-input-fixed'
-            return
-        };
-
-        if (!this.isFixed) return
-        navigation.className = 'record-edit-navigation noselect'
-        header.className = 'edit-content-header flex-start-center noselect'
-        input.className = 'edit-content-input'
-        this.isFixed = false
-    }
-
-    onWrapHandle() {
-        let newWrapId = '';
-
-        const focusNewWrap = () => {
-            if (!newWrapId) return
-            if (!this.refs[newWrapId]) return
-            this.refs[newWrapId].focusHandle()
+        if (isEditDiff) {
+            const confirmInstance = await Confirm('你有数据未保存, 是否加载新数据?');
+            if (confirmInstance.result !== 1) return
         }
 
-        const { inputFocusField, contentInputList } = this.state
-        if (!inputFocusField) return
-        const newContentInputList = contentInputList.reduce((accumulator, currentValue, currentIndex) => {
-            const id = `${new Date().getTime() + currentIndex}${currentIndex}`
-            const isWrapContentInput = currentValue.id === inputFocusField;
-            currentValue.id = id
-            accumulator.push(currentValue);
+        const fetchInstance = await service.notes.getNoteByTask(taskId)
+        if (fetchInstance.result !== 1) return toast.show(fetchInstance.message);
+        const data = fetchInstance.data;
+        this.initNotesDateToState(data)
+    }
 
-            if (isWrapContentInput) {
-                newWrapId = id + 'inputFocusField'
-                accumulator.push({
-                    type: 'normal',
-                    id: newWrapId,
-                    value: '',
-                });
-            }
+    async initNotesRandom() {
+        const { taskId } = this.props
 
-            return accumulator
-        }, [])
+        const fetchInstance = await service.notes.getNotesRandomByTask(taskId, 1)
+        if (fetchInstance.result !== 1) return toast.show(fetchInstance.message);
+        const list = fetchInstance.data;
+        if (list <= 0) return
+        const data = list[0];
+
+        this.initNotesDateToState(data)
+    }
+
+    initNotesDateToState = data => {
+        this.notesContent = data.content
+        this.notesTitle = data.title
         this.setState({
-            contentInputList: newContentInputList
-        }, () => focusNewWrap())
-    }
-
-    onDeleteHandle() {
-        let lastWrapId = '';
-
-        const focusNewWrap = () => {
-            if (!lastWrapId) return
-            if (!this.refs[lastWrapId]) return
-            this.refs[lastWrapId].focusHandle()
-        }
-
-        const { inputFocusField, contentInputList } = this.state
-        if (contentInputList.length <= 1) return
-        if (!inputFocusField) return
-        const item = contentInputList.find(i => i.id === inputFocusField)
-        if (!item) return
-        if (item.value) return
-
-        const newContentInputList = contentInputList.reduce((accumulator, currentValue, currentIndex) => {
-            const isDeleteContentInput = currentValue.id === inputFocusField;
-            const id = `${new Date().getTime() + currentIndex}${currentIndex}`
-            currentValue.id = id
-
-            if (isDeleteContentInput) {
-                accumulator.isDel = true
-            } else {
-                accumulator.list.push(currentValue);
-            }
-
-            if (!accumulator.isDel) {
-                lastWrapId = id
-            }
-
-            return accumulator
-        }, { list: [], isDel: false }).list
-        this.setState({
-            contentInputList: newContentInputList
-        }, () => focusNewWrap())
-    }
-
-    onMoveFocusHandle(direction) {
-        const { inputFocusField, contentInputList } = this.state
-        if (contentInputList.length <= 1) return
-        if (!inputFocusField) return
-
-        let focusWrapId = '';
-        for (let index = 0; index < contentInputList.length; index++) {
-            const element = contentInputList[index];
-
-            if (inputFocusField === element.id) {
-                if (direction === 'up' && index > 0) {
-                    focusWrapId = contentInputList[index - 1].id
-                }
-                if (direction === 'dowm' && index < (contentInputList.length - 1)) {
-                    focusWrapId = contentInputList[index + 1].id
-                }
-            }
-        }
-
-        if (!focusWrapId) return
-        this.refs[focusWrapId].focusHandle()
-    }
-
-    setInputFocusField = id => {
-        this.setState({ inputFocusField: id, reInputFocusField: id })
-    }
-
-    clearInputFocusField = () => {
-        this.setState({ inputFocusField: '' })
+            title: data.title,
+            contentInputList: notesDataToContentInputList(data.content)
+        })
     }
 
     setContentInputItemValue = (value, id) => {
@@ -241,14 +104,16 @@ export default class NoteRecordEdit extends React.Component {
     }
 
     setContentInputItemType = type => {
-        const { reInputFocusField, contentInputList } = this.state
-        if (!reInputFocusField) return
-        const item = contentInputList.find(i => i.id === reInputFocusField)
+        const { contentInputList } = this.state
+        const inputFocusField = this.refs.content.getInputFocusField()
+        if (!inputFocusField) return
+        const item = contentInputList.find(i => i.id === inputFocusField)
         if (!item) return
-        this.refs[reInputFocusField].focusHandle()
+
+        this.refs.content.setInputFocusHandle(inputFocusField)
         this.setState({
             contentInputList: contentInputList.map((item, key) => {
-                if (item.id === reInputFocusField) {
+                if (item.id === inputFocusField) {
                     return { ...item, type }
                 }
 
@@ -257,96 +122,38 @@ export default class NoteRecordEdit extends React.Component {
         })
     }
 
+    setTitleHandle = title => this.setState({ title })
+
+    setContentInputListHandle = (
+        contentInputList,
+        callbackHandle = () => { }
+    ) => this.setState({ contentInputList }, callbackHandle)
+
+    navigateHandle = nodeId => this.refs.content.scrollByNodeId(nodeId)
+
     render() {
         const { height, width } = this.props;
-        const { title, contentInputList } = this.state
+        const { title, contentInputList, isEditDiff } = this.state
 
-        return <div className='note-record-edit flex-start'
-            ref="note-record-edit"
-            style={{
-                minHeight: `${height}px`,
-                width: `${width}px`
-            }}
-        >
-            <div className='record-edit-navigation noselect'
-                ref="record-edit-navigation"
-                style={{ height: `${height}px` }}
-            >
-                <div className='edit-navigation-container'>
-                    <div className='edit-navigation-h1'>标题1</div>
-                    <div className='edit-navigation-h2'>标题2</div>
-                    <div className='edit-navigation-h1'>标题1</div>
-                    <div className='edit-navigation-h2'>标题2</div>
-                    <div className='edit-navigation-h1'>标题1</div>
-                    <div className='edit-navigation-h2'>标题2</div>
-                    <div className='edit-navigation-h3'>标题3</div>
-                    <div className='edit-navigation-h1'>标题1</div>
-                    <div className='edit-navigation-h2'>标题2</div>
-                    <div className='edit-navigation-h3'>标题3</div>
-                    <div className='edit-navigation-h4'>标题4</div>
-                </div>
-            </div>
-            <div className='record-edit-content flex-rest' style={{
-                minHeight: `${height}px`,
-                width: `${width - 230}px`
-            }}>
-                <div className='edit-content-header flex-start-center noselect'
-                    ref="edit-content-header"
-                    style={{ width: `${width - 231}px` }}
-                >
-                    <div className="left-operating flex-start-center flex-rest">
-                        <div className="operat-item hover-item"
-                            onClick={() => this.setContentInputItemType('normal')}
-                        >内容</div>
-                        <div className="operat-item hover-item"
-                            onClick={() => this.setContentInputItemType('h1')}
-                        >标题1</div>
-                        <div className="operat-item hover-item"
-                            onClick={() => this.setContentInputItemType('h2')}
-                        >标题2</div>
-                        <div className="operat-item hover-item"
-                            onClick={() => this.setContentInputItemType('h3')}
-                        >标题3</div>
-                        <div className="operat-item hover-item"
-                            onClick={() => this.setContentInputItemType('h4')}
-                        >标题4</div>
-                    </div>
-
-                    <div className="right-operating flex-start-center">
-                        <div className="operat-item hover-item">取消分类</div>
-                        <div className="operat-item hover-item">移动</div>
-                        <div className="operat-item hover-item">删除</div>
-                        <div className="operat-item hover-item">暂存</div>
-                    </div>
-                </div>
-                <div className='edit-content-input'
-                    ref="edit-content-input"
-                    style={{ width: `${width - 231}px` }}
-                >
-                    <div className="title-input flex-center">
-                        <input type="text" placeholder="请输入标题(简单描述/提问)"
-                            value={title || ''}
-                            onChange={({ target: { value } }) => this.setState({ title: value })}
-                            onFocus={() => this.setState({ inputFocusField: '' })}
-                            onBlur={() => this.setState({ inputFocusField: '' })}
-                        />
-                    </div>
-
-                    {contentInputList.map((item, key) =>
-                        <ContentInputItem
-                            ref={item.id}
-                            key={item.id}
-                            index={key + 1}
-                            id={item.id}
-                            type={item.type}
-                            value={item.value}
-                            onChange={this.setContentInputItemValue}
-                            onFocus={() => this.setInputFocusField(item.id)}
-                            onBlur={this.clearInputFocusField}
-                        />
-                    )}
-                </div>
-            </div>
-        </div>
+        return <Container
+            height={height}
+            width={width}
+            renderNavigation={<Navigation
+                contentInputList={contentInputList}
+                navigateHandle={this.navigateHandle}
+            />}
+            renderOperate={<Operate
+                isEditDiff={isEditDiff}
+                setContentInputItemType={this.setContentInputItemType}
+            />}
+            renderContent={<ContentInputContainer
+                ref='content'
+                title={title}
+                contentInputList={contentInputList}
+                setTitleHandle={this.setTitleHandle}
+                setContentInputListHandle={this.setContentInputListHandle}
+                setContentInputItemValue={this.setContentInputItemValue}
+            />}
+        />
     }
 }

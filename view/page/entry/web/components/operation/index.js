@@ -2,7 +2,6 @@ import { operation_width } from './../../const/fixed-size';
 import service from './../../../../../service';
 import toast from './../../../../../components/toast';
 import Confirm from './../../../../../components/confirm';
-import TimeHelper from './../../../../../../utils/time-helper';
 
 import Task from './task';
 import Progress from './progress';
@@ -20,7 +19,6 @@ export default class Operation extends React.Component {
             attainable: '',
             relevant: '',
             timeBound: '',
-            date: '',
             category: '',
             progress: [],
             notes: [],
@@ -44,13 +42,12 @@ export default class Operation extends React.Component {
 
     initTaskByData = (data) => {
         const {
-            timestamp, category, id,
+            category, id,
             title, content, specific, measurable, attainable, relevant, timeBound
         } = data
-        const date = TimeHelper.transformers.dateToFormat(new Date(timestamp))
 
         this.setState({
-            date, category, id,
+            category, id,
             title, content, specific, measurable, attainable, relevant, timeBound
         }, () => {
             this.getMainProgressPlanByTask()
@@ -106,7 +103,7 @@ export default class Operation extends React.Component {
     render() {
         const { clientHeight } = this
         const {
-            date, category, id,
+            category, id,
             title, content, specific, measurable, attainable, relevant, timeBound,
             progress, notes
         } = this.state
@@ -124,8 +121,7 @@ export default class Operation extends React.Component {
                 <div className="operation-header-item header-item-button flex-center flex-rest"
                     onClick={this.completeTaskHandle}
                 >完成</div>
-                <div className="operation-header-item flex-center flex-rest">{category || '标签(未分类)'}</div>
-                <div className="operation-header-item flex-center flex-rest">{date}</div>
+                <div className="operation-header-item header-item-button flex-center flex-rest">{category || '标签(未分类)'}</div>
             </div>
 
             <Task

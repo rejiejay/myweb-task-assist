@@ -18,10 +18,10 @@ export default class Header extends React.Component {
 
     selectCategoryTag = () => {
         toast.show()
-        import('./../../category-tag/index.js').then(async ({ TaskCategoryTag }) => {
+        import('./../../../../../components/page/multiple-category-tag/index.js').then(async ({ MultipleTaskCategoryTag }) => {
             toast.destroy()
 
-            const taskCategoryTag = new Modal(TaskCategoryTag);
+            const taskCategoryTag = new Modal(MultipleTaskCategoryTag);
             const result = await taskCategoryTag.show();
 
             if (result instanceof Error) return

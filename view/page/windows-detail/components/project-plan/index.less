@@ -96,18 +96,21 @@
     }
 }
 
+.windows-add-task-plan::-webkit-scrollbar-track,
 .project-plan::-webkit-scrollbar-track {
     box-shadow        : inset 0 0 6px rgba(0, 0, 0, 0.3);
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color  : #F5F5F5;
 }
 
+.windows-add-task-plan::-webkit-scrollbar,
 .project-plan::-webkit-scrollbar {
     height          : 8px;
     width           : 8px;
     background-color: #F5F5F5;
 }
 
+.windows-add-task-plan::-webkit-scrollbar-thumb,
 .project-plan::-webkit-scrollbar-thumb {
     background-color: #8c8c8c;
     background-image: -webkit-linear-gradient(45deg,
@@ -118,4 +121,76 @@
             rgba(255, 255, 255, .2) 75%,
             transparent 75%,
             transparent)
+}
+
+.windows-add-task-plan {
+    background-color: #fff;
+    width           : 620px;
+    overflow        : auto;
+
+    .windows-operate {
+        width : 100%;
+        color : #fff;
+        cursor: pointer;
+
+        .windows-operate-item {
+            height          : 45px;
+            border-right    : 1px solid #ddd;
+            background-color: #1890ff;
+        }
+
+        .windows-operate-item:hover {
+            color           : #fff;
+            background-color: #52c41a;
+        }
+    }
+}
+
+.move-to-main-progress-plan {
+    background-color: #fff;
+    width           : 620px;
+    overflow        : auto;
+
+    .move-progress-title {
+        padding      : 0 15px;
+        line-height  : 45px;
+        font-size    : 16px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .move-progress-container {
+        min-height: 320px;
+
+        .move-progress-item {
+            padding      : 15px;
+            border-bottom: 1px solid #ddd;
+            cursor       : pointer;
+        }
+
+        .move-progress-item:hover {
+            color           : #fff;
+            background-color: #1890ff;
+        }
+
+        .move-progress-item:last-child {
+            border-bottom: none;
+        }
+    }
+
+    .move-progress-operate {
+        width : 100%;
+        color : #fff;
+        cursor: pointer;
+
+        .move-progress-operate-item {
+            height          : 45px;
+            border-right    : 1px solid #ddd;
+            background-color: #1890ff;
+        }
+
+        .move-progress-operate-item:hover {
+            color           : #fff;
+            background-color: #52c41a;
+        }
+    }
 }

@@ -7,14 +7,39 @@ export default class RowMainItem extends React.Component {
     }
 
     render() {
-        const { name, addMain, moveLeft, moveRight } = this.props;
+        const {
+            id,
+            name,
+            addMain,
+            addMainHandle,
+            addSubHandle,
+            moveLeft,
+            moveRight,
+            moveLeftHandle,
+            moveRightHandle,
+            editProgressPlanHandle,
+        } = this.props;
 
         return <div className='column-main-item flex-center'>
-            <label>{name}</label>
-            {moveLeft && <MoveLeft />}
-            {moveRight && <MoveRight />}
-            {addMain && <AddIcon className='add-main-plan' />}
-            <AddIcon className='add-sub-plan' />
+            <label
+                onClick={() => editProgressPlanHandle && editProgressPlanHandle(id)}
+            >{name}</label>
+
+            {moveLeft && <MoveLeft
+                onClick={moveLeftHandle}
+            />}
+
+            {moveRight && <MoveRight
+                onClick={moveRightHandle}
+            />}
+
+            {addMain && <AddIcon className='add-main-plan'
+                onClick={addMainHandle}
+            />}
+
+            <AddIcon className='add-sub-plan'
+                onClick={addSubHandle}
+            />
         </div>
     }
 }

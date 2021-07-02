@@ -16,8 +16,14 @@ const createRandomStr = ({ length, excludeUpperCase }) => {
     return resultStr;
 }
 
+const stringEncodeBase64 = string => btoa(encodeURI(string));
+
+const base64DecodeString = base64 => decodeURI(atob(base64));
+
 const StringHelper = {
-    createRandomStr
+    createRandomStr,
+    stringEncodeBase64,
+    base64DecodeString
 }
 
 export default StringHelper

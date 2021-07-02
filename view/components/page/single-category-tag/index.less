@@ -3,13 +3,13 @@
 @black3: #909399;
 @black4: #C0C4CC;
 
-.task-category-tag {
+.single-category-tag {
     background-color: #fff;
     width           : 620px;
     overflow        : auto;
 }
 
-.task-category-tag .category-tag-container {
+.single-category-tag .category-tag-container {
     min-height: 350px;
     padding   : 15px 0px 0px 15px;
 
@@ -20,20 +20,36 @@
     }
 
     .select-item-container {
-        padding      : 5px 7.5px;
+        position     : relative;
         border       : 1px solid #ddd;
-        cursor       : pointer;
+        padding      : 5px 0;
         border-radius: 15px;
+        font-size    : 14px;
+
+        label {
+            padding: 0px 7.5px;
+            cursor : pointer;
+        }
+
+        .category-select-delete {
+            cursor       : pointer;
+            padding-left : 7.5px;
+            padding-right: 15px;
+        }
     }
 
     .select-item-select,
     .select-item-container:hover {
         color           : #fff;
         background-color: #1890ff;
+
+        .delete-icon path {
+            fill: #fff;
+        }
     }
 }
 
-.task-category-tag .windows-operate {
+.single-category-tag .windows-operate {
     width : 100%;
     color : #fff;
     cursor: pointer;

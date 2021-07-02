@@ -18,7 +18,7 @@ export class AddTaskProgressPlan extends React.Component {
     }
 
     confirmHandle = async () => {
-        const { taskId, resolve } = this.props
+        const { taskId, resolve, parentId } = this.props
         const { title, content, specific, measurable, attainable, relevant, timeBound } = this.state
         if (!title) return toast.show('标题不能为空');
         if (!content) return toast.show('内容不能为空');
@@ -33,7 +33,8 @@ export class AddTaskProgressPlan extends React.Component {
                 attainable,
                 relevant,
                 timeBound
-            }
+            },
+            parentId
         );
 
         if (fetchInstance.result !== 1) {
