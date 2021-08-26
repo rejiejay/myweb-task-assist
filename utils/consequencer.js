@@ -1,12 +1,12 @@
 const consequencer = {
-    success: (data, message, result) => ({
-        result: +result || 1,
-        data: data || null,
-        message: message || 'success'
+    success: (data = null, message = 'success', result = 1) => ({
+        result: +result,
+        data: data,
+        message: message
     }),
-    error: (message, result, data) => ({
-        result: +result || 0,
-        data: data || null,
+    error: (message, result = 9, data = null) => ({
+        result: +result,
+        data: data,
         message: message
     })
 }

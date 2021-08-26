@@ -1,3 +1,9 @@
+import StringHelper from './../../utils/string-helper';
+import JsonHelper from './../../utils/json-helper';
+import NumberHelper from './../../utils/number-helper';
+import { administrativeAptitude } from './../../view/components/page/mind-category-tag/administrative-aptitude';
+import { essay } from './../../view/components/page/mind-category-tag/essay';
+
 /**
  * local.database.sqlite is only for local development
  */
@@ -67,7 +73,17 @@ const table = {
             topic TINYTEXT NOT NULL,
             filterJson TEXT NOT NULL
         )
-    `
+    `,
+
+    administrativeAptitudeEssayHelper: `
+        CREATE TABLE administrative_aptitude_essay_helper (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            timestamp BIGINT NOT NULL,
+            category TEXT NOT NULL
+        )
+    `,
 }
 
 function initTask() {
@@ -207,6 +223,56 @@ function longTermRecordDetail() {
     }))
 }
 
+function initAdministrativeAptitudeEssayHelper() {
+    const slef = this
+    const delimiterString = '~·-||jeker||-·~';
+
+    const delimiterBase64 = StringHelper.stringEncodeBase64(delimiterString);
+
+    const contentInputListToRecordData = list => list
+        .map(
+            ({ type, value }) => {
+                const string = JsonHelper.josnToString({ type, value });
+
+                return StringHelper.stringEncodeBase64(string)
+            }
+        )
+        .join(delimiterBase64);
+
+    const content = () => new Array(NumberHelper.createRandomNum(32))
+        .fill('')
+        .map((i, k) => ({
+            type: 'normal',
+            value: '内容' + StringHelper.createRandomStr({ length: NumberHelper.createRandomNum(32) }),
+        }))
+
+    const allCategory = [...administrativeAptitude, ...essay];
+
+    const getCategory = () => {
+        const index = NumberHelper.createRandomNum(allCategory.length - 1);
+        return `"${allCategory[index].id}"`;
+    }
+
+    const createItem = () => ({
+        title: `"标题${StringHelper.createRandomStr({
+            length: NumberHelper.createRandomNum(15)
+        })}"`,
+        content: `"${contentInputListToRecordData(content())}"`,
+        timestamp: NumberHelper.createRandomNum(new Date().getTime()),
+        category: getCategory(),
+    })
+    const insertTableData = data => utils.insertTableData('administrative_aptitude_essay_helper', data)
+
+    const list = [];
+
+    // 测试分页
+    for (let index = 1; index <= 20; index++) {
+        list.push(createItem())
+    }
+
+    list.forEach(item => slef.SqliteJs.exec(insertTableData(item)))
+}
+
 function init(SqliteJs) {
     this.SqliteJs = SqliteJs
     this.initTable()
@@ -217,6 +283,7 @@ function init(SqliteJs) {
     this.initLongTermTaskRelational()
     this.initNavigationLink()
     this.longTermRecordDetail()
+    this.initAdministrativeAptitudeEssayHelper()
 }
 
 const utils = {
@@ -234,6 +301,10 @@ const utils = {
     insertTaskData(table, data) {
         return `INSERT INTO ${table} ${this.dataToAddSql(data)};`
     },
+
+    insertTableData(table, data) {
+        return `INSERT INTO ${table} ${this.dataToAddSql(data)};`
+    },
 }
 
 function initTable() {
@@ -243,6 +314,7 @@ function initTable() {
     this.SqliteJs.exec(table.longTermTaskRelational);
     this.SqliteJs.exec(table.longTermRecordDetail);
     this.SqliteJs.exec(table.navigationLink);
+    this.SqliteJs.exec(table.administrativeAptitudeEssayHelper);
 }
 
 const localDatabaseSqlite = {
@@ -254,7 +326,8 @@ const localDatabaseSqlite = {
     initTaskTags,
     initLongTermTaskRelational,
     longTermRecordDetail,
-    initNavigationLink
+    initNavigationLink,
+    initAdministrativeAptitudeEssayHelper,
 }
 
 export default localDatabaseSqlite
