@@ -9,6 +9,7 @@ import LongTerm from './long-term';
 import Auth from './auth';
 import SQL from './sql';
 import NavigationLink from './navigation-link';
+import AdministrativeAptitudeEssayHelper from './administrative-essay';
 
 const controllerMethod = {
     ...Task,
@@ -16,7 +17,8 @@ const controllerMethod = {
     ...LongTerm,
     ...Auth,
     ...SQL,
-    ...NavigationLink
+    ...NavigationLink,
+    ...AdministrativeAptitudeEssayHelper,
 }
 
 /**

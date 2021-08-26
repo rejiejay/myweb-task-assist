@@ -8,6 +8,7 @@ import longTerm from './long-term'
 import auth from './auth'
 import link from './navigation-link'
 import sql from './sql'
+import AdministrativeAptitudeEssayHelper from './administrative-essay'
 
 const service = {
     auth,
@@ -15,7 +16,8 @@ const service = {
     tag,
     longTerm,
     link,
-    sql
+    sql,
+    AAEH: AdministrativeAptitudeEssayHelper
 }
 
 export default service

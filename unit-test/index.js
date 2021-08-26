@@ -9,6 +9,7 @@ import auth from './auth'
 import longTerm from './long-term'
 import NavigationLink from './navigation-link'
 import sql from './sql'
+import AdministrativeAptitudeEssayHelper from './administrative-essay'
 
 import utils from './utils'
 
@@ -19,14 +20,16 @@ const UnitTest = {
         ...auth,
         ...longTerm,
         ...NavigationLink,
-        ...sql
+        ...sql,
+        ...AdministrativeAptitudeEssayHelper,
     }),
     tags: utils.methodHelper({ ...tags }),
     task: utils.methodHelper({ ...task }),
     auth: utils.methodHelper({ ...auth }),
     longTerm: utils.methodHelper({ ...longTerm }),
     NavigationLink: utils.methodHelper({ ...NavigationLink }),
-    sql: utils.methodHelper({ ...sql })
+    sql: utils.methodHelper({ ...sql }),
+    administrativeAptitudeEssayHelper: utils.methodHelper({ ...AdministrativeAptitudeEssayHelper }),
 }
 
 export default UnitTest
