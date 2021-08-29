@@ -11,6 +11,7 @@ async function requestHandle(request, response) {
     const controller = new Controller(request)
     const resource = new Resource(request, response, this.isDev)
 
+    if (this.isDev && resource.isImage) return resource.renderImage()
     if (this.isDev && resource.isStatic) return resource.render()
 
     const parseInstance = await reqToParameter(request)

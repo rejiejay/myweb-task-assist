@@ -12,8 +12,11 @@ const uniqueDeduplicationByKey = ({ array, key }) => {
     })
 }
 
+const deleteByIndex = ({ array, index }) => array.filter((item, key) => key !== index);
+
 const ArrayHelper = {
-    uniqueDeduplicationByKey
+    uniqueDeduplicationByKey,
+    deleteByIndex,
 }
 
 export default ArrayHelper

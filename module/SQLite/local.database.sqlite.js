@@ -75,13 +75,18 @@ const table = {
         )
     `,
 
+    /**
+     * 新增images表字段
+     * ALTER TABLE administrativeAptitudeEssayHelper ADD COLUMN images Text;
+     */
     administrativeAptitudeEssayHelper: `
         CREATE TABLE administrative_aptitude_essay_helper (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             content TEXT NOT NULL,
             timestamp BIGINT NOT NULL,
-            category TEXT NOT NULL
+            category TEXT NOT NULL,
+            images TEXT
         )
     `,
 }

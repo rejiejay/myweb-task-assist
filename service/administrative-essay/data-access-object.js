@@ -3,6 +3,7 @@ const dataAccessObject = {
     title: { required: true },
     content: { required: true },
     category: { required: true },
+    images: { required: false },
     timestamp: { required: true },
 }
 

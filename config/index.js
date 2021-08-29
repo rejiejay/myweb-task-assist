@@ -42,7 +42,11 @@ let config = {
         bucket: 'rejiejay-1251940173',
         region: 'ap-guangzhou',
         appId: ''
-    }
+    },
+
+    images: {
+        profixPath: './output/images/',
+    },
 }
 
 if (process.env.NODE_ENV === 'development') config = { ...config, ...development }

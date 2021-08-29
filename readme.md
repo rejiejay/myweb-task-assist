@@ -9,6 +9,11 @@ V1: https://github.com/rejiejay/myweb-task-assist/tree/task-assist-v1
 V2: https://github.com/rejiejay/myweb-task-assist/tree/react
 V3: https://github.com/rejiejay/website-station-system-version-fives
 
+## sqlLite
+CREATE TABLE administrative_aptitude_essay_helper ( id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, timestamp BIGINT NOT NULL, category TEXT NOT NULL )
+
+ALTER TABLE administrativeAptitudeEssayHelper ADD COLUMN images Text;
+
 ## Construct
 cnpm install -d  
 

@@ -17,6 +17,12 @@ class ResourcesUtils {
         url = url.split('?')[0].split('#')[0]
         let isStatic = false
         let isConfigured = false
+        let isImage = false
+
+        if (url.indexOf('/images/') === 0) {
+            isImage = true;
+            return { isStatic, isConfigured, isImage }
+        }
 
         Object.keys(resource).forEach(page => {
             if (url === resource[page].matchURL) {
@@ -28,12 +34,12 @@ class ResourcesUtils {
             }
         })
 
-        if (isConfigured) return { isStatic, isConfigured }
+        if (isConfigured) return { isStatic, isConfigured, isImage }
 
         const resourcePath = projectRelativePath(`./output/build${url}`)
         if (fs.existsSync(resourcePath)) isStatic = true
 
-        return { isStatic, isConfigured }
+        return { isStatic, isConfigured, isImage }
     }
 
     responseHandle(parameter) {
@@ -161,6 +167,7 @@ class ResourcesHandle extends ResourcesUtils {
         super()
         this.isStatic = false
         this.isConfigured = false
+        this.isImage = false
         this.init(request, response, isDev)
     }
 
@@ -169,8 +176,9 @@ class ResourcesHandle extends ResourcesUtils {
         this.response = response
         this.isDev = isDev
 
-        const { isStatic, isConfigured } = this.initUrlCatch()
+        const { isStatic, isConfigured, isImage } = this.initUrlCatch()
         this.isStatic = isStatic
+        this.isImage = isImage
         this.isConfigured = isConfigured
     }
 
@@ -232,6 +240,18 @@ class ResourcesHandle extends ResourcesUtils {
 
         const extName = Path.extname(resourcePath).substr(1)
         if (mineTypeMap[extName]) this.response.writeHead(200, { 'Content-Type': mineTypeMap[extName] })
+        fs.createReadStream(resourcePath).pipe(this.response)
+    }
+
+    async renderImage() {
+        const resourcePath = projectRelativePath(`./output${this.request.url}`)
+
+        const isFilePath = await FilesHelper.isFilePath(resourcePath)
+        if (isFilePath instanceof Error) {
+            return this.responseHandle({ code: 200, message: isFilePath.message, contentType: 'text/html;charset=utf-8' })
+        }
+
+        this.response.writeHead(200, { 'Content-Type': 'image/png' })
         fs.createReadStream(resourcePath).pipe(this.response)
     }
 

@@ -98,6 +98,10 @@ const deleteRecord = async function deleteRecord(id) {
     return tableHandle.del(id)
 }
 
+const updateRecordImage = async function updateRecordImage(id, record) {
+    return await tableHandle.updata(id, record)
+}
+
 const AdministrativeAptitudeEssayHelper = {
     getList,
     getCount,
@@ -106,6 +110,7 @@ const AdministrativeAptitudeEssayHelper = {
     addRecord,
     editRecord,
     deleteRecord,
+    updateRecordImage,
 }
 
 export default AdministrativeAptitudeEssayHelper
