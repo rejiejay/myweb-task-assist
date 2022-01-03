@@ -68,7 +68,7 @@ class SqlHandle {
         return object
     }
 
-    tableToNodeTreeConver = (table, rootUniquelyIdentify = 'root') => {
+    tableToNodeTreeConver(table, rootUniquelyIdentify = 'root') {
         const findChildren = element => {
             element.children = table.reduce((nodes, value) => {
                 if (element.uniquelyIdentify === value.parentUniquelyIdentify) nodes.push(findChildren(value))

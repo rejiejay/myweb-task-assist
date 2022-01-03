@@ -22,18 +22,20 @@ class TableHandle {
         this.sqlHandle = new SqlHandle()
     }
 
-    query = sql => new Promise((resolve, reject) => {
-        let result = {}
-        try {
-            result = SqliteJs.db.exec(sql)
-        } catch (error) {
-            Log.error(`SqliteJs.db.error: ${JSON.stringify(error)}`)
-            return reject(consequencer.error(`${error}`))
-        }
+    query(sql) {
+        return new Promise((resolve, reject) => {
+            let result = {}
+            try {
+                result = SqliteJs.db.exec(sql)
+            } catch (error) {
+                Log.error(`SqliteJs.db.error: ${JSON.stringify(error)}`)
+                return reject(consequencer.error(`${error}`))
+            }
 
-        Log.success(`SqliteJs.db.success: ${sql}`)
-        resolve(consequencer.success(result))
-    }).catch(error => error)
+            Log.success(`SqliteJs.db.success: ${sql}`)
+            resolve(consequencer.success(result))
+        }).catch(error => error)
+    }
 
     find(id) {
         const self = this
