@@ -1,10 +1,10 @@
 let xfyun = {
-    hostUrl: "wss://tts-api.xfyun.cn/v2/tts",
-    host: "tts-api.xfyun.cn",
-    uri: "/v2/tts",
-    appid: "126cf233",
-    apiSecret: "NzNkNGM5MjRhY2FmMjYwOWRlMGZmNTk1",
-    apiKey: "a37e719d5bb1477e39ad1513b250a67e",
+    hostUrl: "",
+    host: "",
+    uri: "",
+    appid: "",
+    apiSecret: "",
+    apiKey: "",
 }
 
 const development = {}

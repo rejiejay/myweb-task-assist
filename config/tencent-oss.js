@@ -1,10 +1,10 @@
 let ossConfig = {
     // Warning: Can`t submit
-    secretId: 'AKIDZw6DLFgMZZKuFO6zSfdMr8D4j9KGmQeh',
-    secretKey: 'xkIbfU4SgfT4RZVCettgEWbR2OYTBetv',
-    bucket: 'rejiejay-1251940173',
-    region: 'ap-guangzhou',
-    appId: '1251940173',
+    secretId: '',
+    secretKey: '',
+    bucket: '',
+    region: '',
+    appId: '',
     /**
      * 任务数据备份路径
      */
