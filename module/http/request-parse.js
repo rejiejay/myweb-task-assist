@@ -1,7 +1,6 @@
 import * as URL from 'url'
 
 import valuesStructuresVerify from './../../utils/values-structures-verify'
-import consequencer from './../../utils/consequencer'
 
 const reqToParameter = async request => {
     let parameter = {}
@@ -13,7 +12,7 @@ const reqToParameter = async request => {
     }
 
     return new Promise(async (resolve, reject) => {
-        if (request.method !== 'POST') return resolve(consequencer.success(parameter))
+        if (request.method !== 'POST') return resolve(parameter)
 
         let body = [];
 
@@ -24,18 +23,20 @@ const reqToParameter = async request => {
                 try {
                     body = Buffer.concat(body).toString()
                 } catch (error) {
-                    return reject(consequencer.error(`${error}`))
+                    return reject(error)
                 }
 
-                const verifyInstance = valuesStructuresVerify.isJSONString(body)
-                const values = verifyInstance.data
+                const values = valuesStructuresVerify.isJSONString(body, 'body')
+                if (values instanceof Error) {
+                    return reject(values)
+                }
 
-                resolve(consequencer.success({
+                resolve({
                     ...parameter,
                     ...values
-                }))
+                })
             })
-            .on('error', error => reject(consequencer.error(`${error}`)))
+            .on('error', error => reject(error))
 
     }).catch(error => error);
 }

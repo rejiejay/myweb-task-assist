@@ -56,14 +56,26 @@ const accumulateText = (file, data = '', options = {}) => new Promise(async (res
  * @param {String} path
  */
 const isFilePath = path => new Promise(async (resolve, reject) => {
-    const lstat = fse.lstatSync(path)
+    let lstat
+
+    try {
+        lstat = fse.lstatSync(path)
+    } catch (error) {
+        return reject(new Error(`path: "${path}" is not exists`))
+    }
 
     if (lstat.isDirectory()) {
         return reject(new Error(`path: "${path}" is not file path`))
     }
-    const exists = await fse.pathExists(path)
 
-    if (!exists && !lstat.isFile()) {
+    let exists
+    try {
+        exists = await fse.pathExists(path)
+    } catch (error) {
+        return reject(new Error(`path: "${path}" is not exists`))
+    }
+
+    if (!exists || !lstat.isFile()) {
         return reject(new Error(`path: "${path}" is not exists`))
     }
 
@@ -74,7 +86,7 @@ const FilesHelper = {
     copyDirectory,
     outputFile,
     accumulateText,
-    isFilePath
+    isFilePath,
 }
 
 export default FilesHelper

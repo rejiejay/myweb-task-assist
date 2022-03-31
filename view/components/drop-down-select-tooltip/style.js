@@ -2,7 +2,6 @@ import jsxStyle from './../jsx-style/index'
 
 const container = {
     minHeight: '40px',
-    padding: '0px 15px'
 }
 
 const tooltip = {

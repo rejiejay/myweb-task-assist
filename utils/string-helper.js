@@ -1,4 +1,8 @@
-import NumberHelper from './number-helper'
+/**
+ * 注意: 兼容性
+ * Buffer是Node.js才有的方法, web端使用此方法会报错
+ */
+ import NumberHelper from './number-helper'
 
 /**
  * 含义: 根据length大小生成随机字符串
@@ -16,9 +20,17 @@ const createRandomStr = ({ length, excludeUpperCase }) => {
     return resultStr;
 }
 
-const stringEncodeBase64 = string => btoa(encodeURI(string));
+const stringEncodeBase64 = string => {
+    const encode = encodeURI(string);
+    const base64 = new Buffer.from(encode).toString('base64');  
+    return base64;
+};
 
-const base64DecodeString = base64 => decodeURI(atob(base64));
+const base64DecodeString = base64 => {
+    const string = new Buffer.from(base64, 'base64').toString();  
+    const decode = decodeURI(string);
+    return decode;
+};
 
 const StringHelper = {
     createRandomStr,

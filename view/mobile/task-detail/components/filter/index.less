@@ -1,0 +1,60 @@
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.mobile-device .task-detail-container .detail-filter {
+    .detail-filter-operational {
+        padding: 0px 15px 15px 15px;
+
+        .filter-operational-container {
+            height          : 32px;
+            background-color: #fff;
+        }
+
+        .flex-rest {
+            border-right: 1px solid #ddd;
+        }
+
+        .flex-rest:last-child {
+            border-right: none;
+        }
+    }
+
+    .detail-filter-item {
+        padding: 0px 15px 15px 15px;
+
+        .filter-item-container {
+            min-height      : 45px;
+            background-color: #fff;
+            overflow        : hidden;
+        }
+
+        .item-rest-description {
+            overflow     : hidden;
+            word-break   : break-all;
+            text-overflow: ellipsis;
+            white-space  : nowrap;
+        }
+
+        .filter-sub-item {
+            line-height  : 32px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .filter-sub-item:last-child {
+            border-bottom: none;
+        }
+
+        .filter-item-rest {
+            padding : 0px 15px;
+            overflow: hidden;
+        }
+
+        .filter-item-selected,
+        .filter-item-cancel {
+            border-left: 1px solid #ddd;
+            padding    : 0px 15px;
+        }
+    }
+}

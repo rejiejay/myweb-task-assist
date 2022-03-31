@@ -1,9 +1,13 @@
-import config from './../../config/development'
-
 const development = {
     origin: 'http://localhost:1938/',
     auth: {
-        ...config.auth
+        url: {
+            login: 'auth/login',
+        },
+        loginFailure: {
+            code: 401,
+            message: '未授权'
+        },
     }
 }
 

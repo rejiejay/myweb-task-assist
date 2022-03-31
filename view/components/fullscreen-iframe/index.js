@@ -2,44 +2,43 @@
  * FullscreenIframe 对外方法:
  */
 import style from './style.js'
-import consequencer from './../../../utils/consequencer'
 
-const FullscreenIframe = ({ Element, zIndex, props, className }) => {
-    const parameter = props ? props : {}
-    let resolveHandle = () => { }
-    let rejectHandle = () => { }
-    const div = document.createElement('div')
-    div.setAttribute('style', style.content(zIndex))
-    div.className = !!className ? className : ''
-
-    const destroy = () => document.body.removeChild(div)
-    const selectResolveHandle = result => {
-        resolveHandle(result)
-        destroy()
-    }
-    const selectRejectHandle = () => {
-        rejectHandle(consequencer.error('cancel'))
-        destroy()
+class FullscreenIframe {
+    constructor(Element, props = {}, className = '', zIndex = 99) {
+        this.div = document.createElement('div');
+        this.div.setAttribute('style', style.content(zIndex))
+        this.div.className = `components-full-screen-iframe flex-center ${className}`;
+        this.renderElement = (resolve, reject) => <Element
+            resolve={resolve}
+            reject={reject}
+            {...props}
+        />
     }
 
-    document.body.appendChild(div)
-    ReactDOM.render(
-            <div style={style.container}>
-                <Element
-                    className={className ? className : ''}
-                    resolve={selectResolveHandle}
-                    reject={selectRejectHandle}
-                    {...parameter}
-                />
-            </div>
-        ,
-        div
-    )
+    destroy = () => {
+        ReactDOM.unmountComponentAtNode(this.div);
+        if (this.div && this.div.parentNode) this.div.parentNode.removeChild(this.div);
+    }
 
-    return new Promise((resolve, reject) => {
-        resolveHandle = resolve
-        rejectHandle = reject
-    }).catch(error => error);
+    show() {
+        const div = this.div
+        const renderElement = this.renderElement
+        const destroy = this.destroy
+
+        return new Promise((resolve, reject) => {
+            const resolveHandle = result => {
+                resolve(result)
+                destroy()
+            }
+            const rejectHandle = message => {
+                reject(new Error(message))
+                destroy()
+            }
+            document.body.appendChild(div)
+            ReactDOM.render(renderElement(resolveHandle, rejectHandle), div);
+        })
+            .catch(error => error);
+    }
 }
 
 export default FullscreenIframe

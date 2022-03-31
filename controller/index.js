@@ -3,20 +3,22 @@
  */
 import * as URL from 'url';
 
-import Task from './task/index.js';
-import Tag from './tag/index.js';
-import LongTerm from './long-term';
-import Auth from './auth';
+import Auth from './auth/index';
+import LongTerm from './long-term/index.js';
+import LongTermProgram from './long-term-program/index.js';
+import TaskDetail from './task-detail/index.js';
+import TaskList from './task-list/index.js';
+import TaskTermList from './task-term-list/index.js';
 import SQL from './sql';
-import NavigationLink from './navigation-link';
 
 const controllerMethod = {
-    ...Task,
-    ...Tag,
-    ...LongTerm,
     ...Auth,
+    ...LongTerm,
+    ...LongTermProgram,
+    ...TaskDetail,
+    ...TaskList,
+    ...TaskTermList,
     ...SQL,
-    ...NavigationLink
 }
 
 /**

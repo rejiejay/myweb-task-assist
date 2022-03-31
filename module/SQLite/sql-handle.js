@@ -23,8 +23,8 @@ class SqlHandle {
             keys.push(key)
             let value = data[key]
 
-            const isStringInstance = valuesStructuresVerify.isString(value)
-            if (isStringInstance.result === 1) value = `'${value}'`
+            const isStringInstance = valuesStructuresVerify.isString(value, key)
+            if (!(isStringInstance instanceof Error)) value = `\"${value}\"`
 
             values.push(value)
         })
@@ -40,8 +40,8 @@ class SqlHandle {
                 const value = newVal[key]
                 let sql = `${key}=${value}`
 
-                const isStringInstance = valuesStructuresVerify.isString(value)
-                if (isStringInstance.result === 1) sql = `${key}='${value}'`
+                const isStringInstance = valuesStructuresVerify.isString(value, key)
+                if (!(isStringInstance instanceof Error)) sql = `${key}='${value}'`
                 if (value === 'null') sql = `${key}=null`
 
                 sqls.push(sql)
@@ -68,7 +68,7 @@ class SqlHandle {
         return object
     }
 
-    tableToNodeTreeConver = (table, rootUniquelyIdentify = 'root') => {
+    tableToNodeTreeConver(table, rootUniquelyIdentify = 'root') {
         const findChildren = element => {
             element.children = table.reduce((nodes, value) => {
                 if (element.uniquelyIdentify === value.parentUniquelyIdentify) nodes.push(findChildren(value))

@@ -1,68 +1,45 @@
-const ListRow = ({ row, clickTaskHandle }) => {
-    return <div className="windows-list-row flex-rest">{row.map((item, key) =>
+import timeTransformers from './../../../../../../utils/time-transformers';
+
+const ListRow = ({ row, clickItemHandle, listRowHeight, listItemWidth }) => {
+    return <div className="windows-list-row"
+        style={{ height: `${listRowHeight}px` }}
+    >{row.map((item, key) =>
         <ListItem key={key}
             item={item}
-            clickTaskHandle={clickTaskHandle}
+            listItemWidth={listItemWidth}
+            clickItemHandle={clickItemHandle}
         />
     )}</div>
 }
 
-const ListItem = ({ item, clickTaskHandle }) => {
-    if (item.isEmpty) {
-        return <div className="windows-list-item flex-rest" />
-    }
-    const { id, title, content, specific, measurable, attainable, relevant, timeBound } = item
+const ListItem = ({ item, clickItemHandle, listItemWidth }) => {
+    const { id, title, content, isEmpty } = item
+    const width = `${listItemWidth}px`
 
-    const ItemDescription = ({ field, value }) => {
-        if (!value) return <></>
-        let description = '';
-
-        switch (field) {
-            case 'content':
-                description = '任务结论';
-                break;
-            case 'specific':
-                description = '任务具体内容';
-                break;
-            case 'measurable':
-                description = '任务完成标识';
-                break;
-            case 'attainable':
-                description = '任务是否可以实现';
-                break;
-            case 'relevant':
-                description = '任务和哪些需求相关';
-                break;
-            case 'timeBound':
-                description = '明确的截止期限';
-                break;
-            default:
-                break;
+    const createIdentityTime = () => {
+        let identityTime = new Date().getTime();
+        if (item && item.createTimestamp) {
+            identityTime = item.createTimestamp
+        }
+        if (item && item.updateTimestamp) {
+            identityTime = item.updateTimestamp
         }
 
-        return <div className={`list-item-${field}`}
-            onClick={() => clickTaskHandle(id)}
-        >
-            <p key={field}>{description}:</p>
-            {
-                value
-                    .split('\n')
-                    .map(
-                        (item, i) => <p key={i}>{item}</p>
-                    )
-            }
-        </div>
+        return timeTransformers.dateToDiaryDetail(new Date(+identityTime))
     }
 
-    return <div className="windows-list-item flex-rest">
+    if (isEmpty) {
+        return <div className="windows-list-item flex-rest" style={{ width }} />
+    }
+
+    return <div className="windows-list-item"
+        onClick={() => clickItemHandle(id)}
+        style={{ width }}
+    >
         <div className='list-item-container'>
             <div className='list-item-title'>{title}</div>
-            {/* <ItemDescription field='content' value={content} /> */}
-            <ItemDescription field='specific' value={specific} />
-            <ItemDescription field='measurable' value={measurable} />
-            <ItemDescription field='attainable' value={attainable} />
-            <ItemDescription field='relevant' value={relevant} />
-            <ItemDescription field='timeBound' value={timeBound} />
+            <div className='list-item-time'>{createIdentityTime()}</div>
+            <div className='list-item-field'>{content}</div>
         </div>
 
     </div>
@@ -76,6 +53,14 @@ export default class ListComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
+
+        const clientHeight = document.body.offsetHeight || document.documentElement.clientHeight || window.innerHeight
+        const clientWidth = document.body.offsetWidth || document.documentElement.clientWidth || window.innerWidth
+
+        const previewWidth = 451
+        const classificationWidth = 241
+        this.listRowHeight = Math.floor((clientHeight - 120) / 3);
+        this.listItemWidth = Math.floor((clientWidth - previewWidth - classificationWidth - 2) / 3);
     }
 
     initList() {
@@ -99,12 +84,15 @@ export default class ListComponent extends React.Component {
 
     render() {
         const list = this.initList();
-        const { clickTaskHandle } = this.props
+        const { clickItemHandle } = this.props
+        const { listRowHeight, listItemWidth } = this
 
         return <div className="windows-list-content flex-column flex-rest">{list.map((row, key) =>
             <ListRow key={key}
                 row={row}
-                clickTaskHandle={clickTaskHandle}
+                listRowHeight={listRowHeight}
+                listItemWidth={listItemWidth}
+                clickItemHandle={clickItemHandle}
             />
         )}</div>
     }

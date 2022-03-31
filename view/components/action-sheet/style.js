@@ -19,6 +19,12 @@ const content = `
     align-items   : center;
 `
 
+const descriptionOverHidden = {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+}
+
 const mask = {
     width: '100%',
     opacity: 0,
@@ -45,6 +51,7 @@ const singleItem = {
     height: '45px',
     padding: '0px 15px',
     borderBottom: '1px solid #ddd',
+    ...descriptionOverHidden,
     ...jsxStyle.basicFlex.startCenter
 }
 
@@ -69,6 +76,7 @@ const multipleItem = {
     padding: '0px 15px',
     height: '45px',
     borderBottom: '1px solid #ddd',
+    ...descriptionOverHidden,
     ...jsxStyle.basicFlex.startCenter
 }
 
@@ -87,7 +95,8 @@ const style = {
     multipleTitle,
     multipleConfirm,
     multipleItem,
-    multipleLable
+    multipleLable,
+    descriptionOverHidden,
 }
 
 export default style

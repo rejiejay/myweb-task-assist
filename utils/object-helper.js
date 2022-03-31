@@ -37,8 +37,8 @@ const updataAttachHandle = (origin, target) => {
              * SQLHandle 对 'null' 做了特殊化处理
              */
             updata[key] = 'null'
-            if (isStrInstance.result === 1) updata[key] = ''
-            if (isIntInstance.result === 1) updata[key] = 'null'
+            if (!(isStrInstance instanceof Error)) updata[key] = ''
+            if (!(isIntInstance instanceof Error)) updata[key] = 'null'
 
             continue
         }

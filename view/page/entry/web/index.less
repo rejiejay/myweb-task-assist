@@ -1,8 +1,8 @@
 @import './components/header/index.less';
+@import './components/container/index.less';
+@import './components/preview/index.less';
+@import './components/classification/index.less';
 @import './components/list/index.less';
-@import './components/operation/index.less';
-
-@import './add-task/index.less';
 
 @black1: #303133;
 @black2: #606266;
@@ -10,18 +10,21 @@
 @black4: #C0C4CC;
 
 .web-device {
+    position        : relative;
+    width           : 100%;
+    min-height      : 100%;
+    padding         : 0px;
+    margin          : 0px;
+    font-size       : 14px;
+    color           : @black2;
+    background-color: #f1f1f1;
+    overflow        : hidden;
+
     .main {
         height: 100%;
     }
 
     .main-windows {
         height: 100%;
-    }
-
-    .copyright {
-        height     : 39px;
-        line-height: 39px;
-        font-size  : 12px;
-        text-align : center;
     }
 }

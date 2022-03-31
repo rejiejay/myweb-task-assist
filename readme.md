@@ -1,8 +1,6 @@
-# myweb-task-assist
+# task-assist-system
 
-My Web Task Assist Version: 5  
-
-Agile Development  
+My Web Task Assist Version: 6  
 
 ## Version
 V1: https://github.com/rejiejay/myweb-task-assist/tree/task-assist-v1  
@@ -14,6 +12,8 @@ V3: https://github.com/rejiejay/website-station-system-version-fives
 V4: https://github.com/rejiejay/myweb-task-assist/tree/task-assist-v3 
 
 V5: https://github.com/rejiejay/myweb-task-assist/tree/task-assist-v4  
+
+V6: https://github.com/rejiejay/myweb-task-assist/tree/task-assist-v6
 
 ## Construct
 cnpm install -d  

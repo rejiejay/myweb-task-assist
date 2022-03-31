@@ -1,7 +1,8 @@
 import consequencer from './../utils/consequencer'
 import TencentCloudObjectStorage from './../module/tencent-cloud-object-storage'
+import config from './../config'
 
-const path = 'website-station-system/sqlite-task'
+const path = config.TCOS.sqlitejsBackupPath
 
 const getSqliteJsFileBuffer = async function getSqliteJsFileBuffer() {
     let allFiles = []

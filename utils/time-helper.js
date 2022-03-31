@@ -1,6 +1,7 @@
 const minutTimestamp = 1000 * 60
 const hourTimestamp = minutTimestamp * 60
 const dayTimestamp = hourTimestamp * 24
+const weekTimestamp = dayTimestamp * 7
 const monthTimestamp = dayTimestamp * 30
 const yearTimestamp = dayTimestamp * 365 
 
@@ -179,6 +180,7 @@ const TimeHelper = {
     minutTimestamp,
     hourTimestamp,
     dayTimestamp,
+    weekTimestamp,
     monthTimestamp,
     yearTimestamp,
     transformers

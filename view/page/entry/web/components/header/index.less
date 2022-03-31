@@ -3,22 +3,28 @@
 @black3: #909399;
 @black4: #C0C4CC;
 
-.web-device .main-windows .windows-header {
+.short-term-unclassified .windows-header {
     width           : 100%;
     border-bottom   : 1px solid #ddd;
     background-color: #fff;
+    height          : 50px;
+
+    .operat-main {
+        font-weight: bold;
+        color      : @black1;
+    }
 
     .left-operating {
         padding-left : 7.5px;
         padding-right: 25px;
 
-        .drop-down-select-component {
-            padding: 0;
-        }
-
         .operat-item {
             padding: 7.5px;
         }
+    }
+
+    .operating-center {
+        padding: auto;
     }
 
     .right-operating {
@@ -51,35 +57,5 @@
     .hover-item:hover {
         color           : @black1;
         background-color: rgba(0, 0, 0, 0.08);
-    }
-
-    .search {
-        height: 32px;
-
-        .search-container {
-            height          : 32px;
-            border-radius   : 16px;
-            overflow        : hidden;
-            background-color: #f1f1f1;
-        }
-
-        .search-input input {
-            padding: 0px;
-        }
-
-        .cancel-icon,
-        .search-icon {
-            padding: 0px 15px;
-            cursor : pointer;
-
-            path {
-                fill: @black3;
-            }
-        }
-
-        .cancel-icon:hover path,
-        .search-icon:hover path {
-            fill: #ff4d4f;
-        }
     }
 }

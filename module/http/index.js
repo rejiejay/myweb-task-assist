@@ -33,7 +33,6 @@ async function initPro() {
     server.init()
 }
 
-
 const HTTP = {
     initDev,
     renderWebResource,

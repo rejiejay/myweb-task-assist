@@ -1,4 +1,5 @@
 import consequencer from './../../utils/consequencer.js'
+import JsonHelper from './../../utils/json-helper'
 import Log from './../Log'
 
 class ResponseHandle {
@@ -7,7 +8,7 @@ class ResponseHandle {
     }
 
     responseJsonHandle(data) {
-        let writeContent = JSON.stringify(data)
+        let writeContent = JsonHelper.josnToString(data)
         this.response.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
         this.response.end(`${writeContent}`)
 

@@ -1,4 +1,4 @@
-import StringHelper from './../../../utils/string-helper'
+import StringHelper from './../../utils/string-helper'
 import toast from './../toast'
 
 export class Pagination extends React.Component {
@@ -82,7 +82,6 @@ export class Pagination extends React.Component {
                     {randomHandle && <>
                         <div style={{ width: '15px' }} />
                         <div className="pagination-input-submit" onClick={this.loadingRandomConfirm}>随机</div>
-
                     </>}
                 </div>
             </div>

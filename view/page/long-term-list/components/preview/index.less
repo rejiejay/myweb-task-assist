@@ -1,0 +1,70 @@
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.long-term-list .main-windows-preview {
+    .preview-header {
+        width           : 100%;
+        border-bottom   : 1px solid #ddd;
+        border-left     : 1px solid #ddd;
+        background-color: #fff;
+        height          : 50px;
+
+        .operat-item {
+            cursor            : pointer;
+            height            : 50px;
+            border-right      : 1px solid #ddd;
+            transition        : color 0.25s;
+            -moz-transition   : color 0.25s;
+            /* Firefox 4 */
+            -webkit-transition: color 0.25s;
+            /* Safari 和 Chrome */
+            -o-transition     : color 0.25s;
+            /* Opera */
+            transition        : background-color 1s;
+            -moz-transition   : background-color 1s;
+            /* Firefox 4 */
+            -webkit-transition: background-color 1s;
+            /* Safari 和 Chrome */
+            -o-transition     : background-color 1s;
+            /* Opera */
+        }
+
+        .operat-item:last-child {
+            border-right: none;
+        }
+
+        .operat-item:hover {
+            color           : @black1;
+            background-color: rgba(0, 0, 0, 0.08);
+        }
+    }
+
+    .preview-container {
+        border-left     : 1px solid #ddd;
+        width           : 100%;
+        background-color: #fff;
+
+        .preview-container-title {
+            font-weight  : bold;
+            width        : 100%;
+            color        : @black1;
+            font-size    : 16px;
+            border-bottom: 1px solid #ddd;
+
+            .preview-title-input {
+                width: 450px;
+            }
+        }
+
+
+        .preview-container-title input {
+            height: 45px;
+        }
+
+        .preview-container-main {
+            width: 100%;
+        }
+    }
+}

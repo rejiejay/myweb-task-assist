@@ -1,20 +1,27 @@
 
-import consequencer from './../../utils/consequencer'
 import service from './../../service'
 import config from './../../config'
+import { authHandleWithTokenSignature } from './../../utils/signature-helper'
 
 const authHandle = async request => {
     const { headers, method, url } = request
 
-    if (method !== 'POST') return consequencer.success()
-    // 这两个登陆的方法是不需要请求授权的
-    if (url === `/${config.auth.url.login}` || url === `/${config.auth.url.refresh}`) return consequencer.success()
+    // 一般而言: get 请求不需要授权
+    if (method === 'GET') return true
 
-    const token = headers[config.auth.headerToken]
-    if (!token) return consequencer.error(config.auth.unauthorized.message, config.auth.unauthorized.code)
+    // 这登陆的方法是不需要请求授权的
+    if (url === `/${config.auth.url.login}`) {
+        return true
+    }
 
-    const permissionInstance = await service.auth.getPermission({ token })
-    return permissionInstance
+    const token = headers['token']
+    const signature = headers['signature']
+    const result = authHandleWithTokenSignature(signature, token)
+    if (result instanceof Error) {
+        return result
+    }
+
+    return await service.auth.getPermission({ token })
 }
 
 export default authHandle

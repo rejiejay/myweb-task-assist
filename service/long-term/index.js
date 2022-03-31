@@ -1,89 +1,90 @@
 import SQLite from './../../module/SQLite/index.js'
+import SqlHandle from './../../module/SQLite/sql-handle.js'
+
 import StringHelper from './../../utils/string-helper'
-import consequencer from './../../utils/consequencer'
+
+import taskLongTerm from './../task/long-term'
 
 import dataAccessObject from './data-access-object'
 
-const relationalTable = new SQLite.TableHandle('longTermTaskRelational', dataAccessObject.longTermTaskRelational)
-const detailTable = new SQLite.TableHandle('longTermRecordDetail', dataAccessObject.longTermRecordDetail)
+const tableHandle = new SQLite.TableHandle('longTerm', dataAccessObject)
 
-const listAllTaskRelational = function listAllTaskRelational() {
-    return relationalTable.list('')
+const getAll = async function getAll() {
+    const sqlHandle = new SqlHandle()
+
+    sqlHandle.addOrder('operationalPosition', false) // DESC 表示按倒序排序 (即：从大到小排序) ---降序排列
+
+    const find = await tableHandle.list(sqlHandle.toSqlString())
+    if (find instanceof Error) return find
+
+    return find
 }
 
-const getOneTaskRelational = function getOneTaskRelational(id) {
-    return relationalTable.find(+id)
+const getByPagination = async function getByPagination(pageNo, pageSize) {
+    const sqlHandle = new SqlHandle()
+
+    sqlHandle.addOrder('operationalPosition', false) // DESC 表示按倒序排序 (即：从大到小排序) ---降序排列
+    const count = await tableHandle.count(sqlHandle.toSqlString())
+    if (count instanceof Error) return count
+
+    sqlHandle.addPagination(pageNo, pageSize)
+    const find = await tableHandle.list(sqlHandle.toSqlString())
+    if (find instanceof Error) return find
+
+    return { find, count }
 }
 
-const listAllLongTermRecordDetail = function getOneTaskRelational(id) {
-    const sqlHandle = new SQLite.SqlHandle()
-    sqlHandle.addAndFilterSql(`categoryIdentify = "${id}"`)
-    return detailTable.list(sqlHandle.toSqlString())
+const getById = async function getById(id) {
+    return await tableHandle.find(id)
 }
 
-const getOneLongTermRecordDetail = function getOneLongTermRecordDetail(id) {
-    return detailTable.find(+id)
-}
-
-const editLongTermRecordDetail = function editLongTermRecordDetail(id, editUpData) {
-    return detailTable.updata(id, editUpData)
-}
-
-const deleteLongTermRecordDetail = function deleteLongTermRecordDetail(id) {
-    return detailTable.del(id)
-}
-
-const addLongTermRecordDetail = async function addLongTermRecordDetail({ parentUniquelyIdentify, categoryIdentify }) {
-    const uniquelyIdentify = StringHelper.createRandomStr({ length: 32 })
-    const createTimestamp = new Date().getTime()
-    const longTermRecordDetail = {
-        uniquelyIdentify,
-        categoryIdentify,
-        parentUniquelyIdentify,
-        createTimestamp,
-        detail: ' '
+const addHandle = async function addHandle(name) {
+    const id = StringHelper.createRandomStr({ length: 16 })
+    const nowTimestamp = new Date().getTime()
+    const longTerm = {
+        id,
+        name,
+        operationalPosition: nowTimestamp
     }
 
-    const addInstance = await detailTable.add(longTermRecordDetail)
-    if (addInstance.result !== 1) return addInstance
+    const result = await tableHandle.add(longTerm)
+    if (result instanceof Error) return result
 
-    const sqlHandle = new SQLite.SqlHandle()
-    sqlHandle.addAndFilterSql(`uniquelyIdentify = "${uniquelyIdentify}"`)
-    const findInstance = await detailTable.list(sqlHandle.toSqlString())
-    if (findInstance.result !== 1) return findInstance
-
-    return consequencer.success(findInstance.data[0])
+    return await tableHandle.find(id)
 }
 
-const editLongTermTaskRelational = async function editLongTermTaskRelational({ id, spreadZoomIdentify, title, record }) {
-    const findInstance = await relationalTable.find(+id)
-    if (findInstance.result !== 1) return findInstance
-    const longTermTaskRelational = findInstance.data
-
-    return relationalTable.updata(id, { ...longTermTaskRelational, spreadZoomIdentify, title, record })
+const editHandle = async function editHandle(id, name, description) {
+    const updated = { name }
+    if (description) updated.description = description
+    return await tableHandle.updata(id, updated)
 }
 
-const addLongTermTaskRelational = async function addLongTermTaskRelational(title) {
-    const record = 'Nil'
-    const detailCategoryIdentify = StringHelper.createRandomStr({ length: 32 })
-    return relationalTable.add({ title, record, detailCategoryIdentify })
+const deleteHandle = async function deleteHandle(id) {
+    const result = await taskLongTerm.getByLongTermPreview(id)
+    if (result instanceof Error) return result
+
+    if (result.length > 0) {
+        return new Error('存在数据, 不可删除!')
+    }
+
+    return await tableHandle.del(id)
 }
 
-const deleteLongTermTaskRelational = async function deleteLongTermTaskRelational(id) {
-    return relationalTable.del(id)
+const setOperationalPositionById = async function setOperationalPositionById(
+    id,
+    timestamp = new Date().getTime()
+) {
+    return await tableHandle.updata(id, { operationalPosition: timestamp })
 }
 
 const longTerm = {
-    listAllTaskRelational,
-    getOneTaskRelational,
-    listAllLongTermRecordDetail,
-    getOneLongTermRecordDetail,
-    editLongTermRecordDetail,
-    deleteLongTermRecordDetail,
-    addLongTermRecordDetail,
-    editLongTermTaskRelational,
-    addLongTermTaskRelational,
-    deleteLongTermTaskRelational
+    getAll,
+    getByPagination,
+    getById,
+    addHandle,
+    editHandle,
+    deleteHandle,
+    setOperationalPositionById,
 }
 
 export default longTerm

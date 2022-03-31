@@ -1,0 +1,112 @@
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.main-windows .main-windows-preview {
+    .preview-header {
+        width           : 100%;
+        border-bottom   : 1px solid #ddd;
+        border-left     : 1px solid #ddd;
+        background-color: #fff;
+        height          : 50px;
+
+        .operat-item {
+            cursor            : pointer;
+            height            : 50px;
+            border-right      : 1px solid #ddd;
+            transition        : color 0.25s;
+            -moz-transition   : color 0.25s;
+            /* Firefox 4 */
+            -webkit-transition: color 0.25s;
+            /* Safari 和 Chrome */
+            -o-transition     : color 0.25s;
+            /* Opera */
+            transition        : background-color 1s;
+            -moz-transition   : background-color 1s;
+            /* Firefox 4 */
+            -webkit-transition: background-color 1s;
+            /* Safari 和 Chrome */
+            -o-transition     : background-color 1s;
+            /* Opera */
+        }
+
+        .operat-item:last-child {
+            border-right: none;
+        }
+
+        .operat-item:hover {
+            color           : @black1;
+            background-color: rgba(0, 0, 0, 0.08);
+        }
+    }
+
+    .preview-container {
+        border-left     : 1px solid #ddd;
+        width           : 100%;
+        background-color: #fff;
+
+        .preview-container-title {
+            font-weight  : bold;
+            width        : 100%;
+            color        : @black1;
+            font-size    : 16px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .preview-container-title p {
+            padding: 12px 15px;
+        }
+
+        .preview-container-main {
+            width: 100%;
+        }
+
+        .preview-container-timestamp {
+            padding  : 5px 15px;
+            font-size: 12px;
+        }
+
+        .preview-container-content {
+            padding: 5px 15px 25px 15px;
+            color  : @black1;
+        }
+
+        .preview-container-description {
+            .preview-main-smart {
+                padding: 0px 15px 15px 15px;
+
+                .main-smart-container {
+                    background-color: #fff;
+                    word-break      : break-all;
+                    border          : 1px solid #ddd;
+
+                    .main-smart-title {
+                        padding      : 7.5px 15px;
+                        border-bottom: 1px solid #ddd;
+
+                        span {
+                            font-size: 12px;
+                            color    : @black3;
+                        }
+                    }
+
+                    .main-smart-tip {
+                        font-size: 12px;
+                        color    : @black3;
+                        padding  : 0 7.5px;
+                    }
+
+                    .main-smart-content {
+                        padding   : 7.5px 15px;
+                        word-break: break-all;
+
+                        p {
+                            padding-bottom: 7.5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

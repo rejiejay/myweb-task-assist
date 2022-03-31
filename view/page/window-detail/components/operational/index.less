@@ -1,0 +1,100 @@
+.windows .windows-operational {
+    padding: 0px;
+    margin : 0px;
+
+    .operational-edit {
+        width        : 100%;
+        height       : 45px;
+        border-bottom: 1px solid #ddd;
+
+        .operational-edit-item {
+            border-right    : 1px solid #ddd;
+            height          : 45px;
+            font-size       : 18px;
+            color           : #fff;
+            background-color: #1890ff;
+            cursor          : pointer;
+        }
+
+        .operational-edit-item:last-child {
+            border-right: 1px solid #ddd;
+        }
+    }
+
+    .operational-filter {
+        padding-top: 15px;
+
+        .detail-smart-operational {
+            padding: 0px 15px 15px 15px;
+
+            .smart-operational-container {
+                height          : 32px;
+                background-color: #fff;
+                cursor          : pointer;
+            }
+
+            .flex-rest {
+                border-right: 1px solid #ddd;
+            }
+
+            .flex-rest:last-child {
+                border-right: none;
+            }
+        }
+
+        .detail-filter-operational {
+            padding: 0px 15px 15px 15px;
+
+            .filter-operational-container {
+                height          : 32px;
+                background-color: #fff;
+                cursor          : pointer;
+            }
+
+            .flex-rest {
+                border-right: 1px solid #ddd;
+            }
+
+            .flex-rest:last-child {
+                border-right: none;
+            }
+        }
+
+        .detail-filter-item {
+            padding: 0px 15px 15px 15px;
+
+            .filter-item-container {
+                min-height      : 45px;
+                background-color: #fff;
+                overflow        : hidden;
+            }
+
+            .item-rest-description {
+                overflow     : hidden;
+                word-break   : break-all;
+                text-overflow: ellipsis;
+                white-space  : nowrap;
+            }
+
+            .filter-sub-item {
+                line-height  : 32px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .filter-sub-item:last-child {
+                border-bottom: none;
+            }
+
+            .filter-item-rest {
+                padding : 0px 15px;
+                overflow: hidden;
+            }
+
+            .filter-item-selected,
+            .filter-item-cancel {
+                border-left: 1px solid #ddd;
+                padding    : 0px 15px;
+            }
+        }
+    }
+}

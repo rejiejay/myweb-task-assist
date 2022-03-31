@@ -1,7 +1,7 @@
 {
   "name": "myweb-task-assist",
-  "version": "5.0.0",
-  "description": "My Web Task Assist Version 5",
+  "version": "6.0.1",
+  "description": "My Web Task Assist Version 6",
   "main": "development.js",
   "author": {
     "name": "rejiejay-jeker-zeng"
@@ -10,21 +10,28 @@
     "dev": "SET NODE_ENV=development&& babel-node -- ./development.js",
     "dev-mac": "export NODE_ENV=development&& babel-node -- ./development.js",
     "test": "SET NODE_ENV=development&& babel-node -- ./tester.js",
+    "test-mac": "export NODE_ENV=development&& babel-node -- ./tester.js",
     "build": "SET NODE_ENV=production&& babel-node -- ./build-web-production.js",
-    "pro-start": "export NODE_ENV=production&& babel-node -- ./production.js",
-    "pro": "export NODE_ENV=production&& pm2 start babel-node -- ./production.js"
+    "build-node": "rollup --config rollup.config.js",
+    "pro-start": "export NODE_ENV=production&& node ./task-assist-system-v6.js",
+    "pro": "export NODE_ENV=production&& pm2 start --name task-assist-system-v6 node -- ./task-assist-system-v6.js"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "babel-runtime": "^6.26.0",
     "cos-nodejs-sdk-v5": "^2.9.10",
+    "crypto-js": "^4.1.1",
     "fs-extra": "^9.0.1",
+    "lodash": "^4.17.21",
+    "mysql2": "^2.3.3",
     "node-schedule": "^2.0.0",
     "qcloud-cos-sts": "^3.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "request": "^2.88.2",
     "signale": "^1.4.0",
-    "sql.js": "^1.4.0"
+    "sql.js": "^1.4.0",
+    "ws": "^8.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
@@ -36,11 +43,13 @@
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.1",
     "@babel/register": "^7.10.4",
+    "@rollup/plugin-commonjs": "^21.0.1",
     "babel-loader": "^8.0.6",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "6.26.0",
     "less": "^4.1.0",
+    "rollup": "^2.62.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.41.5"
   }

@@ -1,0 +1,52 @@
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.long-term-list .main-windows-list {
+    width: 100%;
+
+    .windows-list-content {
+        height: 100%;
+        width : 100%;
+
+        .windows-list-row {
+            width         : 100%;
+            display       : flex;
+            flex-direction: row;
+            border-bottom : 1px solid #ddd;
+        }
+
+        .windows-list-item {
+            border-right: 1px solid #ddd;
+            cursor      : pointer;
+        }
+
+        .windows-list-item:hover {
+            background-color: #fff;
+        }
+
+        .windows-list-item:last-child {
+            border-right: none;
+        }
+
+        .list-item-container {
+            padding : 15px;
+            overflow: hidden;
+        }
+
+        .list-item-container>div {
+            padding-bottom: 10px;
+            word-break    : break-all;
+        }
+
+        .list-item-title {
+            font-size    : 16px;
+            font-weight  : bold;
+            overflow     : hidden;
+            text-overflow: ellipsis;
+            white-space  : nowrap;
+            word-break   : break-all;
+        }
+    }
+}

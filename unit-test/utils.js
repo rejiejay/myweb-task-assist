@@ -1,5 +1,3 @@
-import consequencer from './../utils/consequencer'
-
 const methodHelper = tester => async () => {
     const testNames = Object.keys(tester)
 
@@ -11,40 +9,54 @@ const methodHelper = tester => async () => {
         try {
             test = await method()
         } catch (error) {
-            return console.error(`${testName} test error: `, error)
+            return console.error(`catch ${testName} error: `, error.message)
         }
-        if (test.result !== 1) return console.error(`${testName} test error: `, test.message)
-        console.log(`${testName} result: ${test.message}`)
+
+        if (test instanceof Error) {
+            console.error(`${testName} error: `);
+            return console.error(test);
+        }
+
+        console.log(`------------------------------------------------------- ${testName}: ${test.message || 'good~'}`)
     }
 }
 
-const resolveHandle = (method, { isShowResult, expectedResultsCode } = { isShowResult: false, expectedResultsCode: false }) => () => new Promise((resolve, reject) => {
+const resolveHandle = (method, { isShowResult } = { isShowResult: false }) => () => new Promise((resolve, reject) => {
     const json = data => {
-        // For Handle expected results 
-        if (expectedResultsCode && expectedResultsCode === data.result) data = consequencer.success(data, 'expected results success')
+        if (!!isShowResult) console.log(data)
+        if (data.result !== 1) return reject(new Error(data.message))
+        resolve(data)
+    }
+
+    const success = (data, message = 'success') => {
         if (!!isShowResult) console.log(data)
         resolve(data)
     }
-    const success = (data, message = '') => {
+
+    const failure = (message = 'failure', result = '2333', data = null) => {
         if (!!isShowResult) console.log(data)
-        resolve(consequencer.success(data, message))
+        reject(new Error(message))
     }
-    const failure = (message, result = '2333', data = null) => {
-        if (expectedResultsCode && expectedResultsCode === result) return reject(consequencer.success(data, 'expected results success')) // For Handle expected results 
-        reject(consequencer.error(message, result, data))
-    }
+
     const responseHanle = { json, success, failure }
 
     try {
         method(responseHanle)
     } catch (error) {
-        reject(consequencer.error(`${error}`))
+        console.error('method(responseHanle) catch error');
+        console.error(error);
+        reject(error)
     }
-}).catch(error => consequencer.error(`${error}`))
+}).catch(error => error)
+
+const authRequest = {
+    method: 'POST'
+}
 
 const utils = {
     methodHelper,
-    resolveHandle
+    resolveHandle,
+    authRequest
 }
 
 export default utils

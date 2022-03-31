@@ -18,7 +18,7 @@ function show(message) {
 
     this.destroy = () => {
         if (self.element === null) return
-        document.body.removeChild(div)
+        if (div && div.parentNode) document.body.removeChild(div)
         self.element = null
     }
 

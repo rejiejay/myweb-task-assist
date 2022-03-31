@@ -1,6 +1,6 @@
 import loadScript from './../../utils/loadScript'
 import consequencer from './../../../utils/consequencer'
-import StringHelper from './../../../utils/string-helper'
+import StringHelper from './../../utils/string-helper'
 import Confirm from './../confirm'
 
 import configs from './../../configs'
@@ -40,7 +40,7 @@ const props = {
     direction: CONSTS.direction.bottom_end,
     name: '',
     children: '',
-    handle: () => { }
+    handle: ({ value, label }) => { }
 }
 
 export default class DropDownSelect extends React.Component {

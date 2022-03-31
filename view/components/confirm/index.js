@@ -10,7 +10,10 @@ function Confirm(message) {
     const div = document.createElement('div')
     div.setAttribute('style', style.content)
 
-    const destroy = () => document.body.removeChild(div)
+    const destroy = () => {
+        ReactDOM.unmountComponentAtNode(div);
+        if (div && div.parentNode) div.parentNode.removeChild(div);
+    }
     const confirmHandle = () => {
         resolveHandle(consequencer.success())
         destroy()

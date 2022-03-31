@@ -15,11 +15,10 @@ class AuthHandle {
         this.reject = reject
     }
 
-    verify() {
+    async verify() {
         const code = this.response.result
 
-        if (code === config.auth.unauthorized.code || code === config.auth.unpermissions.code) return this.showLogin()
-        if (code === config.auth.expired.code) return this.refreshAuth()
+        if (code === config.auth.loginFailure.code) return await this.showLogin()
 
         this.reject(this.response)
     }
@@ -29,18 +28,17 @@ class AuthHandle {
             ...this.optional,
             headers: optionalHeaders()
         }
-        const fetchInstance = await fetchHandle(this.url, optional)
-        if (fetchInstance.result !== 1) {
-            await Confirm(fetchInstance.message)
+        const fetch = await fetchHandle(this.url, optional)
+        if (fetch instanceof Error) {
+            await Confirm(fetch.message)
             return this.reject(this.response)
         }
-        const fetchData = fetchInstance.data
-        if (fetchData.result !== 1) {
-            await Confirm(fetchData.message)
+        if (fetch.result !== 1) {
+            await Confirm(fetch.message)
             return this.reject(this.response)
         }
 
-        this.resolve(fetchData)
+        this.resolve(fetch)
     }
 
     async showLogin() {
@@ -48,45 +46,26 @@ class AuthHandle {
 
         if (passwordInstance.result !== 1) return this.reject(this.response)
         const password = passwordInstance.data
+        const account = '454766952@qq.com'
 
         const url = `${config.origin}${config.auth.url.login}`
-        const optional = { method: 'POST', body: JSON.stringify({ password }), headers: optionalHeaders() }
-        const fetchInstance = await fetchHandle(url, optional)
-        if (fetchInstance.result !== 1) {
-            await Confirm(fetchInstance.message)
+        const optional = { method: 'POST', body: JSON.stringify({ account, password }), headers: optionalHeaders() }
+        const fetch = await fetchHandle(url, optional)
+        if (fetch instanceof Error) {
+            await Confirm(fetch.message)
             return this.reject(this.response)
         }
-        const fetchData = fetchInstance.data
-
-        if (fetchData.result === config.auth.loginFailure.code) return this.showLogin()
-        if (fetchData.result !== 1) {
-            await Confirm(fetchData.message)
+        if (fetch.result === config.auth.loginFailure.code) {
+            await Confirm(fetch.message)
+            return this.showLogin()
+        }
+        if (fetch.result !== 1) {
+            await Confirm(fetch.message)
             return this.reject(this.response)
         }
 
-        Storage.auth.setToken(fetchData.data)
-        this.reRequest()
-    }
-
-    async refreshAuth() {
-        const url = `${config.origin}${config.auth.url.refresh}`
-        const token = Storage.auth.getToken()
-        const optional = { method: 'POST', body: JSON.stringify({ token }), headers: optionalHeaders() }
-        const fetchInstance = await fetchHandle(url, optional)
-        if (fetchInstance.result !== 1) {
-            await Confirm(fetchInstance.message)
-            return this.reject(this.response)
-        }
-        const fetchData = fetchInstance.data
-
-        if (fetchData.result !== 1) {
-            await Confirm(fetchData.message)
-            return this.reject(this.response)
-        }
-        /** 这里是太久了, 所以需要重新弹出登录 */
-        if (fetchData.result === config.auth.expired.code) return this.showLogin()
-        Storage.auth.setToken(fetchData.data)
-        this.reRequest()
+        Storage.auth.setToken(fetch.data)
+        await this.reRequest()
     }
 }
 

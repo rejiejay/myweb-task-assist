@@ -1,4 +1,3 @@
-import consequencer from './../../../utils/consequencer'
 import toast from './../toast/index.js'
 
 const fetchHandle = (url, optional) => new Promise((resolve, reject) => {
@@ -8,11 +7,11 @@ const fetchHandle = (url, optional) => new Promise((resolve, reject) => {
         .then(response => response.json())
         .then(data => {
             toast.destroy()
-            resolve(consequencer.success(data))
+            resolve(data)
         })
         .catch(error => {
             toast.destroy()
-            reject(consequencer.error(`${error}`))
+            reject(error)
         })
 }).catch(error => error);
 

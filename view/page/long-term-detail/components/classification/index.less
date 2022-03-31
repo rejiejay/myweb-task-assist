@@ -1,0 +1,64 @@
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.long-term-detail .main-windows-classification {
+    .classification-header {
+        width           : 100%;
+        background-color: #fff;
+        border-bottom   : 5px solid #ddd;
+
+        .classification-header-item {
+            height: 50px;
+        }
+    }
+
+    .classification-container {
+        width           : 100%;
+        background-color: #fff;
+
+        .classification-item {
+            border-bottom: 1px solid #ddd;
+            height       : 50px;
+            width        : 100%;
+
+            .classification-item-description {
+                padding      : 0 15px;
+                line-height  : 50px;
+                overflow     : hidden;
+                text-overflow: ellipsis;
+                white-space  : nowrap;
+                word-break   : break-all;
+            }
+        }
+    }
+
+    .hover-item {
+        cursor            : pointer;
+        transition        : color 0.25s;
+        -moz-transition   : color 0.25s;
+        /* Firefox 4 */
+        -webkit-transition: color 0.25s;
+        /* Safari 和 Chrome */
+        -o-transition     : color 0.25s;
+        /* Opera */
+        transition        : background-color 1s;
+        -moz-transition   : background-color 1s;
+        /* Firefox 4 */
+        -webkit-transition: background-color 1s;
+        /* Safari 和 Chrome */
+        -o-transition     : background-color 1s;
+        /* Opera */
+    }
+
+    .hover-item:hover {
+        color           : @black1;
+        background-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .active-item {
+        background-color: #1890ff;
+        color           : #fff;
+    }
+}

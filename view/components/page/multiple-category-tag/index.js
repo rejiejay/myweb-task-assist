@@ -1,5 +1,3 @@
-import service from './../../../service';
-
 const SelectItem = ({
     selectHandle,
     disableHandle,
@@ -30,12 +28,19 @@ const ResulItem = ({ unSelectHandle, children }) => {
     </div>
 }
 
-export class MultipleTaskCategoryTag extends React.Component {
+export class MultipleCategoryTag extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isSelectAll: false,
-            list: [],
+            list: [
+                // {
+                //     id: key,
+                //     isKill: false,
+                //     isSelect: false,
+                //     value: 'for code handle',
+                //     lable: 'for show'
+                // }
+            ],
         }
     }
 
@@ -44,12 +49,8 @@ export class MultipleTaskCategoryTag extends React.Component {
     }
 
     async getAllCategory() {
-        const fetchMap = item => this.initItem(item)
-
-        const fetchInstance = await service.category.getAllCategory();
-        if (fetchInstance.result !== 1) return
-        const list = fetchInstance.data
-        this.setState({ list: list.map(fetchMap) })
+        const { tag } = this.props
+        this.setState({ list: tag })
     }
 
     initItem = (item = {}, isSelect = false, isDisable = false) => ({
@@ -66,7 +67,9 @@ export class MultipleTaskCategoryTag extends React.Component {
     }
 
     selectAllHandle = () => {
-        const selectAllMap = item => this.initItem(item, true, item.isDisable)
+        const { list } = this.state
+        const isSelectAll = list.filter(({ isSelect }) => isSelect).length === 0;
+        const selectAllMap = item => this.initItem(item, isSelectAll, item.isDisable)
         this.setState({ list: this.state.list.map(selectAllMap) })
     }
 
@@ -122,14 +125,14 @@ export class MultipleTaskCategoryTag extends React.Component {
                             isDisable={item.isDisable}
                             selectHandle={() => this.selectHandle(item)}
                             disableHandle={() => this.disableHandle(item)}
-                        >{item.name}</SelectItem>
+                        >{item.lable}</SelectItem>
                     )}
                 </div>
                 <div className="category-tag-right flex-rest">
                     {list.filter(this.resulItemfilter).map(item =>
                         <ResulItem
                             unSelectHandle={() => this.unSelectHandle(item)}
-                        >{item.name}</ResulItem>
+                        >{item.lable}</ResulItem>
                     )}
                 </div>
             </div>

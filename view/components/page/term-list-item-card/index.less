@@ -1,0 +1,63 @@
+@black1: #303133;
+@black2: #606266;
+@black3: #909399;
+@black4: #C0C4CC;
+
+.components-mobile-term-list-item-card {
+    padding: 0 15px 15px;
+
+    .term-item-main {
+        position  : relative;
+        background: #fff;
+    }
+
+    .item-title-container {
+        height       : 45px;
+        border-bottom: 1px solid #ddd;
+
+        .item-title-main {
+            padding    : 0px 15px;
+            line-height: 45px;
+            overflow   : hidden;
+        }
+
+        .item-main-description {
+            overflow     : hidden;
+            text-overflow: ellipsis;
+            white-space  : nowrap;
+            font-weight  : bold;
+        }
+    }
+
+    .term-item-null {
+        padding: 15px;
+    }
+
+    .term-item-icon {
+        width  : 45px;
+        height : 45px;
+        z-index: 1;
+
+        svg {
+            width : 18px;
+            height: 18px;
+            color : @black3;
+        }
+    }
+
+    .item-main-container {
+        .item-main {
+            padding      : 0px 15px;
+            height       : 32px;
+            line-height  : 32px;
+            overflow     : hidden;
+            text-overflow: ellipsis;
+            white-space  : nowrap;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .item-main:last-child {
+            border-bottom: none;
+        }
+    }
+}

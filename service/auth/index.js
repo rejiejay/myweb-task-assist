@@ -1,40 +1,47 @@
-import consequencer from './../../utils/consequencer'
 import config from './../../config'
 import StringHelper from './../../utils/string-helper'
 import TimeHelper from './../../utils/time-helper'
-import ObjectHelper from './../../utils/object-helper'
-import valuesStructuresVerify from './../../utils/values-structures-verify'
 
 /**
- * 权限
- * 因为不做多用户, 所以此处不需要用到数据库, 直接使用缓存数据即可
+ * 凭证 “缓存池”
+ * 简单判断：BE通过判断“缓存池”是否存在凭证，可以简单判断是否有效
+ * 进阶判断：BE通过凭证查找是否存在“数据库关联的用户信息”，进而判断是否有效
  */
 let permissions = [
     // {
-    //     id: '',
+    //     userId: '', // 数据库关联的用户信息
     //     token: '',
-    //     expirationTimestamp: 1,
+    //     expiredTimestamp: 1,
     // }
 ]
 
 /**
- * 测试环下插入一个token
+ * 测试环下插入一个token， 方便单元测试
  */
-if (process.env.NODE_ENV === 'development' && config.auth.value) permissions.push({ token: config.auth.value, expirationTimestamp: new Date(2099, 11, 17, 3, 24, 0).getTime() })
+if (process.env.NODE_ENV === 'development' && config.auth.testUserId && config.auth.testToken) {
+    permissions.push({
+        userId: config.auth.testUserId,
+        token: config.auth.testToken,
+        expiredTimestamp: new Date(2099, 11, 17, 3, 24, 0).getTime()
+    })
+}
 
-const simpleVerifyToken = token => {
-    const isStringInstance = valuesStructuresVerify.isStringNil(token)
-    if (isStringInstance.result !== 1) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
+/**
+ * 废弃过期超过一周的数据, 每天执行一次
+ */
+let executeClearExpiredPermissionsTimestamp = new Date().getTime() // 执行时间
+const clearExpiredPermissions = () => {
+    const nowTimestamp = new Date().getTime();
 
-    const simpleVerify = token.split('-')
-    if (simpleVerify.length !== 5) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
-
-    for (let index = 0; index < simpleVerify.length; index++) {
-        const tokenElement = simpleVerify[index]
-        if (tokenElement.length !== 17) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
+    /**
+     * 当前时间超出执行时间1天, 执行一次清空操作
+     */
+    if (nowTimestamp > (executeClearExpiredPermissionsTimestamp + TimeHelper.dayTimestamp)) {
+        // 执行时间设置为现在
+        executeClearExpiredPermissionsTimestamp = nowTimestamp;
+        // 已经过期的 permission 全部过滤掉
+        permissions = permissions.filter(permission => permission.expiredTimestamp >= nowTimestamp)
     }
-
-    return consequencer.success()
 }
 
 /**
@@ -43,122 +50,83 @@ const simpleVerifyToken = token => {
  * @param {string} token 
  */
 const getPermission = async function getPermission({ token }) {
-    const simpleVerifyInstance = simpleVerifyToken(token)
-    if (simpleVerifyInstance.result !== 1) return simpleVerifyInstance
+    clearExpiredPermissions();
 
-    /**
-     * 废弃过期超过一天的数据 = 数据库的过期的时间小于昨天
-     */
-    const expirationDay = new Date().getTime() - TimeHelper.dayTimestamp
-    permissions = permissions.filter(permission => permission.expirationTimestamp >= expirationDay)
+    const myPermission = permissions.find(permission => permission.token === token)
 
-    /**
-     * 所有权限
-     */
-    const myPermission = permissions.filter(permission => permission.token === token)
+    if (!myPermission) {
+        return new Error('token is not permission')
+    }
 
-    // 无权限
-    if (myPermission.length <= 0) return consequencer.error(config.auth.unpermissions.message, config.auth.unpermissions.code)
-    const expirationTimestamp = myPermission[0].expirationTimestamp
-
-    // 过期
-    if (new Date().getTime() > expirationTimestamp) return consequencer.error(config.auth.expired.message, config.auth.expired.code)
-
-    return consequencer.success(token)
+    return myPermission
 }
 
-const addPermission = (id = StringHelper.createRandomStr({ length: 17 })) => {
+const addPermission = userId => {
     const token = buildToken()
-    const expirationTimestamp = new Date().getTime() + TimeHelper.dayTimestamp
-    const permission = { id, token, expirationTimestamp }
+    /**
+     * 一周后过期
+     */
+    const expiredTimestamp = new Date().getTime() + TimeHelper.weekTimestamp
+    const permission = { userId, token, expiredTimestamp }
     permissions.push(permission)
     return permission
 }
 
-const getTokenByPermissionId = permissionId => {
-    const myPermission = permissions.find(permission => permission.id === permissionId)
-    if (!myPermission) {
-        const { token } = addPermission(permissionId)
-        return token
-    }
-    return myPermission.token
-}
-
 const buildToken = () => new Array(5).fill().map(() => StringHelper.createRandomStr({ length: 17 })).join('-')
 
-let user = {
-    // uuid: {
-    //     password,
-    //     permissionId, // 关联权限标识
-    //     expiration, // 默认一周过期
-    //     errorCount // 默认5次不允许
-    // }
-}
-const login = async function login({ password, uuid }) {
-    // 第一次登陆(必然是我)
-    if (JSON.stringify(user) === '{}') {
-        const { id, token } = addPermission()
-        const expiration = new Date().getTime() + (TimeHelper.dayTimestamp * 7)
-        user[uuid] = { password, permissionId: id, expiration, errorCount: 0 }
-        return consequencer.success(token)
-    }
-
-    // 不存在uuid -> 可能更换帐户 -> 校验密码
-    if (!user[uuid]) {
-        ObjectHelper.mapper(user).forEach((key, value) => {
-            if (value.password === password) user[uuid] = JSON.parse(JSON.stringify(value))
-        })
-
-        if (!user[uuid]) return consequencer.error('不存在此帐户', config.auth.loginFailure.code)
-
-        const token = getTokenByPermissionId(user[uuid].permissionId)
-        return consequencer.success(token)
-    }
-
-    const userInstance = user[uuid]
-
-    if (userInstance.errorCount > 5) return consequencer.error('你已无法登录', config.auth.loginFailure.code)
-
-    if (userInstance.password !== password) {
-        userInstance.errorCount++
-        return consequencer.error('密码错误', config.auth.loginFailure.code)
-    }
-
-    const token = getTokenByPermissionId(userInstance.permissionId)
-    return consequencer.success(token)
-}
-
+let loginTryRecords = []
+let executeClearLoginTryRecordsTimestamp = new Date().getTime() // 执行时间
 /**
- * 刷新凭证
+ * 废弃过期超过一天的密码登录尝试, 每天执行一次
  */
-const refresh = async function refresh({ token, uuid }) {
-    const simpleVerifyInstance = simpleVerifyToken(token)
-    if (simpleVerifyInstance.result !== 1) return simpleVerifyInstance
+const clearExpiredLoginTry = () => {
+    const nowTimestamp = new Date().getTime();
 
-    let myPermission = permissions.find(permission => permission.token === token)
-    if (!myPermission) {
-        /**
-         * 找不到权限, 说明可能 token 太过于久了, 被删除, 让他重新登录吧
-         */
-        return consequencer.error(config.auth.expired.message, config.auth.expired.code)
+    /**
+     * 当前时间超出执行时间1天, 执行一次清空操作
+     */
+    if (nowTimestamp > (executeClearLoginTryRecordsTimestamp + TimeHelper.dayTimestamp)) {
+        // 执行时间设置为现在
+        executeClearLoginTryRecordsTimestamp = nowTimestamp;
+        // 已经过期的 permission 全部过滤掉
+        loginTryRecords = loginTryRecords.filter(loginTry => loginTry.expiredTimestamp >= nowTimestamp)
+    }
+}
+let users = {
+    '454766952@qq.com': {
+        id: new Array(5).fill().map(() => StringHelper.createRandomStr({ length: 17 })).join('-'),
+        password: 'DFqew1938167'
+    },
+}
+const login = async function login({ account, password }) {
+    clearExpiredLoginTry()
+
+    const my = users[account]
+    if (!my) {
+        return new Error('account is nil')
     }
 
-    myPermission.expirationTimestamp = new Date().getTime() + TimeHelper.dayTimestamp
-    const newToken = buildToken()
-    myPermission.token = newToken
+    const tryCount = loginTryRecords.filter(loginTry => loginTry.loginAccount === account).length
+    if (tryCount > 15) {
+        return new Error('You try login too many time, Please try again after tomorrow')
+    }
 
-    permissions = permissions.map(permission => {
-        if (permission.id === myPermission.id) return myPermission
-        return permission
-    })
+    if (my.password !== password) {
+        loginTryRecords.push({
+            loginAccount: account,
+            expiredTimestamp: new Date().getTime() + TimeHelper.dayTimestamp,
+        })
+        return new Error('账号密码错误')
+    }
 
-    return consequencer.success(newToken)
+    const permission = addPermission(my.id)
+
+    return permission.token
 }
 
 const auth = {
     getPermission,
     login,
-    refresh
 }
 
 export default auth

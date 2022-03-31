@@ -3,30 +3,33 @@
  * @all 测试所有的接口
  * @other 其他模块 部分接口 测试
  */
-import task from './task'
-import tags from './tags'
 import auth from './auth'
+import taskDetail from './task-detail'
+import taskList from './task-list'
+import taskTag from './task-tag'
 import longTerm from './long-term'
-import NavigationLink from './navigation-link'
-import sql from './sql'
+import longTermProgram from './long-term-program'
+import taskTermList from './task-term-list'
 
 import utils from './utils'
 
 const UnitTest = {
     all: utils.methodHelper({
-        ...task,
-        ...tags,
         ...auth,
+        ...taskDetail,
+        ...taskList,
+        ...taskTag,
         ...longTerm,
-        ...NavigationLink,
-        ...sql
+        ...longTermProgram,
+        ...taskTermList,
     }),
-    tags: utils.methodHelper({ ...tags }),
-    task: utils.methodHelper({ ...task }),
     auth: utils.methodHelper({ ...auth }),
+    taskDetail: utils.methodHelper({ ...taskDetail }),
+    taskList: utils.methodHelper({ ...taskList }),
+    taskTag: utils.methodHelper({ ...taskTag }),
     longTerm: utils.methodHelper({ ...longTerm }),
-    NavigationLink: utils.methodHelper({ ...NavigationLink }),
-    sql: utils.methodHelper({ ...sql })
+    longTermProgram: utils.methodHelper({ ...longTermProgram }),
+    taskTermList: utils.methodHelper({ ...taskTermList }),
 }
 
 export default UnitTest

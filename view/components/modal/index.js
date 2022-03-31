@@ -13,7 +13,8 @@ class Modal {
     }
 
     destroy = () => {
-        document.body.removeChild(this.div);
+        ReactDOM.unmountComponentAtNode(this.div);
+        if (this.div && this.div.parentNode) this.div.parentNode.removeChild(this.div);
     }
 
     show() {

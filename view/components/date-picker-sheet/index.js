@@ -1,8 +1,16 @@
 import loadScript from './../../utils/loadScript'
-import consequencer from './../../../utils/consequencer'
 import TimeHelper from './../../../utils/time-helper'
 import Confirm from './../confirm'
 import configs from './../../configs'
+
+const CONST = {
+    options: {
+        title : '请选择时间',
+        beginYear: 2021,
+        endYear: 2021,
+        value: '2018-03-18', // 日期初始化的默认值，列如'2018-03-18'
+    }
+}
 
 const DatePicker = options => new Promise(async(resolve, reject) => {
     if (!window.Rolldate) {
@@ -17,9 +25,21 @@ const DatePicker = options => new Promise(async(resolve, reject) => {
     const nowYear = new Date().getFullYear()
     const beginYear = (options && options.beginYear) ? options.beginYear : nowYear - 10
     const endYear = (options && options.endYear) ? options.endYear : nowYear + 10
+    const nowTime = new Date().getTime();
+    const id = `picka-date-${nowTime}`
+    const defaultValue = (() => {
+        let value = nowTime
+        if (options && options.value) value = options.value
 
+        try {
+            return TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date(value))
+        } catch (error) {
+            return TimeHelper.transformers.dateToYYYYmmDDhhMM(new Date())
+        }
+    })()
+    
     const div = document.createElement('input')
-    div.setAttribute('id', 'picka-date')
+    div.setAttribute('id', id)
     div.setAttribute('type', 'text')
     div.setAttribute('style', 'display: none;')
     div.setAttribute('placeholder', title)
@@ -34,22 +54,25 @@ const DatePicker = options => new Promise(async(resolve, reject) => {
      * Released on: aug 4, 2018
      */
     const datepicker = new Rolldate({
-        el: '#picka-date',
+        el: `#${id}`,
         format: 'YYYY-MM-DD hh:mm',
         beginYear,
         endYear,
         lang: { title },
+        value: defaultValue,
         confirm: date => {
             const timestamp = TimeHelper.transformers.YYYYmmDDhhMMToTimestamp(date)
+            resolve(timestamp)
             setTimeout(() => {
-                document.body.removeChild(div)
-                resolve(consequencer.success(timestamp))
+                if (div && div.parentNode) document.body.removeChild(div)
+                ReactDOM.unmountComponentAtNode(div);
             }, 1000)
         },
         cancel: () => {
+            resolve(new Error('cancel'))
             setTimeout(() => {
-                document.body.removeChild(div)
-                resolve(consequencer.error('cancel', 2))
+                if (div && div.parentNode) document.body.removeChild(div)
+                ReactDOM.unmountComponentAtNode(div);
             }, 1000)
         }
     })

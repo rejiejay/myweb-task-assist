@@ -34,6 +34,7 @@ const confirm = {
     height: '45px',
     padding: '0px 15px',
     borderRight: '1px solid #ddd',
+    cursor: 'pointer',
     ...jsxStyle.basicFlex.center,
     ...jsxStyle.basicFlex.rest
 }
@@ -41,6 +42,7 @@ const confirm = {
 const cancel = {
     height: '45px',
     padding: '0px 15px',
+    cursor: 'pointer',
     ...jsxStyle.basicFlex.center,
     ...jsxStyle.basicFlex.rest
 }

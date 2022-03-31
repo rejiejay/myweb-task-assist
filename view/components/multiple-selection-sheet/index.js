@@ -201,12 +201,12 @@ const openMultipleSelect = selectedList => new Promise(resolve => {
 
     const confirmHandle = () => {
         const selected = myMultipleSelectRef.current.getSelectedResult()
-        document.body.removeChild(div)
+        if (div && div.parentNode) document.body.removeChild(div)
         resolve(consequencer.success(selected))
     }
     const cancelHandle = () => {
         resolve(consequencer.error('cancel'))
-        document.body.removeChild(div)
+        if (div && div.parentNode) document.body.removeChild(div)
     }
 
     document.body.appendChild(div)

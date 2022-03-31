@@ -3,10 +3,37 @@
  */
 import consequencer from './../../../utils/consequencer'
 
-import CommonlyInputText from './../mobile/commonly-input-text'
 import toast from './../toast'
 
 import style from './style.js'
+
+const CommonlyInputText = ({
+    value, placeholder, onChangeHandle,
+    minHeight, isMultipleInput, isAutoHeight,
+    onBlur, onFocus
+
+}) => (<div className='commonly-input-text' style={style.inputContainer}>
+    {!isMultipleInput &&
+        <input type="text"
+            style={style.singleInputTextarea}
+            value={value}
+            onChange={({ target: { value } }) => onChangeHandle(value)}
+            placeholder={placeholder}
+            onBlur={() => onBlur && onBlur()}
+            onFocus={() => onFocus && onFocus()}
+        />
+    }
+    {!!isMultipleInput &&
+        <textarea type="text"
+            style={style.multipleInputTextarea(minHeight, isAutoHeight, value)}
+            value={value}
+            onChange={({ target: { value } }) => onChangeHandle(value)}
+            placeholder={placeholder}
+            onBlur={() => onBlur && onBlur()}
+            onFocus={() => onFocus && onFocus()}
+        />
+    }
+</div>)
 
 function Prompt({ title, defaultValue, placeholder } = {}) {
     let resolveHandle = () => { }
@@ -14,7 +41,9 @@ function Prompt({ title, defaultValue, placeholder } = {}) {
     const div = document.createElement('div')
     div.setAttribute('style', style.content)
 
-    const destroy = () => document.body.removeChild(div)
+    const destroy = () => {
+        if (div && div.parentNode) document.body.removeChild(div)
+    }
     const confirmHandle = value => {
         if (!value) return toast.show('输入内容不能为空')
         resolveHandle(consequencer.success(value))

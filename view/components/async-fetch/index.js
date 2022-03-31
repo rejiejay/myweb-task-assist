@@ -15,7 +15,6 @@ import fetchHandle from './fetch-handle'
 import utils from './utils.js'
 
 /**
- * 注意: get方法不需要处理权限校验, 因为任务系统默认所有的get方法都可以被使用, 不需要注意隐私的问题, 所以此处不需要额外的处理
  * @param {url, query, isShowError} parameter 请求参数
  * @param {resolve, reject} promise 返回结果的方法
  */
@@ -28,16 +27,26 @@ async function get(parameter, { resolve, reject }) {
         headers: optionalHeaders()
     }
 
-    const fetchInstance = await fetchHandle(url, optional)
-    if (fetchInstance.result !== 1) return reject(fetchInstance)
-    const data = fetchInstance.data
+    const fetch = await fetchHandle(url, optional)
+    if (fetch instanceof Error) {
+        return reject(consequencer.error(fetch.message))
+    }
+    const handleShowError = async () => {
+        if (parameter.isShowError) {
+            await Confirm(fetch.message)
+            return reject(fetch)
+        }
 
-    if (parameter.isShowError && data.result !== 1) {
-        await Confirm(data.message)
-        return reject(data)
+        reject(fetch)
     }
 
-    resolve(data)
+    if (fetch.result === 1) return resolve(fetch)
+
+    /**
+     * 这里不自动处理isShowError, 因为post方法还是手动处理错误为好
+     */
+    const auth = new AuthHandle({ url, optional, response: fetch, resolve, reject: handleShowError })
+    await auth.verify()
 }
 
 /**
@@ -54,17 +63,17 @@ async function post(parameter, { resolve, reject }) {
         body: JSON.stringify(parameter.body)
     }
 
-    const fetchInstance = await fetchHandle(url, optional)
-    if (fetchInstance.result !== 1) return reject(fetchInstance)
-    const data = fetchInstance.data
-
-    if (data.result === 1) return resolve(data)
+    const fetch = await fetchHandle(url, optional)
+    if (fetch instanceof Error) {
+        return reject(consequencer.error(fetch.message))
+    }
+    if (fetch.result === 1) return resolve(fetch)
 
     /**
      * 这里不自动处理isShowError, 因为post方法还是手动处理错误为好
      */
-    const auth = new AuthHandle({ url, optional, response: data, resolve, reject })
-    auth.verify()
+    const auth = new AuthHandle({ url, optional, response: fetch, resolve, reject })
+    await auth.verify()
 }
 
 /**
@@ -87,20 +96,19 @@ function reGetConfirm(parameter, { resolve, reject }) {
     const optional = { method: 'GET', headers: optionalHeaders() }
 
     const fetchInterval = async () => {
-        const fetchInstance = await fetchHandle(url, optional)
-        if (fetchInstance.result !== 1) {
-            const confirmInstance = await await Confirm(`请求错误, 原因: ${fetchInstance.message} \n 是否重新请求?`)
-            if (confirmInstance.result !== 1) return rejectHandle(fetchInstance.message)
+        const fetch = await fetchHandle(url, optional)
+        if (fetch instanceof Error) {
+            const confirmInstance = await await Confirm(`请求错误, 原因: ${fetch.message} \n 是否重新请求?`)
+            if (confirmInstance.result !== 1) return rejectHandle(fetch.message)
             fetchInterval()
         }
-        const data = fetchInstance.data
-        if (data.result !== 1) {
-            const confirmInstance = await Confirm(`请求错误, 原因: ${data.message} \n 是否重新请求?`)
+        if (fetch.result !== 1) {
+            const confirmInstance = await Confirm(`请求错误, 原因: ${fetch.message} \n 是否重新请求?`)
             if (confirmInstance.result !== 1) return rejectHandle(confirmInstance.message)
             fetchInterval()
         }
 
-        resolveHandle(data)
+        resolveHandle(fetch)
     }
 
     return new Promise((awaitStackIntervalResolve, awaitStackIntervalReject) => {
